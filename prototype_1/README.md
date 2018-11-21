@@ -1,5 +1,5 @@
 # Plant Evolution App, Prototype 1 
-## Environment Physics & Basic Competive Growth
+### Environment Physics & Basic Competive Growth
 
 - [X] establish verlet physics environment
 

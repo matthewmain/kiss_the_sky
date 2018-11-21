@@ -6,7 +6,7 @@ PROTOTYPE 2: Flowers, Seeds, & Reproduction with Randomized Traits
 
 PROTOTYPE 3: Polinators & Reproduction with Traits as Average Between Parents
 
-PROTOTYPE 4: Seasons
+PROTOTYPE 4: Seasons  
 
 
 VERSION 1.0: Basic Genes, Alleles, Mutations, & Reproduction with Mendelian Genetics
