@@ -154,7 +154,7 @@ function updatePoints() {
       p.cx += xv;  // updates current x with new velocity
       p.cy += yv;  // updates current y with new velocity
       p.cy += gravity;  // add gravity to y
-      if (time % TL.rib( 100, 200 ) === 0) { p.cx += TL.rfb( -breeze, breeze ); }  // apply breeze to x
+      if (time % Tool.rib( 100, 200 ) === 0) { p.cx += Tool.rfb( -breeze, breeze ); }  // apply breeze to x
     }
   } 
 }

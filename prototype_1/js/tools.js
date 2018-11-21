@@ -4,7 +4,7 @@
 
 
 
-const TL = {
+const Tool = {
 
 
 	//random integer between two numbers
