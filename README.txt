@@ -1,13 +1,7 @@
+## Plant Evolution App
+----
 
-
-
-
-////////////////   PLANT EVOLUTION APP   ///////////////////////
-
-
-
-
-PROTOTYPE 1: Environment Physics & Basic Competive Growth
+[PROTOTYPE 1](https://github.com/matthewmain/plant_evolution_app/tree/master/prototype_1): Environment Physics & Basic Competive Growth
 
 PROTOTYPE 2: Flowers, Seeds, & Reproduction with Randomized Traits
 
