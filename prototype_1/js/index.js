@@ -3,7 +3,7 @@
 
 
 ///////////////////////////////////////////////////////////////// 
-////////////     Plant Evolution App: Prototype I     /////////// 
+////////////     Plant Evolution App: Prototype 1     /////////// 
 //////////////////////////////////////////////////?//////////////
 
 
@@ -16,11 +16,14 @@ var plants = [], plantCount = 0;
 
 
 
+
 ////---(TESTING)---////
 
 for (i=0;i<25;i++) {
   createPlant();
 }
+
+
 
 
 ////---OBJECTS---////
@@ -31,10 +34,10 @@ function Plant( originX ) {
   this.id = plantCount;
   this.segments = []; this.segmentCount = 0;
   //settings
-  this.fgr = gravity * randFltBet(5,7);  // forward growth rate (rate of cross spans increase per frame)
-  this.ogr = this.fgr * randFltBet(0.45,0.55);  // outward growth rate (rate forward span widens per frame)
-  this.msw = randFltBet(15,20);//18,22);  // maximum segment width, in pixels
-  this.mts = randIntBet(15,25);  // maximum total number of segments
+  this.fgr = gravity * TL.rfb(5,7);  // forward growth rate (rate of cross spans increase per frame)
+  this.ogr = this.fgr * TL.rfb(0.45,0.55);  // outward growth rate (rate forward span widens per frame)
+  this.msw = TL.rfb(15,20);//18,22);  // maximum segment width, in pixels
+  this.mts = TL.rib(15,25);  // maximum total number of segments
   //base segment
   this.bp1 = addPt( originX-0.1, 100 );  // base point 1
   this.bp2 = addPt( originX+0.1, 100 );  // base point 2
@@ -53,7 +56,7 @@ function Segment( plant, parentSegment, basePoint1, basePoint2 ) {
   this.parentSegment = parentSegment;
   this.isBaseSegment = false; if (this.parentSegment === null) { this.isBaseSegment = true; }
   //settings
-  this.fgrv = randFltBet(0.95,1.05);  // forward growth rate variation
+  this.fgrv = TL.rfb(0.95,1.05);  // forward growth rate variation
   //points
   this.bp1 = basePoint1;  // base point 1
   this.bp2 = basePoint2;  // base point 2
@@ -85,7 +88,7 @@ function Segment( plant, parentSegment, basePoint1, basePoint2 ) {
 //creates a new plant
 function createPlant() {
   plantCount++;
-  plants.push( new Plant(randIntBet(1,99)) );
+  plants.push( new Plant(TL.rib(1,99)) );
 }
 
 //creates a new segment
