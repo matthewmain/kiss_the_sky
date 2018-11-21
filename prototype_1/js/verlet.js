@@ -39,7 +39,7 @@ var breeze = 0.2;  // breeziness level (applied as brief left & right gusts)
 
 
 ///point constructor
-function Point(current_x, current_y, materiality="material") {
+function Point(current_x, current_y, materiality="material") {  // materiality can be "material" or "immaterial"
   this.cx = current_x;
   this.cy = current_y; 
   this.px = this.cx;  // previous x value
@@ -51,7 +51,7 @@ function Point(current_x, current_y, materiality="material") {
 }
 
 ///span constructor
-function Span(point_1, point_2, visibility="visible") {
+function Span(point_1, point_2, visibility="visible") {  // visibility can be "visible" or "hidden"
   this.p1 = point_1;
   this.p2 = point_2;
   this.l = distance(this.p1,this.p2); // length
