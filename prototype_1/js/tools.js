@@ -4,7 +4,7 @@
 
 
 
-var TL = {
+const TL = {
 
 
 	//random integer between two numbers
