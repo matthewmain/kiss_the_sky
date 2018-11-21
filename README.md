@@ -9,5 +9,5 @@
 
 <br>
 
-- [ ] VERSION 1.0: Basic Genes, Alleles, Mutations, & Reproduction with Mendelian Genetics  
-- [ ] VERSION 1.2: Stylization
+- [ ] Version 1.0: Basic Genes, Alleles, Mutations, & Reproduction with Mendelian Genetics  
+- [ ] Version 1.2: Stylization
