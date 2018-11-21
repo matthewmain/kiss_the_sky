@@ -7,9 +7,9 @@
 const Tool = {
 
 
-	//random integer between two numbers
+	//random integer between two numbers (inclusive)
 	rib: function( min, max ) {
- 		return Math.floor( Math.random() * ( max - min + 1 ) ) + min;
+ 		return Math.floor( Math.random() * ( Math.floor(max) - Math.ceil(min) + 1 ) ) + Math.ceil(min);
 	},
 
 	//random float between two numbers
