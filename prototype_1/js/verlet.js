@@ -30,7 +30,7 @@ var skidLoss = 0.8;  // (proportion of previous velocity if touching the ground)
 var viewSkins = true; // (skin visibility)
 var viewSpans = true;  // (span visibility)
 var viewScaffolding = false; // (scaffolding visibility)
-var breeze = 0.3;  // breeziness level (applied as brief left & right gusts)
+var breeze = 0.2;  // breeziness level (applied as brief left & right gusts)
 
 
 
