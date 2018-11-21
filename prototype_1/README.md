@@ -7,7 +7,7 @@
 
 - [ ] decide on very simple list of competing plant traits vs. environmental pressures for basic competitive growth:
 
-ENV:
+   ENV:
   * light
   - shadow
 -gravity
