@@ -23,7 +23,7 @@ var time = 0;  // time as frame count
 
 ///settings
 var gravity = 0.01;  // (rate of y-velocity increase per frame)
-var rigidity = 10;  // (iterations of position-accuracy refinement)
+var rigidity = 15;  // (iterations of position-accuracy refinement)
 var friction = 0.999;  // (proportion of previous velocity after frame refresh)
 var bounceLoss = 0.9;  // (proportion of previous velocity after bouncing)
 var skidLoss = 0.8;  // (proportion of previous velocity if touching the ground)
@@ -117,6 +117,13 @@ function distance(point_1, point_2) {
   var x_difference = point_2.cx - point_1.cx;
   var	y_difference = point_2.cy - point_1.cy;
   return Math.sqrt( x_difference*x_difference + y_difference*y_difference);
+}
+
+///gets a span's mid point (returns object: { x: <value>, y: <value> } )
+function smp(span) {
+  var mx = ( span.p1.cx + span.p2.cx ) / 2;  // mid x value
+  var my = ( span.p1.cy + span.p2.cy ) / 2;  // mid y value
+  return { x: mx, y: my};
 }
 
 ///creates a point object instance

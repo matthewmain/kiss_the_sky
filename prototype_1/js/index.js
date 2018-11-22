@@ -33,10 +33,10 @@ function Plant( originX ) {
   this.segments = []; this.segmentCount = 0;
   //settings
   this.originX = 50;//originX;
-  this.fgr = gravity * Tool.rfb(20,20);//(5,7);  // forward growth rate (rate of cross spans increase per frame)
-  this.ogr = this.fgr * Tool.rfb(0.45,0.55);  // outward growth rate (rate forward span widens per frame)
-  this.msw = Tool.rfb(50,50);//(16,18);  // maximum segment width, in pixels
-  this.mts = Tool.rib(17,17);//(16,18);  // maximum total number of segments
+  this.fgr = gravity * 30;//Tool.rfb(28,32);  // forward growth rate (rate of cross spans increase per frame)
+  this.ogr = this.fgr * Tool.rfb(0.18,0.22);  // outward growth rate (rate forward span widens per frame)
+  this.msw = Tool.rfb(11,13);  // maximum segment width, in pixels
+  this.mts = Tool.rib(13,17);  // maximum total number of segments
   //base segment
   this.bp1 = addPt( this.originX - 0.1, 100 );  // base point 1
   this.bp2 = addPt( this.originX + 0.1, 100 );  // base point 2
@@ -54,9 +54,9 @@ function Segment( plant, parentSegment, basePoint1, basePoint2 ) {
   this.hasChildSegment = false;
   this.parentSegment = parentSegment;
   this.isBaseSegment = false; if (this.parentSegment === null) { this.isBaseSegment = true; }
-  this.hasRightLeaf = this.hasLeftLeaf = false;
+  this.hasLeaves = false;
   //settings
-  this.fgrv = Tool.rfb(0.95,1.05);  // forward growth rate variation
+  this.fgrv = Tool.rfb(0.95,1.05);//(0.95,1.05);  // forward growth rate variation
   //points
   this.bp1 = basePoint1;  // base point 1
   this.bp2 = basePoint2;  // base point 2
@@ -68,12 +68,11 @@ function Segment( plant, parentSegment, basePoint1, basePoint2 ) {
   this.spanL = addSp( this.bp1.id, this.ep1.id );  // left span
   this.spanR = addSp( this.bp2.id, this.ep2.id );  // right span
   this.spanF = addSp( this.ep1.id, this.ep2.id );  // forward span
-  if (this.isBaseSegment) {
-    this.spanCd = addSp( this.ep1.id, this.bp2.id );  // downward (l to r) cross span, for base
-    this.spanCu = addSp( this.bp1.id, this.ep2.id );  // new upward (l to r) cross span, for base
-  } else {
-    this.spanCd = addSp( this.ep1.id, this.parentSegment.bp2.id ); // downward (l to r) cross span, for all others
-    this.spanCu = addSp( this.parentSegment.bp1.id, this.ep2.id ); // upward (l to r) cross span, for all others
+  this.spanCd = addSp( this.ep1.id, this.bp2.id );  // downward (l to r) cross span
+  this.spanCu = addSp( this.bp1.id, this.ep2.id );  // new upward (l to r) cross span
+  if (!this.isBaseSegment) {
+    this.spanCdP = addSp( this.ep1.id, this.parentSegment.bp2.id ); // downward (l to r) cross span to parent
+    this.spanCuP = addSp( this.parentSegment.bp1.id, this.ep2.id ); // upward (l to r) cross span to parent
   }
   //skins
   addSk( [ this.ep1.id, this.ep2.id, this.bp2.id, this.bp1.id ], "green" );
@@ -113,13 +112,15 @@ function growPlants() {
           segment.bp1.cx -= plant.ogr / 2;
           segment.bp2.cx += plant.ogr / 2;
           plant.spanB.l = distance( segment.bp1, segment.bp2 );
-          segment.spanCd.l = distance( segment.ep1, segment.bp2 ) + plant.fgr*0.75;
+          segment.spanCd.l = distance( segment.ep1, segment.bp2 ) + plant.fgr / 3;
           segment.spanCu.l = segment.spanCd.l;
         } else {
-          segment.spanCd.l = distance( segment.ep1, segment.parentSegment.bp2 ) + plant.fgr;
-          segment.spanCu.l = segment.spanCd.l * segment.fgrv;
-        }
-        segment.spanF.l += plant.ogr; 
+          segment.spanCdP.l = distance( segment.ep1, segment.parentSegment.bp2 ) + plant.fgr;
+          segment.spanCuP.l = segment.spanCdP.l * segment.fgrv;
+          segment.spanCd.l = distance( segment.ep1, segment.bp2 );
+          segment.spanCu.l = distance( segment.bp1, segment.ep2 );
+        } 
+        segment.spanF.l += plant.ogr;
         segment.spanL.l = distance( segment.bp1, segment.ep1 );
         segment.spanR.l = distance( segment.bp2, segment.ep2 );
       }
@@ -130,14 +131,15 @@ function growPlants() {
 
 
       //handles leaves
-      if ( segment.id % 3 === 0 && !segment.hasRightLeaf) { 
-        generateLeaf( plant, segment ); 
+      if ( segment.id % 1 === 0 && !segment.hasLeaves) { 
+        generateLeaves( plant, segment ); 
       } 
-      if ( segment.hasRightLeaf && segment.leafSpanR.l < segment.spanF.l * 4 ) { 
-        growLeaf( plant, segment );
+      if ( segment.hasLeaves && segment.leafSpanR.l < segment.spanF.l * 6 ) { 
+        growLeaves( plant, segment );
       }
-      if ( segment.hasRightLeaf ) {
-        displayLeaves( plant, segment );
+      if ( segment.hasLeaves ) {
+        displayLeaves( plant, segment, segment.leafSpanL );
+        displayLeaves( plant, segment, segment.leafSpanR );
       }
 
 
@@ -147,44 +149,46 @@ function growPlants() {
 
 //checks whether a segment is ready to generate a child segment
 function readyForChildSegment( plant, segment ) {
-  return segment.spanF.l > plant.msw * 0.333 && !segment.hasChildSegment && plant.segments.length < plant.mts;
+  return segment.spanF.l > plant.msw * 0.333 && 
+         !segment.hasChildSegment && 
+         plant.segments.length < plant.mts;
 }
+
+
 
 
 
 //generates leaves
-function generateLeaf ( plant, segment ) {
-  segment.leafPointR = addPt( pctFromXVal(segment.ep2.cx), pctFromYVal(segment.ep2.cy) );  // leaf point right
-  segment.leafSpanR = addSp( segment.bp2.id, segment.leafPointR.id );  // leaf span right
-  segment.leafSpanRs = addSp( segment.ep2.id, segment.leafPointR.id, "hidden" );  // leaf span right support
-  segment.leafLength = 0;
-  segment.hasRightLeaf = true;
+function generateLeaves ( plant, segment ) {
+  var fsmp = smp( segment.spanF );  // forward span mid point ( { x: <value>, y: <value> } )
+  segment.leafTipL = addPt( pctFromXVal( fsmp.x ), pctFromYVal( fsmp.y ) );  // leaf tip left
+  segment.leafTipR = addPt( pctFromXVal( fsmp.x ), pctFromYVal( fsmp.y ) );  // leaf tip right
+  segment.leafSpanL = addSp( segment.bp1.id, segment.leafTipL.id );  // leaf span left
+  segment.leafSpanR = addSp( segment.bp2.id, segment.leafTipR.id );  // leaf span right
+  segment.hasLeaves = true;
 }
 
 //grows leaves
-function growLeaf( plant, segment ) {
-  segment.leafPointR.px = segment.leafPointR.cx += plant.fgr;
-  segment.leafPointR.py = segment.leafPointR.cy = segment.ep2.cy;
-  segment.leafSpanR.l = distance( segment.bp2, segment.leafPointR );
-  segment.leafSpanRs.l = distance( segment.ep2, segment.leafPointR );
+function growLeaves( plant, segment ) {
+  segment.leafSpanL.l = segment.leafSpanR.l += plant.fgr;
 }
 
 //displays leaves
 
-function displayLeaves( plant, segment ) {
-  var p1x = segment.bp2.cx;
-  var p1y = segment.bp2.cy;
-  var p2x = segment.leafPointR.cx;
-  var p2y = segment.leafPointR.cy;
+function displayLeaves( plant, segment, leafSpan ) {
+  var p1x = leafSpan.p1.cx;
+  var p1y = leafSpan.p1.cy;
+  var p2x = leafSpan.p2.cx;
+  var p2y = leafSpan.p2.cy;
   var mpx = ( p1x + p2x ) / 2;  // mid point x
   var mpy = ( p1y + p2y ) / 2;  // mid point y
-  ctx.lineWidth = 0;
+  ctx.lineWidth = 2;
   ctx.lineJoin = "round";
   ctx.lineCap = "round";
   ctx.strokeStyle = "darkgreen";
+  ctx.fillStyle = "green";
+  var ah = 0.4;  // arc height
   //leaf top
-  ctx.fillStyle = "darkgreen";
-  var ah = 0.2;  // arc height
   var ccpx = mpx + ( p2y - p1y ) * ah;  // curve control point x
   var ccpy = mpy + ( p1x - p2x ) * ah;  // curve control point y
   ctx.beginPath();
@@ -193,8 +197,6 @@ function displayLeaves( plant, segment ) {
   ctx.stroke();
   ctx.fill();
   //leaf bottom
-  ctx.fillStyle = "green";
-  ah = 0.3;  // arc height
   ccpx = mpx + ( p1y - p2y ) * ah;  // curve control point x
   ccpy = mpy + ( p2x - p1x ) * ah;  // curve control point y
   ctx.beginPath();
