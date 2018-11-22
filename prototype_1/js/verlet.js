@@ -269,9 +269,9 @@ function clearCanvas() {
 
 ///renders all visible components
 function renderImages() {
-  if (viewSkins) { renderSkins(); }
-  if (viewSpans) { renderSpans(); }
-  if (viewScaffolding) { renderScaffolding(); }
+  if ( viewSkins ) { renderSkins(); }
+  if ( viewSpans ) { renderSpans(); }
+  if ( viewScaffolding ) { renderScaffolding(); }
 }
 
 

@@ -36,7 +36,7 @@ function Plant( originX ) {
   this.fgr = gravity * Tool.rfb(20,20);//(5,7);  // forward growth rate (rate of cross spans increase per frame)
   this.ogr = this.fgr * Tool.rfb(0.45,0.55);  // outward growth rate (rate forward span widens per frame)
   this.msw = Tool.rfb(50,50);//(16,18);  // maximum segment width, in pixels
-  this.mts = Tool.rib(18,18);//(15,25);  // maximum total number of segments
+  this.mts = Tool.rib(17,17);//(16,18);  // maximum total number of segments
   //base segment
   this.bp1 = addPt( this.originX - 0.1, 100 );  // base point 1
   this.bp2 = addPt( this.originX + 0.1, 100 );  // base point 2
@@ -128,13 +128,18 @@ function growPlants() {
         createSegment( plant, segment, segment.ep1, segment.ep2 ); 
       }
 
+
       //handles leaves
-      if ( segment.id % 5 === 0 && !segment.hasRightLeaf && segment.spanF.l > plant.msw * 0) { 
+      if ( segment.id % 3 === 0 && !segment.hasRightLeaf) { 
         generateLeaf( plant, segment ); 
       } 
-      if ( segment.hasRightLeaf && segment.leafSpanCf.l < segment.spanF.l * 4 ) { 
+      if ( segment.hasRightLeaf && segment.leafSpanR.l < segment.spanF.l * 4 ) { 
         growLeaf( plant, segment );
       }
+      if ( segment.hasRightLeaf ) {
+        displayLeaves( plant, segment );
+      }
+
 
     }
   }
@@ -145,21 +150,60 @@ function readyForChildSegment( plant, segment ) {
   return segment.spanF.l > plant.msw * 0.333 && !segment.hasChildSegment && plant.segments.length < plant.mts;
 }
 
-//generates leaf
+
+
+//generates leaves
 function generateLeaf ( plant, segment ) {
   segment.leafPointR = addPt( pctFromXVal(segment.ep2.cx), pctFromYVal(segment.ep2.cy) );  // leaf point right
-  segment.leafSpanCf = addSp( segment.bp1.id, segment.leafPointR.id );  // leaf span center front
-  segment.leafSpanU = addSp( segment.ep2.id, segment.leafPointR.id, "hidden" );  // leaf span upper
+  segment.leafSpanR = addSp( segment.bp2.id, segment.leafPointR.id );  // leaf span right
+  segment.leafSpanRs = addSp( segment.ep2.id, segment.leafPointR.id, "hidden" );  // leaf span right support
+  segment.leafLength = 0;
   segment.hasRightLeaf = true;
 }
 
-//grows leaf
+//grows leaves
 function growLeaf( plant, segment ) {
   segment.leafPointR.px = segment.leafPointR.cx += plant.fgr;
   segment.leafPointR.py = segment.leafPointR.cy = segment.ep2.cy;
-  segment.leafSpanCf.l = distance( segment.bp1, segment.leafPointR );
-  segment.leafSpanU.l = distance( segment.ep2, segment.leafPointR );
+  segment.leafSpanR.l = distance( segment.bp2, segment.leafPointR );
+  segment.leafSpanRs.l = distance( segment.ep2, segment.leafPointR );
 }
+
+//displays leaves
+
+function displayLeaves( plant, segment ) {
+  var p1x = segment.bp2.cx;
+  var p1y = segment.bp2.cy;
+  var p2x = segment.leafPointR.cx;
+  var p2y = segment.leafPointR.cy;
+  var mpx = ( p1x + p2x ) / 2;  // mid point x
+  var mpy = ( p1y + p2y ) / 2;  // mid point y
+  ctx.lineWidth = 0;
+  ctx.lineJoin = "round";
+  ctx.lineCap = "round";
+  ctx.strokeStyle = "darkgreen";
+  //leaf top
+  ctx.fillStyle = "darkgreen";
+  var ah = 0.2;  // arc height
+  var ccpx = mpx + ( p2y - p1y ) * ah;  // curve control point x
+  var ccpy = mpy + ( p1x - p2x ) * ah;  // curve control point y
+  ctx.beginPath();
+  ctx.moveTo(p1x,p1y);
+  ctx.quadraticCurveTo(ccpx,ccpy,p2x,p2y);
+  ctx.stroke();
+  ctx.fill();
+  //leaf bottom
+  ctx.fillStyle = "green";
+  ah = 0.3;  // arc height
+  ccpx = mpx + ( p1y - p2y ) * ah;  // curve control point x
+  ccpy = mpy + ( p2x - p1x ) * ah;  // curve control point y
+  ctx.beginPath();
+  ctx.moveTo(p1x,p1y);
+  ctx.quadraticCurveTo(ccpx,ccpy,p2x,p2y);
+  ctx.stroke();
+  ctx.fill();
+}
+
 
 
 
