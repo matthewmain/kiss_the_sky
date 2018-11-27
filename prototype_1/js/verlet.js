@@ -22,14 +22,15 @@ var skins = [], skinCount = 0;
 var time = 0;  // time as frame count
 
 ///settings
-var gravity = 0.01;  // (rate of y-velocity increase per frame)
-var rigidity = 15;  // (iterations of position-accuracy refinement)
+var gravity = 0.01;  // (rate of y-velocity increase per frame per point mass of 1)
+var rigidity = 10;  // global span rigidity (as iterations of position accuracy refinement)
 var friction = 0.999;  // (proportion of previous velocity after frame refresh)
 var bounceLoss = 0.9;  // (proportion of previous velocity after bouncing)
 var skidLoss = 0.8;  // (proportion of previous velocity if touching the ground)
-var viewSkins = true; // (skin visibility)
+var viewPoints = true;  // (point visibility)
 var viewSpans = true;  // (span visibility)
-var viewScaffolding = false; // (scaffolding visibility)
+var viewScaffolding = true; // (scaffolding visibility)
+var viewSkins = true; // (skin visibility)
 var breeze = 0.2;  // breeziness level (applied as brief left & right gusts)
 
 
@@ -44,6 +45,7 @@ function Point(current_x, current_y, materiality="material") {  // materiality c
   this.cy = current_y; 
   this.px = this.cx;  // previous x value
   this.py = this.cy;  // previous y value
+  this.mass = 1;  // (as ratio of gravity)
   this.materiality = materiality;
   this.fixed = false;
   this.id = pointCount;
@@ -55,7 +57,9 @@ function Span(point_1, point_2, visibility="visible") {  // visibility can be "v
   this.p1 = point_1;
   this.p2 = point_2;
   this.l = distance(this.p1,this.p2); // length
+  this.strength = 1;  // (as ratio of rigidity)
   this.visibility = visibility;
+  this.color = "darkgreen";
   this.id = spanCount;
   spanCount += 1;
 }
@@ -63,7 +67,7 @@ function Span(point_1, point_2, visibility="visible") {  // visibility can be "v
 ///skins constructor
 function Skin(points_array,color) {
   this.pa = points_array;  // an array of points for skin outline path
-  this.c = color;
+  this.color = color;
   this.id = skinCount;
   skinCount += 1;
 }
@@ -126,6 +130,13 @@ function smp(span) {
   return { x: mx, y: my};
 }
 
+///removes a span by id
+function removeSpan(id) {
+  for( var i = 0; i < spans.length-1; i++){ 
+    if ( spans[i].id === id) { spans.splice(i, 1); }
+  }
+}
+
 ///creates a point object instance
 function addPt(xPercent,yPercent,materiality="material") {
   points.push( new Point( xValFromPct(xPercent), yValFromPct(yPercent), materiality ) );
@@ -160,17 +171,18 @@ function updatePoints() {
       p.py = p.cy;  // updates previous y as current y
       p.cx += xv;  // updates current x with new velocity
       p.cy += yv;  // updates current y with new velocity
-      p.cy += gravity;  // add gravity to y
-      if (time % Tool.rib( 100, 200 ) === 0) { p.cx += Tool.rfb( -breeze, breeze ); }  // apply breeze to x
+      p.cy += gravity * p.mass;  // add gravity to y
+      if (time % Tl.rib( 100, 200 ) === 0) { p.cx += Tl.rfb( -breeze, breeze ); }  // apply breeze to x
     }
   } 
 }
 
-///inverts velocity for bounce if a point reaches a wall
-function bounce() {
+///applies constrains
+function applyConstraints( currentIteration ) {
   for (var i=0; i<points.length; i++) {
     var p = points[i];
-    if (p.materiality == "material") {
+    //wall constraints (inverts velocity if point moves beyond a canvas edge)
+    if (p.materiality === "material") {
       if (p.cx > canvas.width) {
         p.cx = canvas.width;
         p.px = p.cx + (p.cx - p.px) * bounceLoss;
@@ -191,59 +203,80 @@ function bounce() {
   }
 }
 
-///sets spans between points
-function updateSpans() {
+///updates span positions and adjusts associated points
+function updateSpans( currentIteration ) {
   for (var i=0; i<spans.length; i++) {
-    var s = spans[i];
-    var dx = s.p2.cx - s.p1.cx;  // distance between x values
-    var	dy = s.p2.cy - s.p1.cy;  // distance between y values
-    var d = Math.sqrt( dx*dx + dy*dy);  // distance between the points
-    var	r = s.l / d;	// ratio (span length over distance between points)
-    var	mx = s.p1.cx + dx / 2;  // midpoint between x values 
-    var my = s.p1.cy + dy / 2;  // midpoint between y values
-    var ox = dx / 2 * r;  // offset of each x value (compared to span length)
-    var oy = dy / 2 * r;  // offset of each y value (compared to span length)
-    if (!s.p1.fixed) {
-      s.p1.cx = mx - ox;  // updates span's first point x value
-      s.p1.cy = my - oy;  // updates span's first point y value
-    }
-    if (!s.p2.fixed) {
-      s.p2.cx = mx + ox;  // updates span's second point x value
-      s.p2.cy = my + oy;  // updates span's second point y value
+    var thisSpanIterations = Math.round( rigidity * spans[i].strength );
+    if ( currentIteration <= thisSpanIterations ) {
+      var s = spans[i];
+      var dx = s.p2.cx - s.p1.cx;  // distance between x values
+      var	dy = s.p2.cy - s.p1.cy;  // distance between y values
+      var d = Math.sqrt( dx*dx + dy*dy);  // distance between the points
+      var	r = s.l / d;	// ratio (span length over distance between points)
+      var	mx = s.p1.cx + dx / 2;  // midpoint between x values 
+      var my = s.p1.cy + dy / 2;  // midpoint between y values
+      var ox = dx / 2 * r;  // offset of each x value (compared to span length)
+      var oy = dy / 2 * r;  // offset of each y value (compared to span length)
+      if (!s.p1.fixed) {
+        s.p1.cx = mx - ox;  // updates span's first point x value
+        s.p1.cy = my - oy;  // updates span's first point y value
+      }
+      if (!s.p2.fixed) {
+        s.p2.cx = mx + ox;  // updates span's second point x value
+        s.p2.cy = my + oy;  // updates span's second point y value
+      }
     }
   }
 }
 
-///refines point positions for position accuracy & shape rigidity
+///refines points for position accuracy & shape rigidity by updating spans and applying constraints iteratively
 function refinePositions() {
-  for (var i=0; i<rigidity; i++) {
-    bounce();
-    updateSpans();
+  var requiredIterations = rigidity;
+  for (var i=0; i<spans.length; i++) {
+    var thisSpanIterations = Math.round( rigidity * spans[i].strength );
+    if ( thisSpanIterations > requiredIterations ) {
+      requiredIterations = thisSpanIterations;
+    }
+  }
+  for (var i=0; i<requiredIterations; i++) {
+    updateSpans(i);
+    applyConstraints(i);
+  }
+}
+
+///displays points
+function renderPoints() {
+  for (var i=0; i<points.length; i++) {
+    var p = points[i];
+    ctx.beginPath();
+    ctx.fillStyle = "blue";
+    ctx.arc( p.cx, p.cy, 3, 0 , Math.PI*2 );
+    ctx.fill(); 
   }
 }
 
 ///displays spans
 function renderSpans() {
-  ctx.beginPath();
   for (var i=0; i<spans.length; i++) {
     var s = spans[i];
     if (s.visibility == "visible") {
-      ctx.strikeWidth="1px";
-      ctx.strokeStyle="darkgreen";
+      ctx.beginPath();
+      ctx.lineWidth = 1;
+      ctx.strokeStyle = s.color;
       ctx.moveTo(s.p1.cx, s.p1.cy);
       ctx.lineTo(s.p2.cx, s.p2.cy);
+      ctx.stroke(); 
     }
   }
-  ctx.stroke(); 
 }
 
-///displays scaffolding & binding spans
+///displays scaffolding & binding spans (i.e., "hidden" spans)
 function renderScaffolding() {
   ctx.beginPath();
   for (var i=0; i<spans.length; i++) {
     var s = spans[i];
     if (s.visibility == "hidden") {
-  ctx.strokeStyle="pink";
+      ctx.strokeStyle="pink";
       ctx.moveTo(s.p1.cx, s.p1.cy);
       ctx.lineTo(s.p2.cx, s.p2.cy);
     }
@@ -256,11 +289,11 @@ function renderSkins() {
   for(var i=0; i<skins.length; i++) {
     var s = skins[i];
     ctx.beginPath();
-    ctx.strokeStyle = s.c;
+    ctx.strokeStyle = s.color;
     ctx.lineWidth = 0;
     ctx.lineJoin = "round";
     ctx.lineCap = "round";
-    ctx.fillStyle = s.c;
+    ctx.fillStyle = s.color;
     ctx.moveTo(s.pa[0].cx, s.pa[0].cy);
     for(var j=1; j<s.pa.length; j++) { ctx.lineTo(s.pa[j].cx, s.pa[j].cy); }
     ctx.lineTo(s.pa[0].cx, s.pa[0].cy);
@@ -278,6 +311,7 @@ function clearCanvas() {
 function renderImages() {
   if ( viewSkins ) { renderSkins(); }
   if ( viewSpans ) { renderSpans(); }
+  if ( viewPoints ) { renderPoints(); }
   if ( viewScaffolding ) { renderScaffolding(); }
 }
 
