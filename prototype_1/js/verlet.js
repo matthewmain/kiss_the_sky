@@ -207,7 +207,7 @@ function applyConstraints( currentIteration ) {
 function updateSpans( currentIteration ) {
   for (var i=0; i<spans.length; i++) {
     var thisSpanIterations = Math.round( rigidity * spans[i].strength );
-    if ( currentIteration <= thisSpanIterations ) {
+    if ( currentIteration+1 <= thisSpanIterations ) {
       var s = spans[i];
       var dx = s.p2.cx - s.p1.cx;  // distance between x values
       var	dy = s.p2.cy - s.p1.cy;  // distance between y values
@@ -275,7 +275,7 @@ function renderScaffolding() {
   ctx.beginPath();
   for (var i=0; i<spans.length; i++) {
     var s = spans[i];
-    if (s.visibility == "hidden") {
+    if (s.visibility === "hidden") {
       ctx.strokeStyle="pink";
       ctx.moveTo(s.p1.cx, s.p1.cy);
       ctx.lineTo(s.p2.cx, s.p2.cy);
