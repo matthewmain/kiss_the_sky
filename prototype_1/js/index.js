@@ -12,6 +12,7 @@
 
 ////---INITIATION---////
 
+
 var plants = [], plantCount = 0;
 
 
@@ -19,17 +20,10 @@ var plants = [], plantCount = 0;
 
 ////---(TESTING)---////
 
-for (i=0;i<1;i++) {
+
+for ( var i=0; i<25; i++ ) {
   createPlant();
 }
-
-// // point mass and span strength testing
-// var p1 = addPt(5,0); p1.mass = 1; p1.fixed = true;
-// var p2 = addPt(5,5); p2.mass = 50000;
-// var s1 = addSp(p1.id,p2.id); s1.strength = 0.3;
-// var p3 = addPt(10,0); p3.mass = 1; p3.fixed = true;
-// var p4 = addPt(10,5); p4.mass = 50000;
-// var s2 = addSp(p3.id,p4.id); s2.strength = 0.1;
 
 
 
@@ -42,13 +36,15 @@ function Plant( originX ) {
   this.id = plantCount;
   this.segments = []; this.segmentCount = 0;
   //settings
-  this.originX = 50;//originX;
-  this.forwardGrowthRate = gravity * 30;//5;//Tl.rfb(28,32);  // (rate of cross spans increase per frame)
-  this.outwardGrowthRate = this.forwardGrowthRate * Tl.rfb( 0.18, 0.22 );  // (rate forward span widens per frame)
-  this.maxSegmentWidth = 50;//Tl.rfb(11,13);  // maximum segment width (in pixels)
-  this.maxTotalSegments = 8;//Tl.rib(13,17);  // maximum total number of segments
-  this.maxLeaflength = this.maxSegmentWidth * Tl.rfb( 5, 7 );  // maximum leaf length at maturity
-  this.leafGrowthRate = this.forwardGrowthRate * Tl.rfb( 1.4, 1.6 );  // leaf growth rate
+  this.originX = originX;
+  this.forwardGrowthRate = gravity * Tl.rfb(19,21);  // (rate of cross spans increase per frame)
+  this.outwardGrowthRate = this.forwardGrowthRate * Tl.rfb(0.18,0.22);  // (rate forward span widens per frame)
+  this.maxSegmentWidth = Tl.rfb(11,13);  // maximum segment width (in pixels)
+  this.maxTotalSegments = Tl.rib(13,20);  // maximum total number of segments
+  this.firstLeafSegment = Tl.rib(3,6);  // (segment on which first leaf set grows)
+  this.leafFrequency = Tl.rib(2,3);  // (number of segments until next leaf set)
+  this.maxLeaflength = this.maxSegmentWidth * Tl.rfb(5,7);  // maximum leaf length at maturity
+  this.leafGrowthRate = this.forwardGrowthRate * Tl.rfb(1.4,1.6);  // leaf growth rate
   //base segment
   this.ptB1 = addPt( this.originX - 0.1, 100 );  // base point 1
   this.ptB2 = addPt( this.originX + 0.1, 100 );  // base point 2
@@ -67,33 +63,50 @@ function Segment( plant, parentSegment, basePoint1, basePoint2 ) {
   this.parentSegment = parentSegment;
   this.isBaseSegment = false; if (this.parentSegment === null) { this.isBaseSegment = true; }
   this.hasLeaves = false;
-  this.hasLeafConstraints = false;
+  this.hasLeafScaffolding = false;
   //settings
   this.forwardGrowthRateVariation = Tl.rfb(0.95,1.05);//(0.95,1.05);  // forward growth rate variation
-  //points
+  this.mass = 1;  // mass of the segment stalk portion ( divided between the two extension points)
+  this.strength = 1.5;  // as multiple of global rigidity (higher values effect performance)
+  //base points
   this.ptB1 = basePoint1;  // base point 1
   this.ptB2 = basePoint2;  // base point 2
-  var originX = (this.ptB1.cx + this.ptB2.cx) / 2;  // center of base points x values
-  var originY = (this.ptB1.cy + this.ptB2.cy) / 2;  // center of base points y values
-  this.ptE1 = addPt( pctFromXVal(originX) - 0.1, pctFromYVal(originY) - 0.1 );  // extension point 1
-  this.ptE2 = addPt( pctFromXVal(originX) + 0.1, pctFromYVal(originY) - 0.1 );  // extension point 2
-  this.ptLf1;  // leaf point 1 (leaf tip)
-  this.ptLf2;  // leaf point 2 (leaf tip)  
+  //extension points
+  var originX = ( this.ptB1.cx + this.ptB2.cx ) / 2;  // center of base points x values
+  var originY = ( this.ptB1.cy + this.ptB2.cy ) / 2;  // center of base points y values
+  this.ptE1 = addPt( pctFromXVal( originX ) - 0.1, pctFromYVal( originY ) - 0.1 );  // extension point 1
+  this.ptE2 = addPt( pctFromXVal( originX ) + 0.1, pctFromYVal( originY ) - 0.1 );  // extension point 2
+  this.ptE1.mass = this.mass / 2;
+  this.ptE2.mass = this.mass / 2;
   //spans
   this.spL = addSp( this.ptB1.id, this.ptE1.id );  // left span
   this.spR = addSp( this.ptB2.id, this.ptE2.id );  // right span
   this.spF = addSp( this.ptE1.id, this.ptE2.id );  // forward span
   this.spCd = addSp( this.ptE1.id, this.ptB2.id );  // downward (l to r) cross span
   this.spCu = addSp( this.ptB1.id, this.ptE2.id );  // new upward (l to r) cross span
+  this.spL.rigidity = this.strength;
+  this.spR.rigidity = this.strength;
+  this.spF.rigidity = this.strength;
+  this.spCd.rigidity = this.strength;
+  this.spCu.rigidity = this.strength;
+  //base segment
   if (!this.isBaseSegment) {
     this.spCdP = addSp( this.ptE1.id, this.parentSegment.ptB2.id ); // downward (l to r) cross span to parent
     this.spCuP = addSp( this.parentSegment.ptB1.id, this.ptE2.id ); // upward (l to r) cross span to parent
+    this.spCdP.rigidity = this.strength;
+    this.spCdP.rigidity = this.strength;
   }
-  this.spLf1;  // leaf 1 Span
-  this.spLf2;  // leaf 2 Span
+  //leaves
+  this.ptLf1 = null;  // leaf point 1 (leaf tip)
+  this.ptLf2 = null;  // leaf point 2 (leaf tip)  
+  this.spLf1 = null;  // leaf 1 Span
+  this.spLf2 = null;  // leaf 2 Span
   //skins
-  addSk( [ this.ptE1.id, this.ptE2.id, this.ptB2.id, this.ptB1.id ], "green" );
+  addSk( [ this.ptE1.id, this.ptE2.id, this.ptB2.id, this.ptB1.id ], "darkgreen" );
 }
+
+
+
 
 ////---FUNCTIONS---////
 
@@ -159,41 +172,76 @@ function readyForChildSegment( plant, segment ) {
          plant.segments.length < plant.maxTotalSegments;
 }
 
-
-
-
-
-
-
-
-
-
-
-
 //generates leaves
 function generateLeavesWhenReady ( plant, segment ) {
-  if ( segment.id>2 && segment.spF.l>plant.maxSegmentWidth*0.1 ) {
-    var fsmp = smp( segment.spF );  // forward span mid point ( { x: <value>, y: <value> } )
-    segment.ptLf1 = addPt( pctFromXVal( fsmp.x ), pctFromYVal( fsmp.y ) );  // leaf 1 tip point (left)
-    segment.ptLf2 = addPt( pctFromXVal( fsmp.x ), pctFromYVal( fsmp.y ) );  // leaf 2 tip point (right)
-    segment.spLf1 = addSp( segment.ptB1.id, segment.ptLf1.id );  // leaf 1 span (left)
-    segment.spLf2 = addSp( segment.ptB2.id, segment.ptLf2.id );  // leaf 2 span (right)
-    segment.leafTipTetherSpan = addSp( segment.ptLf1.id, segment.ptLf2.id );  // leaf tip tether span
-    segment.hasLeaves = true;
+  var p = plant;
+  var s = segment;
+  if ( s.id >= p.firstLeafSegment && s.id % p.leafFrequency === 0 && s.spF.l > p.maxSegmentWidth * 0.1 ) {
+    var fsmp = smp( s.spF );  // forward span mid point ( { x: <value>, y: <value> } )
+    s.ptLf1 = addPt( pctFromXVal( fsmp.x ), pctFromYVal( fsmp.y ) );  // leaf 1 tip point (left)
+    s.ptLf2 = addPt( pctFromXVal( fsmp.x ), pctFromYVal( fsmp.y ) );  // leaf 2 tip point (right)
+    s.spLf1 = addSp( s.ptB1.id, s.ptLf1.id );  // leaf 1 span (left)
+    s.spLf2 = addSp( s.ptB2.id, s.ptLf2.id );  // leaf 2 span (right)
+    s.leafTipsTetherSpan = addSp( s.ptLf1.id, s.ptLf2.id );  // leaf tip tether span
+    s.hasLeaves = true;
   }
 }
 
 //grows leaves
 function growLeaves( plant, segment ) {
-  if ( segment.spLf1.l < plant.maxLeaflength ) {
-    segment.spLf1.l = segment.spLf2.l += plant.leafGrowthRate;
-    if ( segment.spF.l > plant.maxSegmentWidth*0.5 && !segment.hasLeafConstraints ) {
-      removeSpan(segment.leafTipTetherSpan.id);
+  var p = plant;
+  var s = segment;
+  if ( s.spLf1.l < p.maxLeaflength ) {
+    s.spLf1.l = s.spLf2.l += p.leafGrowthRate;
+    if ( s.spF.l > p.maxSegmentWidth*0.6 && !s.hasLeafScaffolding ) {
+      //remove leaf tips tether
+      removeSpan(s.leafTipsTetherSpan.id);
+      //leaf-unfold boosters
+      s.ptLf1.cx -= gravity * 100;
+      s.ptLf2.cx += gravity * 100;
+      //points
+      //(leaf 1)
+      var x = s.ptE1.cx + ( s.ptE1.cx - s.ptE2.cx ) * 0.5;
+      var y = s.ptE1.cy + ( s.ptE1.cy - s.ptE2.cy ) * 0.5;
+      s.ptLf1ScA = addPt( pctFromXVal( x ), pctFromXVal( y ), "immaterial" ); s.ptLf1ScA.mass = 0;
+      x = ( s.ptLf1.cx + s.ptLf1ScA.cx ) / 2 ;
+      y = ( s.ptLf1.cy + s.ptLf1ScA.cy ) / 2 ;
+      s.ptLf1ScB = addPt( pctFromXVal( x ), pctFromXVal( y ), "immaterial" ); s.ptLf1ScB.mass = 0;
+      //(leaf 2)
+      x = s.ptE2.cx + ( s.ptE2.cx - s.ptE1.cx ) * 0.5;
+      y = s.ptE2.cy + ( s.ptE2.cy - s.ptE1.cy ) * 0.5;
+      s.ptLf2ScA = addPt( pctFromXVal( x ), pctFromXVal( y ), "immaterial" ); s.ptLf2ScA.mass = 0;
+      x = ( s.ptLf2.cx + s.ptLf2ScA.cx ) / 2 ;
+      y = ( s.ptLf2.cy + s.ptLf2ScA.cy ) / 2 ;
+      s.ptLf2ScB = addPt( pctFromXVal( x ), pctFromXVal( y ), "immaterial" ); s.ptLf2ScB.mass = 0;
+      //spans
+      //(leaf 1)
+      s.spLf1ScA = addSp( s.ptE1.id, s.ptLf1ScA.id, "hidden" );
+      s.spLf1ScB = addSp( s.ptB1.id, s.ptLf1ScA.id, "hidden" ); 
+      s.spLf1ScC = addSp( s.ptLf1ScA.id, s.ptLf1ScB.id, "hidden" ); 
+      s.spLf1ScD = addSp( s.ptLf1ScB.id, s.ptLf1.id, "hidden" ); 
+      //(leaf 2)
+      s.spLf2ScA = addSp( s.ptE2.id, s.ptLf2ScA.id, "hidden" ); 
+      s.spLf2ScB = addSp( s.ptB2.id, s.ptLf2ScA.id, "hidden" ); 
+      s.spLf2ScC = addSp( s.ptLf2ScA.id, s.ptLf2ScB.id, "hidden" ); 
+      s.spLf2ScD = addSp( s.ptLf2ScB.id, s.ptLf2.id, "hidden" );
+      s.hasLeafScaffolding = true;
+    }
+    if ( s.hasLeafScaffolding ) {
+      //scaffolding extension
+      //(leaf 1)
+      s.spLf1ScA.l += p.leafGrowthRate * 1.25;
+      s.spLf1ScB.l += p.leafGrowthRate * 1.5;
+      s.spLf1ScC.l += p.leafGrowthRate * 0.06;
+      s.spLf1ScD.l += p.leafGrowthRate * 0.06;
+      //(leaf 2)
+      s.spLf2ScA.l += p.leafGrowthRate * 1.25;
+      s.spLf2ScB.l += p.leafGrowthRate * 1.5;
+      s.spLf2ScC.l += p.leafGrowthRate * 0.06;
+      s.spLf2ScD.l += p.leafGrowthRate * 0.06;
     }
   }
 }
-
-console.log(plants[0]);
 
 //displays leaf
 function displayLeaf( plant, leafSpan ) {
@@ -232,18 +280,6 @@ function displayLeaves( plant, segment ) {
   displayLeaf( plant, segment.spLf1 );
   displayLeaf( plant, segment.spLf2 );
 }
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
