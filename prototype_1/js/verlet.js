@@ -65,7 +65,7 @@ function Span(point_1, point_2, visibility="visible") {  // visibility can be "v
 
 ///skins constructor
 function Skin(points_array,color) {
-  this.pa = points_array;  // an array of points for skin outline path
+  this.points = points_array;  // an array of points for skin outline path
   this.color = color;
   this.id = skinCount;
   skinCount += 1;
@@ -293,9 +293,9 @@ function renderSkins() {
     ctx.lineJoin = "round";
     ctx.lineCap = "round";
     ctx.fillStyle = s.color;
-    ctx.moveTo(s.pa[0].cx, s.pa[0].cy);
-    for(var j=1; j<s.pa.length; j++) { ctx.lineTo(s.pa[j].cx, s.pa[j].cy); }
-    ctx.lineTo(s.pa[0].cx, s.pa[0].cy);
+    ctx.moveTo(s.points[0].cx, s.points[0].cy);
+    for(var j=1; j<s.points.length; j++) { ctx.lineTo(s.points[j].cx, s.points[j].cy); }
+    ctx.lineTo(s.points[0].cx, s.points[0].cy);
     ctx.stroke();
     ctx.fill();  
   }
@@ -308,7 +308,7 @@ function clearCanvas() {
 
 ///renders all visible components
 function renderImages() {
-  if ( viewSkins ) { renderSkins(); }
+  //if ( viewSkins ) { renderSkins(); }  // disabled here so plants can be rendered sequentially in plants.js
   if ( viewSpans ) { renderSpans(); }
   if ( viewPoints ) { renderPoints(); }
   if ( viewScaffolding ) { renderScaffolding(); }
