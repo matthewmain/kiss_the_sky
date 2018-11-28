@@ -160,7 +160,7 @@ function growPlants() {
       //generates new segment
       if ( readyForChildSegment( plant, segment ) ) { createSegment( plant, segment, segment.ptE1, segment.ptE2 ); }
       //displays stalks and leaves
-      renderStalks( segment.skins );
+      renderStalks( plant, segment );
       if ( segment.hasLeaves ) { renderLeaves( plant, segment ); }
     }
   }
@@ -258,7 +258,7 @@ function renderLeaf( plant, leafSpan ) {
   ctx.lineWidth = 2;
   ctx.lineJoin = "round";
   ctx.lineCap = "round";
-  ctx.strokeStyle = "darkgreen";
+  ctx.strokeStyle = "#003000";
   ctx.fillStyle = "green";
   var ah = 0.35;  // arc height
   //leaf top
@@ -277,6 +277,14 @@ function renderLeaf( plant, leafSpan ) {
   ctx.quadraticCurveTo(ccpx,ccpy,p2x,p2y);
   ctx.stroke();
   ctx.fill();
+  //leaf center
+  ctx.beginPath();
+  ctx.lineWidth = 1;
+  ctx.strokeStyle = "#007000";
+  ctx.moveTo(p1x,p1y);
+  ctx.lineTo(p2x,p2y);
+  ctx.stroke();
+
 }
 
 //displays leaves
@@ -286,16 +294,34 @@ function renderLeaves( plant, segment ) {
 }
 
 //renders plants sequentially
-function renderStalks( stalkSkins ) {
-  for (var i=0; i<stalkSkins.length; i++) {
-    var s = stalkSkins[i];
+function renderStalks( plant, segment ) {
+  for (var i=0; i<segment.skins.length; i++) {
+    var s = segment.skins[i];
+    //fills
     ctx.beginPath();
     ctx.fillStyle = s.color;
+    ctx.lineWidth = 1;
+    ctx.strokeStyle = "darkgreen";
     ctx.moveTo(s.points[0].cx, s.points[0].cy);
     for(var j=1; j<s.points.length; j++) { ctx.lineTo(s.points[j].cx, s.points[j].cy); }
     ctx.lineTo(s.points[0].cx, s.points[0].cy);
     ctx.stroke();
     ctx.fill(); 
+    //outlines
+    ctx.beginPath();
+    ctx.lineWidth = 1;
+    ctx.strokeStyle = "#2A2000";
+    ctx.moveTo(s.points[3].cx, s.points[3].cy);
+    ctx.lineTo(s.points[0].cx, s.points[0].cy);
+    ctx.moveTo(s.points[2].cx, s.points[2].cy);
+    ctx.lineTo(s.points[1].cx, s.points[1].cy);
+    ctx.stroke();
+    if ( !segment.hasChildSegment ) {
+      ctx.beginPath();
+      ctx.moveTo(s.points[3].cx, s.points[3].cy);
+      ctx.lineTo(s.points[2].cx, s.points[2].cy);
+      ctx.stroke();
+    }
   }
 }
 
