@@ -38,5 +38,5 @@
 
 - [ ] energy: storage, usage for growth rate
 
-- [?] add ability to slow scene without affecting the physics--possibly by rendering based on time instead of screen refresh? possibly, but better if can keep same frame rate...
+- [ ] (?) add ability to slow scene without affecting the physics--possibly by rendering based on time instead of screen refresh, but probably better if can keep same frame rate...
 
