@@ -27,9 +27,9 @@ var rigidity = 10;  // global span rigidity (as iterations of position accuracy 
 var friction = 0.999;  // (proportion of previous velocity after frame refresh)
 var bounceLoss = 0.9;  // (proportion of previous velocity after bouncing)
 var skidLoss = 0.8;  // (proportion of previous velocity if touching the ground)
-var viewPoints = true;  // (point visibility)
-var viewSpans = true;  // (span visibility)
-var viewScaffolding = true; // (scaffolding visibility)
+var viewPoints = false;  // (point visibility)
+var viewSpans = false;  // (span visibility)
+var viewScaffolding = false; // (scaffolding visibility)
 var viewSkins = true; // (skin visibility)
 var breeze = 0.2;  // breeziness level (applied as brief left & right gusts)
 
@@ -59,7 +59,6 @@ function Span(point_1, point_2, visibility="visible") {  // visibility can be "v
   this.l = distance(this.p1,this.p2); // length
   this.strength = 1;  // (as ratio of rigidity)
   this.visibility = visibility;
-  this.color = "darkgreen";
   this.id = spanCount;
   spanCount += 1;
 }
@@ -238,8 +237,8 @@ function refinePositions() {
       requiredIterations = thisSpanIterations;
     }
   }
-  for (var i=0; i<requiredIterations; i++) {
-    updateSpans(i);
+  for (var j=0; j<requiredIterations; j++) {
+    updateSpans(j);
     applyConstraints(i);
   }
 }
@@ -262,7 +261,7 @@ function renderSpans() {
     if (s.visibility == "visible") {
       ctx.beginPath();
       ctx.lineWidth = 1;
-      ctx.strokeStyle = s.color;
+      ctx.strokeStyle = "blue";
       ctx.moveTo(s.p1.cx, s.p1.cy);
       ctx.lineTo(s.p2.cx, s.p2.cy);
       ctx.stroke(); 
