@@ -21,10 +21,9 @@ var plants = [], plantCount = 0;
 ////---(TESTING)---////
 
 
-for ( var i=0; i<25; i++ ) {
+for ( var i=0; i<20; i++ ) {
   createPlant();
 }
-
 
 
 
@@ -37,11 +36,11 @@ function Plant( originX ) {
   this.segments = []; this.segmentCount = 0;
   //settings
   this.originX = originX;
-  this.forwardGrowthRate = gravity * Tl.rfb(19,21);  // (rate of cross spans increase per frame)
+  this.forwardGrowthRate = gravity * Tl.rfb(18,22);  // (rate of cross spans increase per frame)
   this.outwardGrowthRate = this.forwardGrowthRate * Tl.rfb(0.18,0.22);  // (rate forward span widens per frame)
   this.maxSegmentWidth = Tl.rfb(11,13);  // maximum segment width (in pixels)
   this.maxTotalSegments = Tl.rib(13,20);  // maximum total number of segments
-  this.firstLeafSegment = Tl.rib(3,6);  // (segment on which first leaf set grows)
+  this.firstLeafSegment = Tl.rib(2,4);  // (segment on which first leaf set grows)
   this.leafFrequency = Tl.rib(2,3);  // (number of segments until next leaf set)
   this.maxLeaflength = this.maxSegmentWidth * Tl.rfb(5,7);  // maximum leaf length at maturity
   this.leafGrowthRate = this.forwardGrowthRate * Tl.rfb(1.4,1.6);  // leaf growth rate
@@ -102,7 +101,8 @@ function Segment( plant, parentSegment, basePoint1, basePoint2 ) {
   this.spLf1 = null;  // leaf 1 Span
   this.spLf2 = null;  // leaf 2 Span
   //skins
-  addSk( [ this.ptE1.id, this.ptE2.id, this.ptB2.id, this.ptB1.id ], "darkgreen" );
+  this.skins = [];
+  this.skins.push( addSk( [ this.ptE1.id, this.ptE2.id, this.ptB2.id, this.ptB1.id ], "darkgreen" ) );
 }
 
 
@@ -120,7 +120,7 @@ function createPlant() {
 //creates a new segment
 function createSegment( plant, parentSegment, basePoint1, basePoint2 ) {
   plant.segmentCount++;
-  plant.segments.push( new Segment( plant, parentSegment, basePoint1, basePoint2 ) );
+  plant.segments.unshift( new Segment( plant, parentSegment, basePoint1, basePoint2 ) );
   if (parentSegment !== null) {
     parentSegment.childSegment = plant.segments[plant.segments.length-1];
     parentSegment.hasChildSegment = true;
@@ -159,8 +159,9 @@ function growPlants() {
       }
       //generates new segment
       if ( readyForChildSegment( plant, segment ) ) { createSegment( plant, segment, segment.ptE1, segment.ptE2 ); }
-      //displays leaves
-      if ( segment.hasLeaves ) { displayLeaves( plant, segment ); }
+      //displays stalks and leaves
+      renderStalks( plant, segment );
+      if ( segment.hasLeaves ) { renderLeaves( plant, segment ); }
     }
   }
 }
@@ -176,10 +177,13 @@ function readyForChildSegment( plant, segment ) {
 function generateLeavesWhenReady ( plant, segment ) {
   var p = plant;
   var s = segment;
-  if ( s.id >= p.firstLeafSegment && s.id % p.leafFrequency === 0 && s.spF.l > p.maxSegmentWidth * 0.1 ) {
+  if (  s.id >= p.firstLeafSegment && 
+        s.id % p.leafFrequency === 0 && 
+        s.spF.l > p.maxSegmentWidth * 0.1 ||
+        s.id === p.maxTotalSegments-1 ) {
     var fsmp = smp( s.spF );  // forward span mid point ( { x: <value>, y: <value> } )
-    s.ptLf1 = addPt( pctFromXVal( fsmp.x ), pctFromYVal( fsmp.y ) );  // leaf 1 tip point (left)
-    s.ptLf2 = addPt( pctFromXVal( fsmp.x ), pctFromYVal( fsmp.y ) );  // leaf 2 tip point (right)
+    s.ptLf1 = addPt( pctFromXVal( fsmp.x ), pctFromYVal( fsmp.y - 1 ) );  // leaf 1 tip point (left)
+    s.ptLf2 = addPt( pctFromXVal( fsmp.x ), pctFromYVal( fsmp.y - 1 ) );  // leaf 2 tip point (right)
     s.spLf1 = addSp( s.ptB1.id, s.ptLf1.id );  // leaf 1 span (left)
     s.spLf2 = addSp( s.ptB2.id, s.ptLf2.id );  // leaf 2 span (right)
     s.leafTipsTetherSpan = addSp( s.ptLf1.id, s.ptLf2.id );  // leaf tip tether span
@@ -244,17 +248,17 @@ function growLeaves( plant, segment ) {
 }
 
 //displays leaf
-function displayLeaf( plant, leafSpan ) {
+function renderLeaf( plant, leafSpan ) {
   var p1x = leafSpan.p1.cx;
   var p1y = leafSpan.p1.cy;
   var p2x = leafSpan.p2.cx;
   var p2y = leafSpan.p2.cy;
   var mpx = ( p1x + p2x ) / 2;  // mid point x
   var mpy = ( p1y + p2y ) / 2;  // mid point y
-  ctx.lineWidth = 0;
+  ctx.lineWidth = 2;
   ctx.lineJoin = "round";
   ctx.lineCap = "round";
-  ctx.strokeStyle = "darkgreen";
+  ctx.strokeStyle = "#003000";
   ctx.fillStyle = "green";
   var ah = 0.35;  // arc height
   //leaf top
@@ -273,12 +277,52 @@ function displayLeaf( plant, leafSpan ) {
   ctx.quadraticCurveTo(ccpx,ccpy,p2x,p2y);
   ctx.stroke();
   ctx.fill();
+  //leaf center
+  ctx.beginPath();
+  ctx.lineWidth = 1;
+  ctx.strokeStyle = "#007000";
+  ctx.moveTo(p1x,p1y);
+  ctx.lineTo(p2x,p2y);
+  ctx.stroke();
+
 }
 
 //displays leaves
-function displayLeaves( plant, segment ) {
-  displayLeaf( plant, segment.spLf1 );
-  displayLeaf( plant, segment.spLf2 );
+function renderLeaves( plant, segment ) {
+  renderLeaf( plant, segment.spLf1 );
+  renderLeaf( plant, segment.spLf2 );
+}
+
+//renders plants sequentially
+function renderStalks( plant, segment ) {
+  for (var i=0; i<segment.skins.length; i++) {
+    var s = segment.skins[i];
+    //fills
+    ctx.beginPath();
+    ctx.fillStyle = s.color;
+    ctx.lineWidth = 1;
+    ctx.strokeStyle = "darkgreen";
+    ctx.moveTo(s.points[0].cx, s.points[0].cy);
+    for(var j=1; j<s.points.length; j++) { ctx.lineTo(s.points[j].cx, s.points[j].cy); }
+    ctx.lineTo(s.points[0].cx, s.points[0].cy);
+    ctx.stroke();
+    ctx.fill(); 
+    //outlines
+    ctx.beginPath();
+    ctx.lineWidth = 1;
+    ctx.strokeStyle = "#2A2000";
+    ctx.moveTo(s.points[3].cx, s.points[3].cy);
+    ctx.lineTo(s.points[0].cx, s.points[0].cy);
+    ctx.moveTo(s.points[2].cx, s.points[2].cy);
+    ctx.lineTo(s.points[1].cx, s.points[1].cy);
+    ctx.stroke();
+    if ( !segment.hasChildSegment ) {
+      ctx.beginPath();
+      ctx.moveTo(s.points[3].cx, s.points[3].cy);
+      ctx.lineTo(s.points[2].cx, s.points[2].cy);
+      ctx.stroke();
+    }
+  }
 }
 
 
