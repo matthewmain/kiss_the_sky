@@ -31,7 +31,7 @@ var viewPoints = false;  // (point visibility)
 var viewSpans = false;  // (span visibility)
 var viewScaffolding = false; // (scaffolding visibility)
 var viewSkins = true; // (skin visibility)
-var breeze = 0.2;  // breeziness level (applied as brief left & right gusts)
+var breeze = 0.5;  // breeziness level (applied as brief left & right gusts)
 
 
 

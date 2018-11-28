@@ -21,9 +21,42 @@ var plants = [], plantCount = 0;
 ////---(TESTING)---////
 
 
-for ( var i=0; i<20; i++ ) {
+for ( var i=0; i<3; i++ ) {
   createPlant();
 }
+
+
+
+/// LIGHT & SHADOWS /////////////////////////////////////////////////////////////////////////////////////////////////
+
+var sunRays = [], sunRayCount = 0;
+
+///sunray constructor
+function SunRay() {
+  this.id = sunRayCount;
+  this.intensity = 1;
+}
+
+//creates a hundred sunrays
+function createSunRays() {
+  for ( var i=0; i<100; i++ ) {
+    sunRayCount++;
+    sunRays.push( new SunRay() );
+  }
+}
+
+createSunRays();
+
+console.log(sunRays);
+
+
+
+
+
+
+
+
+
 
 
 
