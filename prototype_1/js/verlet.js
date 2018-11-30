@@ -19,7 +19,7 @@ var canvRatio = 0.8;  // canvas ratio, as canvas size to lowest of window width 
 var points = [], pointCount = 0;
 var spans = [], spanCount = 0;
 var skins = [], skinCount = 0;
-var time = 0;  // time as frame count
+var worldTime = 0;  // time as frame count
 
 ///settings
 var gravity = 0.01;  // (rate of y-velocity increase per frame per point mass of 1)
@@ -31,7 +31,7 @@ var viewPoints = false;  // (point visibility)
 var viewSpans = false;  // (span visibility)
 var viewScaffolding = false; // (scaffolding visibility)
 var viewSkins = true; // (skin visibility)
-var breeze = 0.5;  // breeziness level (applied as brief left & right gusts)
+var breeze = 0.4;  // breeziness level (applied as brief left & right gusts)
 
 
 
@@ -171,7 +171,7 @@ function updatePoints() {
       p.cx += xv;  // updates current x with new velocity
       p.cy += yv;  // updates current y with new velocity
       p.cy += gravity * p.mass;  // add gravity to y
-      if (time % Tl.rib( 100, 200 ) === 0) { p.cx += Tl.rfb( -breeze, breeze ); }  // apply breeze to x
+      if (worldTime % Tl.rib( 100, 200 ) === 0) { p.cx += Tl.rfb( -breeze, breeze ); }  // apply breeze to x
     }
   } 
 }
@@ -335,7 +335,7 @@ function runVerlet() {
   refinePositions();
   clearCanvas();
   renderImages();
-  time++;
+  worldTime++;
 }
 
 

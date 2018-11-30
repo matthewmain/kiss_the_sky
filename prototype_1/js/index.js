@@ -21,7 +21,7 @@ var plants = [], plantCount = 0;
 ////---(TESTING)---////
 
 
-for ( var i=0; i<3; i++ ) {
+for ( var i=0; i<5; i++ ) {
   createPlant();
 }
 
@@ -34,20 +34,87 @@ var sunRays = [], sunRayCount = 0;
 ///sunray constructor
 function SunRay() {
   this.id = sunRayCount;
+  this.x = xValFromPct(this.id);
   this.intensity = 1;
+  this.leafContacts = [];  // (as array of objects: { y: <leaf contanct y value>, plant: <plant instance> })
 }
 
-//creates a hundred sunrays
+///creates a sun ray for each x value as a percentage of the canvas's width 
 function createSunRays() {
-  for ( var i=0; i<100; i++ ) {
-    sunRayCount++;
+  for ( var i=0; i<101; i++ ) {
     sunRays.push( new SunRay() );
+    sunRayCount++;
   }
 }
-
 createSunRays();
 
-console.log(sunRays);
+///sheds sunlight
+function shedSunlight() {
+
+  //gets each leaf span's y values at integer x values as points where sun rays contact leaf
+  for ( var i=0; i<plants.length; i++ ) {
+    var p = plants[i];
+    for ( var j=0; j<p.segments.length; j++ ) {
+      var s = p.segments[j];
+      if ( s.hasLeaves ) {
+        var p1, p2;
+
+        //leaf 1
+        //assigns p1 as leftmost leaf span point and p2 as rightmost leaf span point
+        if ( s.ptLf1.cx < s.ptB1.cx ) { p1 = s.ptLf1; p2 = s.ptB1; } else { p1 = s.ptB1; p2 = s.ptLf1; }  
+        //loops through leaf span's integer x values
+        var xPctMin = Math.ceil( pctFromXVal( p1.cx ) );
+        var xPctMax = Math.floor( pctFromXVal( p2.cx ) );
+        for ( var lcx=xPctMin; lcx<=xPctMax; lcx++ ) {  // leaf contact x value
+          var lcy = p1.cy + (xValFromPct(lcx)-p1.cx) * (p2.cy-p1.cy) / (p2.cx-p1.cx);  // leaf contact y value
+          //pushes corresponding y value and plant instance to associated sun ray instance
+          sunRays[lcx].leafContacts.push( { y: lcy, plant: p } );
+        }
+
+        //leaf 2
+        if ( s.ptLf2.cx < s.ptB2.cx ) { p1 = s.ptLf2; p2 = s.ptB2; } else { p1 = s.ptB2; p2 = s.ptLf2; }
+        xPctMin = Math.ceil( pctFromXVal( p1.cx ) );
+        xPctMax = Math.floor( pctFromXVal( p2.cx ) );  
+        for ( lcx=xPctMin; lcx<=xPctMax; lcx++ ) {  // leaf contact x value
+          lcy = p1.cy + (xValFromPct(lcx)-p1.cx) * ( p2.cy - p1.cy) / ( p2.cx - p1.cx ); // leaf contact y value
+          sunRays[lcx].leafContacts.push( { y: lcy, plant: p } );
+        }
+
+      }
+    } 
+  }
+
+  //transfers energy from sun rays to leaves
+  for ( var i=0; i<sunRays.length; i++ ) {
+    var sr = sunRays[i];  // sun ray
+    //sorts leaf contact points from highest to lowest elevation (increasing y value)
+    sr.leafContacts.sort( function( a, b ) { return a.y - b.y } );
+    //when a sun ray hits a leaf, transfers half of the ray's intensity to the plant as energy
+    for ( var j=0; j<sr.leafContacts.length; j++) {
+      var lc = sr.leafContacts[j];  // leaf contact
+      sr.intensity /= 2;  
+      lc.plant.energy += sr.intensity;
+    }
+    //resets sun ray's leaf contact points & intensity for next iteration
+    sr.leafContacts = [];
+    sr.intensity = 1;
+  }
+
+}
+
+///casts shadows
+function castShadows() {
+
+}
+
+
+
+
+
+
+
+
+
 
 
 
@@ -64,22 +131,23 @@ console.log(sunRays);
 
 
 ///plant constructor
-function Plant( originX ) {
+function Plant( xLocation ) {
   this.id = plantCount;
   this.segments = []; this.segmentCount = 0;
+  this.energy = 100;
+  this.xLocation = xLocation;
   //settings
-  this.originX = originX;
   this.forwardGrowthRate = gravity * Tl.rfb(18,22);  // (rate of cross spans increase per frame)
   this.outwardGrowthRate = this.forwardGrowthRate * Tl.rfb(0.18,0.22);  // (rate forward span widens per frame)
   this.maxSegmentWidth = Tl.rfb(11,13);  // maximum segment width (in pixels)
   this.maxTotalSegments = Tl.rib(13,20);  // maximum total number of segments
   this.firstLeafSegment = Tl.rib(2,4);  // (segment on which first leaf set grows)
   this.leafFrequency = Tl.rib(2,3);  // (number of segments until next leaf set)
-  this.maxLeaflength = this.maxSegmentWidth * Tl.rfb(5,7);  // maximum leaf length at maturity
+  this.maxLeaflength = this.maxSegmentWidth * Tl.rfb(4,7);  // maximum leaf length at maturity
   this.leafGrowthRate = this.forwardGrowthRate * Tl.rfb(1.4,1.6);  // leaf growth rate
   //base segment
-  this.ptB1 = addPt( this.originX - 0.1, 100 );  // base point 1
-  this.ptB2 = addPt( this.originX + 0.1, 100 );  // base point 2
+  this.ptB1 = addPt( this.xLocation - 0.1, 100 );  // base point 1
+  this.ptB2 = addPt( this.xLocation + 0.1, 100 );  // base point 2
   this.ptB1.fixed = this.ptB2.fixed = true;  // fixes base points to ground
   this.spB = addSp( this.ptB1.id, this.ptB2.id );  // adds base span
   createSegment( this, null, this.ptB1, this.ptB2 );  // creates the base segment (with "null" parent)
@@ -133,6 +201,7 @@ function Segment( plant, parentSegment, basePoint1, basePoint2 ) {
   this.ptLf2 = null;  // leaf point 2 (leaf tip)  
   this.spLf1 = null;  // leaf 1 Span
   this.spLf2 = null;  // leaf 2 Span
+  this.lightReceptors = [];  // light receptors along each leaf span  ///////////////////////////////////////////
   //skins
   this.skins = [];
   this.skins.push( addSk( [ this.ptE1.id, this.ptE2.id, this.ptB2.id, this.ptB1.id ], "darkgreen" ) );
@@ -150,7 +219,7 @@ function createPlant() {
   plants.push( new Plant(Tl.rib(1,99)) );
 }
 
-//creates a new segment
+///creates a new segment
 function createSegment( plant, parentSegment, basePoint1, basePoint2 ) {
   plant.segmentCount++;
   plant.segments.unshift( new Segment( plant, parentSegment, basePoint1, basePoint2 ) );
@@ -160,7 +229,7 @@ function createSegment( plant, parentSegment, basePoint1, basePoint2 ) {
   }
 }
 
-//grows all plants
+///grows all plants
 function growPlants() {
   for (var i=0; i<plants.length; i++) {
     for (var j=0; j<plants[i].segments.length; j++) {
@@ -183,30 +252,32 @@ function growPlants() {
         segment.spF.l += plant.outwardGrowthRate;
         segment.spL.l = distance( segment.ptB1, segment.ptE1 );
         segment.spR.l = distance( segment.ptB2, segment.ptE2 );
-        //handles leaves
-        if ( !segment.hasLeaves ) { 
-          generateLeavesWhenReady( plant, segment ); 
-        } else {
-          growLeaves( plant, segment );
-        }
+      }
+      //handles leaves
+      if ( !segment.hasLeaves ) { 
+        generateLeavesWhenReady( plant, segment ); 
+      } else if ( plant.segments.length < plant.maxTotalSegments ) {
+        growLeaves( plant, segment );
       }
       //generates new segment
-      if ( readyForChildSegment( plant, segment ) ) { createSegment( plant, segment, segment.ptE1, segment.ptE2 ); }
+      if ( readyForChildSegment( plant, segment ) ) { 
+        createSegment( plant, segment, segment.ptE1, segment.ptE2 ); 
+      }
       //displays stalks and leaves
       renderStalks( plant, segment );
-      if ( segment.hasLeaves ) { renderLeaves( plant, segment ); }
+      renderLeaves( plant, segment );
     }
   }
 }
 
-//checks whether a segment is ready to generate a child segment
+///checks whether a segment is ready to generate a child segment
 function readyForChildSegment( plant, segment ) {
   return segment.spF.l > plant.maxSegmentWidth * 0.333 && 
          !segment.hasChildSegment && 
          plant.segments.length < plant.maxTotalSegments;
 }
 
-//generates leaves
+///generates leaves when segment is ready
 function generateLeavesWhenReady ( plant, segment ) {
   var p = plant;
   var s = segment;
@@ -224,48 +295,56 @@ function generateLeavesWhenReady ( plant, segment ) {
   }
 }
 
-//grows leaves
+///add leaf scaffolding
+function addLeafScaffolding( plant, segment ) {
+  var p = plant;
+  var s = segment;
+  //remove leaf tips tether
+  removeSpan(s.leafTipsTetherSpan.id);
+  //apply leaf-unfold boosters
+  s.ptLf1.cx -= gravity * 100;
+  s.ptLf2.cx += gravity * 100;
+  //add scaffolding points
+  //(leaf 1)
+  var x = s.ptE1.cx + ( s.ptE1.cx - s.ptE2.cx ) * 0.5;
+  var y = s.ptE1.cy + ( s.ptE1.cy - s.ptE2.cy ) * 0.5;
+  s.ptLf1ScA = addPt( pctFromXVal( x ), pctFromXVal( y ), "immaterial" ); s.ptLf1ScA.mass = 0;
+  x = ( s.ptLf1.cx + s.ptLf1ScA.cx ) / 2 ;
+  y = ( s.ptLf1.cy + s.ptLf1ScA.cy ) / 2 ;
+  s.ptLf1ScB = addPt( pctFromXVal( x ), pctFromXVal( y ), "immaterial" ); s.ptLf1ScB.mass = 0;
+  //(leaf 2)
+  x = s.ptE2.cx + ( s.ptE2.cx - s.ptE1.cx ) * 0.5;
+  y = s.ptE2.cy + ( s.ptE2.cy - s.ptE1.cy ) * 0.5;
+  s.ptLf2ScA = addPt( pctFromXVal( x ), pctFromXVal( y ), "immaterial" ); s.ptLf2ScA.mass = 0;
+  x = ( s.ptLf2.cx + s.ptLf2ScA.cx ) / 2 ;
+  y = ( s.ptLf2.cy + s.ptLf2ScA.cy ) / 2 ;
+  s.ptLf2ScB = addPt( pctFromXVal( x ), pctFromXVal( y ), "immaterial" ); s.ptLf2ScB.mass = 0;
+  //add scaffolding spans
+  //(leaf 1)
+  s.spLf1ScA = addSp( s.ptE1.id, s.ptLf1ScA.id, "hidden" );
+  s.spLf1ScB = addSp( s.ptB1.id, s.ptLf1ScA.id, "hidden" ); 
+  s.spLf1ScC = addSp( s.ptLf1ScA.id, s.ptLf1ScB.id, "hidden" ); 
+  s.spLf1ScD = addSp( s.ptLf1ScB.id, s.ptLf1.id, "hidden" ); 
+  //(leaf 2)
+  s.spLf2ScA = addSp( s.ptE2.id, s.ptLf2ScA.id, "hidden" ); 
+  s.spLf2ScB = addSp( s.ptB2.id, s.ptLf2ScA.id, "hidden" ); 
+  s.spLf2ScC = addSp( s.ptLf2ScA.id, s.ptLf2ScB.id, "hidden" ); 
+  s.spLf2ScD = addSp( s.ptLf2ScB.id, s.ptLf2.id, "hidden" );
+  s.hasLeafScaffolding = true;
+}
+
+///grows leaves
 function growLeaves( plant, segment ) {
   var p = plant;
   var s = segment;
   if ( s.spLf1.l < p.maxLeaflength ) {
+    //extend leaves
     s.spLf1.l = s.spLf2.l += p.leafGrowthRate;
     if ( s.spF.l > p.maxSegmentWidth*0.6 && !s.hasLeafScaffolding ) {
-      //remove leaf tips tether
-      removeSpan(s.leafTipsTetherSpan.id);
-      //leaf-unfold boosters
-      s.ptLf1.cx -= gravity * 100;
-      s.ptLf2.cx += gravity * 100;
-      //points
-      //(leaf 1)
-      var x = s.ptE1.cx + ( s.ptE1.cx - s.ptE2.cx ) * 0.5;
-      var y = s.ptE1.cy + ( s.ptE1.cy - s.ptE2.cy ) * 0.5;
-      s.ptLf1ScA = addPt( pctFromXVal( x ), pctFromXVal( y ), "immaterial" ); s.ptLf1ScA.mass = 0;
-      x = ( s.ptLf1.cx + s.ptLf1ScA.cx ) / 2 ;
-      y = ( s.ptLf1.cy + s.ptLf1ScA.cy ) / 2 ;
-      s.ptLf1ScB = addPt( pctFromXVal( x ), pctFromXVal( y ), "immaterial" ); s.ptLf1ScB.mass = 0;
-      //(leaf 2)
-      x = s.ptE2.cx + ( s.ptE2.cx - s.ptE1.cx ) * 0.5;
-      y = s.ptE2.cy + ( s.ptE2.cy - s.ptE1.cy ) * 0.5;
-      s.ptLf2ScA = addPt( pctFromXVal( x ), pctFromXVal( y ), "immaterial" ); s.ptLf2ScA.mass = 0;
-      x = ( s.ptLf2.cx + s.ptLf2ScA.cx ) / 2 ;
-      y = ( s.ptLf2.cy + s.ptLf2ScA.cy ) / 2 ;
-      s.ptLf2ScB = addPt( pctFromXVal( x ), pctFromXVal( y ), "immaterial" ); s.ptLf2ScB.mass = 0;
-      //spans
-      //(leaf 1)
-      s.spLf1ScA = addSp( s.ptE1.id, s.ptLf1ScA.id, "hidden" );
-      s.spLf1ScB = addSp( s.ptB1.id, s.ptLf1ScA.id, "hidden" ); 
-      s.spLf1ScC = addSp( s.ptLf1ScA.id, s.ptLf1ScB.id, "hidden" ); 
-      s.spLf1ScD = addSp( s.ptLf1ScB.id, s.ptLf1.id, "hidden" ); 
-      //(leaf 2)
-      s.spLf2ScA = addSp( s.ptE2.id, s.ptLf2ScA.id, "hidden" ); 
-      s.spLf2ScB = addSp( s.ptB2.id, s.ptLf2ScA.id, "hidden" ); 
-      s.spLf2ScC = addSp( s.ptLf2ScA.id, s.ptLf2ScB.id, "hidden" ); 
-      s.spLf2ScD = addSp( s.ptLf2ScB.id, s.ptLf2.id, "hidden" );
-      s.hasLeafScaffolding = true;
-    }
-    if ( s.hasLeafScaffolding ) {
-      //scaffolding extension
+      // add scaffolding when leaves unfold
+      addLeafScaffolding( plant, segment );
+    } else if ( s.hasLeafScaffolding ) {
+      //extend scaffolding if present
       //(leaf 1)
       s.spLf1ScA.l += p.leafGrowthRate * 1.25;
       s.spLf1ScB.l += p.leafGrowthRate * 1.5;
@@ -280,7 +359,7 @@ function growLeaves( plant, segment ) {
   }
 }
 
-//displays leaf
+///displays leaf
 function renderLeaf( plant, leafSpan ) {
   var p1x = leafSpan.p1.cx;
   var p1y = leafSpan.p1.cy;
@@ -317,16 +396,17 @@ function renderLeaf( plant, leafSpan ) {
   ctx.moveTo(p1x,p1y);
   ctx.lineTo(p2x,p2y);
   ctx.stroke();
-
 }
 
-//displays leaves
+///displays leaves
 function renderLeaves( plant, segment ) {
-  renderLeaf( plant, segment.spLf1 );
-  renderLeaf( plant, segment.spLf2 );
+  if ( segment.hasLeaves ) {
+    renderLeaf( plant, segment.spLf1 );
+    renderLeaf( plant, segment.spLf2 );
+  }
 }
 
-//renders plants sequentially
+///renders plants sequentially
 function renderStalks( plant, segment ) {
   for (var i=0; i<segment.skins.length; i++) {
     var s = segment.skins[i];
@@ -367,10 +447,14 @@ function renderStalks( plant, segment ) {
 function display() {
   runVerlet();
   growPlants();
+
+  shedSunlight();  ////////////////////////////////////////////////////////////////////////////////////////
+
   window.requestAnimationFrame(display);
 }
 
 display();
+
 
 
 
