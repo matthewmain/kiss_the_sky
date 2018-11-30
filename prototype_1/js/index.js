@@ -15,11 +15,14 @@
 
 ///trackers
 var plants = [], plantCount = 0;
+var sunRays = [], sunRayCount = 0;
 
 ///settings
-var worldSpeed = 1;  // as frames per iteration; higher is slower (does not affect physics iterations)
-var phr = 1;  // photosynthesis rate ( rate plants store energy from sunlight )
-var eer = 0.5;  // energy expenditure rate ( rate energy is expended for growth and living )  
+var worldSpeed = 5;  // as frames per iteration; higher is slower (does not affect physics iterations)
+var restrictGrowthByEnergy = true;  // restricts plant growth by energy level (if false plants grow freely)
+var phr = 2;  // photosynthesis rate ( rate plants store energy from sunlight )
+var geer = 0.5;  // growth energy expenditure rate (rate energy is expended for growth)
+var leer = 0.01;  // living energy expenditure rate (rate energy is expended for living, per segment)  
 
 
 
@@ -33,93 +36,12 @@ for ( var i=0; i<25; i++ ) {
 
 
 
-/// LIGHT & SHADOWS /////////////////////////////////////////////////////////////////////////////////////////////////
-
-var sunRays = [], sunRayCount = 0;
-
-///sunray constructor
-function SunRay() {
-  this.id = sunRayCount;
-  this.x = xValFromPct(this.id);
-  this.intensity = 1;
-  this.leafContacts = [];  // (as array of objects: { y: <leaf contanct y value>, plant: <plant instance> })
-}
-
-///creates a sun ray for each x value as a percentage of the canvas's width 
-function createSunRays() {
-  for ( var i=0; i<101; i++ ) {
-    sunRays.push( new SunRay() );
-    sunRayCount++;
-  }
-}
-createSunRays();
-
-///sheds sunlight
-function shedSunlight() {
-
-  //gets each leaf span's y values at integer x values as points where sun rays contact leaf
-  for ( var i=0; i<plants.length; i++ ) {
-    var p = plants[i];
-    for ( var j=0; j<p.segments.length; j++ ) {
-      var s = p.segments[j];
-      if ( s.hasLeaves ) {
-        var p1, p2;
-
-        //leaf 1
-        //assigns p1 as leftmost leaf span point and p2 as rightmost leaf span point
-        if ( s.ptLf1.cx < s.ptB1.cx ) { p1 = s.ptLf1; p2 = s.ptB1; } else { p1 = s.ptB1; p2 = s.ptLf1; }  
-        //loops through leaf span's integer x values
-        var xPctMin = Math.ceil( pctFromXVal( p1.cx ) );
-        var xPctMax = Math.floor( pctFromXVal( p2.cx ) );
-        for ( var lcx=xPctMin; lcx<=xPctMax; lcx++ ) {  // leaf contact x value
-          var lcy = p1.cy + (xValFromPct(lcx)-p1.cx) * (p2.cy-p1.cy) / (p2.cx-p1.cx);  // leaf contact y value
-          //pushes corresponding y value and plant instance to associated sun ray instance
-          sunRays[lcx].leafContacts.push( { y: lcy, plant: p } );
-        }
-
-        //leaf 2
-        if ( s.ptLf2.cx < s.ptB2.cx ) { p1 = s.ptLf2; p2 = s.ptB2; } else { p1 = s.ptB2; p2 = s.ptLf2; }
-        xPctMin = Math.ceil( pctFromXVal( p1.cx ) );
-        xPctMax = Math.floor( pctFromXVal( p2.cx ) );  
-        for ( lcx=xPctMin; lcx<=xPctMax; lcx++ ) {  // leaf contact x value
-          lcy = p1.cy + (xValFromPct(lcx)-p1.cx) * ( p2.cy - p1.cy) / ( p2.cx - p1.cx ); // leaf contact y value
-          sunRays[lcx].leafContacts.push( { y: lcy, plant: p } );
-        }
-
-      }
-    } 
-  }
-
-  //transfers energy from sun rays to leaves
-  for ( var i=0; i<sunRays.length; i++ ) {
-    var sr = sunRays[i];  // sun ray
-    //sorts leaf contact points from highest to lowest elevation (increasing y value)
-    sr.leafContacts.sort( function( a, b ) { return a.y - b.y } );
-    //when a sun ray hits a leaf, transfers half of the ray's intensity to the plant as energy
-    for ( var j=0; j<sr.leafContacts.length; j++) {
-      var lc = sr.leafContacts[j];  // leaf contact
-      sr.intensity /= 2;  
-      lc.plant.energy += sr.intensity * phr;
-    }
-    //resets sun ray's leaf contact points & intensity for next iteration
-    sr.leafContacts = [];
-    sr.intensity = 1;
-  }
-
-}
+/// LIGHT & SHADOWS /////////////////////////
 
 ///casts shadows
 function castShadows() {
 
 }
-
-
-
-
-
-
-
-
 
 
 
@@ -141,7 +63,7 @@ function Plant( xLocation ) {
   this.id = plantCount;
   this.segments = []; this.segmentCount = 0;
   this.xLocation = xLocation;
-  this.energy = 5000;  // seed energy
+  this.energy = 5000;  // seed energy (starting energy level at germination)
   this.isAlive = true;
   //settings
   this.forwardGrowthRate = gravity * Tl.rfb(18,22);  // (rate of cross spans increase per frame)
@@ -149,7 +71,7 @@ function Plant( xLocation ) {
   this.maxSegmentWidth = Tl.rfb(11,13);  // maximum segment width (in pixels)
   this.maxTotalSegments = Tl.rib(13,20);  // maximum total number of segments
   this.firstLeafSegment = Tl.rib(2,4);  // (segment on which first leaf set grows)
-  this.leafFrequency = Tl.rib(2,3);  // (number of segments until next leaf set)
+  this.leafFrequency = Tl.rib(1,3);  // (number of segments until next leaf set)
   this.maxLeaflength = this.maxSegmentWidth * Tl.rfb(4,7);  // maximum leaf length at maturity
   this.leafGrowthRate = this.forwardGrowthRate * Tl.rfb(1.4,1.6);  // leaf growth rate
   //base segment
@@ -214,6 +136,14 @@ function Segment( plant, parentSegment, basePoint1, basePoint2 ) {
   this.skins.push( addSk( [ this.ptE1.id, this.ptE2.id, this.ptB2.id, this.ptB1.id ], "darkgreen" ) );
 }
 
+///sun ray constructor
+function SunRay() {
+  this.id = sunRayCount;
+  this.x = xValFromPct(this.id);
+  this.intensity = 1;
+  this.leafContacts = [];  // (as array of objects: { y: <leaf contanct y value>, plant: <plant instance> })
+}
+
 
 
 
@@ -236,24 +166,78 @@ function createSegment( plant, parentSegment, basePoint1, basePoint2 ) {
   }
 }
 
+///creates a new sun ray (one for each x value as an integer percentage of the canvas's width)
+function createSunRays() {
+  for ( var i=0; i<101; i++ ) {
+    sunRays.push( new SunRay() );
+    sunRayCount++;
+  }
+}
+
+///sheds sunlight
+function shedSunlight() {
+  //gets each leaf span's y values at integer x values as points where sun rays contact leaf
+  for ( var i=0; i<plants.length; i++ ) {
+    var p = plants[i];
+    for ( var j=0; j<p.segments.length; j++ ) {
+      var s = p.segments[j];
+      if ( s.hasLeaves ) {
+        var p1, p2;
+        //leaf 1
+        //assigns p1 as leftmost leaf span point and p2 as rightmost leaf span point
+        if ( s.ptLf1.cx < s.ptB1.cx ) { p1 = s.ptLf1; p2 = s.ptB1; } else { p1 = s.ptB1; p2 = s.ptLf1; }  
+        //loops through leaf span's integer x values
+        var xPctMin = Math.ceil( pctFromXVal( p1.cx ) );
+        var xPctMax = Math.floor( pctFromXVal( p2.cx ) );
+        for ( var lcx=xPctMin; lcx<=xPctMax; lcx++ ) {  // leaf contact x value
+          var lcy = p1.cy + (xValFromPct(lcx)-p1.cx) * (p2.cy-p1.cy) / (p2.cx-p1.cx);  // leaf contact y value
+          //pushes corresponding y value and plant instance to associated sun ray instance
+          sunRays[lcx].leafContacts.push( { y: lcy, plant: p } );
+        }
+        //leaf 2
+        if ( s.ptLf2.cx < s.ptB2.cx ) { p1 = s.ptLf2; p2 = s.ptB2; } else { p1 = s.ptB2; p2 = s.ptLf2; }
+        xPctMin = Math.ceil( pctFromXVal( p1.cx ) );
+        xPctMax = Math.floor( pctFromXVal( p2.cx ) );  
+        for ( lcx=xPctMin; lcx<=xPctMax; lcx++ ) {  // leaf contact x value
+          lcy = p1.cy + (xValFromPct(lcx)-p1.cx) * ( p2.cy - p1.cy) / ( p2.cx - p1.cx ); // leaf contact y value
+          sunRays[lcx].leafContacts.push( { y: lcy, plant: p } );
+        }
+      }
+    } 
+  }
+  //transfers energy from sun rays to leaves
+  for ( var i=0; i<sunRays.length; i++ ) {
+    var sr = sunRays[i];  // sun ray
+    //sorts leaf contact points from highest to lowest elevation (increasing y value)
+    sr.leafContacts.sort( function( a, b ) { return a.y - b.y } );
+    //when a sun ray hits a leaf, transfers half of the ray's intensity to the plant as energy
+    for ( var j=0; j<sr.leafContacts.length; j++) {
+      var lc = sr.leafContacts[j];  // leaf contact
+      sr.intensity /= 2;  
+      lc.plant.energy += sr.intensity * phr;
+    }
+    //resets sun ray's leaf contact points & intensity for next iteration
+    sr.leafContacts = [];
+    sr.intensity = 1;
+  }
+}
+
 ///grows all plants
 function growPlants() {
   for (var i=0; i<plants.length; i++) {
     var plant = plants[i];
-
     //caps plant energy based on segment count
     if ( plant.energy > plant.segmentCount * 1000 && plant.energy > 5000 ) {
       plant.energy = plant.segmentCount * 1000;
     }
-
     //checks for sufficient energy for growth (must be greater than zero to grow)
-    if ( plant.energy > 0 ) {
+    if ( plant.energy > 0 || !restrictGrowthByEnergy ) {
       for (var j=0; j<plants[i].segments.length; j++) {
         var segment = plants[i].segments[j];
         //lengthens segment spans
         if ( segment.spF.l < plant.maxSegmentWidth && plant.segments.length < plant.maxTotalSegments) { 
           lengthenSegmentSpans( plant, segment );
-          plant.energy -= segment.spCd.l * eer;  // reduces energy by a ratio of segment size
+          plant.energy -= segment.spCd.l * geer;  // reduces energy by a ratio of segment size
         }
         //generates new segment
         if ( readyForChildSegment( plant, segment ) ) { 
@@ -264,15 +248,12 @@ function growPlants() {
           generateLeavesWhenReady( plant, segment ); 
         } else if ( plant.segments.length < plant.maxTotalSegments ) {
           growLeaves( plant, segment );
-          plant.energy -= ( segment.spLf1.l + segment.spLf2.l ) * eer;  // reduces energy by a ratio of leaf length
+          plant.energy -= ( segment.spLf1.l + segment.spLf2.l ) * geer;  // reduces energy by a ratio of leaf length
         }
       }
     }
-
     //cost of living
-    plant.energy -= plant.segmentCount * eer/5;  // reduces energy by a ratio of segment count
-
-
+    plant.energy -= plant.segmentCount * leer;  // reduces energy by a ratio of segment count
   }
 }
 
@@ -484,18 +465,21 @@ function display() {
   runVerlet();
   if ( worldTime % worldSpeed === 0 ) { growPlants(); }
 
-          // if ( worldTime % 300 == 0 ) {
-          //   console.log("");
-          //   console.log("plant 1: "+plants[0].energy);
-          //   console.log("plant 2: "+plants[1].energy);
-          //   console.log("plant 3: "+plants[2].energy);
-          // }
+          if ( worldTime % 300 == 0 ) {
+            console.log("");
+            console.log("plant 1: "+plants[0].energy);
+            console.log("plant 2: "+plants[1].energy);
+            console.log("plant 3: "+plants[2].energy);
+            console.log("plant 4: "+plants[3].energy);
+            console.log("plant 5: "+plants[4].energy);
+          }
 
   renderPlants();
   shedSunlight();
   window.requestAnimationFrame(display);
 }
 
+createSunRays();
 display();
 
 
