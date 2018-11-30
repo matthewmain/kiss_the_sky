@@ -25,6 +25,13 @@ const Tl = {
 	//converts degrees to radians
 	degToRad: function( degree ) {
 	  return degree / 180 * Math.PI;
+	},
+
+	//pauses program
+	pause: function( milliseconds ) {
+  	var then = Date.now(); 
+  	var now;
+  	do { now = Date.now() } while ( now - then < milliseconds );
 	}
 
 
