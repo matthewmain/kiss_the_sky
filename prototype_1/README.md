@@ -34,9 +34,11 @@
 
 - [X] leaves
 
-- [ ] light & shadows
+- [X] light & shadows, logic
 
-- [ ] energy: storage, usage for growth rate
+- [X] energy: storage, usage for growth rate
 
-- [ ] (?) add ability to slow scene without affecting the physics--possibly by rendering based on time instead of screen refresh, but probably better if can keep same frame rate...
+- [X] add ability to slow scene without affecting the physics
+
+- [ ] light & shadows, visualization
 
