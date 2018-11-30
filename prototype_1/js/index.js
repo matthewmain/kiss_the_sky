@@ -13,7 +13,13 @@
 ////---INITIATION---////
 
 
+///trackers
 var plants = [], plantCount = 0;
+
+///settings
+var worldSpeed = 1;  // as frames per iteration; higher is slower (does not affect physics iterations)
+var phr = 1;  // photosynthesis rate ( rate plants store energy from sunlight )
+var eer = 0.5;  // energy expenditure rate ( rate energy is expended for growth and living )  
 
 
 
@@ -21,7 +27,7 @@ var plants = [], plantCount = 0;
 ////---(TESTING)---////
 
 
-for ( var i=0; i<5; i++ ) {
+for ( var i=0; i<25; i++ ) {
   createPlant();
 }
 
@@ -93,7 +99,7 @@ function shedSunlight() {
     for ( var j=0; j<sr.leafContacts.length; j++) {
       var lc = sr.leafContacts[j];  // leaf contact
       sr.intensity /= 2;  
-      lc.plant.energy += sr.intensity;
+      lc.plant.energy += sr.intensity * phr;
     }
     //resets sun ray's leaf contact points & intensity for next iteration
     sr.leafContacts = [];
@@ -134,8 +140,9 @@ function castShadows() {
 function Plant( xLocation ) {
   this.id = plantCount;
   this.segments = []; this.segmentCount = 0;
-  this.energy = 100;
   this.xLocation = xLocation;
+  this.energy = 5000;  // seed energy
+  this.isAlive = true;
   //settings
   this.forwardGrowthRate = gravity * Tl.rfb(18,22);  // (rate of cross spans increase per frame)
   this.outwardGrowthRate = this.forwardGrowthRate * Tl.rfb(0.18,0.22);  // (rate forward span widens per frame)
@@ -232,49 +239,67 @@ function createSegment( plant, parentSegment, basePoint1, basePoint2 ) {
 ///grows all plants
 function growPlants() {
   for (var i=0; i<plants.length; i++) {
-    for (var j=0; j<plants[i].segments.length; j++) {
-      var plant = plants[i];
-      var segment = plants[i].segments[j];
-      //lengthens spans
-      if ( segment.spF.l < plant.maxSegmentWidth && plant.segments.length < plant.maxTotalSegments) { 
-        if (segment.isBaseSegment) {
-          segment.ptB1.cx -= plant.outwardGrowthRate / 2;
-          segment.ptB2.cx += plant.outwardGrowthRate / 2;
-          plant.spB.l = distance( segment.ptB1, segment.ptB2 );
-          segment.spCd.l = distance( segment.ptE1, segment.ptB2 ) + plant.forwardGrowthRate / 3;
-          segment.spCu.l = segment.spCd.l;
-        } else {
-          segment.spCdP.l = distance( segment.ptE1, segment.parentSegment.ptB2 ) + plant.forwardGrowthRate;
-          segment.spCuP.l = segment.spCdP.l * segment.forwardGrowthRateVariation;
-          segment.spCd.l = distance( segment.ptE1, segment.ptB2 );
-          segment.spCu.l = distance( segment.ptB1, segment.ptE2 );
-        } 
-        segment.spF.l += plant.outwardGrowthRate;
-        segment.spL.l = distance( segment.ptB1, segment.ptE1 );
-        segment.spR.l = distance( segment.ptB2, segment.ptE2 );
-      }
-      //handles leaves
-      if ( !segment.hasLeaves ) { 
-        generateLeavesWhenReady( plant, segment ); 
-      } else if ( plant.segments.length < plant.maxTotalSegments ) {
-        growLeaves( plant, segment );
-      }
-      //generates new segment
-      if ( readyForChildSegment( plant, segment ) ) { 
-        createSegment( plant, segment, segment.ptE1, segment.ptE2 ); 
-      }
-      //displays stalks and leaves
-      renderStalks( plant, segment );
-      renderLeaves( plant, segment );
+    var plant = plants[i];
+
+    //caps plant energy based on segment count
+    if ( plant.energy > plant.segmentCount * 1000 && plant.energy > 5000 ) {
+      plant.energy = plant.segmentCount * 1000;
     }
+
+    //checks for sufficient energy for growth (must be greater than zero to grow)
+    if ( plant.energy > 0 ) {
+      for (var j=0; j<plants[i].segments.length; j++) {
+        var segment = plants[i].segments[j];
+        //lengthens segment spans
+        if ( segment.spF.l < plant.maxSegmentWidth && plant.segments.length < plant.maxTotalSegments) { 
+          lengthenSegmentSpans( plant, segment );
+          plant.energy -= segment.spCd.l * eer;  // reduces energy by a ratio of segment size
+        }
+        //generates new segment
+        if ( readyForChildSegment( plant, segment ) ) { 
+          createSegment( plant, segment, segment.ptE1, segment.ptE2 ); 
+        }
+        //handles leaves
+        if ( !segment.hasLeaves ) { 
+          generateLeavesWhenReady( plant, segment ); 
+        } else if ( plant.segments.length < plant.maxTotalSegments ) {
+          growLeaves( plant, segment );
+          plant.energy -= ( segment.spLf1.l + segment.spLf2.l ) * eer;  // reduces energy by a ratio of leaf length
+        }
+      }
+    }
+
+    //cost of living
+    plant.energy -= plant.segmentCount * eer/5;  // reduces energy by a ratio of segment count
+
+
   }
+}
+
+///lengthens segment spans for growth
+function lengthenSegmentSpans( plant, segment ) {
+  if (segment.isBaseSegment) {
+    segment.ptB1.cx -= plant.outwardGrowthRate / 2;
+    segment.ptB2.cx += plant.outwardGrowthRate / 2;
+    plant.spB.l = distance( segment.ptB1, segment.ptB2 );
+    segment.spCd.l = distance( segment.ptE1, segment.ptB2 ) + plant.forwardGrowthRate / 3;
+    segment.spCu.l = segment.spCd.l;
+  } else {
+    segment.spCdP.l = distance( segment.ptE1, segment.parentSegment.ptB2 ) + plant.forwardGrowthRate;
+    segment.spCuP.l = segment.spCdP.l * segment.forwardGrowthRateVariation;
+    segment.spCd.l = distance( segment.ptE1, segment.ptB2 );
+    segment.spCu.l = distance( segment.ptB1, segment.ptE2 );
+  } 
+  segment.spF.l += plant.outwardGrowthRate;
+  segment.spL.l = distance( segment.ptB1, segment.ptE1 );
+  segment.spR.l = distance( segment.ptB2, segment.ptE2 );
 }
 
 ///checks whether a segment is ready to generate a child segment
 function readyForChildSegment( plant, segment ) {
   return segment.spF.l > plant.maxSegmentWidth * 0.333 && 
          !segment.hasChildSegment && 
-         plant.segments.length < plant.maxTotalSegments;
+         plant.segmentCount < plant.maxTotalSegments;
 }
 
 ///generates leaves when segment is ready
@@ -359,7 +384,7 @@ function growLeaves( plant, segment ) {
   }
 }
 
-///displays leaf
+///renders leaf
 function renderLeaf( plant, leafSpan ) {
   var p1x = leafSpan.p1.cx;
   var p1y = leafSpan.p1.cy;
@@ -398,7 +423,7 @@ function renderLeaf( plant, leafSpan ) {
   ctx.stroke();
 }
 
-///displays leaves
+///renders leaves
 function renderLeaves( plant, segment ) {
   if ( segment.hasLeaves ) {
     renderLeaf( plant, segment.spLf1 );
@@ -406,7 +431,7 @@ function renderLeaves( plant, segment ) {
   }
 }
 
-///renders plants sequentially
+///renders stalks (sequentially)
 function renderStalks( plant, segment ) {
   for (var i=0; i<segment.skins.length; i++) {
     var s = segment.skins[i];
@@ -438,6 +463,17 @@ function renderStalks( plant, segment ) {
   }
 }
 
+function renderPlants() {
+  for (var i=0; i<plants.length; i++) {
+    for (var j=0; j<plants[i].segments.length; j++) {
+      var plant = plants[i];
+      var segment = plants[i].segments[j];
+      renderStalks( plant, segment );
+      renderLeaves( plant, segment );
+    }
+  }
+}
+
 
 
 
@@ -446,10 +482,17 @@ function renderStalks( plant, segment ) {
 
 function display() {
   runVerlet();
-  growPlants();
+  if ( worldTime % worldSpeed === 0 ) { growPlants(); }
 
-  shedSunlight();  ////////////////////////////////////////////////////////////////////////////////////////
+          // if ( worldTime % 300 == 0 ) {
+          //   console.log("");
+          //   console.log("plant 1: "+plants[0].energy);
+          //   console.log("plant 2: "+plants[1].energy);
+          //   console.log("plant 3: "+plants[2].energy);
+          // }
 
+  renderPlants();
+  shedSunlight();
   window.requestAnimationFrame(display);
 }
 
