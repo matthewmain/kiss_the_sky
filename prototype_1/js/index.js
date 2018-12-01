@@ -21,7 +21,7 @@ var shadows = [], shadowCount = 0;
 ///settings
 var worldSpeed = 5;  // (as frames per iteration; higher is slower) (does not affect physics iterations)
 var restrictGrowthByEnergy = true;  // restricts plant growth by energy level (if false plants grow freely)
-var viewShadows = true;  // (shadow visibility)
+var viewShadows = false;  // (shadow visibility)
 var phr = 2;  // photosynthesis rate ( rate plants store energy from sunlight )
 var geer = 0.5;  // growth energy expenditure rate (rate energy is expended for growth)
 var leer = 0.03;  // living energy expenditure rate (rate energy is expended for living, per segment)
