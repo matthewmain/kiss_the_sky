@@ -26,7 +26,7 @@ var viewStalks = true;  // (stalk skin visibility)
 var viewLeaves = true;  // (leaf visibility)
 var phr = 2;  // photosynthesis rate ( rate plants store energy from sunlight )
 var geer = 0.5;  // growth energy expenditure rate (rate energy is expended for growth)
-var leer = 0.1;  // living energy expenditure rate (rate energy is expended for living, per segment)
+var leer = 0.2;  // living energy expenditure rate (rate energy is expended for living, per segment)
 
 
 
@@ -257,7 +257,7 @@ function growPlants() {
         }
       }
     }
-    //cost of living
+    //cost of living 
     plant.energy -= plant.segmentCount * leer;  // reduces energy by a ratio of segment count
   }
 }
