@@ -165,9 +165,8 @@ function createSunRays() {
   }
 }
 
-///sheds sunlight
-function shedSunlight() {
-  //gets each leaf span's y values at integer x values as points where sun rays contact leaf
+///gets each leaf span's y values at integer x values as points where sun rays contact leaf
+function markRayLeafIntersections() {
   for ( var i=0; i<plants.length; i++ ) {
     var p = plants[i];
     for ( var j=0; j<p.segments.length; j++ ) {
@@ -196,7 +195,10 @@ function shedSunlight() {
       }
     } 
   }
-  //transfers energy from sun rays to leaves
+}
+
+///transfers energy from sun rays to leaves
+function photosynthesize() {
   for ( var i=0; i<sunRays.length; i++ ) {
     var sr = sunRays[i];  // sun ray  
     //sorts leaf contact points from highest to lowest elevation (increasing y value)
@@ -207,10 +209,14 @@ function shedSunlight() {
       sr.intensity /= 2;  
       lc.plant.energy += sr.intensity * phr;
     }
-    //resets sun ray's leaf contact points & intensity for next iteration
-    sr.leafContacts = [];
-    sr.intensity = 1;
+    sr.leafContacts = []; sr.intensity = 1;  // resets sun ray's leaf contact points & intensity for next iteration
   }
+}
+
+///sheds sunlight
+function shedSunlight() {
+  markRayLeafIntersections();
+  photosynthesize(); 
 }
 
 ///marks shadow positions (based on leaf spans)
