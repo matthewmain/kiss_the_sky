@@ -16,13 +16,15 @@
 ///trackers
 var plants = [], plantCount = 0;
 var sunRays = [], sunRayCount = 0;
+var shadows = [], shadowCount = 0;
 
 ///settings
-var worldSpeed = 5;  // as frames per iteration; higher is slower (does not affect physics iterations)
+var worldSpeed = 5;  // (as frames per iteration; higher is slower) (does not affect physics iterations)
 var restrictGrowthByEnergy = true;  // restricts plant growth by energy level (if false plants grow freely)
+var viewShadows = true;  // (shadow visibility)
 var phr = 2;  // photosynthesis rate ( rate plants store energy from sunlight )
 var geer = 0.5;  // growth energy expenditure rate (rate energy is expended for growth)
-var leer = 0.01;  // living energy expenditure rate (rate energy is expended for living, per segment)  
+var leer = 0.03;  // living energy expenditure rate (rate energy is expended for living, per segment)
 
 
 
@@ -30,27 +32,9 @@ var leer = 0.01;  // living energy expenditure rate (rate energy is expended for
 ////---(TESTING)---////
 
 
-for ( var i=0; i<25; i++ ) {
+for ( var i=0; i<15; i++ ) {
   createPlant();
 }
-
-
-
-/// LIGHT & SHADOWS /////////////////////////
-
-///casts shadows
-function castShadows() {
-
-}
-
-
-
-
-
-
-
-
-
 
 
 
@@ -69,9 +53,9 @@ function Plant( xLocation ) {
   this.forwardGrowthRate = gravity * Tl.rfb(18,22);  // (rate of cross spans increase per frame)
   this.outwardGrowthRate = this.forwardGrowthRate * Tl.rfb(0.18,0.22);  // (rate forward span widens per frame)
   this.maxSegmentWidth = Tl.rfb(11,13);  // maximum segment width (in pixels)
-  this.maxTotalSegments = Tl.rib(13,20);  // maximum total number of segments
+  this.maxTotalSegments = Tl.rib(10,20);  // maximum total number of segments
   this.firstLeafSegment = Tl.rib(2,4);  // (segment on which first leaf set grows)
-  this.leafFrequency = Tl.rib(1,3);  // (number of segments until next leaf set)
+  this.leafFrequency = Tl.rib(2,3);  // (number of segments until next leaf set)
   this.maxLeaflength = this.maxSegmentWidth * Tl.rfb(4,7);  // maximum leaf length at maturity
   this.leafGrowthRate = this.forwardGrowthRate * Tl.rfb(1.4,1.6);  // leaf growth rate
   //base segment
@@ -130,7 +114,6 @@ function Segment( plant, parentSegment, basePoint1, basePoint2 ) {
   this.ptLf2 = null;  // leaf point 2 (leaf tip)  
   this.spLf1 = null;  // leaf 1 Span
   this.spLf2 = null;  // leaf 2 Span
-  this.lightReceptors = [];  // light receptors along each leaf span  ///////////////////////////////////////////
   //skins
   this.skins = [];
   this.skins.push( addSk( [ this.ptE1.id, this.ptE2.id, this.ptB2.id, this.ptB1.id ], "darkgreen" ) );
@@ -139,9 +122,17 @@ function Segment( plant, parentSegment, basePoint1, basePoint2 ) {
 ///sun ray constructor
 function SunRay() {
   this.id = sunRayCount;
-  this.x = xValFromPct(this.id);
+  this.x = xValFromPct( this.id );
   this.intensity = 1;
-  this.leafContacts = [];  // (as array of objects: { y: <leaf contanct y value>, plant: <plant instance> })
+  this.leafContacts = [];  // (as array of objects: { y: <leaf contact y value>, plant: <plant> })
+}
+
+//shadow constructor
+function Shadow( leafSpan ) {
+  this.p1 = leafSpan.p1;
+  this.p2 = leafSpan.p2;
+  this.p3 = { cx: this.p2.cx, cy: yValFromPct( 100 ) };
+  this.p4 = { cx: this.p1.cx, cy: yValFromPct( 100 ) };
 }
 
 
@@ -207,12 +198,12 @@ function shedSunlight() {
   }
   //transfers energy from sun rays to leaves
   for ( var i=0; i<sunRays.length; i++ ) {
-    var sr = sunRays[i];  // sun ray
+    var sr = sunRays[i];  // sun ray  
     //sorts leaf contact points from highest to lowest elevation (increasing y value)
     sr.leafContacts.sort( function( a, b ) { return a.y - b.y } );
     //when a sun ray hits a leaf, transfers half of the ray's intensity to the plant as energy
     for ( var j=0; j<sr.leafContacts.length; j++) {
-      var lc = sr.leafContacts[j];  // leaf contact
+      var lc = sr.leafContacts[j];  // leaf contact ({ y: <leaf contact y value>, plant: <plant> })
       sr.intensity /= 2;  
       lc.plant.energy += sr.intensity * phr;
     }
@@ -220,6 +211,12 @@ function shedSunlight() {
     sr.leafContacts = [];
     sr.intensity = 1;
   }
+}
+
+///marks shadow positions (based on leaf spans)
+function markShadowPositions( segment ) {
+  shadows.push( new Shadow( segment.spLf1 ) );
+  shadows.push( new Shadow( segment.spLf2 ) );
 }
 
 ///grows all plants
@@ -409,10 +406,11 @@ function renderLeaves( plant, segment ) {
   if ( segment.hasLeaves ) {
     renderLeaf( plant, segment.spLf1 );
     renderLeaf( plant, segment.spLf2 );
+    if ( viewShadows ) { markShadowPositions( segment ); }
   }
 }
 
-///renders stalks (sequentially)
+///renders stalks
 function renderStalks( plant, segment ) {
   for (var i=0; i<segment.skins.length; i++) {
     var s = segment.skins[i];
@@ -444,6 +442,7 @@ function renderStalks( plant, segment ) {
   }
 }
 
+///renders plants (sequentially)
 function renderPlants() {
   for (var i=0; i<plants.length; i++) {
     for (var j=0; j<plants[i].segments.length; j++) {
@@ -455,6 +454,24 @@ function renderPlants() {
   }
 }
 
+///renders shadows (from highest to lowest elevation)
+function renderShadows() {
+  shadows.sort( function( a, b ) { return a.p2.cy - b.p2.cy } );
+  for ( var i=0; i<shadows.length; i++ ) {
+    var sh = shadows[i];
+    ctx.beginPath();
+    ctx.moveTo( sh.p1.cx, sh.p1.cy );
+    ctx.lineTo( sh.p2.cx, sh.p2.cy ); 
+    ctx.lineTo( sh.p3.cx, sh.p3.cy );
+    ctx.lineTo( sh.p4.cx, sh.p4.cy );
+    ctx.lineTo( sh.p1.cx, sh.p1.cy );
+    ctx.fillStyle = "rgba( 0, 0, 0, 0.1 )";
+    ctx.fill();  
+  }
+  //resets shadows
+  shadows = []; shadowCount = 0;
+}
+
 
 
 
@@ -464,23 +481,28 @@ function renderPlants() {
 function display() {
   runVerlet();
   if ( worldTime % worldSpeed === 0 ) { growPlants(); }
-
-          if ( worldTime % 300 == 0 ) {
-            console.log("");
-            console.log("plant 1: "+plants[0].energy);
-            console.log("plant 2: "+plants[1].energy);
-            console.log("plant 3: "+plants[2].energy);
-            console.log("plant 4: "+plants[3].energy);
-            console.log("plant 5: "+plants[4].energy);
-          }
-
   renderPlants();
   shedSunlight();
+  renderShadows();
   window.requestAnimationFrame(display);
+
+          // if ( worldTime % 300 == 0 ) {
+          //   console.log("");
+          //   console.log("plant 1: "+plants[0].energy);
+          //   console.log("plant 2: "+plants[1].energy);
+          //   console.log("plant 3: "+plants[2].energy);
+          //   console.log("plant 4: "+plants[3].energy);
+          //   console.log("plant 5: "+plants[4].energy);
+          // }
+
+          //console.log(shadows);
+
 }
 
 createSunRays();
 display();
+
+
 
 
 
