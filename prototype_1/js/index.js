@@ -501,8 +501,6 @@ function display() {
           //   console.log("plant 5: "+plants[4].energy);
           // }
 
-          //console.log(shadows);
-
 }
 
 createSunRays();
