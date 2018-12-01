@@ -31,7 +31,7 @@ const Tl = {
 	pause: function( milliseconds ) {
   	var then = Date.now(); 
   	var now;
-  	do { now = Date.now() } while ( now - then < milliseconds );
+  	do { now = Date.now(); } while ( now - then < milliseconds );
 	}
 
 

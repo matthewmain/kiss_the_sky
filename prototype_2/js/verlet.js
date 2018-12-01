@@ -22,15 +22,15 @@ var skins = [], skinCount = 0;
 var worldTime = 0;  // time as frame count
 
 ///settings
+var viewPoints = false;  // (point visibility)
+var viewSpans = false;  // (span visibility)
+var viewScaffolding = false; // (scaffolding visibility)
+var viewSkins = true; // (skin visibility)
 var gravity = 0.01;  // (rate of y-velocity increase per frame per point mass of 1)
 var rigidity = 10;  // global span rigidity (as iterations of position accuracy refinement)
 var friction = 0.999;  // (proportion of previous velocity after frame refresh)
 var bounceLoss = 0.9;  // (proportion of previous velocity after bouncing)
 var skidLoss = 0.8;  // (proportion of previous velocity if touching the ground)
-var viewPoints = false;  // (point visibility)
-var viewSpans = false;  // (span visibility)
-var viewScaffolding = false; // (scaffolding visibility)
-var viewSkins = true; // (skin visibility)
 var breeze = 0.4;  // breeziness level (applied as brief left & right gusts)
 
 
@@ -123,9 +123,16 @@ function distance(point_1, point_2) {
 }
 
 ///gets a span's mid point (returns object: { x: <value>, y: <value> } )
-function smp(span) {
+function spanMidPoint( span ) {
   var mx = ( span.p1.cx + span.p2.cx ) / 2;  // mid x value
   var my = ( span.p1.cy + span.p2.cy ) / 2;  // mid y value
+  return { x: mx, y: my};
+}
+
+///gets a span's mid point (returns object: { x: <value>, y: <value> } )
+function midPoint( point1, point2 ) {
+  var mx = ( point1.cx + point2.cx ) / 2;  // mid x value
+  var my = ( point1.cy + point2.cy ) / 2;  // mid y value
   return { x: mx, y: my};
 }
 

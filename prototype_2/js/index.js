@@ -19,12 +19,14 @@ var sunRays = [], sunRayCount = 0;
 var shadows = [], shadowCount = 0;
 
 ///settings
-var worldSpeed = 5;  // (as frames per iteration; higher is slower) (does not affect physics iterations)
+var worldSpeed = 10;  // (as frames per iteration; higher is slower) (does not affect physics iterations)
 var restrictGrowthByEnergy = true;  // restricts plant growth by energy level (if false plants grow freely)
 var viewShadows = false;  // (shadow visibility)
+var viewStalks = true;  // (stalk skin visibility) 
+var viewLeaves = true;  // (leaf visibility)
 var phr = 2;  // photosynthesis rate ( rate plants store energy from sunlight )
 var geer = 0.5;  // growth energy expenditure rate (rate energy is expended for growth)
-var leer = 0.03;  // living energy expenditure rate (rate energy is expended for living, per segment)
+var leer = 0.1;  // living energy expenditure rate (rate energy is expended for living, per segment)
 
 
 
@@ -32,7 +34,7 @@ var leer = 0.03;  // living energy expenditure rate (rate energy is expended for
 ////---(TESTING)---////
 
 
-for ( var i=0; i<15; i++ ) {
+for ( var i=0; i<35; i++ ) {
   createPlant();
 }
 
@@ -172,7 +174,7 @@ function markRayLeafIntersections() {
     for ( var j=0; j<p.segments.length; j++ ) {
       var s = p.segments[j];
       if ( s.hasLeaves ) {
-        var p1, p2;
+        var p1, p2, lcy;
         //leaf 1
         //assigns p1 as leftmost leaf span point and p2 as rightmost leaf span point
         if ( s.ptLf1.cx < s.ptB1.cx ) { p1 = s.ptLf1; p2 = s.ptB1; } else { p1 = s.ptB1; p2 = s.ptLf1; }  
@@ -180,7 +182,7 @@ function markRayLeafIntersections() {
         var xPctMin = Math.ceil( pctFromXVal( p1.cx ) );
         var xPctMax = Math.floor( pctFromXVal( p2.cx ) );
         for ( var lcx=xPctMin; lcx<=xPctMax; lcx++ ) {  // leaf contact x value
-          var lcy = p1.cy + (xValFromPct(lcx)-p1.cx) * (p2.cy-p1.cy) / (p2.cx-p1.cx);  // leaf contact y value
+          lcy = p1.cy + (xValFromPct(lcx)-p1.cx) * (p2.cy-p1.cy) / (p2.cx-p1.cx);  // leaf contact y value
           //pushes corresponding y value and plant instance to associated sun ray instance
           sunRays[lcx].leafContacts.push( { y: lcy, plant: p } );
         }
@@ -202,11 +204,11 @@ function photosynthesize() {
   for ( var i=0; i<sunRays.length; i++ ) {
     var sr = sunRays[i];  // sun ray  
     //sorts leaf contact points from highest to lowest elevation (increasing y value)
-    sr.leafContacts.sort( function( a, b ) { return a.y - b.y } );
+    sr.leafContacts.sort( function( a, b ) { return a.y - b.y; } );
     //when a sun ray hits a leaf, transfers half of the ray's intensity to the plant as energy
     for ( var j=0; j<sr.leafContacts.length; j++) {
       var lc = sr.leafContacts[j];  // leaf contact ({ y: <leaf contact y value>, plant: <plant> })
-      sr.intensity /= 2;  
+      sr.intensity /= 2;
       lc.plant.energy += sr.intensity * phr;
     }
     sr.leafContacts = []; sr.intensity = 1;  // resets sun ray's leaf contact points & intensity for next iteration
@@ -287,16 +289,19 @@ function readyForChildSegment( plant, segment ) {
 }
 
 ///generates leaves when segment is ready
-function generateLeavesWhenReady ( plant, segment ) {
+function generateLeavesWhenReady( plant, segment ) {
   var p = plant;
   var s = segment;
   if (  s.id >= p.firstLeafSegment && 
         s.id % p.leafFrequency === 0 && 
         s.spF.l > p.maxSegmentWidth * 0.1 ||
         s.id === p.maxTotalSegments-1 ) {
-    var fsmp = smp( s.spF );  // forward span mid point ( { x: <value>, y: <value> } )
-    s.ptLf1 = addPt( pctFromXVal( fsmp.x ), pctFromYVal( fsmp.y - 1 ) );  // leaf 1 tip point (left)
-    s.ptLf2 = addPt( pctFromXVal( fsmp.x ), pctFromYVal( fsmp.y - 1 ) );  // leaf 2 tip point (right)
+    var fsmp = spanMidPoint( s.spF );  // forward span mid point
+    var pbsmp = midPoint( s.parentSegment.ptB1, s.parentSegment.ptB2 );  // parent base span mid point
+    var xTip = fsmp.x + ( fsmp.x - pbsmp.x ) * 0.25;  // new leaf tip x location
+    var yTip = fsmp.y + ( fsmp.y - pbsmp.y ) * 0.25;  // new leaf tip y location
+    s.ptLf1 = addPt( pctFromXVal( xTip ), pctFromYVal( yTip ) );  // leaf 1 tip point (left)
+    s.ptLf2 = addPt( pctFromXVal( xTip ), pctFromYVal( yTip ) );  // leaf 2 tip point (right)
     s.spLf1 = addSp( s.ptB1.id, s.ptLf1.id );  // leaf 1 span (left)
     s.spLf2 = addSp( s.ptB2.id, s.ptLf2.id );  // leaf 2 span (right)
     s.leafTipsTetherSpan = addSp( s.ptLf1.id, s.ptLf2.id );  // leaf tip tether span
@@ -454,8 +459,8 @@ function renderPlants() {
     for (var j=0; j<plants[i].segments.length; j++) {
       var plant = plants[i];
       var segment = plants[i].segments[j];
-      renderStalks( plant, segment );
-      renderLeaves( plant, segment );
+      if ( viewStalks ) { renderStalks( plant, segment ); }
+      if ( viewLeaves ) { renderLeaves( plant, segment ); }
     }
   }
 }
