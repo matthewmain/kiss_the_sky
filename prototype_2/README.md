@@ -4,9 +4,9 @@
 <br>
 <br>
 
-- [ ] flowers
-
 - [ ] seeds
+
+- [ ] flowers
 
 - [ ] reproduction (with randomized traits)
 
