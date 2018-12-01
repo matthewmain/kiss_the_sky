@@ -2,12 +2,12 @@
 
 <br>
 
-- [ ] [Prototype 1](https://github.com/matthewmain/plant_evolution_app/tree/master/prototype_1): Environment Physics & Basic Competive Growth  
-- [ ] Prototype 2: Flowers, Seeds, & Reproduction with Randomized Traits  
-- [ ] Prototype 3: Polinators & Reproduction with Traits as Average Between Parents  
-- [ ] Prototype 4: Seasons
+- [X] [Prototype 1](https://github.com/matthewmain/plant_evolution_app/tree/master/prototype_1)  _Environment Physics & Basic Competive Growth_  
+- [ ] Prototype 2  _Flowers, Seeds, & Reproduction with Randomized Traits_  
+- [ ] Prototype 3  _Polinators & Reproduction with Traits as Average Between Parents_  
+- [ ] Prototype 4  _Seasons_
 
 <br>
 
-- [ ] Version 1.0: Basic Genes, Alleles, Mutations, & Reproduction with Mendelian Genetics  
-- [ ] Version 1.2: Stylization
+- [ ] Version 1.0  _Basic Genes, Alleles, Mutations, & Reproduction with Mendelian Genetics_  
+- [ ] Version 1.2  _Stylization_
