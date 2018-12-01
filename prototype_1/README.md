@@ -1,4 +1,4 @@
-## [Plant Evolution App](https://github.com/matthewmain/plant_evolution_app) 
+### [Plant Evolution App](https://github.com/matthewmain/plant_evolution_app) 
 ### Prototype 1: Environment Physics & Basic Competive Growth
 
 <br>
