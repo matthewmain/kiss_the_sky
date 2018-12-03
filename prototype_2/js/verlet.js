@@ -30,7 +30,7 @@ var gravity = 0.01;  // (rate of y-velocity increase per frame per point mass of
 var rigidity = 10;  // global span rigidity (as iterations of position accuracy refinement)
 var friction = 0.999;  // (proportion of previous velocity after frame refresh)
 var bounceLoss = 0.9;  // (proportion of previous velocity after bouncing)
-var skidLoss = 0.5;  // (proportion of previous velocity if touching the ground)
+var skidLoss = 0.9;  // (proportion of previous velocity if touching the ground)
 var breeze = 0.4;  // breeziness level (applied as brief left & right gusts)
 
 
@@ -173,7 +173,7 @@ function updatePoints() {
     if (!p.fixed) {
       var	xv = (p.cx - p.px) * friction;	// x velocity
       var	yv = (p.cy - p.py) * friction;	// y velocity
-      if (p.py >= canvas.height-1-p.width/2 && p.py <= canvas.height-p.width/2) { xv *= skidLoss; }
+      if (p.py >= canvas.height-p.width/2-0.1) { xv *= skidLoss; }
       p.px = p.cx;  // updates previous x as current x
       p.py = p.cy;  // updates previous y as current y
       p.cx += xv;  // updates current x with new velocity
