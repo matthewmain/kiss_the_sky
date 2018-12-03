@@ -41,7 +41,7 @@ var seeds = []; var seedCount = 0;
 ///seed constructor
 function Seed() {
   this.sw = 15;  // seed width (universal size reference unit for seed)
-  this.p1 = addPt( Tl.rib(33,66), this.sw );  // seed point 1
+  this.p1 = addPt( Tl.rib(33,66), Tl.rib(5,25) );  // seed point 1
   this.p1.width = this.sw*1; 
   this.p1.mass = 5;
   this.p2 = addPt( pctFromXVal( this.p1.cx + this.sw*0.75 ), pctFromYVal( this.p1.cy ) );  // seed point 2
@@ -106,7 +106,7 @@ function renderSeeds() {
   }
 }
 
-for ( var i=0; i<10; i++ ) {
+for ( var i=0; i<25; i++ ) {
   createSeed();
 }
 
