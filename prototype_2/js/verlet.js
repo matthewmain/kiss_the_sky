@@ -30,7 +30,7 @@ var gravity = 0.01;  // (rate of y-velocity increase per frame per point mass of
 var rigidity = 10;  // global span rigidity (as iterations of position accuracy refinement)
 var friction = 0.999;  // (proportion of previous velocity after frame refresh)
 var bounceLoss = 0.9;  // (proportion of previous velocity after bouncing)
-var skidLoss = 0.8;  // (proportion of previous velocity if touching the ground)
+var skidLoss = 0.5;  // (proportion of previous velocity if touching the ground)
 var breeze = 0.4;  // breeziness level (applied as brief left & right gusts)
 
 
@@ -46,6 +46,7 @@ function Point(current_x, current_y, materiality="material") {  // materiality c
   this.px = this.cx;  // previous x value
   this.py = this.cy;  // previous y value
   this.mass = 1;  // (as ratio of gravity)
+  this.width = 0;
   this.materiality = materiality;
   this.fixed = false;
   this.id = pointCount;
@@ -172,7 +173,7 @@ function updatePoints() {
     if (!p.fixed) {
       var	xv = (p.cx - p.px) * friction;	// x velocity
       var	yv = (p.cy - p.py) * friction;	// y velocity
-      if (p.py >= canvas.height-1 && p.py <= canvas.height) { xv *= skidLoss; }
+      if (p.py >= canvas.height-1-p.width/2 && p.py <= canvas.height-p.width/2) { xv *= skidLoss; }
       p.px = p.cx;  // updates previous x as current x
       p.py = p.cy;  // updates previous y as current y
       p.cx += xv;  // updates current x with new velocity
@@ -187,23 +188,26 @@ function updatePoints() {
 function applyConstraints( currentIteration ) {
   for (var i=0; i<points.length; i++) {
     var p = points[i];
+    var pr = p.width/2;  // point radius
+    var xv = p.cx - p.px;  // x velocity
+    var yv = p.cy - p.py;  // y velocity
     //wall constraints (inverts velocity if point moves beyond a canvas edge)
     if (p.materiality === "material") {
-      if (p.cx > canvas.width) {
-        p.cx = canvas.width;
-        p.px = p.cx + (p.cx - p.px) * bounceLoss;
+      if (p.cx > canvas.width - pr) {
+        p.cx = canvas.width - pr;  // move point back to wall
+        p.px = p.cx + xv * bounceLoss;  // reverse velocity
       }
-      if (p.cx < 0) {
-        p.cx = 0;
-        p.px = p.cx + (p.cx - p.px) * bounceLoss;
+      if (p.cx < 0 + pr) {
+        p.cx = 0 + pr;
+        p.px = p.cx + xv * bounceLoss;
       }
-      if (p.cy > canvas.height) {
-        p.cy = canvas.height;
-        p.py = p.cy + (p.cy - p.py) * bounceLoss;
+      if (p.cy > canvas.height - pr) {
+        p.cy = canvas.height - pr;
+        p.py = p.cy + yv * bounceLoss;
       }
-      if (p.cy < 0) {
-        p.cy = 0;
-        p.py = p.cy + (p.cy - p.py) * bounceLoss;
+      if (p.cy < 0 + pr) {
+        p.cy = pr;
+        p.py = p.cy + yv * bounceLoss;
       }
     }
   }
@@ -254,9 +258,10 @@ function refinePositions() {
 function renderPoints() {
   for (var i=0; i<points.length; i++) {
     var p = points[i];
+    var radius = p.width >= 1 ? p.width/2 : 0.5;
     ctx.beginPath();
     ctx.fillStyle = "blue";
-    ctx.arc( p.cx, p.cy, 3, 0 , Math.PI*2 );
+    ctx.arc( p.cx, p.cy, radius, 0 , Math.PI*2 );
     ctx.fill(); 
   }
 }
