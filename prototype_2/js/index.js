@@ -41,7 +41,7 @@ var seeds = []; var seedCount = 0;
 ///seed constructor
 function Seed() {
   this.sw = 15;  // seed width (universal size reference unit for seed)
-  this.p1 = addPt( Tl.rib(33,66), Tl.rib(5,25) );  // seed point 1
+  this.p1 = addPt( Tl.rib(33,66), Tl.rib(5,25) );  // seed point 1  //////////(update after adding flowers)/////////
   this.p1.width = this.sw*1; 
   this.p1.mass = 5;
   this.p2 = addPt( pctFromXVal( this.p1.cx + this.sw*0.75 ), pctFromYVal( this.p1.cy ) );  // seed point 2
@@ -49,11 +49,13 @@ function Seed() {
   this.p2.materiality = "immaterial";
   this.sp = addSp( this.p1.id, this.p2.id );  // seed span
   this.sp.strength = 0.1;
-  //gives seed some initial random spin
-  this.p1.px += Tl.rfb(-5,5);
-  this.p1.py += Tl.rfb(-5,5);
-  this.p2.px += Tl.rfb(-5,5);
-  this.p2.py += Tl.rfb(-5,5);
+  //gives seed some initial random spin at initial scattering       //////////(update after adding flowers)/////////
+  if ( worldTime === 0 ) {
+    this.p1.px += Tl.rfb(-5,5);
+    this.p1.py += Tl.rfb(-5,5);
+    this.p2.px += Tl.rfb(-5,5);
+    this.p2.py += Tl.rfb(-5,5);
+  }
 }
 
 //creates a new seed
