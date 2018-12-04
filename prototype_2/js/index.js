@@ -35,7 +35,7 @@ var leer = 0.2;  // living energy expenditure rate (rate energy is expended for 
 ////---(TESTING)---////
 
 
-for ( var i=0; i<25; i++ ) {
+for ( var i=0; i<3; i++ ) {
   createSeed();
 }
 
@@ -81,7 +81,7 @@ function Plant( sourceSeed ) {
   this.outwardGrowthRate = this.forwardGrowthRate * Tl.rfb(0.18,0.22);  // (rate forward span widens per frame)
   this.maxSegmentWidth = Tl.rfb(11,13);  // maximum segment width (in pixels)
   this.maxTotalSegments = Tl.rib(10,20);  // maximum total number of segments
-  this.firstLeafSegment = Tl.rib(2,3);  // (segment on which first leaf set grows)
+  this.firstLeafSegment = Tl.rib(2,2);  // (segment on which first leaf set grows)
   this.leafFrequency = Tl.rib(2,3);  // (number of segments until next leaf set)
   this.maxLeaflength = this.maxSegmentWidth * Tl.rfb(4,7);  // maximum leaf length at maturity
   this.leafGrowthRate = this.forwardGrowthRate * Tl.rfb(1.4,1.6);  // leaf growth rate
