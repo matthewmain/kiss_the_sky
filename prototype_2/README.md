@@ -6,7 +6,7 @@
 
 - [X] seeds 
 
-- [ ] germination animation
+- [ ] basic germination animation
 
 - [ ] flowers
 
