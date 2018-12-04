@@ -31,7 +31,7 @@ var leer = 0.2;  // living energy expenditure rate (rate energy is expended for 
 
 
 
-////---(TESTING)---///
+////---(TESTING)---////
 
 
 //// SEEDS /////////////////////////////////////////////////////
