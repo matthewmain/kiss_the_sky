@@ -16,7 +16,7 @@
 <br>
 
 - [ ] Version 2.1 - _Stylization (advanced sprouting & blooming animations, colors, lighting, background, etc.)_ 
-- [ ] Version 2.2 - _Plant interaction (swiping for breeze, cutting/pruning) & gamification (storing & planting seeds, etc.)._
+- [ ] Version 2.2 - _Plant interaction (swiping for breeze, cutting/pruning) & gamification (storing & planting seeds, etc.)_
 
 <br>
 <br>
