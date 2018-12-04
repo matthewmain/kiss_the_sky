@@ -80,7 +80,7 @@ function Plant( sourceSeed ) {
   this.outwardGrowthRate = this.forwardGrowthRate * Tl.rfb(0.18,0.22);  // (rate forward span widens per frame)
   this.maxSegmentWidth = Tl.rfb(11,13);  // maximum segment width (in pixels)
   this.maxTotalSegments = Tl.rib(10,20);  // maximum total number of segments
-  this.firstLeafSegment = Tl.rib(2,4);  // (segment on which first leaf set grows)
+  this.firstLeafSegment = Tl.rib(2,3);  // (segment on which first leaf set grows)
   this.leafFrequency = Tl.rib(2,3);  // (number of segments until next leaf set)
   this.maxLeaflength = this.maxSegmentWidth * Tl.rfb(4,7);  // maximum leaf length at maturity
   this.leafGrowthRate = this.forwardGrowthRate * Tl.rfb(1.4,1.6);  // leaf growth rate
@@ -197,30 +197,38 @@ function createSunRays() {
   }
 }
 
-//scatters seeds (for initiation)
+///scatters seeds (for initiation)
 function scatterSeed( seed ) {
   seed.p1.px += Tl.rfb(-5,5); seed.p1.py += Tl.rfb(-5,5);
   seed.p2.px += Tl.rfb(-5,5); seed.p2.py += Tl.rfb(-5,5);
 }
 
+///plants seed (secures its position to ground)
+function plantSeed( seed ) {
+  seed.p1.fixed = true; 
+  seed.p2.fixed = true; 
+  seed.planted = true;
+}
+
+///germinates seed and establishes plant's base segment, setting growth in motion
+function germinateSeed( seed ) {
+  var plant = seed.resultingPlant;
+  plant.xLocation = pctFromXVal( seed.p1.cx );
+  plant.ptB1 = addPt( plant.xLocation - 0.1, 100 );  // base point 1
+  plant.ptB2 = addPt( plant.xLocation + 0.1, 100 );  // base point 2
+  plant.ptB1.fixed = plant.ptB2.fixed = true;  // fixes base points to ground
+  plant.spB = addSp( plant.ptB1.id, plant.ptB2.id );  // adds base span
+  createSegment( plant, null, plant.ptB1, plant.ptB2 );  // creates the base segment (with "null" parent)
+  seed.hasGerminated = true;
+}
 
 ///germinates seeds when ready
-function germinate( seed ) {
-  //plants seed in ground (secures its position to ground)
+function germinateSeedWhenReady( seed ) {
   if ( seed.p2.cy > canvas.height + seed.sp.l - seed.p1.width/2 && !seed.planted ) {
-    seed.p1.fixed = true; seed.p2.fixed = true; 
-    seed.planted = true;
+    plantSeed( seed );
   }
-  //germinates seed and establishes plant's base segment, setting growth in motion
   if ( seed.planted && !seed.hasGerminated ) {
-    var plant = seed.resultingPlant;
-    plant.xLocation = pctFromXVal( seed.p1.cx );
-    plant.ptB1 = addPt( plant.xLocation - 0.1, 100 );  // base point 1
-    plant.ptB2 = addPt( plant.xLocation + 0.1, 100 );  // base point 2
-    plant.ptB1.fixed = plant.ptB2.fixed = true;  // fixes base points to ground
-    plant.spB = addSp( plant.ptB1.id, plant.ptB2.id );  // adds base span
-    createSegment( plant, null, plant.ptB1, plant.ptB2 );  // creates the base segment (with "null" parent)
-    seed.hasGerminated = true;
+    germinateSeed( seed );
   }
 }
 
@@ -288,36 +296,29 @@ function markShadowPositions( segment ) {
 function growPlants() {
   for (var i=0; i<plants.length; i++) {
     var plant = plants[i];
-    if ( plant.sourceSeed.hasGerminated ) {
-      //caps plant energy based on segment count
-      if ( plant.energy > plant.segmentCount * 1000 && plant.energy > 5000 ) {
-        plant.energy = plant.segmentCount * 1000;
-      }
-      //checks for sufficient energy for growth (must be greater than zero to grow)
-      if ( plant.energy > 0 || !restrictGrowthByEnergy ) {
-        for (var j=0; j<plants[i].segments.length; j++) {
-          var segment = plants[i].segments[j];
-          //lengthens segment spans
-          if ( segment.spF.l < plant.maxSegmentWidth && plant.segments.length < plant.maxTotalSegments) { 
-            lengthenSegmentSpans( plant, segment );
-            plant.energy -= segment.spCd.l * geer;  // reduces energy by a ratio of segment size
-          }
-          //generates new segment
-          if ( readyForChildSegment( plant, segment ) ) { 
-            createSegment( plant, segment, segment.ptE1, segment.ptE2 ); 
-          }
-          //handles leaves
-          if ( !segment.hasLeaves ) { 
-            generateLeavesWhenReady( plant, segment ); 
-          } else if ( plant.segments.length < plant.maxTotalSegments ) {
-            growLeaves( plant, segment );
-            plant.energy -= ( segment.spLf1.l + segment.spLf2.l ) * geer;  // reduces energy by a ratio of leaf length
-          }
+    germinateSeedWhenReady( plant.sourceSeed );  // germinates a planted seed
+    if ( plant.energy > plant.segmentCount * 1000 && plant.energy > 5000 ) {
+      plant.energy = plant.segmentCount * 1000;  // caps plant energy based on segment count
+    }
+    if ( plant.energy > 0 || !restrictGrowthByEnergy ) {  // checks if plant has energy for growth
+      for (var j=0; j<plants[i].segments.length; j++) {
+        var segment = plants[i].segments[j];
+        if ( segment.spF.l < plant.maxSegmentWidth && plant.segments.length < plant.maxTotalSegments) { 
+          lengthenSegmentSpans( plant, segment );  // lengthens segment spans until segment fully grown
+          plant.energy -= segment.spCd.l * geer;  // reduces energy by a ratio of segment size
+        }
+        if ( readyForChildSegment( plant, segment ) ) { 
+          createSegment( plant, segment, segment.ptE1, segment.ptE2 );  // generates new segment
+        }
+        if ( !segment.hasLeaves ) { 
+          generateLeavesWhenReady( plant, segment );  // generates new leaf set
+        } else if ( plant.segments.length < plant.maxTotalSegments ) {
+          growLeaves( plant, segment );  // grows leaves until leaves are fully grown
+          plant.energy -= ( segment.spLf1.l + segment.spLf2.l ) * geer;  // reduces energy by a ratio of leaf length
         }
       }
-      //cost of living 
-      plant.energy -= plant.segmentCount * leer;  // reduces energy by a ratio of segment count
     }
+    plant.energy -= plant.segmentCount * leer;  // cost of living: reduces energy by a ratio of segment count 
   }
 }
 
@@ -433,48 +434,45 @@ function growLeaves( plant, segment ) {
 }
 
 ///renders seeds
-function renderSeeds() {
-  for ( var i=0; i<seeds.length; i++) {
-    var seed = seeds[i];
-    //point instances (centers of the two component circles)
-    var p1 = seed.p1;
-    var p2 = seed.p2;
-    var sp = seed.sp;
-    var p1x = p1.cx; 
-    var p1y = p1.cy;
-    var p2x = p2.cx; 
-    var p2y = p2.cy;
-    //references points (polar points)
-    var r1x = p1.cx - ( p2.cx - p1.cx ) * (p1.width*0.5 / sp.l );
-    var r1y = p1.cy - ( p2.cy - p1.cy ) * (p1.width*0.5 / sp.l );
-    var r2x = p2.cx + ( p2.cx - p1.cx ) * (p2.width*0.5 / sp.l );
-    var r2y = p2.cy + ( p2.cy - p1.cy ) * (p2.width*0.5 / sp.l );
-    //bezier handle lengths
-    var h1l = seed.sw*0.85;
-    var h2l = seed.sw*0.35;
-    //top bezier handles points
-    var h1x = r1x + h1l * ( p1y - r1y ) / (p1.width*0.5);
-    var h1y = r1y - h1l * ( p1x - r1x ) / (p1.width*0.5);
-    var h2x = r2x - h2l * ( p2y - r2y ) / (p2.width*0.5);
-    var h2y = r2y - h2l * ( r2x - p2x ) / (p2.width*0.5);
-    //bottom bezier handles points
-    var h3x = r2x + h2l * ( p2y - r2y ) / (p2.width*0.5);
-    var h3y = r2y + h2l * ( r2x - p2x ) / (p2.width*0.5);
-    var h4x = r1x - h1l * ( p1y - r1y ) / (p1.width*0.5);
-    var h4y = r1y + h1l * ( p1x - r1x ) / (p1.width*0.5);
-    //draws seeds
-    ctx.lineWidth = 0;
-    ctx.strokeStyle = "black";
-    ctx.fillStyle = "#444444";
-    ctx.beginPath();
-    ctx.moveTo( r1x, r1y );
-    ctx.bezierCurveTo( h1x, h1y, h2x, h2y, r2x, r2y );
-    ctx.bezierCurveTo( h3x, h3y, h4x, h4y, r1x, r1y );
-    ctx.stroke();
-    ctx.fill();
-    //checks seeds while iterating
-    germinate( seed );
-  }
+function renderSeed( resultingPlant ) {
+  var seed = resultingPlant.sourceSeed;
+  //point instances (centers of the two component circles)
+  var p1 = seed.p1;
+  var p2 = seed.p2;
+  var sp = seed.sp;
+  var p1x = p1.cx; 
+  var p1y = p1.cy;
+  var p2x = p2.cx; 
+  var p2y = p2.cy;
+  //references points (polar points)
+  var r1x = p1.cx - ( p2.cx - p1.cx ) * (p1.width*0.5 / sp.l );
+  var r1y = p1.cy - ( p2.cy - p1.cy ) * (p1.width*0.5 / sp.l );
+  var r2x = p2.cx + ( p2.cx - p1.cx ) * (p2.width*0.5 / sp.l );
+  var r2y = p2.cy + ( p2.cy - p1.cy ) * (p2.width*0.5 / sp.l );
+  //bezier handle lengths
+  var h1l = seed.sw*0.85;
+  var h2l = seed.sw*0.35;
+  //top bezier handles points
+  var h1x = r1x + h1l * ( p1y - r1y ) / (p1.width*0.5);
+  var h1y = r1y - h1l * ( p1x - r1x ) / (p1.width*0.5);
+  var h2x = r2x - h2l * ( p2y - r2y ) / (p2.width*0.5);
+  var h2y = r2y - h2l * ( r2x - p2x ) / (p2.width*0.5);
+  //bottom bezier handles points
+  var h3x = r2x + h2l * ( p2y - r2y ) / (p2.width*0.5);
+  var h3y = r2y + h2l * ( r2x - p2x ) / (p2.width*0.5);
+  var h4x = r1x - h1l * ( p1y - r1y ) / (p1.width*0.5);
+  var h4y = r1y + h1l * ( p1x - r1x ) / (p1.width*0.5);
+  //draws seeds
+  ctx.lineWidth = 0;
+  ctx.strokeStyle = "black";
+  ctx.fillStyle = "#444444";
+  ctx.beginPath();
+  ctx.moveTo( r1x, r1y );
+  ctx.bezierCurveTo( h1x, h1y, h2x, h2y, r2x, r2y );
+  ctx.bezierCurveTo( h3x, h3y, h4x, h4y, r1x, r1y );
+  ctx.stroke();
+  ctx.fill();
+  //checks seeds while iterating
 }
 
 ///renders leaf
@@ -560,12 +558,13 @@ function renderStalks( plant, segment ) {
 ///renders plants (sequentially)
 function renderPlants() {
   for (var i=0; i<plants.length; i++) {
+    var plant = plants[i];
     for (var j=0; j<plants[i].segments.length; j++) {
-      var plant = plants[i];
-      var segment = plants[i].segments[j];
+      var segment = plant.segments[j];
       if ( viewStalks ) { renderStalks( plant, segment ); }
       if ( viewLeaves ) { renderLeaves( plant, segment ); }
     }
+    renderSeed( plant );
   }
 }
 
@@ -596,7 +595,6 @@ function renderShadows() {
 function display() {
   runVerlet();
   if ( worldTime % worldSpeed === 0 ) { growPlants(); }
-  renderSeeds();
   renderPlants();
   shedSunlight();
   renderShadows();
