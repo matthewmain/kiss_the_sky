@@ -47,7 +47,7 @@ for ( var i=0; i<25; i++ ) {
 
 ///seed constructor
 function Seed() {
-  this.sw = 15;  // seed width (universal size reference unit for seed)
+  this.sw = 14;  // seed width (universal size reference unit for seed)
   if ( worldTime === 0 ) {
     this.p1 = addPt( Tl.rib(33,66), Tl.rib(5,25) );  // seed point 1 (placed in air for scattering at initiation)
   } else {
@@ -55,11 +55,12 @@ function Seed() {
   }
   this.p1.width = this.sw*1; 
   this.p1.mass = 5;
-  this.p2 = addPt( pctFromXVal( this.p1.cx + this.sw*0.75 ), pctFromYVal( this.p1.cy ) );  // seed point 2
+  this.p2 = addPt( pctFromXVal( this.p1.cx + this.sw*1.6 ), pctFromYVal( this.p1.cy ) );  // seed point 2
   this.p2.width = this.sw*0.35; this.p2.mass = 5; 
   this.p2.materiality = "immaterial";
   this.sp = addSp( this.p1.id, this.p2.id );  // seed span
   this.sp.strength = 1;
+  this.opacity = 1;
   this.planted = false;
   this.hasGerminated = false;
   this.resultingPlant = createPlant( this );
@@ -205,9 +206,14 @@ function scatterSeed( seed ) {
 
 ///plants seed (secures its position to ground)
 function plantSeed( seed ) {
-  seed.p1.fixed = true; 
-  seed.p2.fixed = true; 
-  seed.planted = true;
+  seed.p1.fixed = true;
+  seed.p1.materiality = "immaterial"; 
+  if ( seed.p1.cy < canvas.height-1 ) {
+    seed.p1.cy += 1.5;
+    seed.p2.cy += 1.5; 
+  } else { 
+    seed.planted = true;
+  }
 }
 
 ///germinates seed and establishes plant's base segment, setting growth in motion
@@ -222,13 +228,21 @@ function germinateSeed( seed ) {
   seed.hasGerminated = true;
 }
 
+function fadeOutSeed( seed ) {
+  seed.opacity -= 0.00175;
+}
+
 ///germinates seeds when ready
 function germinateSeedWhenReady( seed ) {
-  if ( seed.p2.cy > canvas.height + seed.sp.l - seed.p1.width/2 && !seed.planted ) {
+  // if ( seed.p2.cy > canvas.height + seed.sp.l - seed.p1.width/2 && !seed.planted ) {
+  if ( seed.p1.cy > canvas.height-seed.p1.width/2-0.5 && !seed.planted ) {    
     plantSeed( seed );
   }
   if ( seed.planted && !seed.hasGerminated ) {
     germinateSeed( seed );
+  }
+  if ( seed.hasGerminated && seed.opacity > 0 ) {
+    fadeOutSeed( seed );  // slowly hides seen after germination
   }
 }
 
@@ -464,8 +478,8 @@ function renderSeed( resultingPlant ) {
   var h4y = r1y + h1l * ( p1x - r1x ) / (p1.width*0.5);
   //draws seeds
   ctx.lineWidth = 0;
-  ctx.strokeStyle = "black";
-  ctx.fillStyle = "#444444";
+  ctx.strokeStyle = "rgba( 0, 0, 0, "+seed.opacity+" )";
+  ctx.fillStyle = "rgba( 81, 64, 20, "+seed.opacity+" )";
   ctx.beginPath();
   ctx.moveTo( r1x, r1y );
   ctx.bezierCurveTo( h1x, h1y, h2x, h2y, r2x, r2y );
