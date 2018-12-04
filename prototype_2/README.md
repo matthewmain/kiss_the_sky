@@ -6,9 +6,9 @@
 
 - [X] seeds 
 
-- [ ] basic germination animation
+- [X] germination (with basic preliminary sprouting animation)
 
-- [ ] flowers
+- [ ] flowers (with basic preliminary blooming animation)
 
 - [ ] reproduction (with randomized traits)
 

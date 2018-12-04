@@ -9,5 +9,8 @@
 
 <br>
 
-- [ ] Version 1.0 - _Basic Genes, Alleles, Mutations, & Reproduction with Mendelian Genetics_  
-- [ ] Version 1.2 - _Stylization (advanced germination & flower animations, colors, lighting, background, etc.)_ 
+- [ ] Version 1.0 - _Genes, Alleles, Mutations, & Reproduction with Mendelian Genetics_  
+- [ ] Version 1.2 - _Branching_
+
+- [ ] Version 2.1 - _Stylization (advanced sprouting & blooming animations, colors, lighting, background, etc.)_ 
+- [ ] Version 2.2 - _Plant interaction (swiping for breeze, cutting/pruning) & gamification (storing & planting seeds, etc.)._
