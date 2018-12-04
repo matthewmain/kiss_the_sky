@@ -19,7 +19,7 @@ var sunRays = [], sunRayCount = 0;
 var shadows = [], shadowCount = 0;
 
 ///settings
-var worldSpeed = 10;  // (as frames per iteration; higher is slower) (does not affect physics iterations)
+var worldSpeed = 5;  // (as frames per iteration; higher is slower) (does not affect physics iterations)
 var restrictGrowthByEnergy = true;  // restricts plant growth by energy level (if false plants grow freely)
 var viewShadows = false;  // (shadow visibility)
 var viewStalks = true;  // (stalk skin visibility) 
@@ -48,7 +48,10 @@ function Seed() {
   this.p2.width = this.sw*0.35; this.p2.mass = 5; 
   this.p2.materiality = "immaterial";
   this.sp = addSp( this.p1.id, this.p2.id );  // seed span
-  this.sp.strength = 0.1;
+  this.sp.strength = 1;
+  this.planted = false;
+  this.hasGerminated = false;
+  this.resultingPlant = null;
   //gives seed some initial random spin at initial scattering       //////////(update after adding flowers)/////////
   if ( worldTime === 0 ) {
     this.p1.px += Tl.rfb(-5,5);
@@ -90,11 +93,11 @@ function renderSeeds() {
     var h1y = r1y - h1l * ( p1x - r1x ) / (p1.width*0.5);
     var h2x = r2x - h2l * ( p2y - r2y ) / (p2.width*0.5);
     var h2y = r2y - h2l * ( r2x - p2x ) / (p2.width*0.5);
-    //bottom bezier handles points /////////////////////////////////////////// <<---update
-    var h3x = r2x + ( r1y - r2y ) * ( 0.2 );       
-    var h3y = r2y + ( r2x - r1x ) * ( 0.2 );
-    var h4x = r1x + ( r1y - r2y ) * ( 0.65 ); 
-    var h4y = r1y + ( r2x - r1x ) * ( 0.65 );
+    //bottom bezier handles points
+    var h3x = r2x + h2l * ( p2y - r2y ) / (p2.width*0.5);
+    var h3y = r2y + h2l * ( r2x - p2x ) / (p2.width*0.5);
+    var h4x = r1x - h1l * ( p1y - r1y ) / (p1.width*0.5);
+    var h4y = r1y + h1l * ( p1x - r1x ) / (p1.width*0.5);
     //draws seeds
     ctx.lineWidth = 0;
     ctx.strokeStyle = "black";
@@ -105,6 +108,17 @@ function renderSeeds() {
     ctx.bezierCurveTo( h3x, h3y, h4x, h4y, r1x, r1y );
     ctx.stroke();
     ctx.fill();
+    //checks seeds while iterating
+    checkSeeds( seed );
+  }
+}
+
+function checkSeeds( seed ) {
+  if ( seed.p2.cy > canvas.height + seed.sp.l - seed.p1.width/2 && !seed.planted ) {
+    seed.p1.fixed = true; seed.p2.fixed = true; seed.planted = true;
+  }
+  if ( seed.planted && !seed.hasGerminated ) {
+    createPlant( seed ); seed.hasGerminated = true;
   }
 }
 
@@ -119,9 +133,6 @@ for ( var i=0; i<25; i++ ) {
 
 
 
-for ( var i=0; i<10; i++ ) {
-  //createPlant();
-}
 
 
 
@@ -132,10 +143,11 @@ for ( var i=0; i<10; i++ ) {
 
 
 ///plant constructor
-function Plant( xLocation ) {
+function Plant( sourceSeed ) {
+  this.sourceSeed = sourceSeed;
   this.id = plantCount;
   this.segments = []; this.segmentCount = 0;
-  this.xLocation = xLocation;
+  this.xLocation = pctFromXVal( this.sourceSeed.p1.cx );
   this.energy = 5000;  // seed energy (starting energy level at germination)
   this.isAlive = true;
   //settings
@@ -147,7 +159,6 @@ function Plant( xLocation ) {
   this.leafFrequency = Tl.rib(2,3);  // (number of segments until next leaf set)
   this.maxLeaflength = this.maxSegmentWidth * Tl.rfb(4,7);  // maximum leaf length at maturity
   this.leafGrowthRate = this.forwardGrowthRate * Tl.rfb(1.4,1.6);  // leaf growth rate
-  this.seed = null;
   //base segment
   this.ptB1 = addPt( this.xLocation - 0.1, 100 );  // base point 1
   this.ptB2 = addPt( this.xLocation + 0.1, 100 );  // base point 2
@@ -232,9 +243,10 @@ function Shadow( leafSpan ) {
 
 
 //creates a new plant
-function createPlant() {
+function createPlant( sourceSeed ) {
   plantCount++;
-  plants.push( new Plant(Tl.rib(1,99)) );
+  plants.push( new Plant( sourceSeed ) );
+  sourceSeed.resultingPlant = plants[plants.length-1];
 }
 
 ///creates a new segment
