@@ -4,7 +4,9 @@
 <br>
 <br>
 
-- [ ] seeds (with germination animation)
+- [X] seeds 
+
+- [ ] germination animation
 
 - [ ] flowers
 
