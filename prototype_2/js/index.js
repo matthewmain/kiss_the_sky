@@ -35,7 +35,7 @@ var leer = 0.2;  // living energy expenditure rate (rate energy is expended for 
 ////---(TESTING)---////
 
 
-for ( var i=0; i<3; i++ ) {
+for ( var i=0; i<25; i++ ) {
   createSeed();
 }
 
@@ -62,7 +62,7 @@ function Seed() {
   this.sp.strength = 1;
   this.planted = false;
   this.hasGerminated = false;
-  this.resultingPlant = null;
+  this.resultingPlant = createPlant( this );
   if ( worldTime === 0 ) { scatterSeed( this ); }  // scatters seeds at initiation
 }
 
@@ -72,7 +72,7 @@ function Plant( sourceSeed ) {
   this.sourceSeed = sourceSeed;
   this.id = plantCount;
   this.segments = []; this.segmentCount = 0;
-  this.xLocation = pctFromXVal( this.sourceSeed.p1.cx );
+  this.xLocation = null;
   this.energy = 5000;  // seed energy (starting energy level at germination)
   this.isAlive = true;
   //settings
@@ -84,12 +84,11 @@ function Plant( sourceSeed ) {
   this.leafFrequency = Tl.rib(2,3);  // (number of segments until next leaf set)
   this.maxLeaflength = this.maxSegmentWidth * Tl.rfb(4,7);  // maximum leaf length at maturity
   this.leafGrowthRate = this.forwardGrowthRate * Tl.rfb(1.4,1.6);  // leaf growth rate
-  //base segment
-  this.ptB1 = addPt( this.xLocation - 0.1, 100 );  // base point 1
-  this.ptB2 = addPt( this.xLocation + 0.1, 100 );  // base point 2
-  this.ptB1.fixed = this.ptB2.fixed = true;  // fixes base points to ground
-  this.spB = addSp( this.ptB1.id, this.ptB2.id );  // adds base span
-  createSegment( this, null, this.ptB1, this.ptB2 );  // creates the base segment (with "null" parent)
+  //base segement (values assigned at source seed germination)
+  this.xLocation = null;  // x value where plant is rooted to the ground
+  this.ptB1 = null;  // base point 1
+  this.ptB2 = null;  // base point 2
+  this.spB = null;  // adds base span
 }
 
 ///segment constructor
@@ -177,7 +176,7 @@ function createSeed() {
 function createPlant( sourceSeed ) {
   plantCount++;
   plants.push( new Plant( sourceSeed ) );
-  sourceSeed.resultingPlant = plants[plants.length-1];
+  return plants[plants.length-1];
 }
 
 ///creates a new segment
@@ -205,13 +204,23 @@ function scatterSeed( seed ) {
 }
 
 
-///checks seeds for germination
-function checkSeedsForGermination( seed ) {
+///germinates seeds when ready
+function germinate( seed ) {
+  //plants seed in ground (secures its position to ground)
   if ( seed.p2.cy > canvas.height + seed.sp.l - seed.p1.width/2 && !seed.planted ) {
-    seed.p1.fixed = true; seed.p2.fixed = true; seed.planted = true;
+    seed.p1.fixed = true; seed.p2.fixed = true; 
+    seed.planted = true;
   }
+  //germinates seed and establishes plant's base segment, setting growth in motion
   if ( seed.planted && !seed.hasGerminated ) {
-    createPlant( seed ); seed.hasGerminated = true;
+    var plant = seed.resultingPlant;
+    plant.xLocation = pctFromXVal( seed.p1.cx );
+    plant.ptB1 = addPt( plant.xLocation - 0.1, 100 );  // base point 1
+    plant.ptB2 = addPt( plant.xLocation + 0.1, 100 );  // base point 2
+    plant.ptB1.fixed = plant.ptB2.fixed = true;  // fixes base points to ground
+    plant.spB = addSp( plant.ptB1.id, plant.ptB2.id );  // adds base span
+    createSegment( plant, null, plant.ptB1, plant.ptB2 );  // creates the base segment (with "null" parent)
+    seed.hasGerminated = true;
   }
 }
 
@@ -279,34 +288,36 @@ function markShadowPositions( segment ) {
 function growPlants() {
   for (var i=0; i<plants.length; i++) {
     var plant = plants[i];
-    //caps plant energy based on segment count
-    if ( plant.energy > plant.segmentCount * 1000 && plant.energy > 5000 ) {
-      plant.energy = plant.segmentCount * 1000;
-    }
-    //checks for sufficient energy for growth (must be greater than zero to grow)
-    if ( plant.energy > 0 || !restrictGrowthByEnergy ) {
-      for (var j=0; j<plants[i].segments.length; j++) {
-        var segment = plants[i].segments[j];
-        //lengthens segment spans
-        if ( segment.spF.l < plant.maxSegmentWidth && plant.segments.length < plant.maxTotalSegments) { 
-          lengthenSegmentSpans( plant, segment );
-          plant.energy -= segment.spCd.l * geer;  // reduces energy by a ratio of segment size
-        }
-        //generates new segment
-        if ( readyForChildSegment( plant, segment ) ) { 
-          createSegment( plant, segment, segment.ptE1, segment.ptE2 ); 
-        }
-        //handles leaves
-        if ( !segment.hasLeaves ) { 
-          generateLeavesWhenReady( plant, segment ); 
-        } else if ( plant.segments.length < plant.maxTotalSegments ) {
-          growLeaves( plant, segment );
-          plant.energy -= ( segment.spLf1.l + segment.spLf2.l ) * geer;  // reduces energy by a ratio of leaf length
+    if ( plant.sourceSeed.hasGerminated ) {
+      //caps plant energy based on segment count
+      if ( plant.energy > plant.segmentCount * 1000 && plant.energy > 5000 ) {
+        plant.energy = plant.segmentCount * 1000;
+      }
+      //checks for sufficient energy for growth (must be greater than zero to grow)
+      if ( plant.energy > 0 || !restrictGrowthByEnergy ) {
+        for (var j=0; j<plants[i].segments.length; j++) {
+          var segment = plants[i].segments[j];
+          //lengthens segment spans
+          if ( segment.spF.l < plant.maxSegmentWidth && plant.segments.length < plant.maxTotalSegments) { 
+            lengthenSegmentSpans( plant, segment );
+            plant.energy -= segment.spCd.l * geer;  // reduces energy by a ratio of segment size
+          }
+          //generates new segment
+          if ( readyForChildSegment( plant, segment ) ) { 
+            createSegment( plant, segment, segment.ptE1, segment.ptE2 ); 
+          }
+          //handles leaves
+          if ( !segment.hasLeaves ) { 
+            generateLeavesWhenReady( plant, segment ); 
+          } else if ( plant.segments.length < plant.maxTotalSegments ) {
+            growLeaves( plant, segment );
+            plant.energy -= ( segment.spLf1.l + segment.spLf2.l ) * geer;  // reduces energy by a ratio of leaf length
+          }
         }
       }
+      //cost of living 
+      plant.energy -= plant.segmentCount * leer;  // reduces energy by a ratio of segment count
     }
-    //cost of living 
-    plant.energy -= plant.segmentCount * leer;  // reduces energy by a ratio of segment count
   }
 }
 
@@ -462,7 +473,7 @@ function renderSeeds() {
     ctx.stroke();
     ctx.fill();
     //checks seeds while iterating
-    checkSeedsForGermination( seed );
+    germinate( seed );
   }
 }
 
