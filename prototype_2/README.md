@@ -1,5 +1,5 @@
 ### [Plant Evolution App](https://github.com/matthewmain/plant_evolution_app) 
-### Prototype 2: Flowers, Seeds, & Reproduction with Randomized Traits
+### Prototype 2: Seeds, Flowers & Reproduction with Randomized Traits
 
 <br>
 <br>
