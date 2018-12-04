@@ -10,4 +10,4 @@
 <br>
 
 - [ ] Version 1.0 - _Basic Genes, Alleles, Mutations, & Reproduction with Mendelian Genetics_  
-- [ ] Version 1.2 - _Stylization (advanced germination & flower animations, colors, lighting, background, etc.) _ 
+- [ ] Version 1.2 - _Stylization (advanced germination & flower animations, colors, lighting, background, etc.)_ 
