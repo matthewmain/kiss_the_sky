@@ -35,7 +35,7 @@ var leer = 0.2;  // living energy expenditure rate (rate energy is expended for 
 ////---(TESTING)---////
 
 
-for ( var i=0; i<3; i++ ) {
+for ( var i=0; i<5; i++ ) {
   createSeed();
 }
 
@@ -229,7 +229,7 @@ function germinateSeed( seed ) {
 }
 
 function fadeOutSeed( seed ) {
-  seed.opacity -= 0.00175;
+  seed.opacity -= 0.0015;
 }
 
 ///germinates seeds when ready
