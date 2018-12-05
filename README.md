@@ -3,7 +3,7 @@
 <br>
 <br>
 
-- [X] [Prototype 1](https://github.com/matthewmain/plant_evolution_app/tree/master/prototype_1) - _Environment Physics & Basic Competive Growth_  
+- [X] [Prototype 1](https://github.com/matthewmain/plant_evolution_app/tree/master/prototype_1) - _Environment Physics & Basic Competitive Growth_  
 - [ ] [Prototype 2](https://github.com/matthewmain/plant_evolution_app/tree/master/prototype_2) - _Flowers, Seeds, & Reproduction with Randomized Traits_  
 - [ ] Prototype 3 - _Polinators & Reproduction with Traits as Average Between Parents_  
 - [ ] Prototype 4 - _Seasons_
