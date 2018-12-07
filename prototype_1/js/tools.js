@@ -4,7 +4,7 @@
 
 
 
-const Tl = {
+var Tl = {
 
 
 	//random integer between two numbers (min/max inclusive)
