@@ -4,7 +4,7 @@
 
 ///////////////////////////////////////////////////////////////// 
 ////////////     Plant Evolution App: Prototype 2     /////////// 
-//////////////////////////////////////////////////?//////////////
+/////////////////////////////////////////////////////////////////
 
 //file:///Users/matthewwmain/Development/projects/plant_evolution_app/prototype_2/index.html
 
@@ -20,7 +20,7 @@ var sunRays = [], sunRayCount = 0;
 var shadows = [], shadowCount = 0;
 
 ///settings
-var worldSpeed = 1;//10;  // (as frames per iteration: higher is slower) (does not affect physics iterations)
+var worldSpeed = 5;  // (as frames per iteration: higher is slower) (does not affect physics iterations)
 var viewShadows = false;  // (shadow visibility)
 var viewStalks = true;  // (stalk visibility) 
 var viewLeaves = true;  // (leaf visibility)
@@ -99,6 +99,7 @@ function Plant( sourceSeed ) {
   this.sourceSeed = sourceSeed;
   this.id = plantCount;
   this.segments = []; this.segmentCount = 0;
+  this.flowers = []; this.flowerCount = 0;
   this.xLocation = null;
   this.seedEnergy = energyStoreFactor * Tl.rfb(10,15);  // energy level from seed at plant initiation
   this.energy = this.seedEnergy;  // energy (starts with seed energy at germination)
@@ -133,7 +134,6 @@ function Segment( plant, parentSegment, basePoint1, basePoint2 ) {
   //settings
   this.forwardGrowthRateVariation = Tl.rfb(0.95,1.05);//(0.95,1.05);  // forward growth rate variation
   this.mass = 1;  // mass of the segment stalk portion ( divided between the two extension points)
-  this.strength = 1.5;  // as multiple of global rigidity (higher values effect performance)
   //base points
   this.ptB1 = basePoint1;  // base point 1
   this.ptB2 = basePoint2;  // base point 2
@@ -169,6 +169,24 @@ function Segment( plant, parentSegment, basePoint1, basePoint2 ) {
   this.ic = C.hil;  // inner line color (slightly darker green than leaf fill when healthy) 
 }
 
+///flower constructor
+function Flower( plant, parentSegment, basePoint1, basePoint2 ) {
+  this.plantId = plant.id;
+  this.id = plant.flowerCount;
+  this.parentSegment = parentSegment;
+  //base points
+  this.ptB1 = basePoint1;  // base point 1
+  this.ptB2 = basePoint2;  // base point 2
+  //flower points   <<<-------------------{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}
+
+  //spans
+
+  //skins
+
+  //colors
+
+}
+
 ///sun ray constructor
 function SunRay() {
   this.id = sunRayCount;
@@ -183,11 +201,6 @@ function Shadow( leafSpan ) {
   this.p2 = leafSpan.p2;
   this.p3 = { cx: this.p2.cx, cy: yValFromPct( 100 ) };
   this.p4 = { cx: this.p1.cx, cy: yValFromPct( 100 ) };
-}
-
-///flower constructor
-function Flower() {
-  // model on segments... //////////////////////////////////////////////////////////////////////////////////////
 }
 
 
