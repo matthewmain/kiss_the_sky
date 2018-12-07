@@ -30,7 +30,7 @@ var photosynthesisRatio = 1;  // ratio of available sun ray energy stored by a l
 var growthExp = 0.5;  // growth energy expenditure rate (rate energy is expended for growth)
 var livingExp = 0.2;  // living energy expenditure rate (rate energy is expended for living)
 var energyStoreFactor = 1000;  // a plant's maximum storable energy units per segment
-var unhealthyEnergyLevelRatio = 0.05;  // ratio of maximum energy when plant becomes unhealthy (starts yellowing)
+var unhealthyEnergyLevelRatio = 0.075;  // ratio of maximum energy when plant becomes unhealthy (starts yellowing)
 var sickEnergyLevelRatio = -0.2;  // ratio of maximum energy when plant becomes sick (starts darkening)
 var deathEnergyLevelRatio = -1;  // ratio of maximum energy when plant dies (fully darkened)
 
@@ -100,7 +100,7 @@ function Plant( sourceSeed ) {
   this.id = plantCount;
   this.segments = []; this.segmentCount = 0;
   this.xLocation = null;
-  this.seedEnergy = energyStoreFactor * Tl.rfb(5,10);  // energy level from seed at plant initiation
+  this.seedEnergy = energyStoreFactor * Tl.rfb(10,15);  // energy level from seed at plant initiation
   this.energy = this.seedEnergy;  // energy (starts with seed energy at germination)
   this.maxEnergyLevel = this.segmentCount * energyStoreFactor;
   this.isAlive = true;
@@ -155,7 +155,6 @@ function Segment( plant, parentSegment, basePoint1, basePoint2 ) {
   this.spF.rigidity = this.strength;
   this.spCd.rigidity = this.strength;
   this.spCu.rigidity = this.strength;
-  //base segment
   if (!this.isBaseSegment) {
     this.spCdP = addSp( this.ptE1.id, this.parentSegment.ptB2.id ); // downward (l to r) cross span to parent
     this.spCuP = addSp( this.parentSegment.ptB1.id, this.ptE2.id ); // upward (l to r) cross span to parent
@@ -255,18 +254,6 @@ function plantSeed( seed ) {
   }
 }
 
-///germinates seed and establishes plant's base segment, setting growth in motion
-function germinateSeed( seed ) {
-  var plant = seed.resultingPlant;
-  plant.xLocation = pctFromXVal( seed.p1.cx );
-  plant.ptB1 = addPt( plant.xLocation - 0.1, 100 );  // base point 1
-  plant.ptB2 = addPt( plant.xLocation + 0.1, 100 );  // base point 2
-  plant.ptB1.fixed = plant.ptB2.fixed = true;  // fixes base points to ground
-  plant.spB = addSp( plant.ptB1.id, plant.ptB2.id );  // adds base span
-  createSegment( plant, null, plant.ptB1, plant.ptB2 );  // creates the base segment (with "null" parent)
-  seed.hasGerminated = true;
-}
-
 ///germinates seeds when ready (after it's been planted)
 function germinateSeedWhenReady( seed ) {
   // if ( seed.p2.cy > canvas.height + seed.sp.l - seed.p1.width/2 && !seed.planted ) {
@@ -279,6 +266,18 @@ function germinateSeedWhenReady( seed ) {
   if ( seed.hasGerminated && seed.opacity > 0 ) {
     fadeSeedOut( seed );  // slowly hides seen after germination
   }
+}
+
+///germinates seed and establishes plant's base segment, setting growth in motion
+function germinateSeed( seed ) {
+  var plant = seed.resultingPlant;
+  plant.xLocation = pctFromXVal( seed.p1.cx );
+  plant.ptB1 = addPt( plant.xLocation - 0.1, 100 );  // base point 1
+  plant.ptB2 = addPt( plant.xLocation + 0.1, 100 );  // base point 2
+  plant.ptB1.fixed = plant.ptB2.fixed = true;  // fixes base points to ground
+  plant.spB = addSp( plant.ptB1.id, plant.ptB2.id );  // adds base span
+  createSegment( plant, null, plant.ptB1, plant.ptB2 );  // creates the base segment (with "null" parent)
+  seed.hasGerminated = true;
 }
 
 ///fades out seed visibility gradually after germination
@@ -527,18 +526,24 @@ function killPlant( plant ) {
   plant.isAlive = false;  
   for (var i=0; i<plant.segments.length; i++) {
     var s = plant.segments[i];
-    if ( s.hasLeaves && s.spLf1.l > plant.maxLeaflength/3 ) {
+    if ( s.hasLeaves && s.spLf1.l > plant.maxLeaflength/3 ) {  // removes large leaf bud tethers 
       removeSpan(s.leafTipsTetherSpan.id);
-      s.ptLf1.cx -= gravity * 30;
-      s.ptLf2.cx += gravity * 30;
+      s.ptLf1.cx -= gravity * 30;  // booster
+      s.ptLf2.cx += gravity * 30;  // booster
     }
-    if ( s.hasLeafScaffolding ) {
+    if ( s.hasLeafScaffolding ) {  // removes leaf scaffolding 
       removeSpan(s.spLf1ScA.id);
       removeSpan(s.spLf2ScA.id);
     }
+    // //removes inner spans for total collapse (*currently too clunky; revisit & improve during stylization)
+    // removeSpan(s.spCd.id);  // downward (l to r) cross span
+    // removeSpan(s.spCu.id);  // upward (l to r) cross span
+    // if (!s.isBaseSegment) {
+    //   removeSpan(s.spCdP.id);  // downward (l to r) cross span to parent
+    //   removeSpan(s.spCuP.id);  // upward (l to r) cross span to parent
+    // }
   }
 }
-
 
 /// Renderers ///
 
