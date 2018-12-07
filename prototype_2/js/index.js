@@ -20,15 +20,15 @@ var sunRays = [], sunRayCount = 0;
 var shadows = [], shadowCount = 0;
 
 ///settings
-var worldSpeed = 1;//5;  // (as frames per iteration: higher is slower) (does not affect physics iterations)
+var worldSpeed = 1;//10;  // (as frames per iteration: higher is slower) (does not affect physics iterations)
 var viewShadows = false;  // (shadow visibility)
 var viewStalks = true;  // (stalk visibility) 
 var viewLeaves = true;  // (leaf visibility)
 var restrictGrowthByEnergy = true;  // restricts plant growth by energy level (if false, plants grow freely)
 var sunRayIntensity = 1;  // total energy units per sun ray per iteration
 var photosynthesisRatio = 1;  // ratio of available sun ray energy stored by a leaf when a ray contacts it
-var growthExp = 0.5;  // growth energy expenditure rate (rate energy is expended for growth)
-var livingExp = 0.2;  // living energy expenditure rate (rate energy is expended for living)
+var groEnExp = 0.5;  // growth energy expenditure rate (rate energy is expended for growth)
+var livEnExp = 0.2;  // living energy expenditure rate (rate energy is expended for living)
 var energyStoreFactor = 1000;  // a plant's maximum storable energy units per segment
 var unhealthyEnergyLevelRatio = 0.075;  // ratio of maximum energy when plant becomes unhealthy (starts yellowing)
 var sickEnergyLevelRatio = -0.2;  // ratio of maximum energy when plant becomes sick (starts darkening)
@@ -40,11 +40,11 @@ var deathEnergyLevelRatio = -1;  // ratio of maximum energy when plant dies (ful
 ////---(TESTING)---////
 
 
-for ( var i=0; i<35; i++ ) {
+for ( var i=0; i<25; i++ ) {
   createSeed();
 }
 
-// livingExp = 2;
+// livEnExp = 2;
 
 
 
@@ -150,16 +150,9 @@ function Segment( plant, parentSegment, basePoint1, basePoint2 ) {
   this.spF = addSp( this.ptE1.id, this.ptE2.id );  // forward span
   this.spCd = addSp( this.ptE1.id, this.ptB2.id );  // downward (l to r) cross span
   this.spCu = addSp( this.ptB1.id, this.ptE2.id );  // new upward (l to r) cross span
-  this.spL.rigidity = this.strength;
-  this.spR.rigidity = this.strength;
-  this.spF.rigidity = this.strength;
-  this.spCd.rigidity = this.strength;
-  this.spCu.rigidity = this.strength;
   if (!this.isBaseSegment) {
     this.spCdP = addSp( this.ptE1.id, this.parentSegment.ptB2.id ); // downward (l to r) cross span to parent
     this.spCuP = addSp( this.parentSegment.ptB1.id, this.ptE2.id ); // upward (l to r) cross span to parent
-    this.spCdP.rigidity = this.strength;
-    this.spCdP.rigidity = this.strength;
   }
   //skins
   this.skins = [];
@@ -190,6 +183,11 @@ function Shadow( leafSpan ) {
   this.p2 = leafSpan.p2;
   this.p3 = { cx: this.p2.cx, cy: yValFromPct( 100 ) };
   this.p4 = { cx: this.p1.cx, cy: yValFromPct( 100 ) };
+}
+
+///flower constructor
+function Flower() {
+  // model on segments... //////////////////////////////////////////////////////////////////////////////////////
 }
 
 
@@ -409,7 +407,7 @@ function growPlants() {
         var segment = plant.segments[j];
         if ( segment.spF.l < plant.maxSegmentWidth && plant.segments.length < plant.maxTotalSegments) { 
           lengthenSegmentSpans( plant, segment );  // lengthens segment spans until segment fully grown
-          plant.energy -= segment.spCd.l * growthExp;  // reduces energy by segment size
+          plant.energy -= segment.spCd.l * groEnExp;  // reduces energy by segment size
         }
         if ( readyForChildSegment( plant, segment ) ) { 
           createSegment( plant, segment, segment.ptE1, segment.ptE2 );  // generates new segment
@@ -418,11 +416,11 @@ function growPlants() {
           generateLeavesWhenReady( plant, segment );  // generates new leaf set
         } else if ( plant.segments.length < plant.maxTotalSegments ) {
           growLeaves( plant, segment );  // grows leaves until leaves are fully grown
-          plant.energy -= ( segment.spLf1.l + segment.spLf2.l ) * growthExp;  // reduces energy by leaf length
+          plant.energy -= ( segment.spLf1.l + segment.spLf2.l ) * groEnExp;  // reduces energy by leaf length
         }
       }
     }
-    plant.energy -= plant.segmentCount * livingExp;  // cost of living: reduces energy by a ratio of segment count 
+    plant.energy -= plant.segmentCount * livEnExp;  // cost of living: reduces energy by a ratio of segment count 
     if ( plant.energy < plant.maxEnergyLevel*deathEnergyLevelRatio && plant.isAlive ) {
       killPlant( plant );  // plant dies if energy level falls below minimum to be alive
     }
