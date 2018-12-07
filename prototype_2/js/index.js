@@ -6,7 +6,7 @@
 ////////////     Plant Evolution App: Prototype 2     /////////// 
 //////////////////////////////////////////////////?//////////////
 
-
+//file:///Users/matthewwmain/Development/projects/plant_evolution_app/prototype_2/index.html
 
 
 
@@ -20,14 +20,36 @@ var sunRays = [], sunRayCount = 0;
 var shadows = [], shadowCount = 0;
 
 ///settings
-var worldSpeed = 5;  // (as frames per iteration; higher is slower) (does not affect physics iterations)
-var restrictGrowthByEnergy = true;  // restricts plant growth by energy level (if false plants grow freely)
+var worldSpeed = 5;  // (as frames per iteration: higher is slower) (does not affect physics iterations)
+var restrictGrowthByEnergy = true;  // restricts plant growth by energy level (if false, plants grow freely)
 var viewShadows = false;  // (shadow visibility)
-var viewStalks = true;  // (stalk skin visibility) 
+var viewStalks = true;  // (stalk visibility) 
 var viewLeaves = true;  // (leaf visibility)
 var phr = 2;  // photosynthesis rate ( rate plants store energy from sunlight )
 var geer = 0.5;  // growth energy expenditure rate (rate energy is expended for growth)
-var leer = 0.2;  // living energy expenditure rate (rate energy is expended for living, per segment)
+var leer = 0.2;  // living energy expenditure rate (rate energy is expended for living)
+var energyFactor = 1000;  // maximum storable energy units per segment
+var seedEnergy = energyFactor * 5;
+var unhealthyEnergyLevelRatio = -0.333;  // ratio of maximum energy when plant becomes unhealthy (starts yellowing)
+var sickEnergyLevelRatio = -0.666;  // ratio of maximum energy when plant becomes sick (start darkening)
+var deathEnergyLevelRatio = -1;  // ratio of maximum energy when plant dies (fully darkened)
+
+///colors
+var C = {
+  //fills
+  hdf: { r: 0, g: 100, b: 0, a: 1 },  // healthy dark fill color (dark green)
+  hlf: { r: 0, g: 128, b: 0, a: 1 },  // healthy light fill color (green)
+  yf: { r: 242, g: 222, b: 142, a: 1 },  // yellowed fill color (sickly yellow)
+  df: { r: 109, g: 91, b: 26, a: 1 },  // dead fill color (dark brown)
+  //outlines
+  hol: { r: 42, g: 32, b: 0, a: 1 },  // healthy outline color (very dark brown)
+  yol: { r: 168, g: 153, b: 94, a: 1 },  // yellowed outline color (slightly darker sickly yellow than leaf fill) 
+  dol: { r: 42, g: 32, b: 0, a: 1 },  // dead outline color (very dark brown)
+  //inner lines
+  hil: { r: 0, g: 112, b: 0, a: 1 },  // healthy inner line color (slightly darker green than leaf fill)
+  yil: { r: 168, g: 153, b: 94, a: 1 },  // yellowed inner line color (slightly darker sickly yellow than leaf fill) 
+  dil: { r: 56, g: 47, b: 12, a: 1 }  // dead inner line color (slightly darker brown than leaf fill)
+};
 
 
 
@@ -35,9 +57,11 @@ var leer = 0.2;  // living energy expenditure rate (rate energy is expended for 
 ////---(TESTING)---////
 
 
-for ( var i=0; i<5; i++ ) {
+for ( var i=0; i<35; i++ ) {
   createSeed();
 }
+
+//leer = 3;
 
 
 
@@ -51,7 +75,7 @@ function Seed() {
   if ( worldTime === 0 ) {
     this.p1 = addPt( Tl.rib(33,66), Tl.rib(5,25) );  // seed point 1 (placed in air for scattering at initiation)
   } else {
-    //place inside flower...
+    //...place seed inside flower...
   }
   this.p1.width = this.sw*1; 
   this.p1.mass = 5;
@@ -74,7 +98,8 @@ function Plant( sourceSeed ) {
   this.id = plantCount;
   this.segments = []; this.segmentCount = 0;
   this.xLocation = null;
-  this.energy = 5000;  // seed energy (starting energy level at germination)
+  this.energy = 5000;  // energy (starts with seed energy level of 5000 at germination)
+  this.maxEnergyLevel = this.segmentCount * energyFactor;
   this.isAlive = true;
   //settings
   this.forwardGrowthRate = gravity * Tl.rfb(18,22);  // (rate of cross spans increase per frame)
@@ -134,14 +159,19 @@ function Segment( plant, parentSegment, basePoint1, basePoint2 ) {
     this.spCdP.rigidity = this.strength;
     this.spCdP.rigidity = this.strength;
   }
+  //skins
+  this.skins = [];
+  this.skins.push( addSk( [ this.ptE1.id, this.ptE2.id, this.ptB2.id, this.ptB1.id ], "darkgreen" ) );
   //leaves
   this.ptLf1 = null;  // leaf point 1 (leaf tip)
   this.ptLf2 = null;  // leaf point 2 (leaf tip)  
   this.spLf1 = null;  // leaf 1 Span
   this.spLf2 = null;  // leaf 2 Span
-  //skins
-  this.skins = [];
-  this.skins.push( addSk( [ this.ptE1.id, this.ptE2.id, this.ptB2.id, this.ptB1.id ], "darkgreen" ) );
+  //colors
+  this.sc = C.hdf;  // stalk color (dark green when healthy)
+  this.lc = C.hlf;  // leaf color (green when healthy)
+  this.oc = C.hol;  // outline color (very dark brown when healthy)
+  this.ic = C.hil;  // inner line color (slightly darker green than leaf fill when healthy) 
 }
 
 ///sun ray constructor
@@ -152,7 +182,7 @@ function SunRay() {
   this.leafContacts = [];  // (as array of objects: { y: <leaf contact y value>, plant: <plant> })
 }
 
-//shadow constructor
+///shadow constructor
 function Shadow( leafSpan ) {
   this.p1 = leafSpan.p1;
   this.p2 = leafSpan.p2;
@@ -183,6 +213,7 @@ function createPlant( sourceSeed ) {
 ///creates a new segment
 function createSegment( plant, parentSegment, basePoint1, basePoint2 ) {
   plant.segmentCount++;
+  plant.maxEnergyLevel = plant.segmentCount * energyFactor;
   plant.segments.unshift( new Segment( plant, parentSegment, basePoint1, basePoint2 ) );
   if (parentSegment !== null) {
     parentSegment.childSegment = plant.segments[plant.segments.length-1];
@@ -228,11 +259,12 @@ function germinateSeed( seed ) {
   seed.hasGerminated = true;
 }
 
+///fades out seed visibility gradually after germination
 function fadeOutSeed( seed ) {
   seed.opacity -= 0.0015;
 }
 
-///germinates seeds when ready
+///germinates seeds when ready (after it's been planted)
 function germinateSeedWhenReady( seed ) {
   // if ( seed.p2.cy > canvas.height + seed.sp.l - seed.p1.width/2 && !seed.planted ) {
   if ( seed.p1.cy > canvas.height-seed.p1.width/2-0.5 && !seed.planted ) {    
@@ -246,7 +278,13 @@ function germinateSeedWhenReady( seed ) {
   }
 }
 
-///gets each leaf span's y values at integer x values as points where sun rays contact leaf
+///sheds sunlight
+function shedSunlight() {
+  markRayLeafIntersections();
+  photosynthesize(); 
+}
+
+///marks points where sun rays intersect with leaves 
 function markRayLeafIntersections() {
   for ( var i=0; i<plants.length; i++ ) {
     var p = plants[i];
@@ -294,16 +332,41 @@ function photosynthesize() {
   }
 }
 
-///sheds sunlight
-function shedSunlight() {
-  markRayLeafIntersections();
-  photosynthesize(); 
-}
-
-///marks shadow positions (based on leaf spans)
+///marks shadow positions (based on position of leaf spans)
 function markShadowPositions( segment ) {
   shadows.push( new Shadow( segment.spLf1 ) );
   shadows.push( new Shadow( segment.spLf2 ) );
+}
+
+///shifts a color between start and end colors scaled proportionally to start and end plant energy levels
+function colorShift( plant, startColor, endColor, startEnergy, endEnergy ) {
+  var p = plant;
+  var curEn = p.energy;  // current energy level
+  var r = endColor.r - ( (curEn-endEnergy) * (endColor.r-startColor.r) / (startEnergy-endEnergy) );  // redshift
+  var g = endColor.g - ( (curEn-endEnergy) * (endColor.g-startColor.g) / (startEnergy-endEnergy) );  // greenshift
+  var b = endColor.b - ( (curEn-endEnergy) * (endColor.b-startColor.b) / (startEnergy-endEnergy) );  // blueshift
+  return { r: r, g: g, b: b, a: 1 };
+}
+
+///changes plant colors based on plant health
+function applyHealthColoration( plant, segment ) {
+  var p = plant;
+  var s = segment;
+  var cel = p.energy;  // current energy level
+  var uel = p.maxEnergyLevel * unhealthyEnergyLevelRatio;  // unhealthy energy level ( starts yellowing)
+  var sel = p.maxEnergyLevel * sickEnergyLevelRatio;  // sick energy level (starts darkening)
+  var fel = p.maxEnergyLevel * deathEnergyLevelRatio;  // fatal energy level (fully darkened; dead)
+  if ( cel <= uel && cel > sel )  {  // unhealthy energy levels (yellowing)
+    s.sc = colorShift( p, C.hdf, C.yf, uel, sel );  // stalks (dark fills)
+    s.lc = colorShift( p, C.hlf, C.yf, uel, sel );  // leaves (light fills)
+    s.oc = colorShift( p, C.hol, C.yol, uel, sel );  // outlines
+    s.ic = colorShift( p, C.hil, C.yil, uel, sel );  // inner lines
+  } else if ( cel <= sel && cel > fel ) {  // sick energy levels (darkening)
+    s.sc = colorShift( p, C.yf, C.df, sel, fel );  // stalks 
+    s.lc = colorShift( p, C.yf, C.df, sel, fel );  // leaves
+    s.oc = colorShift( p, C.yol, C.dol, sel, fel );  // outlines
+    s.ic = colorShift( p, C.yil, C.dil, sel, fel );  // inner lines
+  }
 }
 
 ///grows all plants
@@ -311,10 +374,10 @@ function growPlants() {
   for (var i=0; i<plants.length; i++) {
     var plant = plants[i];
     germinateSeedWhenReady( plant.sourceSeed );  // germinates a planted seed
-    if ( plant.energy > plant.segmentCount * 1000 && plant.energy > 5000 ) {
-      plant.energy = plant.segmentCount * 1000;  // caps plant energy based on segment count
+    if ( plant.energy > plant.segmentCount * energyFactor && plant.energy > seedEnergy ) {
+      plant.energy = plant.segmentCount * energyFactor;  // caps plant max energy level based on segment count *1k
     }
-    if ( plant.energy > 0 || !restrictGrowthByEnergy ) {  // checks if plant has energy for growth
+    if ( plant.energy > 0 || !restrictGrowthByEnergy ) {  // checks if plant has energy for growth (>0)
       for (var j=0; j<plants[i].segments.length; j++) {
         var segment = plants[i].segments[j];
         if ( segment.spF.l < plant.maxSegmentWidth && plant.segments.length < plant.maxTotalSegments) { 
@@ -333,6 +396,9 @@ function growPlants() {
       }
     }
     plant.energy -= plant.segmentCount * leer;  // cost of living: reduces energy by a ratio of segment count 
+    if ( plant.energy < plant.maxEnergyLevel * plant.deathEnergyLevelRatio ) {
+      plant.isAlive = false;
+    }
   }
 }
 
@@ -383,7 +449,7 @@ function generateLeavesWhenReady( plant, segment ) {
   }
 }
 
-///add leaf scaffolding
+///adds leaf scaffolding (so leaves stay more or less horizontal, depending on stalk angle)
 function addLeafScaffolding( plant, segment ) {
   var p = plant;
   var s = segment;
@@ -490,18 +556,17 @@ function renderSeed( resultingPlant ) {
 }
 
 ///renders leaf
-function renderLeaf( plant, leafSpan ) {
-  var p1x = leafSpan.p1.cx;
-  var p1y = leafSpan.p1.cy;
-  var p2x = leafSpan.p2.cx;
-  var p2y = leafSpan.p2.cy;
+function renderLeaf( plant, segment, leafSpan ) {
+  var p = plant, s = segment, lSp = leafSpan;
+  var p1x = lSp.p1.cx;
+  var p1y = lSp.p1.cy;
+  var p2x = lSp.p2.cx;
+  var p2y = lSp.p2.cy;
   var mpx = ( p1x + p2x ) / 2;  // mid point x
   var mpy = ( p1y + p2y ) / 2;  // mid point y
   ctx.lineWidth = 2;
-  ctx.lineJoin = "round";
-  ctx.lineCap = "round";
-  ctx.strokeStyle = "#003000";
-  ctx.fillStyle = "green";
+  ctx.strokeStyle = "rgba("+s.oc.r+","+s.oc.g+","+s.oc.b+","+s.oc.a+")";
+  ctx.fillStyle = "rgba("+s.lc.r+","+s.lc.g+","+s.lc.b+","+s.lc.a+")";
   var ah = 0.35;  // arc height (as ratio of leaf length)
   //leaf top
   var ccpx = mpx + ( p2y - p1y ) * ah;  // curve control point x
@@ -522,7 +587,7 @@ function renderLeaf( plant, leafSpan ) {
   //leaf center
   ctx.beginPath();
   ctx.lineWidth = 1;
-  ctx.strokeStyle = "#007000";
+  ctx.strokeStyle = "rgba("+s.ic.r+","+s.ic.g+","+s.ic.b+","+s.ic.a+")";
   ctx.moveTo(p1x,p1y);
   ctx.lineTo(p2x,p2y);
   ctx.stroke();
@@ -531,39 +596,40 @@ function renderLeaf( plant, leafSpan ) {
 ///renders leaves
 function renderLeaves( plant, segment ) {
   if ( segment.hasLeaves ) {
-    renderLeaf( plant, segment.spLf1 );
-    renderLeaf( plant, segment.spLf2 );
+    renderLeaf( plant, segment, segment.spLf1 );
+    renderLeaf( plant, segment, segment.spLf2 );
     if ( viewShadows ) { markShadowPositions( segment ); }
   }
 }
 
 ///renders stalks
 function renderStalks( plant, segment ) {
+  var sg = segment;
   for (var i=0; i<segment.skins.length; i++) {
-    var s = segment.skins[i];
+    var sk = segment.skins[i];
     //fills
     ctx.beginPath();
-    ctx.fillStyle = s.color;
+    ctx.fillStyle = "rgba("+sg.sc.r+","+sg.sc.g+","+sg.sc.b+","+sg.sc.a+")";
     ctx.lineWidth = 1;
-    ctx.strokeStyle = "darkgreen";
-    ctx.moveTo(s.points[0].cx, s.points[0].cy);
-    for(var j=1; j<s.points.length; j++) { ctx.lineTo(s.points[j].cx, s.points[j].cy); }
-    ctx.lineTo(s.points[0].cx, s.points[0].cy);
+    ctx.strokeStyle = ctx.fillStyle;
+    ctx.moveTo(sk.points[0].cx, sk.points[0].cy);
+    for(var j=1; j<sk.points.length; j++) { ctx.lineTo(sk.points[j].cx, sk.points[j].cy); }
+    ctx.lineTo(sk.points[0].cx, sk.points[0].cy);
     ctx.stroke();
     ctx.fill(); 
     //outlines
     ctx.beginPath();
     ctx.lineWidth = 1;
-    ctx.strokeStyle = "#2A2000";
-    ctx.moveTo(s.points[3].cx, s.points[3].cy);
-    ctx.lineTo(s.points[0].cx, s.points[0].cy);
-    ctx.moveTo(s.points[2].cx, s.points[2].cy);
-    ctx.lineTo(s.points[1].cx, s.points[1].cy);
+    ctx.strokeStyle = "rgba("+sg.oc.r+","+sg.oc.g+","+sg.oc.b+","+sg.oc.a+")";
+    ctx.moveTo(sk.points[3].cx, sk.points[3].cy);
+    ctx.lineTo(sk.points[0].cx, sk.points[0].cy);
+    ctx.moveTo(sk.points[2].cx, sk.points[2].cy);
+    ctx.lineTo(sk.points[1].cx, sk.points[1].cy);
     ctx.stroke();
     if ( !segment.hasChildSegment ) {
       ctx.beginPath();
-      ctx.moveTo(s.points[3].cx, s.points[3].cy);
-      ctx.lineTo(s.points[2].cx, s.points[2].cy);
+      ctx.moveTo(sk.points[3].cx, sk.points[3].cy);
+      ctx.lineTo(sk.points[2].cx, sk.points[2].cy);
       ctx.stroke();
     }
   }
@@ -575,6 +641,7 @@ function renderPlants() {
     var plant = plants[i];
     for (var j=0; j<plants[i].segments.length; j++) {
       var segment = plant.segments[j];
+      if ( restrictGrowthByEnergy ) { applyHealthColoration( plant, segment ); }
       if ( viewStalks ) { renderStalks( plant, segment ); }
       if ( viewLeaves ) { renderLeaves( plant, segment ); }
     }
@@ -613,6 +680,14 @@ function display() {
   shedSunlight();
   renderShadows();
   window.requestAnimationFrame(display);
+
+              // if ( worldTime % 120 === 0 && plants[0].segments.length > 0) {  /////////////////////////////////
+              //   var p = plants[0], s = p.segments[0];
+              //   console.log(p.id+" fatal energy level: "+p.maxEnergyLevel*deathEnergyLevelRatio);
+              //   console.log(p.id+" current energy level: "+p.energy);
+              //   console.log(p.id+" leaf fill color: "+s.lc.r+", "+s.lc.g+", "+s.lc.b);
+              // }
+
 }
 
 createSunRays();
