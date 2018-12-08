@@ -40,7 +40,7 @@ var deathEnergyLevelRatio = -1;  // ratio of maximum energy when plant dies (ful
 ////---(TESTING)---////
 
 
-for ( var i=0; i<25; i++ ) {
+for ( var i=0; i<35; i++ ) {
   createSeed();
 }
 
@@ -101,7 +101,7 @@ function Plant( sourceSeed ) {
   this.segments = []; this.segmentCount = 0;
   this.flowers = []; this.flowerCount = 0;
   this.xLocation = null;
-  this.seedEnergy = energyStoreFactor * Tl.rfb(10,15);  // energy level from seed at plant initiation
+  this.seedEnergy = energyStoreFactor * Tl.rfb(8,12);  // energy level from seed at plant initiation
   this.energy = this.seedEnergy;  // energy (starts with seed energy at germination)
   this.maxEnergyLevel = this.segmentCount * energyStoreFactor;
   this.isAlive = true;
@@ -132,7 +132,7 @@ function Segment( plant, parentSegment, basePoint1, basePoint2 ) {
   this.hasLeaves = false;
   this.hasLeafScaffolding = false;
   //settings
-  this.forwardGrowthRateVariation = Tl.rfb(0.95,1.05);//(0.95,1.05);  // forward growth rate variation
+  this.forwardGrowthRateVariation = Tl.rfb(0.95,1.05);  // for left & right span length variation
   this.mass = 1;  // mass of the segment stalk portion ( divided between the two extension points)
   //base points
   this.ptB1 = basePoint1;  // base point 1
@@ -434,9 +434,23 @@ function growPlants() {
       }
     }
     plant.energy -= plant.segmentCount * livEnExp;  // cost of living: reduces energy by a ratio of segment count 
-    if ( plant.energy < plant.maxEnergyLevel*deathEnergyLevelRatio && plant.isAlive ) {
+    if ( plant.energy < plant.maxEnergyLevel*deathEnergyLevelRatio /*&& plant.isAlive*/ ) {
       killPlant( plant );  // plant dies if energy level falls below minimum to be alive
     }
+
+
+    /////////////////////////////////////////////////////////////////////////////////////////////
+    // if ( !plant.isAlive ) {
+    //   for (var k=0; k<plant.segments.length; k++) {
+    //     var ds = plant.segments[k];  //dead segment
+    //     if ( ds.hasLeaves ) {
+    //       if ( ds.ptLf1.cx > ds.ptB1.cx ) { ds.ptLf1.cx = ds.ptB1.cx; }
+    //       if ( ds.ptLf2.cx < ds.ptB2.cx ) { ds.ptLf2.cx = ds.ptB2.cx; }
+    //     }
+    //   }
+    // }
+
+
   }
 }
 
@@ -537,14 +551,20 @@ function killPlant( plant ) {
   plant.isAlive = false;  
   for (var i=0; i<plant.segments.length; i++) {
     var s = plant.segments[i];
-    if ( s.hasLeaves && s.spLf1.l > plant.maxLeaflength/3 ) {  // removes large leaf bud tethers 
-      removeSpan(s.leafTipsTetherSpan.id);
-      s.ptLf1.cx -= gravity * 30;  // booster
-      s.ptLf2.cx += gravity * 30;  // booster
+    if ( s.hasLeaves && s.spLf1.l > plant.maxLeaflength/3 ) {  
+      // removes large leaf bud tethers 
+      removeSpan( s.leafTipsTetherSpan.id );
     }
-    if ( s.hasLeafScaffolding ) {  // removes leaf scaffolding 
+    if ( s.hasLeafScaffolding ) {  
+      // removes leaf scaffolding 
       removeSpan(s.spLf1ScA.id);
       removeSpan(s.spLf2ScA.id);
+    }
+    if ( s.hasLeaves && s.ptLf1.cy>s.ptB1.cy && s.ptLf2.cy>s.ptB2.cy ) {  
+      // prevents dead leaves from swinging like pendulums
+      s.ptLf1.mass = s.ptLf2.mass = 0.5;
+      if ( s.ptLf1.cy < s.ptLf1.py ) { s.ptLf1.cy = s.ptLf1.py; s.ptLf1.cx = s.ptLf1.px; }
+      if ( s.ptLf2.cy < s.ptLf2.py ) { s.ptLf2.cy = s.ptLf2.py; s.ptLf2.cx = s.ptLf2.px; }
     }
     // //removes inner spans for total collapse (*currently too clunky; revisit & improve during stylization)
     // removeSpan(s.spCd.id);  // downward (l to r) cross span
