@@ -23,7 +23,7 @@ var worldTime = 0;  // time as frame count
 
 ///settings
 var viewPoints = false;  // (point visibility)
-var viewSpans = false;  // (span visibility)
+var viewSpans = true;  // (span visibility)
 var viewScaffolding = false; // (scaffolding visibility)
 var viewSkins = true; // (skin visibility)
 var gravity = 0.01;  // (rate of y-velocity increase per frame per point mass of 1)
