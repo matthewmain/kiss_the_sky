@@ -283,7 +283,7 @@ function createSegment( plant, parentSegment, basePoint1, basePoint2 ) {
   }
 }
 
-///creates a new flower {{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}
+///creates a new flower
 function createFlower( plant, parentSegment, basePoint1, basePoint2 ) {
   plant.flowerCount++;
   plant.flowers.push( new Flower( plant, parentSegment, basePoint1, basePoint2 ) );
@@ -463,14 +463,28 @@ function growLeaves( plant, segment ) {
   }
 }
 
-///checks whether a segment is ready to generate a flower  {{{{{{{{{{{{{{{{{{{{{{{{{{{}}}}}}}}}}}}}}}}}}}}}}}}}}}
+///checks whether a segment is ready to generate a flower
 function readyForFlower( plant, segment ) {
   return  segment.id === plant.maxTotalSegments && 
           !plant.hasFlowers && 
           segment.spF.l > plant.maxSegmentWidth*0.333; 
 }
 
-///lengthens flower spans for bud growth & blooming  {{{{{{{{{{{{{{{{{{{{{{{{{{{{{{}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}
+function bloomPetal( flower, petalTipPoint, xShift, yShift ) {
+  var f = flower;
+  var ptp = petalTipPoint;
+  var hexHeight = distance( f.ptHtL, f.ptHbL );
+  var htmp = spanMidPoint( f.spHtM );  // hex top middle span mid point
+  var hbmp = spanMidPoint( f.spHbM );  // hex bottom middle span mid point
+  var hcp = spanMidPoint( f.spHcH );  // hex center point
+  var budTip = { x: ( htmp.x + ( htmp.x - hbmp.x ) * 1.5 ), y: (htmp.y + ( htmp.y - hbmp.y ) * 1.5) };  // bud tip
+  var fullBloomX = hbmp.x + (hexHeight*-xShift) * (hcp.y-hbmp.y)/(hexHeight*0.5) + (hbmp.x-hcp.x)*(yShift-2.5)*2;
+  var fullBloomY = hbmp.y - (hexHeight*-xShift) * (hcp.x-hbmp.x)/(hexHeight*0.5) + (hbmp.y-hcp.y)*(yShift-2.5)*2;
+  petalTipPoint.cx = petalTipPoint.px = budTip.x + (fullBloomX - budTip.x) * f.bloomRatio;
+  petalTipPoint.cy = petalTipPoint.py = budTip.y + (fullBloomY - budTip.y) * f.bloomRatio;
+}
+
+///lengthens flower spans for bud growth & blooming
 function growFlower( plant, flower ) {
   var p = plant;
   var f = flower;
@@ -516,45 +530,15 @@ function growFlower( plant, flower ) {
     f.ptPbL.cx = budTipX; f.ptPbL.cy = budTipY;  // syncs bottom left petal tip with bud tip during bud growth
     f.ptPbM.cx = budTipX; f.ptPbM.cy = budTipY;  // syncs bottom middle petal tip with bud tip during bud growth
     f.ptPbR.cx = budTipX; f.ptPbR.cy = budTipY;  // syncs bottom right petal tip with bud tip during bud growth
-
-
   //if bud has reached maturity, it blooms
   } else {
-    var fullBloomX, fullBloomY;
-    var xShift, yShift;
-    var hexHeightDiffX = hbmp.x - htmp.x;
-    var hexHeightDiffY = hbmp.y - htmp.y;
-    var hexHeight = distance( f.ptHtL, f.ptHbL );
-
-    //NEXT: apply bloom to all petals as function  <----{{{{{{{{{{{{{{{{{{{{{{{{ NEXT }}}}}}}}}}}}}}}}}}}}}}}}}}}}
-
-    //top left petal
-    //top middle petal
-    //top right petal
-    //bottom left petal
-    xShift = -1.75;  // change in x value (in units of hex height)
-    yShift = 3;  // change in y value (in units of hex height)  ////////////// INCORPORATE ////////////
-    fullBloomX = hbmp.x + (hexHeight*-xShift) * (hcp.y-hbmp.y)/(hexHeight*0.5) + (hbmp.x-hcp.x)*(yShift-2.5)*2;
-    fullBloomY = hbmp.y - (hexHeight*-xShift) * (hcp.x-hbmp.x)/(hexHeight*0.5) + (hbmp.y-hcp.y)*(yShift-2.5)*2;
-    f.ptPbL.cx = f.ptPbL.px = budTipX + (fullBloomX - budTipX) * f.bloomRatio;
-    f.ptPbL.cy = f.ptPbL.py = budTipY + (fullBloomY - budTipY) * f.bloomRatio;
-    //bottom middle petal
-    xShift = 0;  // change in x value (in units of hex height)
-    yShift = 3.75;  // change in y value (in units of hex height) 
-    fullBloomX = hbmp.x + (hexHeight*-xShift) * (hcp.y-hbmp.y)/(hexHeight*0.5) + (hbmp.x-hcp.x)*(yShift-2.5)*2;
-    fullBloomY = hbmp.y - (hexHeight*-xShift) * (hcp.x-hbmp.x)/(hexHeight*0.5) + (hbmp.y-hcp.y)*(yShift-2.5)*2;
-    f.ptPbM.cx = f.ptPbM.px = budTipX + (fullBloomX - budTipX) * f.bloomRatio;
-    f.ptPbM.cy = f.ptPbM.py = budTipY + (fullBloomY - budTipY) * f.bloomRatio; 
-    //bottom middle petal
-    xShift = 1.75;  // change in x value (in units of hex height)
-    yShift = 3;  // change in y value (in units of hex height) 
-    fullBloomX = hbmp.x + (hexHeight*-xShift) * (hcp.y-hbmp.y)/(hexHeight*0.5) + (hbmp.x-hcp.x)*(yShift-2.5)*2;
-    fullBloomY = hbmp.y - (hexHeight*-xShift) * (hcp.x-hbmp.x)/(hexHeight*0.5) + (hbmp.y-hcp.y)*(yShift-2.5)*2;
-    f.ptPbR.cx = f.ptPbR.px = budTipX + (fullBloomX - budTipX) * f.bloomRatio;
-    f.ptPbR.cy = f.ptPbR.py = budTipY + (fullBloomY - budTipY) * f.bloomRatio;
-
-    //bloom ratio update
-    f.bloomRatio = f.bloomRatio < 1 ? f.bloomRatio + 0.0025 : 1;
+    bloomPetal( f, f.ptPtL, -1.75, 1 );  // top left petal
+    bloomPetal( f, f.ptPtM, 0, 0.25 );  // top middle petal
+    bloomPetal( f, f.ptPtR, 1.75, 1 );  // top right petal
+    bloomPetal( f, f.ptPbL, -1.75, 3 );  // bottom left petal
+    bloomPetal( f, f.ptPbM, 0, 3.75 ); //bottom middle petal
+    bloomPetal( f, f.ptPbR, 1.75, 3 );  // bottom right petal
+    f.bloomRatio = f.bloomRatio < 1 ? f.bloomRatio + 0.0025 : 1;  // bloom ratio update
   }
 }
 
@@ -583,23 +567,17 @@ function growPlants() {
           growLeaves( plant, segment );  // grows leaves until leaves are fully grown
           plant.energy -= ( segment.spLf1.l + segment.spLf2.l ) * groEnExp;  // reduces energy by leaf length
         }
-
-        //{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}
         if ( readyForFlower( plant, segment ) ) {
           createFlower( plant, segment, segment.ptE1, segment.ptE2 );
         }
-
       }
     } 
-
-    //{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}
     if ( plant.hasFlowers ) {
       for ( var k=0; k<plant.flowers.length; k++ ) {
         var flower = plant.flowers[k];
         growFlower( plant, flower );
       }
     }
-
     plant.energy -= plant.segmentCount * livEnExp;  // cost of living: reduces energy by a ratio of segment count 
     if ( plant.energy < plant.maxEnergyLevel*deathEnergyLevelRatio && restrictGrowthByEnergy ) {
       killPlant( plant );  // plant dies if energy level falls below minimum to be alive
@@ -860,7 +838,7 @@ function renderStalks( plant, segment ) {
   }
 }
 
-///renders flowers {{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}
+///renders flowers
 function renderFlowers( plant ) {
   if ( plant.hasFlowers ) {
     for ( var i=0; i<plant.flowers.length; i++) {
@@ -873,11 +851,11 @@ function renderFlowers( plant ) {
       ctx.lineJoin = "round";
       ctx.lineCap = "round";
       ctx.moveTo(f.ptHoL.cx, f.ptHoL.cy);
-      ctx.lineTo(f.ptBudTip.cx, f.ptBudTip.cy);
+      ctx.lineTo(f.ptPtL.cx, f.ptPtL.cy);  // top left petal tip
       ctx.lineTo(f.ptHtL.cx, f.ptHtL.cy);
-      ctx.lineTo(f.ptBudTip.cx, f.ptBudTip.cy);
+      ctx.lineTo(f.ptPtM.cx, f.ptPtM.cy);  // top middle petal tip
       ctx.lineTo(f.ptHtR.cx, f.ptHtR.cy);
-      ctx.lineTo(f.ptBudTip.cx, f.ptBudTip.cy);
+      ctx.lineTo(f.ptPtR.cx, f.ptPtR.cy);  // top right petal tip
       ctx.lineTo(f.ptHoR.cx, f.ptHoR.cy);
       ctx.fill();
       ctx.stroke();
