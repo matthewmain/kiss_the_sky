@@ -44,7 +44,7 @@ livEnExp = 2;
 energyStoreFactor = 25000;
 
 
-for ( var i=0; i<3; i++ ) {
+for ( var i=0; i<1; i++ ) {
   createSeed();
 }
 
@@ -110,7 +110,7 @@ function Plant( sourceSeed ) {
   this.forwardGrowthRate = gravity * Tl.rfb(18,22);  // (rate of cross spans increase per frame)
   this.outwardGrowthRate = this.forwardGrowthRate * Tl.rfb(0.18,0.22);  // (rate forward span widens per frame)
   this.maxSegmentWidth = Tl.rfb(10,12);  // maximum segment width (in pixels)
-  this.maxTotalSegments = 15;//Tl.rib(10,25);  // maximum total number of segments at maturity
+  this.maxTotalSegments = 8;//Tl.rib(10,25);  // maximum total number of segments at maturity
   this.firstLeafSegment = Tl.rib(2,3);  // (segment on which first leaf set grows)
   this.leafFrequency = Tl.rib(2,3);  // (number of segments until next leaf set)
   this.maxLeaflength = this.maxSegmentWidth * Tl.rfb(4,7);  // maximum leaf length at maturity
@@ -170,7 +170,7 @@ function Segment( plant, parentSegment, basePoint1, basePoint2 ) {
   this.clI = C.hil;  // inner line color (slightly darker green than leaf fill when healthy) 
 }
 
-///flower constructor {{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}
+///flower constructor 
 function Flower( plant, parentSegment, basePoint1, basePoint2 ) {
   this.plantId = plant.id;
   this.id = plant.flowerCount;
@@ -229,9 +229,9 @@ function Flower( plant, parentSegment, basePoint1, basePoint2 ) {
   this.ptPtL.mass = this.ptPtM.mass = this.ptPtR.mass = this.mass;
   this.ptPbL.mass = this.ptPbM.mass = this.ptPbR.mass = this.mass;
   //colors
-  this.clB = C.hdf;  // bud color (dark green when healthy)
+  this.clOv = C.hdf;  // ovule color (dark green when healthy)
   this.clO = C.hol;  // outline color (very dark brown when healthy)
-  this.clI = C.hil;  // inner line color (slightly darker green than leaf fill when healthy) 
+  this.clP = { h: 0, s: 100, l: 100 };  // petals color (hsl)
 }
 
 ///sun ray constructor
@@ -677,8 +677,7 @@ function applyHealthColoration( plant, segment ) {
   if ( p.hasFlowers && s.id === 1 ) {
     for ( var i=0; i<p.flowers.length; i++ ) {
       var f = p.flowers[i];
-      f.clB = s.clS;  // flower bud fills
-      f.clO = s.clO;  // flower bud outlines
+      f.clOv = s.clS;  // flower ovule color matches stalk color
     }
   }
 }
@@ -838,27 +837,66 @@ function renderStalks( plant, segment ) {
   }
 }
 
-///renders flowers
+/// creates arc between two points
+function arcFromTo( startPoint, endPoint, arcHeight ) {
+  var ah = arcHeight;  // arc height as ratio of distance between points
+  var p1 = { x: startPoint.cx, y: startPoint.cy };
+  var p2 = { x: endPoint.cx, y: endPoint.cy };
+  var mp = { x: ( p1.x + p2.x ) / 2, y: ( p1.y + p2.y ) / 2 } ;  // mid point
+  var ccp = { x: mp.x + ( p2.y - p1.y ) * ah, y: mp.y + ( p1.x - p2.x ) * ah };  // curve control point
+  return ctx.quadraticCurveTo( ccp.x, ccp.y, p2.x, p2.y );
+}
+
+/// adjusts petal arc throughout bloom
+function petalArcAdjustment( flower, basePoint1, basePoint2, petalTipPoint, expansionStart, arcHeightEnd) {
+  var f = flower;
+  var a = basePoint1;  // point a (leftmost petal base point)
+  var b = basePoint2;  // point b (rightmost petal base point)
+  var c = petalTipPoint;  // point c (petal tip point)
+  if ( (b.cy - a.cy)*(c.cx-b.cx) - (c.cy-b.cy)*(b.cx-a.cx) >= 0 ) {  // counterclockwise point orientation
+    return f.bloomRatio < expansionStart ? arcHeightEnd * expansionStart : arcHeightEnd * f.bloomRatio;
+  } else {  // clockwise point orientation
+    return f.bloomRatio * -arcHeightEnd;
+  }
+}
+
+///renders flowers  {{{{{{{{{{{{{{{{{{{{{{{ NEXT: basic flower styling }}}}}}}}}}}}}}
 function renderFlowers( plant ) {
   if ( plant.hasFlowers ) {
     for ( var i=0; i<plant.flowers.length; i++) {
       var f = plant.flowers[i];
-      //top petals
-      ctx.beginPath();
-      ctx.fillStyle = "rgba("+f.clB.r+","+f.clB.g+","+f.clB.b+","+f.clB.a+")";  // dark green
-      ctx.strokeStyle = "rgba("+f.clO.r+","+f.clO.g+","+f.clO.b+","+f.clO.a+")";  // dark brown
-      ctx.lineWidth = 1;
+      var pah;  // petal arc height
       ctx.lineJoin = "round";
       ctx.lineCap = "round";
-      ctx.moveTo(f.ptHoL.cx, f.ptHoL.cy);
-      ctx.lineTo(f.ptPtL.cx, f.ptPtL.cy);  // top left petal tip
-      ctx.lineTo(f.ptHtL.cx, f.ptHtL.cy);
-      ctx.lineTo(f.ptPtM.cx, f.ptPtM.cy);  // top middle petal tip
-      ctx.lineTo(f.ptHtR.cx, f.ptHtR.cy);
-      ctx.lineTo(f.ptPtR.cx, f.ptPtR.cy);  // top right petal tip
+      ctx.lineWidth = 1;
+      //top petals
+      ctx.fillStyle = "hsl("+f.clP.h+","+f.clP.s+"%,"+f.clP.l+"%)";  // white
+      ctx.strokeStyle = "rgba("+f.clO.r+","+f.clO.g+","+f.clO.b+","+f.clO.a+")";  // dark brown
+      ctx.beginPath();  // top middle petal
+      ctx.moveTo( f.ptHtL.cx, f.ptHtL.cy ); 
+      pah = petalArcAdjustment( f, f.ptHtL, f.ptHtR, f.ptPtM, 0.2, 0.5);
+      arcFromTo( f.ptHtL, f.ptPtM, pah ); arcFromTo( f.ptPtM, f.ptHtR, pah );
+      ctx.fill(); ctx.stroke();
+      ctx.beginPath();  // top left petal
+      ctx.moveTo( f.ptHoL.cx, f.ptHoL.cy );
+      pah = petalArcAdjustment( f, f.ptHoL, f.ptHtL, f.ptPtL, 0.2, 0.5);
+      arcFromTo( f.ptHoL, f.ptPtL, pah ); arcFromTo( f.ptPtL, f.ptHtL, pah );
+      ctx.fill(); ctx.stroke();
+      ctx.beginPath();  // top right petal
+      ctx.moveTo(f.ptHtR.cx, f.ptHtR.cy); 
+      pah = petalArcAdjustment( f, f.ptHtR, f.ptHoR, f.ptPtR, 0.2, 0.5);
+      arcFromTo( f.ptHtR, f.ptPtR, pah ); arcFromTo( f.ptPtR, f.ptHoR, pah );
+      ctx.fill(); ctx.stroke();
+      //ovule
+      ctx.beginPath();
+      ctx.fillStyle = "rgba("+f.clOv.r+","+f.clOv.g+","+f.clOv.b+","+f.clOv.a+")";  // dark green
+      ctx.strokeStyle = "rgba("+f.clO.r+","+f.clO.g+","+f.clO.b+","+f.clO.a+")";  // dark brown
+      ctx.moveTo(f.ptBL.cx, f.ptBL.cy);
+      ctx.lineTo(f.ptHoL.cx, f.ptHoL.cy);
       ctx.lineTo(f.ptHoR.cx, f.ptHoR.cy);
+      ctx.lineTo(f.ptBR.cx, f.ptBR.cy); 
       ctx.fill();
-      ctx.stroke();
+      ctx.stroke();     
       //hex (polinator pad)
       ctx.beginPath();
       ctx.fillStyle = "yellow";
@@ -871,32 +909,34 @@ function renderFlowers( plant ) {
       ctx.fill();
       ctx.beginPath();
       ctx.strokeStyle = "rgba("+f.clO.r+","+f.clO.g+","+f.clO.b+","+f.clO.a+")";  // dark brown
-      ctx.lineWidth = 1;
-      ctx.lineJoin = "round";
-      ctx.lineCap = "round";
       ctx.moveTo(f.ptHoL.cx, f.ptHoL.cy);
       ctx.lineTo(f.ptHtL.cx, f.ptHtL.cy);
       ctx.lineTo(f.ptHtR.cx, f.ptHtR.cy);
       ctx.lineTo(f.ptHoR.cx, f.ptHoR.cy);
-      ctx.stroke();
-      //bottom petals & ovule
-      ctx.beginPath();
-      ctx.fillStyle = "rgba("+f.clB.r+","+f.clB.g+","+f.clB.b+","+f.clB.a+")";  // dark green
-      ctx.strokeStyle = "rgba("+f.clO.r+","+f.clO.g+","+f.clO.b+","+f.clO.a+")";  // dark brown
-      ctx.lineWidth = 1;
-      ctx.lineJoin = "round";
-      ctx.lineCap = "round";
-      ctx.moveTo(f.ptBL.cx, f.ptBL.cy);
-      ctx.lineTo(f.ptHoL.cx, f.ptHoL.cy);
-      ctx.lineTo(f.ptPbL.cx, f.ptPbL.cy);  // bottom left petal tip
-      ctx.lineTo(f.ptHbL.cx, f.ptHbL.cy);
-      ctx.lineTo(f.ptPbM.cx, f.ptPbM.cy);  // bottom middle petal tip
       ctx.lineTo(f.ptHbR.cx, f.ptHbR.cy);
-      ctx.lineTo(f.ptPbR.cx, f.ptPbR.cy);  // bottom right petal tip
-      ctx.lineTo(f.ptHoR.cx, f.ptHoR.cy);
-      ctx.lineTo(f.ptBR.cx, f.ptBR.cy);
-      ctx.fill();
+      ctx.lineTo(f.ptHbR.cx, f.ptHbR.cy);
+      ctx.lineTo(f.ptHbL.cx, f.ptHbL.cy);
+      ctx.lineTo(f.ptHoL.cx, f.ptHoL.cy);
       ctx.stroke();
+      //bottom petals
+      ctx.fillStyle = "hsl("+f.clP.h+","+f.clP.s+"%,"+f.clP.l+"%)";  // white
+      ctx.strokeStyle = "rgba("+f.clO.r+","+f.clO.g+","+f.clO.b+","+f.clO.a+")";  // dark brown
+      ctx.beginPath();  // bottom left petal
+      ctx.moveTo( f.ptHoL.cx, f.ptHoL.cy );
+      pah = petalArcAdjustment( f, f.ptHoL, f.ptHbL, f.ptPbL, 0.2, 0.5);
+      arcFromTo( f.ptHoL, f.ptPbL, pah ); arcFromTo( f.ptPbL, f.ptHbL, pah );
+      ctx.fill(); ctx.stroke();
+      ctx.beginPath();  // bottom right petal
+      ctx.moveTo(f.ptHbR.cx, f.ptHbR.cy);
+      pah = petalArcAdjustment( f, f.ptHbR, f.ptHoR, f.ptPbR, 0.2, 0.5);
+      arcFromTo( f.ptHbR, f.ptPbR, pah ); arcFromTo( f.ptPbR, f.ptHoR, pah );
+      ctx.fill(); ctx.stroke();
+      ctx.beginPath();  // bottom middle petal
+      ctx.moveTo( f.ptHbL.cx, f.ptHbL.cy );
+      pah = petalArcAdjustment( f, f.ptHbL, f.ptHbR, f.ptPbM, 0.2, 0.6);
+      arcFromTo( f.ptHbL, f.ptPbM, pah ); arcFromTo( f.ptPbM, f.ptHbR, pah );
+      ctx.fill(); ctx.stroke();
+
     }
   }
 }
