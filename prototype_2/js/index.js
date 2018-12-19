@@ -686,7 +686,7 @@ function developFlower( plant, flower ) {
     f.podOpacity = f.podOpacity < 1 ? f.podOpacity + 0.005 : 1;
     if ( f.podOpacity === 1 ) { f.visible = false; f.seedPodIsMature = true; }
   //otherwise, if seed pod is mature, the seeds stay in the pod
-  } else if ( f.seedPodIsMature ) {
+  } else if ( f.seedPodIsMature && p.energy > p.maxEnergyLevel*seedReleaseEnergyLevelRatio ) {
     keepSeedsInPod( f );
   //otherwise, if the seed pod hasn't released seeds and plant is dead, it releases seeds
   } else if ( !f.hasReleasedSeeds && p.energy < p.maxEnergyLevel*seedReleaseEnergyLevelRatio ) {
