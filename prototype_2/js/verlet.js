@@ -130,7 +130,7 @@ function spanMidPoint( span ) {
   return { x: mx, y: my};
 }
 
-///gets a span's mid point (returns object: { x: <value>, y: <value> } )
+///gets the mid point between two points (returns object: { x: <value>, y: <value> } )
 function midPoint( point1, point2 ) {
   var mx = ( point1.cx + point2.cx ) / 2;  // mid x value
   var my = ( point1.cy + point2.cy ) / 2;  // mid y value

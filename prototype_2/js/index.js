@@ -20,19 +20,22 @@ var sunRays = [], sunRayCount = 0;
 var shadows = [], shadowCount = 0;
 
 ///settings
-var worldSpeed = 5;  // (as frames per iteration: higher is slower) (does not affect physics iterations)
+var worldSpeed = 1;//5;  // (as frames per iteration: higher is slower) (does not affect physics iterations)
 var viewShadows = false;  // (shadow visibility)
 var viewStalks = true;  // (stalk visibility) 
 var viewLeaves = true;  // (leaf visibility)
 var viewFlowers = true;  // (flower visibility)
+var viewPods = true;  // (pod visibilty)
 var restrictGrowthByEnergy = true;  // restricts plant growth by energy level (if false, plants grow freely)
 var sunRayIntensity = 1;  // total energy units per sun ray per iteration
 var photosynthesisRatio = 1;  // ratio of available sun ray energy stored by a leaf when a ray contacts it
+var seedsPerFlower = 2;  // number of seeds produced by a fertilized flower
 var groEnExp = 0.5;  // growth energy expenditure rate (rate energy is expended for growth)
 var livEnExp = 0.2;  // living energy expenditure rate (rate energy is expended for living)
 var energyStoreFactor = 1000;  // a plant's maximum storable energy units per segment
 var unhealthyEnergyLevelRatio = 0.075;  // ratio of maximum energy when plant becomes unhealthy (starts yellowing)
 var sickEnergyLevelRatio = -0.2;  // ratio of maximum energy when plant becomes sick (starts darkening)
+var seedReleaseEnergyLevelRatio = -0.8; // ratio of maximum energy when seed pod disperses seeds
 var deathEnergyLevelRatio = -1;  // ratio of maximum energy when plant dies (fully darkened)
 
 
@@ -43,8 +46,8 @@ var deathEnergyLevelRatio = -1;  // ratio of maximum energy when plant dies (ful
 livEnExp = 3;
 energyStoreFactor = 15000;
 
-for ( var i=0; i<3; i++ ) {
-  createSeed();
+for ( var i=0; i<1; i++ ) {
+  createSeed(null);
 }
 
 
@@ -72,16 +75,21 @@ var C = {
 };
 
 ///seed constructor
-function Seed() {
-  this.sw = 14;  // seed width (universal size reference unit for seed)
-  if ( worldTime === 0 ) {
+function Seed( parentFlower ) {
+  this.parentFlower = parentFlower;
+  if ( parentFlower === null ) {
+    this.sw = 14;  // seed width (universal size reference unit for seed)
     this.p1 = addPt( Tl.rib(33,66), Tl.rib(5,25) );  // seed point 1 (placed in air for scattering at initiation)
+    this.p2 = addPt( pctFromXVal( this.p1.cx + this.sw*1.6 ), pctFromYVal( this.p1.cy ) );  // seed point 2
   } else {
-    //...place seed inside flower... {{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}
+    this.sw = this.parentFlower.spHcH.l/2;
+    var p1 = spanMidPoint( this.parentFlower.spHbM );  // positions seed p1 at bottom of parent flower's hex
+    this.p1 = addPt( pctFromXVal(p1.x), pctFromYVal(p1.y) );  // seed point 1
+    var p2 = spanMidPoint( this.parentFlower.spHtM );  // positions seed p2 at top of parent flower's hex
+    this.p2 = addPt( pctFromXVal(p2.x), pctFromYVal(p2.y) );  // seed point 2
   }
   this.p1.width = this.sw*1; 
   this.p1.mass = 5;
-  this.p2 = addPt( pctFromXVal( this.p1.cx + this.sw*1.6 ), pctFromYVal( this.p1.cy ) );  // seed point 2
   this.p2.width = this.sw*0.35; this.p2.mass = 5; 
   this.p2.materiality = "immaterial";
   this.sp = addSp( this.p1.id, this.p2.id );  // seed span
@@ -112,7 +120,7 @@ function Plant( sourceSeed ) {
   this.forwardGrowthRate = gravity * Tl.rfb(18,22);  // (rate of cross spans increase per frame)
   this.outwardGrowthRate = this.forwardGrowthRate * Tl.rfb(0.18,0.22);  // (rate forward span widens per frame)
   this.maxSegmentWidth = Tl.rfb(10,12);  // maximum segment width (in pixels)
-  this.maxTotalSegments = Tl.rib(7,9);//Tl.rib(10,20);  // maximum total number of segments at maturity
+  this.maxTotalSegments = Tl.rib(6,10);//Tl.rib(10,20);  // maximum total number of segments at maturity
   this.firstLeafSegment = Tl.rib(2,3);  // (segment on which first leaf set grows)
   this.leafFrequency = Tl.rib(2,3);  // (number of segments until next leaf set)
   this.maxLeaflength = this.maxSegmentWidth * Tl.rfb(4,7);  // maximum leaf length at maturity
@@ -181,12 +189,18 @@ function Flower( plant, parentSegment, basePoint1, basePoint2 ) {
   this.plantId = plant.id;
   this.id = plant.flowerCount;
   this.parentSegment = parentSegment;
+  this.seeds = [];
   this.mass = 0;
   this.bloomRatio = 0; 
+  this.podOpenRatio = 0;
+  this.podOpacity = 0;
+  this.visible = true;
   this.hasFullyBloomed = false;
   this.isFertilized = true;  // (update when fertilization mechanism created...)
   this.hasFullyClosed = false;
+  this.hasSeeds = false;
   this.seedPodIsMature = false;
+  this.podHasOpened = false;
   this.hasReleasedSeeds = false;
   //ovule points
   this.ptBL = basePoint1;  // base point left
@@ -239,6 +253,10 @@ function Flower( plant, parentSegment, basePoint1, basePoint2 ) {
   this.ptPbR = addPt( pctFromXVal(this.ptBudTip.cx), pctFromYVal(this.ptBudTip.cy) );  // petal bottom right point  
   this.ptPtL.mass = this.ptPtM.mass = this.ptPtR.mass = this.mass;
   this.ptPbL.mass = this.ptPbM.mass = this.ptPbR.mass = this.mass;
+  //pod
+  this.ptPodTipL = addPt( pctFromXVal(this.ptBudTip.cx), pctFromYVal(this.ptBudTip.cy) );  // pod tip left point 
+  this.ptPodTipR = addPt( pctFromXVal(this.ptBudTip.cx), pctFromYVal(this.ptBudTip.cy) );  // pod tip right point
+  this.ptPodTipL.mass = this.ptPodTipR.mass = this.mass;
   //colors
   this.clP = plant.flowerColor; // petal color (hsl)
   this.clH = plant.pollenPadColor;  // hex (pollen pad) color
@@ -271,17 +289,32 @@ function Shadow( leafSpan ) {
 /// Instance Creators ///
 
 ///creates a new seed
-function createSeed() {
+function createSeed( parentFlower ) {
   seedCount++;
-  seeds.push( new Seed() );
+  seeds.push( new Seed( parentFlower ) );
+  if ( parentFlower !== null ) { parentFlower.seeds.push( seeds[seeds.length-1] ); }
   return seeds[seeds.length-1];
 }
 
 ///creates a new plant
 function createPlant( sourceSeed ) {
   plantCount++;
-  plants.push( new Plant( sourceSeed ) );
-  return plants[plants.length-1];
+  //if the source seed is an initiating seed, add the new plant to the end of the plants array and return it
+  if ( sourceSeed.parentFlower === null ) {
+    plants.push( new Plant( sourceSeed ) );  // places new plant at end of plants array
+    return plants[plants.length-1];  // returns new plant as last item of plants array
+  //otherwise, add the new plant right after its parent plant in plants array
+  } else {
+    for ( var i=0; i<plants.length; i++) { 
+      if ( sourceSeed.parentFlower.plantId === plants[i].id ) {  // finds seed's parent plant by id
+        plants.splice( i, 0, new Plant( sourceSeed ) );  // places new plant before parent plant in plants array
+        return plants[i];  // returns new plant (the plant before its parent plant in plants array)
+      }
+    }
+  }
+
+  console.log(plants);
+
 }
 
 ///creates a new segment
@@ -314,6 +347,16 @@ function createSunRays() {
 
 
 /// Component Functions ///
+
+///creates arc between two points
+function arcFromTo( startPoint, endPoint, arcHeight ) {
+  var ah = arcHeight;  // arc height as ratio of distance between points
+  var p1 = { x: startPoint.cx, y: startPoint.cy };
+  var p2 = { x: endPoint.cx, y: endPoint.cy };
+  var mp = { x: ( p1.x + p2.x ) / 2, y: ( p1.y + p2.y ) / 2 } ;  // mid point
+  var ccp = { x: mp.x + ( p2.y - p1.y ) * ah, y: mp.y + ( p1.x - p2.x ) * ah };  // curve control point
+  return ctx.quadraticCurveTo( ccp.x, ccp.y, p2.x, p2.y );
+}
 
 ///scatters seeds (for initiation)
 function scatterSeed( seed ) {
@@ -482,7 +525,77 @@ function readyForFlower( plant, segment ) {
           segment.spF.l > plant.maxSegmentWidth*0.333; 
 }
 
-///unfolds petals ( xShift and yShift are in units of hex height in relation to bud tip ) {{{{{{{{{{{ xxx }}}}}}}}}}
+///expands flower bud
+function expandFlowerBud( plant, flower) {
+  var p = plant;
+  var f = flower;
+  var pfgr = p.forwardGrowthRate;  // plant forward growth rate
+  var fbw = p.maxSegmentWidth * p.maxFlowerBaseWidth;  // flower base width (at maturity)
+  var bhgr = f.spHbM.l < fbw*0.3 ? pfgr*1.5 : pfgr*0.5;  // bud height growth rate (slows when stability established)
+  var fogr = p.outwardGrowthRate*1.5;  // flower outward growth rate
+  var htmp = spanMidPoint( f.spHtM );  // hex top middle span mid point
+  var hbmp = spanMidPoint( f.spHbM );  // hex bottom middle span mid point
+  var hcp = spanMidPoint( f.spHcH );  // hex center point
+  var budTipX = htmp.x + ( htmp.x - hbmp.x ) * p.flowerBudHeight;  // bud tip x value
+  var budTipY = htmp.y + ( htmp.y - hbmp.y ) * p.flowerBudHeight;  // bud tip y value
+  // (ovule)
+  f.spOiL.l = distance( f.ptBL, f.ptHbL);  // ovule inner left span
+  f.spOiR.l = f.spOiL.l;  // ovule inner rightspan
+  f.spCd.l = distance( f.ptHbL, f.ptBR );  // downward cross span
+  f.spCu.l = f.spCd.l;  // upward cross span
+  f.spCdP.l = distance( f.ptHbL, f.parentSegment.ptB2 ) + pfgr;  // downward cross span to parent
+  f.spCuP.l = f.spCdP.l;  // upward cross span to parent
+  f.spOoL.l = distance( f.ptBL, f.ptHoL );  // ovule outer left span 
+  f.spOoR.l = f.spOoL.l;  // ovule outer right span  
+  // (hex/polinator pad)
+  f.spHbM.l += fogr;  // hex bottom middle span
+  f.spHbL.l = f.spHbM.l;  // hex lower left span
+  f.spHbR.l = f.spHbM.l;  // hex lower right span
+  f.spHtL.l = f.spHbM.l;  // hex top left span
+  f.spHtR.l = f.spHbM.l;  // hex top right span
+  f.spHtM.l = f.spHbM.l;  // hex top middle span
+  f.spHcH.l = f.spHbM.l*2;  // hex cross horizontal span   {{{{{{{{{{{{{{{{{{{{{{{}}}}}}}}}}}}}}}}}}}}}}}}}}}}}
+  f.spHcDB.l = distance( f.ptHtL, f.ptBR ) + bhgr;  // hex cross downward span to flower base
+  f.spHcUB.l = f.spHcDB.l;  // hex cross upward span to flower base
+  // (bud tip point & scaffolding)
+  f.ptBudTip.cx = budTipX;  // bud tip x value
+  f.ptBudTip.cy = budTipY;  // bud tip y value
+  f.spBTSL.l = distance( f.ptBudTip, f.ptHoL );  // petal bottom middle left span
+  f.spBTSR.l = distance( f.ptBudTip, f.ptHoR );  // petal bottom middle right span
+  // (petals)
+  f.ptPtL.cx = budTipX; f.ptPtL.cy = budTipY;  // syncs top left petal tip with bud tip during bud growth
+  f.ptPtL.px = f.ptPtL.cx; f.ptPtL.py = f.ptPtL.cy;
+  f.ptPtM.cx = budTipX; f.ptPtM.cy = budTipY;  // syncs top middle petal tip with bud tip during bud growth
+  f.ptPtM.px = f.ptPtM.cx; f.ptPtM.py = f.ptPtM.cy;
+  f.ptPtR.cx = budTipX; f.ptPtR.cy = budTipY;  // syncs top right petal tip with bud tip during bud growth
+  f.ptPtR.px = f.ptPtR.cx; f.ptPtR.py = f.ptPtR.cy;
+  f.ptPbL.cx = budTipX; f.ptPbL.cy = budTipY;  // syncs bottom left petal tip with bud tip during bud growth
+  f.ptPbL.px = f.ptPbL.cx; f.ptPbL.py = f.ptPbL.cy;
+  f.ptPbM.cx = budTipX; f.ptPbM.cy = budTipY;  // syncs bottom middle petal tip with bud tip during bud growth
+  f.ptPbM.px = f.ptPbM.cx; f.ptPbM.py = f.ptPbM.cy;
+  f.ptPbR.cx = budTipX; f.ptPbR.cy = budTipY;  // syncs bottom right petal tip with bud tip during bud growth
+  f.ptPbR.px = f.ptPbR.cx; f.ptPbR.py = f.ptPbR.cy;
+  // (pod)
+  f.ptPodTipL.cx = budTipX; f.ptPodTipL.cy = budTipY;  // syncs left pod tip with bud tip during bud growth
+  f.ptPodTipL.px = f.ptPodTipL.cx; f.ptPodTipL.py = f.ptPodTipL.cy;
+  f.ptPodTipR.cx = budTipX; f.ptPodTipR.cy = budTipY;  // syncs right pod tip with bud tip during bud growth
+  f.ptPodTipR.px = f.ptPodTipR.cx; f.ptPodTipR.py = f.ptPodTipR.cy;
+}
+
+///adjusts petal arc throughout flower bloom
+function petalArcAdjustment( flower, basePoint1, basePoint2, petalTipPoint, expansionStart, arcHeightEnd) {
+  var f = flower;
+  var a = basePoint1;  // point a (leftmost petal base point)
+  var b = basePoint2;  // point b (rightmost petal base point)
+  var c = petalTipPoint;  // point c (petal tip point)
+  if ( (b.cy - a.cy)*(c.cx-b.cx) - (c.cy-b.cy)*(b.cx-a.cx) >= 0 ) {  // counterclockwise point orientation
+    return f.bloomRatio < expansionStart ? arcHeightEnd * expansionStart : arcHeightEnd * f.bloomRatio;
+  } else {  // clockwise point orientation
+    return f.bloomRatio < expansionStart ? -arcHeightEnd * expansionStart : -arcHeightEnd * f.bloomRatio;
+  }
+}
+
+///unfolds petals ( xShift and yShift are in units of hex height in relation to bud tip )
 function positionPetal( plant, flower, petalTipPoint, xShift, yShift ) {
   var p = plant;
   var f = flower;
@@ -492,13 +605,11 @@ function positionPetal( plant, flower, petalTipPoint, xShift, yShift ) {
   var hbmp = spanMidPoint( f.spHbM );  // hex bottom middle span mid point
   var hcp = spanMidPoint( f.spHcH );  // hex center point
   var bh = p.flowerBudHeight;  // bud height
-
   var budTip = { x: ( htmp.x + ( htmp.x - hbmp.x ) * bh ), y: (htmp.y + ( htmp.y - hbmp.y ) * bh) };  // bud tip
   var fullBloomX = hbmp.x + (hexHeight*-xShift) * (hcp.y-hbmp.y)/(hexHeight*0.5) + (hbmp.x-hcp.x)*(yShift-2.5)*2;
   var fullBloomY = hbmp.y - (hexHeight*-xShift) * (hcp.x-hbmp.x)/(hexHeight*0.5) + (hbmp.y-hcp.y)*(yShift-2.5)*2;
-  petalTipPoint.cx = petalTipPoint.px = budTip.x + (fullBloomX - budTip.x) * f.bloomRatio;
-  petalTipPoint.cy = petalTipPoint.py = budTip.y + (fullBloomY - budTip.y) * f.bloomRatio;
-
+  ptp.cx = ptp.px = budTip.x + (fullBloomX - budTip.x) * f.bloomRatio;
+  ptp.cy = ptp.py = budTip.y + (fullBloomY - budTip.y) * f.bloomRatio;
 }
 
 ///positions all petals
@@ -511,99 +622,83 @@ function positionPetals( plant, flower ) {
   positionPetal( plant, flower, flower.ptPbR, 1.75, 3 );  // bottom right petal
 }
 
+///places seeds in pod
+function placeSeedsInPod( flower ) {
+  if ( !flower.hasSeeds ) {
+    for ( var i=0; i<seedsPerFlower; i++ ) { createSeed( flower ); }
+    flower.hasSeeds = true;
+  }
+}
+
+function keepSeedsInPod( flower) {
+  if ( flower.hasSeeds ) {
+    for ( var j=0; j<flower.seeds.length; j++ ) {
+      var seed = flower.seeds[j];
+      seed.p1.cx = seed.p1.px = spanMidPoint(flower.spHbM).x;
+      seed.p1.cy = seed.p1.py = spanMidPoint(flower.spHbM).y;
+      seed.p2.cx = seed.p2.px = spanMidPoint(flower.spHtM).x;
+      seed.p2.cy = seed.p2.py = spanMidPoint(flower.spHtM).y;
+    }
+  }
+}
+
+///unfolds pod halves ( xShift and yShift are in units of hex height in relation to bud tip )
+function positionPodHalf( plant, flower, podTipPoint, xShift, yShift ) {
+  var p = plant;
+  var f = flower;
+  var ptp = podTipPoint;
+  var hexHeight = distance( f.ptHtL, f.ptHbL );
+  var htmp = spanMidPoint( f.spHtM );  // hex top middle span mid point
+  var hbmp = spanMidPoint( f.spHbM );  // hex bottom middle span mid point
+  var hcp = spanMidPoint( f.spHcH );  // hex center point
+  var bh = p.flowerBudHeight;  // bud height
+  var budTip = { x: ( htmp.x + ( htmp.x - hbmp.x ) * bh ), y: (htmp.y + ( htmp.y - hbmp.y ) * bh) };  // bud tip
+  var fullyOpenX = hbmp.x + (hexHeight*-xShift) * (hcp.y-hbmp.y)/(hexHeight*0.5) + (hbmp.x-hcp.x)*(yShift-2.5)*2;
+  var fullyOpenY = hbmp.y - (hexHeight*-xShift) * (hcp.x-hbmp.x)/(hexHeight*0.5) + (hbmp.y-hcp.y)*(yShift-2.5)*2;
+  ptp.cx = ptp.px = budTip.x + (fullyOpenX - budTip.x) * f.podOpenRatio;
+  ptp.cy = ptp.py = budTip.y + (fullyOpenY - budTip.y) * f.podOpenRatio;
+}
+
+///positions pod halves
+function positionPodHalves( plant, flower ) {
+  positionPodHalf( plant, flower, flower.ptPodTipL, -0.5, 0.5 );  // left pod half
+  positionPodHalf( plant, flower, flower.ptPodTipR, 0.5, 0.5 );  // right pod half
+}
+
 ///lengthens flower spans for bud growth & blooming
 function developFlower( plant, flower ) {
   var p = plant;
   var f = flower;
-  var pfgr = p.forwardGrowthRate;  // plant forward growth rate
-  var fbw = p.maxSegmentWidth * p.maxFlowerBaseWidth;  // flower base width (at maturity)
-  var bhgr = f.spHbM.l < fbw*0.3 ? pfgr*1.5 : pfgr*0.5;  // bud height growth rate (slows when stability established)
-  var fogr = p.outwardGrowthRate*1.5;  // flower outward growth rate
-  var htmp = spanMidPoint( f.spHtM );  // hex top middle span mid point
-  var hbmp = spanMidPoint( f.spHbM );  // hex bottom middle span mid point
-  var hcp = spanMidPoint( f.spHcH );  // hex center point
-  var budTipX = htmp.x + ( htmp.x - hbmp.x ) * p.flowerBudHeight;  // bud tip x value
-  var budTipY = htmp.y + ( htmp.y - hbmp.y ) * p.flowerBudHeight;  // bud tip y value
-
   //if bud is not fully grown and has enough energy for growth, it continues to grow until mature
   if ( !f.budHasFullyMatured && plant.energy > 0 ) {
-    // (ovule)
-    f.spOiL.l = distance( f.ptBL, f.ptHbL);  // ovule inner left span
-    f.spOiR.l = f.spOiL.l;  // ovule inner rightspan
-    f.spCd.l = distance( f.ptHbL, f.ptBR );  // downward cross span
-    f.spCu.l = f.spCd.l;  // upward cross span
-    f.spCdP.l = distance( f.ptHbL, f.parentSegment.ptB2 ) + pfgr;  // downward cross span to parent
-    f.spCuP.l = f.spCdP.l;  // upward cross span to parent
-    f.spOoL.l = distance( f.ptBL, f.ptHoL );  // ovule outer left span 
-    f.spOoR.l = f.spOoL.l;  // ovule outer right span  
-    // (hex/polinator pad)
-    f.spHbM.l += fogr;  // hex bottom middle span
-    f.spHbL.l = f.spHbM.l;  // hex lower left span
-    f.spHbR.l = f.spHbM.l;  // hex lower right span
-    f.spHtL.l = f.spHbM.l;  // hex top left span
-    f.spHtR.l = f.spHbM.l;  // hex top right span
-    f.spHtM.l = f.spHbM.l;  // hex top middle span
-    f.spHcH.l = f.spHbM.l*2;  // hex cross horizontal span   {{{{{{{{{{{{{{{{{{{{{{{}}}}}}}}}}}}}}}}}}}}}}}}}}}}}
-    f.spHcDB.l = distance( f.ptHtL, f.ptBR ) + bhgr;  // hex cross downward span to flower base
-    f.spHcUB.l = f.spHcDB.l;  // hex cross upward span to flower base
-    // (bud tip point & scaffolding)
-    f.ptBudTip.cx = budTipX;  // bud tip x value
-    f.ptBudTip.cy = budTipY;  // bud tip y value
-    f.spBTSL.l = distance( f.ptBudTip, f.ptHoL );  // petal bottom middle left span
-    f.spBTSR.l = distance( f.ptBudTip, f.ptHoR );  // petal bottom middle right span
-    // (petals)
-    f.ptPtL.cx = budTipX; f.ptPtL.cy = budTipY;  // syncs top left petal tip with bud tip during bud growth
-    f.ptPtL.px = f.ptPtL.cx; f.ptPtL.py = f.ptPtL.cy;
-    f.ptPtM.cx = budTipX; f.ptPtM.cy = budTipY;  // syncs top middle petal tip with bud tip during bud growth
-    f.ptPtM.px = f.ptPtM.cx; f.ptPtM.py = f.ptPtM.cy;
-    f.ptPtR.cx = budTipX; f.ptPtR.cy = budTipY;  // syncs top right petal tip with bud tip during bud growth
-    f.ptPtR.px = f.ptPtR.cx; f.ptPtR.py = f.ptPtR.cy;
-    f.ptPbL.cx = budTipX; f.ptPbL.cy = budTipY;  // syncs bottom left petal tip with bud tip during bud growth
-    f.ptPbL.px = f.ptPbL.cx; f.ptPbL.py = f.ptPbL.cy;
-    f.ptPbM.cx = budTipX; f.ptPbM.cy = budTipY;  // syncs bottom middle petal tip with bud tip during bud growth
-    f.ptPbM.px = f.ptPbM.cx; f.ptPbM.py = f.ptPbM.cy;
-    f.ptPbR.cx = budTipX; f.ptPbR.cy = budTipY;  // syncs bottom right petal tip with bud tip during bud growth
-    f.ptPbR.px = f.ptPbR.cx; f.ptPbR.py = f.ptPbR.cy;
-    //checks and updates bud maturity state
+    expandFlowerBud( p, f);
     f.budHasFullyMatured = flower.spHbM.l < plant.maxSegmentWidth*plant.maxFlowerBaseWidth ? false : true;
-
   //otherwise, if bud has not fully bloomed, it continues to bloom
-  } else if ( !f.hasFullyBloomed && plant.energy > 0) {
-    positionPetals(p,f);
-    //checks and updates bloom state
-    if ( f.bloomRatio < 1 ) { f.bloomRatio += 0.01; } else { f.hasFullyBloomed = true; }
-
+  } else if ( f.budHasFullyMatured && !f.hasFullyBloomed && plant.energy > 0) {
+    if ( f.bloomRatio < 1 ) { f.bloomRatio += 0.01; } else { f.hasFullyBloomed = true; } 
   //otherwise, if flower is fertilized, has not fully closed, and has reached a "sick" energy level, it closes
   } else if ( f.isFertilized && !f.hasFullyClosed && p.energy < p.maxEnergyLevel*sickEnergyLevelRatio ) { 
-    positionPetals(p,f);
-    //checks and updates closed state
-    if ( f.bloomRatio > 0 ) { f.bloomRatio -= 0.01; } else { f.hasFullyclosed = true; }
-
-
-
-
-  //otherise, if flower has fully closed, it becomes a seed pod and expands
-  } else if ( !f.seedPodIsMature ) {
-
-    // draw and fill seed pod skin around closed bud (using left & right halves)
-    // fade in seed pod from 0 to 1 opacity
-    // make flower invisible ( stop rendering flower )
-    // expand flower hex width & bud height until big enough to fit 2 seeds side by side
-    // place two seeds with affixed within seed pod
-
-    //checks and updates pod maturity state
-    if ( false ) {  } else { f.seedPodIsMature = true; }
-
-
-
-
-
+    if ( f.bloomRatio > 0 ) { f.bloomRatio -= 0.01; } else { f.hasFullyClosed = true; } // closes petals
+  //otherise, if flower has fully closed, it develops into a seed pod 
+  } else if ( f.hasFullyClosed && !f.seedPodIsMature ) {
+    placeSeedsInPod( f );
+    keepSeedsInPod( f );
+    f.podOpacity = f.podOpacity < 1 ? f.podOpacity + 0.005 : 1;
+    if ( f.podOpacity === 1 ) { f.visible = false; f.seedPodIsMature = true; }
+  //otherwise, if seed pod is mature, the seeds stay in the pod
+  } else if ( f.seedPodIsMature ) {
+    keepSeedsInPod( f );
   //otherwise, if the seed pod hasn't released seeds and plant is dead, it releases seeds
-  } else if ( !f.hasReleasedSeeds && !p.isAlive ) {
-    //checks and updates pod maturity state
-    if ( false ) {  } else { f.hasReleasedSeeds = true; }
+  } else if ( !f.hasReleasedSeeds && p.energy < p.maxEnergyLevel*seedReleaseEnergyLevelRatio ) {
+    if ( f.podOpenRatio < 1 ) { f.podOpenRatio += 0.05; } else { f.podHasOpened = true; } // opens pod
+    if ( f.podHasOpened && !f.hasReleasedSeeds ) {
+      for ( var i=0; i<f.seeds.length; i++ ) {
+        var seed = flower.seeds[i];
+        scatterSeed( seed );
+        f.hasReleasedSeeds = true;
+      }
+    }
   }
-
 }
 
 ///grows all plants
@@ -614,14 +709,12 @@ function growPlants() {
     if ( plant.energy > plant.segmentCount*energyStoreFactor && plant.energy>plant.seedEnergy ) {
       plant.energy = plant.segmentCount*energyStoreFactor;  // caps plant max energy level based on segment count
     }
-
-      if ( plant.hasFlowers ) {  // checks plant for flowers
-        for ( var j=0; j<plant.flowers.length; j++ ) {
-          var flower = plant.flowers[j];
-          developFlower( plant, flower );  // grows flower
-        }
+    if ( plant.hasFlowers ) {  // checks plant for flowers
+      for ( var j=0; j<plant.flowers.length; j++ ) {
+        var flower = plant.flowers[j];
+        developFlower( plant, flower );  // grows flower
       }
-
+    }
     if ( plant.energy > 0 || !restrictGrowthByEnergy ) {  // checks if plant has energy for growth (>0)
       for (var k=0; k<plant.segments.length; k++) {  // checks each plant segment
         var segment = plant.segments[k];
@@ -643,7 +736,9 @@ function growPlants() {
         }
       }
     } 
-    plant.energy -= plant.segmentCount * livEnExp;  // cost of living: reduces energy by a ratio of segment count 
+    if ( plant.sourceSeed.hasGerminated ) {
+      plant.energy -= plant.segmentCount * livEnExp;  // cost of living: reduces energy by a ratio of segment count
+    } 
     if ( plant.energy < plant.maxEnergyLevel*deathEnergyLevelRatio && restrictGrowthByEnergy ) {
       killPlant( plant );  // plant dies if energy level falls below minimum to be alive
     }
@@ -769,7 +864,7 @@ function applyHealthColoration( plant, segment ) {
 /// kills plant if its energy level falls below minimum to be alive
 function killPlant( plant ) {
   var p = plant;
-  plant.isAlive = false;  
+  p.isAlive = false;  
   for (var i=0; i<plant.segments.length; i++) {
     var s = plant.segments[i];
     if ( s.hasLeaves && s.spLf1.l > plant.maxLeaflength/3 ) {  
@@ -920,109 +1015,115 @@ function renderStalks( plant, segment ) {
   }
 }
 
-/// creates arc between two points
-function arcFromTo( startPoint, endPoint, arcHeight ) {
-  var ah = arcHeight;  // arc height as ratio of distance between points
-  var p1 = { x: startPoint.cx, y: startPoint.cy };
-  var p2 = { x: endPoint.cx, y: endPoint.cy };
-  var mp = { x: ( p1.x + p2.x ) / 2, y: ( p1.y + p2.y ) / 2 } ;  // mid point
-  var ccp = { x: mp.x + ( p2.y - p1.y ) * ah, y: mp.y + ( p1.x - p2.x ) * ah };  // curve control point
-  return ctx.quadraticCurveTo( ccp.x, ccp.y, p2.x, p2.y );
-}
-
-/// adjusts petal arc throughout bloom
-function petalArcAdjustment( flower, basePoint1, basePoint2, petalTipPoint, expansionStart, arcHeightEnd) {
-  var f = flower;
-  var a = basePoint1;  // point a (leftmost petal base point)
-  var b = basePoint2;  // point b (rightmost petal base point)
-  var c = petalTipPoint;  // point c (petal tip point)
-  if ( (b.cy - a.cy)*(c.cx-b.cx) - (c.cy-b.cy)*(b.cx-a.cx) >= 0 ) {  // counterclockwise point orientation
-    return f.bloomRatio < expansionStart ? arcHeightEnd * expansionStart : arcHeightEnd * f.bloomRatio;
-  } else {  // clockwise point orientation
-    return f.bloomRatio < expansionStart ? -arcHeightEnd * expansionStart : -arcHeightEnd * f.bloomRatio;
-  }
-}
-
 ///renders flowers
 function renderFlowers( plant ) {
   var p = plant;
   if ( p.hasFlowers ) {
     for ( var i=0; i<p.flowers.length; i++) {
       var f = p.flowers[i];
-      var pah;  // petal arc height
-      positionPetals(p,f);  // ensures flower petal positions are updated every iteration
-      ctx.lineJoin = "round";
-      ctx.lineCap = "round";
-      ctx.lineWidth = 1;
-      //top petals
-      ctx.fillStyle = "hsl("+f.clP.h+","+f.clP.s+"%,"+f.clP.l+"%)";  // violet
-      ctx.strokeStyle = "rgba("+f.clO.r+","+f.clO.g+","+f.clO.b+","+f.clO.a+")";  // dark brown
-      ctx.beginPath();  // top middle petal
-      ctx.moveTo( f.ptHtL.cx, f.ptHtL.cy ); 
-      pah = petalArcAdjustment( f, f.ptHtL, f.ptHtR, f.ptPtM, 0.2, 0.45);
-      arcFromTo( f.ptHtL, f.ptPtM, pah ); arcFromTo( f.ptPtM, f.ptHtR, pah );
-      ctx.fill(); ctx.stroke();
-      ctx.beginPath();  // top left petal
-      ctx.moveTo( f.ptHoL.cx, f.ptHoL.cy );
-      pah = petalArcAdjustment( f, f.ptHoL, f.ptHtL, f.ptPtL, 0.2, 0.35);
-      arcFromTo( f.ptHoL, f.ptPtL, pah ); arcFromTo( f.ptPtL, f.ptHtL, pah );
-      ctx.fill(); ctx.stroke();
-      ctx.beginPath();  // top right petal
-      ctx.moveTo(f.ptHtR.cx, f.ptHtR.cy); 
-      pah = petalArcAdjustment( f, f.ptHtR, f.ptHoR, f.ptPtR, 0.2, 0.35);
-      arcFromTo( f.ptHtR, f.ptPtR, pah ); arcFromTo( f.ptPtR, f.ptHoR, pah );
-      ctx.fill(); ctx.stroke();
-      //ovule
-      ctx.beginPath();
-      ctx.fillStyle = "rgba("+f.clOv.r+","+f.clOv.g+","+f.clOv.b+","+f.clOv.a+")";  // dark green
-      ctx.strokeStyle = "rgba("+f.clO.r+","+f.clO.g+","+f.clO.b+","+f.clO.a+")";  // dark brown
-      ctx.moveTo(f.ptBL.cx, f.ptBL.cy);
-      arcFromTo( f.ptBL, f.ptHoL, 0.1 );
-      ctx.lineTo(f.ptHoR.cx, f.ptHoR.cy);
-      arcFromTo( f.ptHoR, f.ptBR, 0.1 );
-      ctx.fill();
-      ctx.stroke();     
-      //hex (polinator pad)
-      ctx.beginPath();
-      ctx.fillStyle = "rgba("+f.clH.r+","+f.clH.g+","+f.clH.b+","+f.clH.a+")";  // yellow
-      ctx.moveTo(f.ptHtR.cx, f.ptHtR.cy);
-      ctx.lineTo(f.ptHoR.cx, f.ptHoR.cy);
-      ctx.lineTo(f.ptHbR.cx, f.ptHbR.cy);
-      ctx.lineTo(f.ptHbL.cx, f.ptHbL.cy);
-      ctx.lineTo(f.ptHoL.cx, f.ptHoL.cy);
-      ctx.lineTo(f.ptHtL.cx, f.ptHtL.cy);
-      ctx.fill();
-      ctx.beginPath();
-      ctx.strokeStyle = "rgba("+f.clO.r+","+f.clO.g+","+f.clO.b+","+f.clO.a+")";  // dark brown
-      ctx.moveTo(f.ptHoL.cx, f.ptHoL.cy);
-      ctx.lineTo(f.ptHtL.cx, f.ptHtL.cy);
-      ctx.lineTo(f.ptHtR.cx, f.ptHtR.cy);
-      ctx.lineTo(f.ptHoR.cx, f.ptHoR.cy);
-      ctx.lineTo(f.ptHbR.cx, f.ptHbR.cy);
-      ctx.lineTo(f.ptHbR.cx, f.ptHbR.cy);
-      ctx.lineTo(f.ptHbL.cx, f.ptHbL.cy);
-      ctx.lineTo(f.ptHoL.cx, f.ptHoL.cy);
-      ctx.stroke();
-      //bottom petals
-      ctx.fillStyle = "hsl("+f.clP.h+","+f.clP.s+"%,"+f.clP.l+"%)";  // white
-      ctx.strokeStyle = "rgba("+f.clO.r+","+f.clO.g+","+f.clO.b+","+f.clO.a+")";  // dark brown
-      ctx.beginPath();  // bottom left petal
-      ctx.moveTo( f.ptHoL.cx, f.ptHoL.cy );
-      pah = petalArcAdjustment( f, f.ptHoL, f.ptHbL, f.ptPbL, 0.35, 0.35);
-      arcFromTo( f.ptHoL, f.ptPbL, pah ); arcFromTo( f.ptPbL, f.ptHbL, pah );
-      ctx.fill(); ctx.stroke();
-      ctx.beginPath();  // bottom right petal
-      ctx.moveTo(f.ptHbR.cx, f.ptHbR.cy);
-      pah = petalArcAdjustment( f, f.ptHbR, f.ptHoR, f.ptPbR, 0.35, 0.35);
-      arcFromTo( f.ptHbR, f.ptPbR, pah ); arcFromTo( f.ptPbR, f.ptHoR, pah );
-      ctx.fill(); ctx.stroke();
-      ctx.beginPath();  // bottom middle petal
-      ctx.moveTo( f.ptHbL.cx, f.ptHbL.cy );
-      pah = petalArcAdjustment( f, f.ptHbL, f.ptHbR, f.ptPbM, 0.2, 0.45);
-      arcFromTo( f.ptHbL, f.ptPbM, pah ); arcFromTo( f.ptPbM, f.ptHbR, pah );
-      ctx.fill(); ctx.stroke();
+      positionPodHalves(p,f);  // ensures pod half positions are updated every iteration
+      if ( f.visible ) {
+        var pah;  // petal arc height
+        positionPetals(p,f);  // ensures flower petal positions are updated every iteration
+        ctx.lineJoin = "round";
+        ctx.lineCap = "round";
+        ctx.lineWidth = 1;
+        //top petals
+        ctx.fillStyle = "hsl("+f.clP.h+","+f.clP.s+"%,"+f.clP.l+"%)";  // violet
+        ctx.strokeStyle = "rgba("+f.clO.r+","+f.clO.g+","+f.clO.b+","+f.clO.a+")";  // dark brown
+        ctx.beginPath();  // top middle petal
+        ctx.moveTo( f.ptHtL.cx, f.ptHtL.cy ); 
+        pah = petalArcAdjustment( f, f.ptHtL, f.ptHtR, f.ptPtM, 0.2, 0.45);
+        arcFromTo( f.ptHtL, f.ptPtM, pah ); arcFromTo( f.ptPtM, f.ptHtR, pah );
+        ctx.fill(); ctx.stroke();
+        ctx.beginPath();  // top left petal
+        ctx.moveTo( f.ptHoL.cx, f.ptHoL.cy );
+        pah = petalArcAdjustment( f, f.ptHoL, f.ptHtL, f.ptPtL, 0.2, 0.35);
+        arcFromTo( f.ptHoL, f.ptPtL, pah ); arcFromTo( f.ptPtL, f.ptHtL, pah );
+        ctx.fill(); ctx.stroke();
+        ctx.beginPath();  // top right petal
+        ctx.moveTo(f.ptHtR.cx, f.ptHtR.cy); 
+        pah = petalArcAdjustment( f, f.ptHtR, f.ptHoR, f.ptPtR, 0.2, 0.35);
+        arcFromTo( f.ptHtR, f.ptPtR, pah ); arcFromTo( f.ptPtR, f.ptHoR, pah );
+        ctx.fill(); ctx.stroke();
+        //ovule
+        ctx.beginPath();
+        ctx.fillStyle = "rgba("+f.clOv.r+","+f.clOv.g+","+f.clOv.b+","+f.clOv.a+")";  // dark green
+        ctx.strokeStyle = "rgba("+f.clO.r+","+f.clO.g+","+f.clO.b+","+f.clO.a+")";  // dark brown
+        ctx.moveTo(f.ptBL.cx, f.ptBL.cy);
+        arcFromTo( f.ptBL, f.ptHoL, 0.1 );
+        ctx.lineTo(f.ptHoR.cx, f.ptHoR.cy);
+        arcFromTo( f.ptHoR, f.ptBR, 0.1 );
+        ctx.fill();
+        ctx.stroke();     
+        //hex (polinator pad)
+        ctx.beginPath();
+        ctx.fillStyle = "rgba("+f.clH.r+","+f.clH.g+","+f.clH.b+","+f.clH.a+")";  // yellow
+        ctx.moveTo(f.ptHtR.cx, f.ptHtR.cy);
+        ctx.lineTo(f.ptHoR.cx, f.ptHoR.cy);
+        ctx.lineTo(f.ptHbR.cx, f.ptHbR.cy);
+        ctx.lineTo(f.ptHbL.cx, f.ptHbL.cy);
+        ctx.lineTo(f.ptHoL.cx, f.ptHoL.cy);
+        ctx.lineTo(f.ptHtL.cx, f.ptHtL.cy);
+        ctx.fill();
+        ctx.beginPath();
+        ctx.strokeStyle = "rgba("+f.clO.r+","+f.clO.g+","+f.clO.b+","+f.clO.a+")";  // dark brown
+        ctx.moveTo(f.ptHoL.cx, f.ptHoL.cy);
+        ctx.lineTo(f.ptHtL.cx, f.ptHtL.cy);
+        ctx.lineTo(f.ptHtR.cx, f.ptHtR.cy);
+        ctx.lineTo(f.ptHoR.cx, f.ptHoR.cy);
+        ctx.lineTo(f.ptHbR.cx, f.ptHbR.cy);
+        ctx.lineTo(f.ptHbR.cx, f.ptHbR.cy);
+        ctx.lineTo(f.ptHbL.cx, f.ptHbL.cy);
+        ctx.lineTo(f.ptHoL.cx, f.ptHoL.cy);
+        ctx.stroke();
+        //bottom petals
+        ctx.fillStyle = "hsl("+f.clP.h+","+f.clP.s+"%,"+f.clP.l+"%)";  // white
+        ctx.strokeStyle = "rgba("+f.clO.r+","+f.clO.g+","+f.clO.b+","+f.clO.a+")";  // dark brown
+        ctx.beginPath();  // bottom left petal
+        ctx.moveTo( f.ptHoL.cx, f.ptHoL.cy );
+        pah = petalArcAdjustment( f, f.ptHoL, f.ptHbL, f.ptPbL, 0.35, 0.35);
+        arcFromTo( f.ptHoL, f.ptPbL, pah ); arcFromTo( f.ptPbL, f.ptHbL, pah );
+        ctx.fill(); ctx.stroke();
+        ctx.beginPath();  // bottom right petal
+        ctx.moveTo(f.ptHbR.cx, f.ptHbR.cy);
+        pah = petalArcAdjustment( f, f.ptHbR, f.ptHoR, f.ptPbR, 0.35, 0.35);
+        arcFromTo( f.ptHbR, f.ptPbR, pah ); arcFromTo( f.ptPbR, f.ptHoR, pah );
+        ctx.fill(); ctx.stroke();
+        ctx.beginPath();  // bottom middle petal
+        ctx.moveTo( f.ptHbL.cx, f.ptHbL.cy );
+        pah = petalArcAdjustment( f, f.ptHbL, f.ptHbR, f.ptPbM, 0.2, 0.45);
+        arcFromTo( f.ptHbL, f.ptPbM, pah ); arcFromTo( f.ptPbM, f.ptHbR, pah );
+        ctx.fill(); ctx.stroke();
+      }
+      //pods
+      if ( viewPods ) { renderPods( f ); }
     }
   }
+}
+
+///renders pods
+function renderPods( flower ) {
+  var f = flower;
+  ctx.lineJoin = "round";
+  ctx.lineCap = "round";
+  ctx.lineWidth = 2.5;
+  ctx.fillStyle = "rgba("+f.clOv.r+","+f.clOv.g+","+f.clOv.b+","+f.podOpacity+")";  // dark green
+  ctx.strokeStyle = "rgba("+f.clO.r+","+f.clO.g+","+f.clO.b+","+f.podOpacity+")";  // dark brown
+  ctx.beginPath();
+  ctx.moveTo(f.ptBL.cx, f.ptBL.cy);
+  arcFromTo( f.ptBL, f.ptHoL, 0.1 );
+  arcFromTo( f.ptHoL, f.ptPodTipL, 0.07 );
+  ctx.stroke(); 
+  ctx.lineTo(f.ptBR.cx, f.ptBR.cy);
+  ctx.fill();
+  ctx.beginPath();
+  ctx.moveTo(f.ptBR.cx, f.ptBR.cy);
+  arcFromTo( f.ptBR, f.ptHoR, -0.1 );
+  arcFromTo( f.ptHoR, f.ptPodTipR, -0.07 );
+  ctx.stroke();
+  ctx.lineTo(f.ptBL.cx, f.ptBL.cy);
+  ctx.fill();
 }
 
 ///renders plants (sequentially)
