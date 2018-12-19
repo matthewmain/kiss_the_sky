@@ -130,7 +130,7 @@ function spanMidPoint( span ) {
   return { x: mx, y: my};
 }
 
-///gets a span's mid point (returns object: { x: <value>, y: <value> } )
+///gets the mid point between two points (returns object: { x: <value>, y: <value> } )
 function midPoint( point1, point2 ) {
   var mx = ( point1.cx + point2.cx ) / 2;  // mid x value
   var my = ( point1.cy + point2.cy ) / 2;  // mid y value
@@ -258,9 +258,9 @@ function refinePositions() {
 function renderPoints() {
   for (var i=0; i<points.length; i++) {
     var p = points[i];
-    var radius = p.width >= 1 ? p.width/2 : 0.5;
+    var radius = p.width >= 2 ? p.width/2 : 1;
     ctx.beginPath();
-    ctx.fillStyle = "blue";
+    ctx.fillStyle = "red";
     ctx.arc( p.cx, p.cy, radius, 0 , Math.PI*2 );
     ctx.fill(); 
   }
