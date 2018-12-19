@@ -33,7 +33,8 @@ var seedsPerFlower = 2;  // number of seeds produced by a fertilized flower
 var groEnExp = 0.5;  // growth energy expenditure rate (rate energy is expended for growth)
 var livEnExp = 0.2;  // living energy expenditure rate (rate energy is expended for living)
 var energyStoreFactor = 1000;  // a plant's maximum storable energy units per segment
-var oldAge = 20000;  // (age when plant starts dying of old age, in worldtime units) (remove when seasons added...)
+var oldAge = 30000;  // (age when plant starts dying of old age, in worldtime units) (remove when seasons added...)
+var agingFactor = oldAge/10;  // (factor of energy decrease per iteration after old age reached)
 var unhealthyEnergyLevelRatio = 0.075;  // ratio of maximum energy when plant becomes unhealthy (starts yellowing)
 var flowerFadeEnergyLevelRatio = -0.025;  // ratio of maximum energy when flower begins to fade
 var polinatorPadFadeEnergyLevelRatio = -0.075;  // ratio of maximum energy when polinator pad begins to fade
@@ -49,7 +50,7 @@ var deathEnergyLevelRatio = -1;  // ratio of maximum energy when plant dies (ful
 // livEnExp = 3;
 // energyStoreFactor = 20000;
 
-for ( var i=0; i<25; i++ ) {
+for ( var i=0; i<20; i++ ) {
   createSeed(null);
 }
 
@@ -709,7 +710,6 @@ function developFlower( plant, flower ) {
     keepSeedsInPod( f );
   //otherwise, if the pod has opened, the seeds haven't been released, and the plant is dead, releases seeds
   } else if ( !f.hasReleasedSeeds ) {
-    console.log("hit");
     for ( var i=0; i<f.seeds.length; i++ ) { dropSeed( flower.seeds[i] ); }
     f.hasReleasedSeeds = true;
   }
@@ -720,10 +720,6 @@ function growPlants() {
   for (var i=0; i<plants.length; i++) {
     var plant = plants[i];
     plant.age++;
-
-      console.log("plant"+plant.id+" age: "+plant.age); ///////////////////////////////////////////////////////
-      console.log("plant"+plant.id+" energy: "+plant.energy); 
-
     germinateSeedWhenReady( plant.sourceSeed );  // germinates a planted seed
     if ( plant.energy > plant.segmentCount*energyStoreFactor && plant.energy>plant.seedEnergy ) {
       plant.energy = plant.segmentCount*energyStoreFactor;  // caps plant max energy level based on segment count
@@ -759,7 +755,7 @@ function growPlants() {
       plant.energy -= plant.segmentCount * livEnExp;  // cost of living: reduces energy by a ratio of segment count
     } 
     if ( plant.age > oldAge ) { //
-      plant.energy -= plant.age/2000; // plant starts dying of old age (*remove when seasons added...)
+      plant.energy -= plant.age/agingFactor; // plant starts dying of old age (*remove when seasons added...)
     } 
     if ( plant.energy < plant.maxEnergyLevel*deathEnergyLevelRatio && restrictGrowthByEnergy ) {
       killPlant( plant );  // plant dies if energy level falls below minimum to be alive
