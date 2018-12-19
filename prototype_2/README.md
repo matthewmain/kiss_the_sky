@@ -10,5 +10,5 @@
 
 - [X] flowers (with basic preliminary blooming animation)
 
-- [X] reproduction (with randomized traits)
+- [X] seed pods & reproduction with randomized traits (with basic preliminary pod development and seed dispersal animation)
 

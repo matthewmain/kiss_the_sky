@@ -33,9 +33,12 @@ var seedsPerFlower = 2;  // number of seeds produced by a fertilized flower
 var groEnExp = 0.5;  // growth energy expenditure rate (rate energy is expended for growth)
 var livEnExp = 0.2;  // living energy expenditure rate (rate energy is expended for living)
 var energyStoreFactor = 1000;  // a plant's maximum storable energy units per segment
+var oldAge = 20000;  // (age when plant starts dying of old age, in worldtime units) (remove when seasons added...)
 var unhealthyEnergyLevelRatio = 0.075;  // ratio of maximum energy when plant becomes unhealthy (starts yellowing)
+var flowerFadeEnergyLevelRatio = -0.025;  // ratio of maximum energy when flower begins to fade
+var polinatorPadFadeEnergyLevelRatio = -0.075;  // ratio of maximum energy when polinator pad begins to fade
 var sickEnergyLevelRatio = -0.2;  // ratio of maximum energy when plant becomes sick (starts darkening)
-var seedReleaseEnergyLevelRatio = -0.8; // ratio of maximum energy when seed pod disperses seeds
+var podOpenEnergyLevelRatio = -0.5; // ratio of maximum energy when seed pod disperses seeds
 var deathEnergyLevelRatio = -1;  // ratio of maximum energy when plant dies (fully darkened)
 
 
@@ -43,10 +46,10 @@ var deathEnergyLevelRatio = -1;  // ratio of maximum energy when plant dies (ful
 
 ////---(TESTING)---////
 
-livEnExp = 3;
-energyStoreFactor = 15000;
+// livEnExp = 3;
+// energyStoreFactor = 20000;
 
-for ( var i=0; i<1; i++ ) {
+for ( var i=0; i<25; i++ ) {
   createSeed(null);
 }
 
@@ -115,12 +118,13 @@ function Plant( sourceSeed ) {
   this.ph = Tl.rib( 0, 260 ); if ( this.ph > 65 && this.ph < 165) { this.ph += 100; }  // petal hue
   this.ps = Tl.rib( 50, 100 );  // petal saturation
   this.pl = Tl.rib( 35, 70 );  // petal lightness
+  this.age = 0;  // plant age in worldtime units
   this.isAlive = true;
   //settings
   this.forwardGrowthRate = gravity * Tl.rfb(18,22);  // (rate of cross spans increase per frame)
   this.outwardGrowthRate = this.forwardGrowthRate * Tl.rfb(0.18,0.22);  // (rate forward span widens per frame)
   this.maxSegmentWidth = Tl.rfb(10,12);  // maximum segment width (in pixels)
-  this.maxTotalSegments = Tl.rib(6,10);//Tl.rib(10,20);  // maximum total number of segments at maturity
+  this.maxTotalSegments = Tl.rib(8,15);  // maximum total number of segments at maturity
   this.firstLeafSegment = Tl.rib(2,3);  // (segment on which first leaf set grows)
   this.leafFrequency = Tl.rib(2,3);  // (number of segments until next leaf set)
   this.maxLeaflength = this.maxSegmentWidth * Tl.rfb(4,7);  // maximum leaf length at maturity
@@ -128,7 +132,7 @@ function Plant( sourceSeed ) {
   this.flowerBudHeight = 1;  // bud height ( from hex top, in units of hex heights )
   this.flowerColor = { h: this.ph, s: this.ps, l: this.pl };  // flower color
   this.pollenPadColor = { r: 255, g: 217, b: 102, a: 1 };  // pollen pad color
-  this.maxFlowerBaseWidth = 1;//0.85;  // max flower base width, in units of plant max segment width {{{{{{{}}}}}}}
+  this.maxFlowerBaseWidth = 1;  // max flower base width, in units of plant max segment width
   //base segment (values assigned at source seed germination)
   this.xLocation = null;  // x value where plant is rooted to the ground
   this.ptB1 = null;  // base point 1
@@ -196,7 +200,7 @@ function Flower( plant, parentSegment, basePoint1, basePoint2 ) {
   this.podOpacity = 0;
   this.visible = true;
   this.hasFullyBloomed = false;
-  this.isFertilized = true;  // (update when fertilization mechanism created...)
+  this.isFertilized = false;
   this.hasFullyClosed = false;
   this.hasSeeds = false;
   this.seedPodIsMature = false;
@@ -303,7 +307,7 @@ function createPlant( sourceSeed ) {
   if ( sourceSeed.parentFlower === null ) {
     plants.push( new Plant( sourceSeed ) );  // places new plant at end of plants array
     return plants[plants.length-1];  // returns new plant as last item of plants array
-  //otherwise, add the new plant right after its parent plant in plants array
+  //otherwise, add the new plant right before its parent plant in plants array (maintains render ordering)
   } else {
     for ( var i=0; i<plants.length; i++) { 
       if ( sourceSeed.parentFlower.plantId === plants[i].id ) {  // finds seed's parent plant by id
@@ -312,9 +316,6 @@ function createPlant( sourceSeed ) {
       }
     }
   }
-
-  console.log(plants);
-
 }
 
 ///creates a new segment
@@ -362,6 +363,11 @@ function arcFromTo( startPoint, endPoint, arcHeight ) {
 function scatterSeed( seed ) {
   seed.p1.px += Tl.rfb(-5,5); seed.p1.py += Tl.rfb(-5,5);
   seed.p2.px += Tl.rfb(-5,5); seed.p2.py += Tl.rfb(-5,5);
+}
+
+///drops seeds (for releasing seed from pod)
+function dropSeed( seed ) {
+  seed.p2.px += Tl.rfb(-3,3);
 }
 
 ///plants seed (secures its position to ground)
@@ -554,7 +560,7 @@ function expandFlowerBud( plant, flower) {
   f.spHtL.l = f.spHbM.l;  // hex top left span
   f.spHtR.l = f.spHbM.l;  // hex top right span
   f.spHtM.l = f.spHbM.l;  // hex top middle span
-  f.spHcH.l = f.spHbM.l*2;  // hex cross horizontal span   {{{{{{{{{{{{{{{{{{{{{{{}}}}}}}}}}}}}}}}}}}}}}}}}}}}}
+  f.spHcH.l = f.spHbM.l*2;  // hex cross horizontal span
   f.spHcDB.l = distance( f.ptHtL, f.ptBR ) + bhgr;  // hex cross downward span to flower base
   f.spHcUB.l = f.spHcDB.l;  // hex cross upward span to flower base
   // (bud tip point & scaffolding)
@@ -613,7 +619,7 @@ function positionPetal( plant, flower, petalTipPoint, xShift, yShift ) {
 }
 
 ///positions all petals
-function positionPetals( plant, flower ) {
+function positionAllPetals( plant, flower ) {
   positionPetal( plant, flower, flower.ptPtL, -1.75, 1 );  // top left petal
   positionPetal( plant, flower, flower.ptPtM, 0, 0.25 );  // top middle petal
   positionPetal( plant, flower, flower.ptPtR, 1.75, 1 );  // top right petal
@@ -642,6 +648,11 @@ function keepSeedsInPod( flower) {
   }
 }
 
+///checks if pod is ready to release seeds
+function podReadyToOpen( plant ) {
+  return plant.energy < plant.maxEnergyLevel*podOpenEnergyLevelRatio;
+}
+
 ///unfolds pod halves ( xShift and yShift are in units of hex height in relation to bud tip )
 function positionPodHalf( plant, flower, podTipPoint, xShift, yShift ) {
   var p = plant;
@@ -660,7 +671,7 @@ function positionPodHalf( plant, flower, podTipPoint, xShift, yShift ) {
 }
 
 ///positions pod halves
-function positionPodHalves( plant, flower ) {
+function positionBothPodHalves( plant, flower ) {
   positionPodHalf( plant, flower, flower.ptPodTipL, -0.5, 0.5 );  // left pod half
   positionPodHalf( plant, flower, flower.ptPodTipR, 0.5, 0.5 );  // right pod half
 }
@@ -675,7 +686,8 @@ function developFlower( plant, flower ) {
     f.budHasFullyMatured = flower.spHbM.l < plant.maxSegmentWidth*plant.maxFlowerBaseWidth ? false : true;
   //otherwise, if bud has not fully bloomed, it continues to bloom
   } else if ( f.budHasFullyMatured && !f.hasFullyBloomed && plant.energy > 0) {
-    if ( f.bloomRatio < 1 ) { f.bloomRatio += 0.01; } else { f.hasFullyBloomed = true; } 
+    if ( f.bloomRatio < 1 ) { f.bloomRatio += 0.01; } else { f.hasFullyBloomed = true; }
+    if ( f.hasFullyBloomed ) { f.isFertilized = true; } //[[[[[[[[[[[[[[[[ update when fertilization added ]]]]}]]]] 
   //otherwise, if flower is fertilized, has not fully closed, and has reached a "sick" energy level, it closes
   } else if ( f.isFertilized && !f.hasFullyClosed && p.energy < p.maxEnergyLevel*sickEnergyLevelRatio ) { 
     if ( f.bloomRatio > 0 ) { f.bloomRatio -= 0.01; } else { f.hasFullyClosed = true; } // closes petals
@@ -685,19 +697,21 @@ function developFlower( plant, flower ) {
     keepSeedsInPod( f );
     f.podOpacity = f.podOpacity < 1 ? f.podOpacity + 0.005 : 1;
     if ( f.podOpacity === 1 ) { f.visible = false; f.seedPodIsMature = true; }
-  //otherwise, if seed pod is mature, the seeds stay in the pod
-  } else if ( f.seedPodIsMature && p.energy > p.maxEnergyLevel*seedReleaseEnergyLevelRatio ) {
+  //otherwise, if seed pod is mature but not ready to release seeds, the seeds stay in the pod
+  } else if ( f.seedPodIsMature && !podReadyToOpen(p) ) {
     keepSeedsInPod( f );
-  //otherwise, if the seed pod hasn't released seeds and plant is dead, it releases seeds
-  } else if ( !f.hasReleasedSeeds && p.energy < p.maxEnergyLevel*seedReleaseEnergyLevelRatio ) {
-    if ( f.podOpenRatio < 1 ) { f.podOpenRatio += 0.05; } else { f.podHasOpened = true; } // opens pod
-    if ( f.podHasOpened && !f.hasReleasedSeeds ) {
-      for ( var i=0; i<f.seeds.length; i++ ) {
-        var seed = flower.seeds[i];
-        scatterSeed( seed );
-        f.hasReleasedSeeds = true;
-      }
-    }
+  //otherwise, if the seed pod hasn't released seeds and pod is ready to open, it opens
+  } else if ( !f.podHasOpened && podReadyToOpen(p) ) {
+    if ( f.podOpenRatio < 1 ) { f.podOpenRatio += 0.001; } else { f.podHasOpened = true; } // opens pod 
+    keepSeedsInPod( f );
+  //otherwise, if the plant is still alive, hold seeds in the opened pod
+  } else if ( p.isAlive ) {
+    keepSeedsInPod( f );
+  //otherwise, if the pod has opened, the seeds haven't been released, and the plant is dead, releases seeds
+  } else if ( !f.hasReleasedSeeds ) {
+    console.log("hit");
+    for ( var i=0; i<f.seeds.length; i++ ) { dropSeed( flower.seeds[i] ); }
+    f.hasReleasedSeeds = true;
   }
 }
 
@@ -705,6 +719,11 @@ function developFlower( plant, flower ) {
 function growPlants() {
   for (var i=0; i<plants.length; i++) {
     var plant = plants[i];
+    plant.age++;
+
+      console.log("plant"+plant.id+" age: "+plant.age); ///////////////////////////////////////////////////////
+      console.log("plant"+plant.id+" energy: "+plant.energy); 
+
     germinateSeedWhenReady( plant.sourceSeed );  // germinates a planted seed
     if ( plant.energy > plant.segmentCount*energyStoreFactor && plant.energy>plant.seedEnergy ) {
       plant.energy = plant.segmentCount*energyStoreFactor;  // caps plant max energy level based on segment count
@@ -738,6 +757,9 @@ function growPlants() {
     } 
     if ( plant.sourceSeed.hasGerminated ) {
       plant.energy -= plant.segmentCount * livEnExp;  // cost of living: reduces energy by a ratio of segment count
+    } 
+    if ( plant.age > oldAge ) { //
+      plant.energy -= plant.age/2000; // plant starts dying of old age (*remove when seasons added...)
     } 
     if ( plant.energy < plant.maxEnergyLevel*deathEnergyLevelRatio && restrictGrowthByEnergy ) {
       killPlant( plant );  // plant dies if energy level falls below minimum to be alive
@@ -832,17 +854,17 @@ function applyHealthColoration( plant, segment ) {
   var cel = p.energy;  // current energy level
   var uel = p.maxEnergyLevel * unhealthyEnergyLevelRatio;  // unhealthy energy level ( starts yellowing)
   var sel = p.maxEnergyLevel * sickEnergyLevelRatio;  // sick energy level (starts darkening)
-  var fel = p.maxEnergyLevel * deathEnergyLevelRatio;  // fatal energy level (fully darkened; dead)
+  var del = p.maxEnergyLevel * deathEnergyLevelRatio;  // death energy level (fully darkened; dead)
   if ( cel <= uel && cel > sel )  {  // unhealthy energy levels (yellowing)
     s.clS = rgbaColorShift( p, C.hdf, C.yf, uel, sel );  // stalks (dark fills)
     s.clL = rgbaColorShift( p, C.hlf, C.yf, uel, sel );  // leaves (light fills)
     s.clO = rgbaColorShift( p, C.hol, C.yol, uel, sel );  // outlines
     s.clI = rgbaColorShift( p, C.hil, C.yil, uel, sel );  // inner lines
-  } else if ( cel <= sel && cel > fel ) {  // sick energy levels (darkening)
-    s.clS = rgbaColorShift( p, C.yf, C.df, sel, fel );  // stalks 
-    s.clL = rgbaColorShift( p, C.yf, C.df, sel, fel );  // leaves
-    s.clO = rgbaColorShift( p, C.yol, C.dol, sel, fel );  // outlines
-    s.clI = rgbaColorShift( p, C.yil, C.dil, sel, fel );  // inner lines
+  } else if ( cel <= sel && cel > del ) {  // sick energy levels (darkening)
+    s.clS = rgbaColorShift( p, C.yf, C.df, sel, del );  // stalks 
+    s.clL = rgbaColorShift( p, C.yf, C.df, sel, del );  // leaves
+    s.clO = rgbaColorShift( p, C.yol, C.dol, sel, del );  // outlines
+    s.clI = rgbaColorShift( p, C.yil, C.dil, sel, del );  // inner lines
   }
   if ( p.hasFlowers && s.id === 1 ) {
     for ( var i=0; i<p.flowers.length; i++ ) {
@@ -850,12 +872,19 @@ function applyHealthColoration( plant, segment ) {
       f.clOv = s.clS;  // flower ovule color (matches stalk color)
       f.clO = s.clO;  // outline color (matches plant dark outline color)
       var fc = plant.flowerColor;
-      if ( cel <= uel && cel > sel ) {  // unhealthy energy levels (yellowing)
-        f.clP = hslColorShift( p, fc, {h:fc.h,s:50,l:98}, uel, sel );  // petal color
-        f.clH = rgbaColorShift( p, p.pollenPadColor, {r:77,g:57,b:0,a:1}, uel, sel );  // polinator pad
-      } else if ( cel <= sel && cel > fel ) {  // sick energy levels (darkening)
-        f.clP = hslColorShift( p, {h:48,s:50,l:98}, {h:44,s:100,l:15 }, sel, fel );  // petal color
-        f.clH = rgbaColorShift( p, {r:77,g:57,b:0,a:1}, {r:51,g:37,b:0,a:1}, sel, fel );  // polinator pad
+      //(petals)
+      var ffel = p.maxEnergyLevel * flowerFadeEnergyLevelRatio;  // flower fade energy level
+      if ( cel <= ffel && cel > sel ) {  // unhealthy energy levels (flower starts fading)
+        f.clP = hslColorShift( p, fc, {h:fc.h,s:50,l:98}, ffel, sel );  // petal color
+      } else if ( cel <= sel && cel > del ) {  // sick energy levels (darkening)
+        f.clP = hslColorShift( p, {h:48,s:50,l:98}, {h:44,s:100,l:15 }, sel, del );  // petal color
+      }      
+      //(polinator pad)
+      var ppfel = p.maxEnergyLevel * polinatorPadFadeEnergyLevelRatio;  // polinator pad fade energy level
+      if ( cel <= ppfel && cel > sel ) {  // a little above sick energy levels (fading)
+        f.clH = rgbaColorShift( p, p.pollenPadColor, {r:77,g:57,b:0,a:1}, ppfel, sel );  // polinator pad color
+      } else if ( cel <= sel && cel > del ) {  // sick energy levels (darkening)
+        f.clH = rgbaColorShift( p, {r:77,g:57,b:0,a:1}, {r:51,g:37,b:0,a:1}, sel, del );  // polinator pad color
       }
     }
   }
@@ -926,7 +955,7 @@ function renderSeed( resultingPlant ) {
   //draws seeds
   ctx.lineWidth = 0;
   ctx.strokeStyle = "rgba( 0, 0, 0, "+seed.opacity+" )";
-  ctx.fillStyle = "rgba( 81, 64, 20, "+seed.opacity+" )";
+  ctx.fillStyle = "rgba( 73, 5, 51, "+seed.opacity+" )";
   ctx.beginPath();
   ctx.moveTo( r1x, r1y );
   ctx.bezierCurveTo( h1x, h1y, h2x, h2y, r2x, r2y );
@@ -1021,10 +1050,10 @@ function renderFlowers( plant ) {
   if ( p.hasFlowers ) {
     for ( var i=0; i<p.flowers.length; i++) {
       var f = p.flowers[i];
-      positionPodHalves(p,f);  // ensures pod half positions are updated every iteration
+      positionBothPodHalves(p,f);  // ensures pod half positions are updated every iteration
       if ( f.visible ) {
         var pah;  // petal arc height
-        positionPetals(p,f);  // ensures flower petal positions are updated every iteration
+        positionAllPetals(p,f);  // ensures flower petal positions are updated every iteration
         ctx.lineJoin = "round";
         ctx.lineCap = "round";
         ctx.lineWidth = 1;
@@ -1114,15 +1143,14 @@ function renderPods( flower ) {
   ctx.moveTo(f.ptBL.cx, f.ptBL.cy);
   arcFromTo( f.ptBL, f.ptHoL, 0.1 );
   arcFromTo( f.ptHoL, f.ptPodTipL, 0.07 );
-  ctx.stroke(); 
-  ctx.lineTo(f.ptBR.cx, f.ptBR.cy);
-  ctx.fill();
-  ctx.beginPath();
-  ctx.moveTo(f.ptBR.cx, f.ptBR.cy);
-  arcFromTo( f.ptBR, f.ptHoR, -0.1 );
-  arcFromTo( f.ptHoR, f.ptPodTipR, -0.07 );
+  if ( flower.podOpenRatio > 0 ) {
+    var hp = spanMidPoint( f.spHbM );  // hinge point
+    ctx.lineTo( hp.x, hp.y );
+    ctx.lineTo( f.ptPodTipR.cx, f.ptPodTipR .cy );
+  }
+  arcFromTo( f.ptPodTipR, f.ptHoR, 0.1 );
+  arcFromTo( f.ptHoR, f.ptBR, 0.07 );
   ctx.stroke();
-  ctx.lineTo(f.ptBL.cx, f.ptBL.cy);
   ctx.fill();
 }
 
