@@ -33,14 +33,15 @@ var seedsPerFlower = 2;  // number of seeds produced by a fertilized flower
 var groEnExp = 0.5;  // growth energy expenditure rate (rate energy is expended for growth)
 var livEnExp = 0.2;  // living energy expenditure rate (rate energy is expended for living)
 var energyStoreFactor = 1000;  // a plant's maximum storable energy units per segment
-var oldAge = 30000;  // (age when plant starts dying of old age, in worldtime units) (remove when seasons added...)
+var oldAge = 30000;  // (age when plant starts dying of old age, in worldtime units)
 var agingFactor = oldAge/10;  // (factor of energy decrease per iteration after old age reached)
 var unhealthyEnergyLevelRatio = 0.075;  // ratio of maximum energy when plant becomes unhealthy (starts yellowing)
 var flowerFadeEnergyLevelRatio = -0.025;  // ratio of maximum energy when flower begins to fade
 var polinatorPadFadeEnergyLevelRatio = -0.075;  // ratio of maximum energy when polinator pad begins to fade
 var sickEnergyLevelRatio = -0.2;  // ratio of maximum energy when plant becomes sick (starts darkening)
-var podOpenEnergyLevelRatio = -0.5; // ratio of maximum energy when seed pod disperses seeds
-var deathEnergyLevelRatio = -1;  // ratio of maximum energy when plant dies (fully darkened)
+var podOpenEnergyLevelRatio = -0.4;//-0.5; // ratio of maximum energy when seed pod disperses seeds
+var deathEnergyLevelRatio = -0.6;//-1;  // ratio of maximum energy when plant dies (fully darkened)
+var collapseEnergyLevelRatio = -0.7;//-1.1;  // ratio of maximum energy when plant collapses
 
 
 
@@ -50,7 +51,7 @@ var deathEnergyLevelRatio = -1;  // ratio of maximum energy when plant dies (ful
 // livEnExp = 3;
 // energyStoreFactor = 20000;
 
-for ( var i=0; i<20; i++ ) {
+for ( var i=0; i<25; i++ ) {
   createSeed(null);
 }
 
@@ -121,6 +122,7 @@ function Plant( sourceSeed ) {
   this.pl = Tl.rib( 35, 70 );  // petal lightness
   this.age = 0;  // plant age in worldtime units
   this.isAlive = true;
+  this.hasCollapsed = false;
   //settings
   this.forwardGrowthRate = gravity * Tl.rfb(18,22);  // (rate of cross spans increase per frame)
   this.outwardGrowthRate = this.forwardGrowthRate * Tl.rfb(0.18,0.22);  // (rate forward span widens per frame)
@@ -754,11 +756,14 @@ function growPlants() {
     if ( plant.sourceSeed.hasGerminated ) {
       plant.energy -= plant.segmentCount * livEnExp;  // cost of living: reduces energy by a ratio of segment count
     } 
-    if ( plant.age > oldAge ) { //
+    if ( plant.age > oldAge ) {
       plant.energy -= plant.age/agingFactor; // plant starts dying of old age (*remove when seasons added...)
     } 
     if ( plant.energy < plant.maxEnergyLevel*deathEnergyLevelRatio && restrictGrowthByEnergy ) {
       killPlant( plant );  // plant dies if energy level falls below minimum to be alive
+    }
+    if ( plant.energy < plant.maxEnergyLevel*collapseEnergyLevelRatio && restrictGrowthByEnergy ) {
+      collapsePlant( plant );  // plant collapses if energy level falls below minimum to stay standing
     }
   }
 }
@@ -886,34 +891,38 @@ function applyHealthColoration( plant, segment ) {
   }
 }
 
-/// kills plant if its energy level falls below minimum to be alive
+///kills plant if its energy level falls below minimum to be alive
 function killPlant( plant ) {
   var p = plant;
   p.isAlive = false;  
   for (var i=0; i<plant.segments.length; i++) {
     var s = plant.segments[i];
     if ( s.hasLeaves && s.spLf1.l > plant.maxLeaflength/3 ) {  
-      // removes large leaf bud tethers 
-      removeSpan( s.leafTipsTetherSpan.id );
+      removeSpan( s.leafTipsTetherSpan.id );  // removes large leaf bud tethers 
     }
     if ( s.hasLeafScaffolding ) {  
-      // removes leaf scaffolding 
-      removeSpan(s.spLf1ScA.id);
-      removeSpan(s.spLf2ScA.id);
+      removeSpan(s.spLf1ScA.id); removeSpan(s.spLf2ScA.id);  // removes leaf scaffolding 
     }
-    if ( s.hasLeaves && s.ptLf1.cy>s.ptB1.cy && s.ptLf2.cy>s.ptB2.cy ) {  
-      // prevents dead leaves from swinging like pendulums
+    if ( s.hasLeaves && s.ptLf1.cy>s.ptB1.cy && s.ptLf2.cy>s.ptB2.cy ) {  // prevents dead leaves from swinging
       s.ptLf1.mass = s.ptLf2.mass = 0.5;
       if ( s.ptLf1.cy < s.ptLf1.py ) { s.ptLf1.cy = s.ptLf1.py; s.ptLf1.cx = s.ptLf1.px; }
       if ( s.ptLf2.cy < s.ptLf2.py ) { s.ptLf2.cy = s.ptLf2.py; s.ptLf2.cx = s.ptLf2.px; }
     }
-    // //removes inner spans for total collapse (*currently too clunky; revisit & improve during stylization)
-    // removeSpan(s.spCd.id);  // downward (l to r) cross span
-    // removeSpan(s.spCu.id);  // upward (l to r) cross span
-    // if (!s.isBaseSegment) {
-    //   removeSpan(s.spCdP.id);  // downward (l to r) cross span to parent
-    //   removeSpan(s.spCuP.id);  // upward (l to r) cross span to parent
-    // }
+  }
+}
+
+///collapses plant (*currently very clunky; revisit & improve during stylization)  {{{{{{{{{{{{{{ xxx }}}}}}}}}}}}}}
+function collapsePlant( plant ) {
+  var p = plant;
+  p.hasCollapsed = true;  
+  for (var i=0; i<plant.segments.length; i++) {
+    var s = plant.segments[i];
+    removeSpan(s.spCd.id);  // downward (l to r) cross span
+    removeSpan(s.spCu.id);  // upward (l to r) cross span
+    if (!s.isBaseSegment) {
+      removeSpan(s.spCdP.id);  // downward (l to r) cross span to parent
+      removeSpan(s.spCuP.id);  // upward (l to r) cross span to parent
+    }
   }
 }
 

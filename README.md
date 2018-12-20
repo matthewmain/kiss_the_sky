@@ -15,7 +15,7 @@
 
 <br>
 
-- [ ] Version 2.0 - _Stylization (advanced sprouting, blooming, pod development & seed dispersal animations, colors, lighting, background, etc.)_ 
+- [ ] Version 2.0 - _Stylization (advanced sprouting, blooming, pod development, seed dispersal, and plant collapse animations, plus colors, flower petal styling, lighting, changing background imagery, etc.)_ 
 - [ ] Version 2.1 - _Plant interaction (swiping for breeze, cutting/pruning) & gamification (storing & planting seeds, etc.)_
 
 <br>
