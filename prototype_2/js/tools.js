@@ -32,7 +32,17 @@ const Tl = {
   	var then = Date.now(); 
   	var now;
   	do { now = Date.now(); } while ( now - then < milliseconds );
-	}
+	},
+
+	//creates arc between two points
+	arcFromTo: function( startPoint, endPoint, arcHeight ) {
+	  var ah = arcHeight;  // arc height as ratio of distance between points
+	  var p1 = { x: startPoint.cx, y: startPoint.cy };
+	  var p2 = { x: endPoint.cx, y: endPoint.cy };
+	  var mp = { x: ( p1.x + p2.x ) / 2, y: ( p1.y + p2.y ) / 2 } ;  // mid point
+	  var ccp = { x: mp.x + ( p2.y - p1.y ) * ah, y: mp.y + ( p1.x - p2.x ) * ah };  // curve control point
+	  return ctx.quadraticCurveTo( ccp.x, ccp.y, p2.x, p2.y );
+	},
 
 
 };

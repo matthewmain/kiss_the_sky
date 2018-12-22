@@ -8,7 +8,7 @@
 
 - [X] germination (with basic preliminary sprouting animation)
 
-- [ ] flowers (with basic preliminary blooming animation)
+- [X] flowers (with basic preliminary blooming animation)
 
-- [ ] reproduction (with randomized traits)
+- [X] seed pods & reproduction with randomized traits (with basic preliminary pod development and seed dispersal animation)
 
