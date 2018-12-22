@@ -1,14 +1,12 @@
 ### [Plant Evolution App](https://github.com/matthewmain/plant_evolution_app) 
-### Prototype 2: Seeds, Flowers & Reproduction with Randomized Traits
+### Prototype 3: Seasons
 
 <br>
 <br>
 
-- [X] seeds 
-
-- [X] germination (with basic preliminary sprouting animation)
-
-- [X] flowers (with basic preliminary blooming animation)
-
-- [X] seed pods & reproduction with randomized traits (with basic preliminary pod development and seed dispersal animation)
+- [] season tracker
+- [] energy and/or photosynthesis and/or sun ray intensity level changes by season (replace plant aging with this)
+- [] season meter & year counter UI
+- [] seasonal background color changes (possibly with a simple gradient)
+- [] winter plant collapse & span removal/fixing all points at fallen location (possibly remove all verlet points entirely and store as simple canvas coordinates, if improves performance; and/or, possibly fade out or slowly compress to 100% y-value previous year's decomposed plants and remove from both verlet & rendering entirely, if improves perfomance)
 
