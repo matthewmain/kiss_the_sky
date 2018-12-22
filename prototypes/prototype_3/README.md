@@ -4,7 +4,7 @@
 <br>
 <br>
 
-- [ ] season tracker
+- [ ] internal season tracker
 - [ ] energy and/or photosynthesis and/or sun ray intensity level changes by season (replace plant aging with this)
 - [ ] season meter & year counter UI
 - [ ] seasonal background color changes (possibly with a simple gradient)
