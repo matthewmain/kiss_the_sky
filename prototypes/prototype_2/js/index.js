@@ -6,7 +6,7 @@
 ////////////     Plant Evolution App: Prototype 2     /////////// 
 /////////////////////////////////////////////////////////////////
 
-//file:///Users/matthewwmain/Development/projects/plant_evolution_app/prototype_2/index.html
+//https://github.com/matthewmain/plant_evolution_app/tree/master/prototypes/prototype_2
 
 
 
