@@ -44,9 +44,8 @@ function markRayLeafIntersections() {
         if ( s.hasLeaves ) {
           var p1, p2, lcy;
           //leaf 1
-          //assigns p1 as leftmost leaf span point and p2 as rightmost leaf span point
-          if ( s.ptLf1.cx < s.ptB1.cx ) { p1 = s.ptLf1; p2 = s.ptB1; } else { p1 = s.ptB1; p2 = s.ptLf1; }  
-          //loops through leaf span's integer x values
+          //(assigns p1 as leftmost leaf span point and p2 as rightmost leaf span point)
+          if ( s.ptLf1.cx < s.ptB1.cx ) { p1 = s.ptLf1; p2 = s.ptB1; } else { p1 = s.ptB1; p2 = s.ptLf1; }
           var xPctMin = Math.ceil( pctFromXVal( p1.cx ) );
           var xPctMax = Math.floor( pctFromXVal( p2.cx ) );
           for ( var lcx=xPctMin; lcx<=xPctMax; lcx++ ) {  // leaf contact x value
@@ -55,11 +54,13 @@ function markRayLeafIntersections() {
             sunRays[lcx].leafContacts.push( { y: lcy, plant: p } );
           }
           //leaf 2
+          //(assigns p2 as leftmost leaf span point and p1 as rightmost leaf span point)
           if ( s.ptLf2.cx < s.ptB2.cx ) { p1 = s.ptLf2; p2 = s.ptB2; } else { p1 = s.ptB2; p2 = s.ptLf2; }
           xPctMin = Math.ceil( pctFromXVal( p1.cx ) );
           xPctMax = Math.floor( pctFromXVal( p2.cx ) );  
           for ( lcx=xPctMin; lcx<=xPctMax; lcx++ ) {  // leaf contact x value
             lcy = p1.cy + (xValFromPct(lcx)-p1.cx) * ( p2.cy - p1.cy) / ( p2.cx - p1.cx ); // leaf contact y value
+            //pushes corresponding y value and plant instance to associated sun ray instance
             sunRays[lcx].leafContacts.push( { y: lcy, plant: p } );
           }
         }

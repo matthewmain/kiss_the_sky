@@ -20,7 +20,7 @@ var sunRays = [], sunRayCount = 0;
 var shadows = [], shadowCount = 0;
 
 ///settings
-var worldSpeed = 1;  // (as frames per iteration: higher is slower) (does not affect physics iterations)
+var worldSpeed = 1;//5;  // (as frames per iteration: higher is slower) (does not affect physics iterations)
 var viewShadows = false;  // (shadow visibility)
 var viewStalks = true;  // (stalk visibility) 
 var viewLeaves = true;  // (leaf visibility)
@@ -48,13 +48,15 @@ var collapseEnergyLevelRatio = -1.5;  // ratio of maximum energy when plant coll
 
 ////---(TESTING)---////
 
-// livEnExp = 2;
-// energyStoreFactor = 25000;
 
+///for quickly testing full life cycle (fast growth then quick death)
+livEnExp = 2;
+energyStoreFactor = 25000;
+
+///scatter seeds
 for ( var i=0; i<1; i++ ) {
   createSeed(null); 
 }
-
 
 
 
@@ -83,11 +85,11 @@ var C = {
 function Seed( parentFlower ) {
   this.parentFlower = parentFlower;
   if ( parentFlower === null ) {
-    this.sw = 14;  // seed width (universal size reference unit for seed)
+    this.sw = 14;  // seed width 
     this.p1 = addPt( Tl.rib(33,66), Tl.rib(5,25) );  // seed point 1 (placed in air for scattering at initiation)
     this.p2 = addPt( pctFromXVal( this.p1.cx + this.sw*1.6 ), pctFromYVal( this.p1.cy ) );  // seed point 2
   } else {
-    this.sw = this.parentFlower.spHcH.l/2;
+    this.sw = this.parentFlower.spHcH.l/2;  // seed width
     var p1 = spanMidPoint( this.parentFlower.spHbM );  // positions seed p1 at bottom of parent flower's hex
     this.p1 = addPt( pctFromXVal(p1.x), pctFromYVal(p1.y) );  // seed point 1
     var p2 = spanMidPoint( this.parentFlower.spHtM );  // positions seed p2 at top of parent flower's hex
@@ -123,9 +125,9 @@ function Plant( sourceSeed ) {
   this.age = 0;  // plant age in worldtime units 
   this.isAlive = true;
   this.hasReachedOldAge = false;
-  this.oldAgeReduction = 0;  // (energy reduction per plant iteration when plant is dying of old age)
+  this.oldAgeReduction = 0;  // (energy reduction per plant iteration, when plant is dying of old age)
   this.hasCollapsed = false;
-  this.isActive = true;  // (inactive plants are rendered but ignored by all other local plant iterations)
+  this.isActive = true;  // (inactive plants are rendered but ignored by all other local plant & light iterations)
   //settings
   this.forwardGrowthRate = gravity * Tl.rfb(18,22);  // (rate of cross spans increase per frame)
   this.outwardGrowthRate = this.forwardGrowthRate * Tl.rfb(0.18,0.22);  // (rate forward span widens per frame)
@@ -210,19 +212,17 @@ function createSeed( parentFlower ) {
   return seeds[seeds.length-1];
 }
 
-///creates a new plant
+///creates a new plant (while maintaining render ordering)
 function createPlant( sourceSeed ) {
   plantCount++;
-  //if the source seed is an initiating seed, add the new plant to the end of the plants array and return it
-  if ( sourceSeed.parentFlower === null ) {
-    plants.push( new Plant( sourceSeed ) );  // places new plant at end of plants array
-    return plants[plants.length-1];  // returns new plant as last item of plants array
-  //otherwise, add the new plant right before its parent plant in plants array (maintains render ordering)
+  if ( sourceSeed.parentFlower === null ) {  // if seed is initiating seed, adds new plant to end of the plants array
+    plants.push( new Plant( sourceSeed ) ); 
+    return plants[plants.length-1]; 
   } else {
-    for ( var i=0; i<plants.length; i++) { 
-      if ( sourceSeed.parentFlower.plantId === plants[i].id ) {  // finds seed's parent plant by id
-        plants.splice( i, 0, new Plant( sourceSeed ) );  // places new plant before parent plant in plants array
-        return plants[i];  // returns new plant (the plant before its parent plant in plants array)
+    for ( var i=0; i<plants.length; i++) {  // if not initiating seed, adds new plant before parent in plants array
+      if ( sourceSeed.parentFlower.plantId === plants[i].id ) { 
+        plants.splice( i, 0, new Plant( sourceSeed ) ); 
+        return plants[i];  
       }
     }
   }
@@ -277,9 +277,8 @@ function plantSeed( seed ) {
   }
 }
 
-///germinates seeds when ready (after it's been planted)
+///germinates seeds when ready (after it has been planted)
 function germinateSeedWhenReady( seed ) {
-  // if ( seed.p2.cy > canvas.height + seed.sp.l - seed.p1.width/2 && !seed.planted ) {
   if ( seed.p1.cy > canvas.height-seed.p1.width/2-0.5 && !seed.planted ) {    
     plantSeed( seed );
   }
@@ -287,7 +286,7 @@ function germinateSeedWhenReady( seed ) {
     germinateSeed( seed );
   }
   if ( seed.hasGerminated && seed.opacity > 0 ) {
-    fadeSeedOut( seed );  // slowly hides seen after germination
+    fadeSeedOut( seed );
   }
 }
 
@@ -303,7 +302,7 @@ function germinateSeed( seed ) {
   seed.hasGerminated = true;
 }
 
-///fades out seed visibility gradually after germination
+///fades out seed visibility gradually (for after germination)
 function fadeSeedOut( seed ) {
   seed.opacity -= 0.0015;
 }
@@ -329,19 +328,27 @@ function lengthenSegmentSpans( plant, segment ) {
 
 ///checks whether a segment is ready to generate a child segment
 function readyForChildSegment( plant, segment ) {
-  return segment.spF.l > plant.maxSegmentWidth * 0.333 && 
-         !segment.hasChild && 
-         plant.segmentCount < plant.maxTotalSegments;
+  var segmentForwardSpanReady = segment.spF.l > plant.maxSegmentWidth * 0.333;
+  var segmentDoesNotHaveChild = !segment.hasChild;
+  var plantIsNotFullyGrown = plant.segmentCount < plant.maxTotalSegments;
+  return plantIsNotFullyGrown && segmentDoesNotHaveChild && segmentForwardSpanReady;
+}
+
+///checks whether a segment is ready to generate leaves segment
+function plantReadyForLeaves( plant, segment ) {
+  var segIsFirstLeafSeg = segment.id === plant.firstLeafSegment;
+  var plantIsReadyForFirstLeaves = segment.id - plant.firstLeafSegment > 0;
+  var plantIsReadyForNextLeaves = ( segment.id - plant.firstLeafSegment ) % plant.leafFrequency === 0;
+  var segIsReadyToProduceLeaves = segment.spF.l > plant.maxSegmentWidth * 0.1;
+  return segIsFirstLeafSeg || plantIsReadyForFirstLeaves && plantIsReadyForNextLeaves && segIsReadyToProduceLeaves;
 }
 
 ///generates leaves when segment is ready
 function generateLeavesWhenReady( plant, segment ) {
   var p = plant;
   var s = segment;
-  if (  s.id === p.firstLeafSegment || 
-        (s.id-p.firstLeafSegment) > 0 &&
-        (s.id-p.firstLeafSegment) % p.leafFrequency === 0 && 
-        s.spF.l > p.maxSegmentWidth * 0.1 ) {
+  var segmentIsFirstLeafSegment;
+  if ( plantReadyForLeaves( plant, segment ) ) {
     var fsmp = spanMidPoint( s.spF );  // forward span mid point
     var pbsmp = midPoint( s.parentSegment.ptB1, s.parentSegment.ptB2 );  // parent base span mid point
     var xTip = fsmp.x + ( fsmp.x - pbsmp.x ) * 0.25;  // new leaf tip x location
@@ -359,33 +366,29 @@ function generateLeavesWhenReady( plant, segment ) {
 function addLeafScaffolding( plant, segment ) {
   var p = plant;
   var s = segment;
-  //remove leaf tips tether
-  removeSpan(s.leafTipsTetherSpan.id);
-  //apply leaf-unfold boosters
-  s.ptLf1.cx -= gravity * 100;
-  s.ptLf2.cx += gravity * 100;
-  //add scaffolding points
-  //(leaf 1)
+  removeSpan(s.leafTipsTetherSpan.id);  // removes leaf tips tether
+  s.ptLf1.cx -= gravity * 100;  // leaf-unfold booster left
+  s.ptLf2.cx += gravity * 100;  // leaf-unfold booster right
+  //scaffolding points, leaf 1
   var x = s.ptE1.cx + ( s.ptE1.cx - s.ptE2.cx ) * 0.5;
   var y = s.ptE1.cy + ( s.ptE1.cy - s.ptE2.cy ) * 0.5;
   s.ptLf1ScA = addPt( pctFromXVal( x ), pctFromXVal( y ), "immaterial" ); s.ptLf1ScA.mass = 0;
   x = ( s.ptLf1.cx + s.ptLf1ScA.cx ) / 2 ;
   y = ( s.ptLf1.cy + s.ptLf1ScA.cy ) / 2 ;
   s.ptLf1ScB = addPt( pctFromXVal( x ), pctFromXVal( y ), "immaterial" ); s.ptLf1ScB.mass = 0;
-  //(leaf 2)
+  //scaffolding points, leaf 2
   x = s.ptE2.cx + ( s.ptE2.cx - s.ptE1.cx ) * 0.5;
   y = s.ptE2.cy + ( s.ptE2.cy - s.ptE1.cy ) * 0.5;
   s.ptLf2ScA = addPt( pctFromXVal( x ), pctFromXVal( y ), "immaterial" ); s.ptLf2ScA.mass = 0;
   x = ( s.ptLf2.cx + s.ptLf2ScA.cx ) / 2 ;
   y = ( s.ptLf2.cy + s.ptLf2ScA.cy ) / 2 ;
   s.ptLf2ScB = addPt( pctFromXVal( x ), pctFromXVal( y ), "immaterial" ); s.ptLf2ScB.mass = 0;
-  //add scaffolding spans
-  //(leaf 1)
+  //scaffolding spans, leaf 1
   s.spLf1ScA = addSp( s.ptE1.id, s.ptLf1ScA.id, "hidden" );
   s.spLf1ScB = addSp( s.ptB1.id, s.ptLf1ScA.id, "hidden" ); 
   s.spLf1ScC = addSp( s.ptLf1ScA.id, s.ptLf1ScB.id, "hidden" ); 
   s.spLf1ScD = addSp( s.ptLf1ScB.id, s.ptLf1.id, "hidden" ); 
-  //(leaf 2)
+  //scaffolding spans, leaf 2
   s.spLf2ScA = addSp( s.ptE2.id, s.ptLf2ScA.id, "hidden" ); 
   s.spLf2ScB = addSp( s.ptB2.id, s.ptLf2ScA.id, "hidden" ); 
   s.spLf2ScC = addSp( s.ptLf2ScA.id, s.ptLf2ScB.id, "hidden" ); 
@@ -398,19 +401,14 @@ function growLeaves( plant, segment ) {
   var p = plant;
   var s = segment;
   if ( s.spLf1.l < p.maxLeaflength ) {
-    //extend leaves
-    s.spLf1.l = s.spLf2.l += p.leafGrowthRate;
+    s.spLf1.l = s.spLf2.l += p.leafGrowthRate;  // extend leaves
     if ( s.spF.l > p.maxSegmentWidth*0.6 && !s.hasLeafScaffolding ) {
-      // add scaffolding when leaves unfold
-      addLeafScaffolding( plant, segment );
-    } else if ( s.hasLeafScaffolding ) {
-      //extend scaffolding if present
-      //(leaf 1)
+      addLeafScaffolding( plant, segment );  // add scaffolding
+    } else if ( s.hasLeafScaffolding ) {  // extend scaffolding
       s.spLf1ScA.l += p.leafGrowthRate * 1.25;
       s.spLf1ScB.l += p.leafGrowthRate * 1.5;
       s.spLf1ScC.l += p.leafGrowthRate * 0.06;
       s.spLf1ScD.l += p.leafGrowthRate * 0.06;
-      //(leaf 2)
       s.spLf2ScA.l += p.leafGrowthRate * 1.25;
       s.spLf2ScB.l += p.leafGrowthRate * 1.5;
       s.spLf2ScC.l += p.leafGrowthRate * 0.06;
@@ -523,18 +521,18 @@ function applyHealthColoration( plant, segment ) {
       f.clO = s.clO;  // outline color (matches plant dark outline color)
       var fc = plant.flowerColor;
       //(petals)
-      var ffel = p.maxEnergyLevel * flowerFadeEnergyLevelRatio;  // flower fade energy level
-      if ( cel <= ffel && cel > sel ) {  // unhealthy energy levels (flower starts fading)
-        f.clP = hslColorShift( p, fc, {h:fc.h,s:50,l:98}, ffel, sel );  // petal color
-      } else if ( cel <= sel && cel > del ) {  // sick energy levels (darkening)
-        f.clP = hslColorShift( p, {h:48,s:50,l:98}, {h:44,s:100,l:15 }, sel, del );  // petal color
+      var ffel = p.maxEnergyLevel * flowerFadeEnergyLevelRatio;  
+      if ( cel <= ffel && cel > sel ) {  // flower fading energy levels
+        f.clP = hslColorShift( p, fc, {h:fc.h,s:50,l:100}, ffel, sel );  // fade color
+      } else if ( cel <= sel && cel > del ) {  // sick energy levels
+        f.clP = hslColorShift( p, {h:50,s:50,l:100}, {h:45,s:100,l:15 }, sel, del );  // darken color
       }      
       //(polinator pad)
-      var ppfel = p.maxEnergyLevel * polinatorPadFadeEnergyLevelRatio;  // polinator pad fade energy level
-      if ( cel <= ppfel && cel > sel ) {  // a little above sick energy levels (fading)
-        f.clH = rgbaColorShift( p, p.pollenPadColor, {r:77,g:57,b:0,a:1}, ppfel, sel );  // polinator pad color
-      } else if ( cel <= sel && cel > del ) {  // sick energy levels (darkening)
-        f.clH = rgbaColorShift( p, {r:77,g:57,b:0,a:1}, {r:51,g:37,b:0,a:1}, sel, del );  // polinator pad color
+      var ppfel = p.maxEnergyLevel * polinatorPadFadeEnergyLevelRatio;
+      if ( cel <= ppfel && cel > sel ) {  // polinator pad fading energy levels
+        f.clH = rgbaColorShift( p, p.pollenPadColor, {r:77,g:57,b:0,a:1}, ppfel, sel );  // fade color
+      } else if ( cel <= sel && cel > del ) {  // sick energy levels 
+        f.clH = rgbaColorShift( p, {r:77,g:57,b:0,a:1}, {r:51,g:37,b:0,a:1}, sel, del );  // darken color
       }
     }
   }
@@ -620,7 +618,7 @@ function renderSeed( resultingPlant ) {
   var h3y = r2y + h2l * ( r2x - p2x ) / (p2.width*0.5);
   var h4x = r1x - h1l * ( p1y - r1y ) / (p1.width*0.5);
   var h4y = r1y + h1l * ( p1x - r1x ) / (p1.width*0.5);
-  //draws seeds
+  //rendering
   ctx.lineWidth = 0;
   ctx.strokeStyle = "rgba( 0, 0, 0, "+seed.opacity+" )";
   ctx.fillStyle = "rgba( 73, 5, 51, "+seed.opacity+" )";

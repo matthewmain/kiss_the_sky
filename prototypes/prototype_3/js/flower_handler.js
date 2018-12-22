@@ -1,6 +1,6 @@
 
 
-///////// FLOWER_HANDLER.JS /////////
+///////// flower_handler.js /////////
 
 
 
@@ -16,7 +16,7 @@ function Flower( plant, parentSegment, basePoint1, basePoint2 ) {
   this.podOpacity = 0;
   this.visible = true;
   this.hasFullyBloomed = false;
-  this.ageSinceBlooming = 0;  // flowre age since blooming in worldtime units
+  this.ageSinceBlooming = 0;  // flower age since blooming in worldtime units
   this.isFertilized = false;
   this.hasFullyClosed = false;
   this.hasSeeds = false;
@@ -96,9 +96,10 @@ function createFlower( plant, parentSegment, basePoint1, basePoint2 ) {
 
 ///checks whether a segment is ready to generate a flower
 function readyForFlower( plant, segment ) {
-  return  segment.id === plant.maxTotalSegments && 
-          !plant.hasFlowers && 
-          segment.spF.l > plant.maxSegmentWidth*0.333; 
+  var segmentIsLastSegment = segment.id === plant.maxTotalSegments;
+  var plantDoesNotHaveFlowers = !plant.hasFlowers;
+  var segmentIsReadyForFlowerBud = segment.spF.l > plant.maxSegmentWidth*0.333;
+  return segmentIsLastSegment && plantDoesNotHaveFlowers && segmentIsReadyForFlowerBud;
 }
 
 ///expands flower bud
@@ -250,15 +251,15 @@ function positionBothPodHalves( plant, flower ) {
 function developFlower( plant, flower ) {
   var p = plant;
   var f = flower;
+  if ( f.hasFullyBloomed ) { f.ageSinceBlooming++; } 
   //if bud is not fully grown and has enough energy for growth, it continues to grow until mature
-  if ( f.hasFullyBloomed ) { f.ageSinceBlooming++; }  // age since blooming counter
   if ( !f.budHasFullyMatured && plant.energy > 0 ) {
     expandFlowerBud( p, f);
-    f.budHasFullyMatured = flower.spHbM.l < plant.maxSegmentWidth*plant.maxFlowerBaseWidth ? false : true;
+    f.budHasFullyMatured = flower.spHbM.l >= plant.maxSegmentWidth*plant.maxFlowerBaseWidth;
   //otherwise, if bud has not fully bloomed, it continues to bloom
   } else if ( f.budHasFullyMatured && !f.hasFullyBloomed && plant.energy > 0) {
     if ( f.bloomRatio < 1 ) { f.bloomRatio += 0.01; } else { f.hasFullyBloomed = true; }
-    if ( f.hasFullyBloomed ) { f.isFertilized = true; } //[[[[[[[[[[[[[[[[ update when fertilization added ]]]]}]]]] 
+    if ( f.hasFullyBloomed ) { f.isFertilized = true; }  
   //otherwise, if flower is fertilized, has not fully closed, and has reached a "sick" energy level, it closes
   } else if ( f.isFertilized && !f.hasFullyClosed && p.energy < p.maxEnergyLevel*sickEnergyLevelRatio ) { 
     if ( f.bloomRatio > 0 ) { f.bloomRatio -= 0.01; } else { f.hasFullyClosed = true; } // closes petals
@@ -278,7 +279,7 @@ function developFlower( plant, flower ) {
   //otherwise, if the plant is still alive, hold seeds in the opened pod
   } else if ( p.isAlive ) {
     keepSeedsInPod( f );
-  //otherwise, if the pod has opened, the seeds haven't been released, and the plant is dead, releases seeds
+  //otherwise, if the pod has opened, the seeds haven't been released, and the plant is dead, release seeds
   } else if ( !f.hasReleasedSeeds ) {
     for ( var i=0; i<f.seeds.length; i++ ) { dropSeed( flower.seeds[i] ); }
     f.hasReleasedSeeds = true;
