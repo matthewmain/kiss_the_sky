@@ -733,6 +733,7 @@ function renderPlants() {
 
 function display() {
   runVerlet();
+  trackSeasons();
   if ( worldTime % worldSpeed === 0 ) { 
     shedSunlight();
     growPlants(); 
@@ -740,6 +741,11 @@ function display() {
   renderPlants();
   if ( viewShadows ) { renderShadows(); }
   window.requestAnimationFrame(display);
+
+                                                          if ( worldTime % 60 === 0 ) {
+                                                            console.log( "yearTime: " + yearTime );
+                                                            console.log( "current season: " + currentSeason );
+                                                          }
 }
 
 createSunRays();

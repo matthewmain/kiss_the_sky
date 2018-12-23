@@ -1,6 +1,6 @@
 
 
-///////// LIGHT_HANDLER.JS /////////
+///////// LIGHT HANDLER /////////
 
 
 
