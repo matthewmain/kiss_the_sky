@@ -5,7 +5,7 @@
 
 
 var yearTime = 0;
-var currentSeason = "spring";
+var currentSeason;
 
 ///background gradient colors
 var BgG = {
@@ -35,7 +35,7 @@ var BgG = {
   }
 }
 
-///current season background color stop collection objects
+///current and previous season background color stop collection objects
 var csbg = BgG.sp;  // current season background
 var psbg = BgG.wi;  // previous season background
 
@@ -48,13 +48,13 @@ var ccs4 = psbg.cs4;  // current color stop 4
 ///season tracker
 function trackSeasons() {
   yearTime++;
-  if ( yearTime < 1000/*10000*/ ) {
+  if ( yearTime < 2000/*10000*/ ) {  //////////////////////////////////////////////////////////////////  XXXXXXXXXXX
     currentSeason = "spring";
-  } else if ( yearTime < 2000/*50000*/ ) {
+  } else if ( yearTime < 4000/*50000*/ ) {
     currentSeason = "summer";
-  } else if ( yearTime < 3000/*55000*/ ) {
+  } else if ( yearTime < 6000/*55000*/ ) {
     currentSeason = "fall";
-  } else if ( yearTime < 4000/*60000*/ ) {
+  } else if ( yearTime < 8000/*60000*/ ) {
     currentSeason = "winter";
   } else {
     yearTime = 0;
@@ -69,10 +69,10 @@ function renderBackground() {
     case "fall": csbg = BgG.fa; psbg = BgG.su; break;
     case "winter": csbg = BgG.wi; psbg = BgG.fa; break;
   }
-  ccs1 = Tl.rgbaCs( psbg.cs1, csbg.cs1, ccs1, 300 );  // current color stop redshift
-  ccs2 = Tl.rgbaCs( psbg.cs2, csbg.cs2, ccs2, 300 );  // current color stop greenshift
-  ccs3 = Tl.rgbaCs( psbg.cs3, csbg.cs3, ccs3, 300 );  // current color stop blueshift
-  ccs4 = Tl.rgbaCs( psbg.cs4, csbg.cs4, ccs4, 300 );  // current color stop alphashift
+  ccs1 = Tl.rgbaCs( psbg.cs1, csbg.cs1, ccs1, 1000 );  // current color stop redshift  ////////////////// XXXXXXXXXXXX
+  ccs2 = Tl.rgbaCs( psbg.cs2, csbg.cs2, ccs2, 1000 );  // current color stop greenshift
+  ccs3 = Tl.rgbaCs( psbg.cs3, csbg.cs3, ccs3, 1000 );  // current color stop blueshift
+  ccs4 = Tl.rgbaCs( psbg.cs4, csbg.cs4, ccs4, 1000 );  // current color stop alphashift
   var grd=ctx.createLinearGradient( 0, 0, 0, canvas.height );
   grd.addColorStop(0,"rgba("+ccs1.r+","+ccs1.g+","+ccs1.b+","+ccs1.a+")");
   grd.addColorStop(.4,"rgba("+ccs2.r+","+ccs2.g+","+ccs2.b+","+ccs2.a+")");

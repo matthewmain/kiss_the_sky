@@ -54,13 +54,10 @@ const Tl = {
 		var gsi = (ec.g-sc.g)/ti;  // green shift increment
 		var bsi = (ec.b-sc.b)/ti;  // blue shift increment
 		var asi = (ec.a-sc.a)/ti;  // alpha shift increment
-
-		///																																																	XXXXXXX
 	  var r = Math.abs(ec.r-cc.r) < Math.abs(rsi) ? ec.r : cc.r + rsi;  // redshift
 	  var g = Math.abs(ec.g-cc.g) < Math.abs(gsi) ? ec.g : cc.g + gsi;  // greenshift
 	  var b = Math.abs(ec.b-cc.b) < Math.abs(bsi) ? ec.b : cc.b + bsi;  // blueshift
 	  var a = Math.abs(ec.a-cc.a) < Math.abs(asi) ? ec.a : cc.a + asi;  // alphashift
-
 	  return { r: r, g: g, b: b, a: a };
 	}
 
