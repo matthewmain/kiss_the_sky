@@ -20,7 +20,7 @@ var sunRays = [], sunRayCount = 0;
 var shadows = [], shadowCount = 0;
 
 ///settings
-var worldSpeed = 5;  // (as frames per iteration: higher is slower) (does not affect physics iterations)
+var worldSpeed = 1;//5;  // (as frames per iteration: higher is slower) (does not affect physics iterations)
 var viewShadows = false;  // (shadow visibility)
 var viewStalks = true;  // (stalk visibility) 
 var viewLeaves = true;  // (leaf visibility)
@@ -54,7 +54,7 @@ var collapseEnergyLevelRatio = -1.5;  // ratio of maximum energy when plant coll
 // energyStoreFactor = 25000;
 
 ///scatter seeds
-for ( var i=0; i<1; i++ ) {
+for ( var i=0; i<25; i++ ) {
   createSeed(null); 
 }
 
@@ -476,7 +476,7 @@ function growPlants() {
 }
 
 ///shifts an rgba color between start and end colors scaled proportionally to start and end plant energy levels
-function rgbaColorShift( plant, startColor, endColor, startEnergy, endEnergy ) {
+function rgbaPlantColorShift( plant, startColor, endColor, startEnergy, endEnergy ) {
   var p = plant;
   var curEn = p.energy;  // current energy level
   var r = endColor.r - ( (curEn-endEnergy) * (endColor.r-startColor.r) / (startEnergy-endEnergy) );  // redshift
@@ -486,7 +486,7 @@ function rgbaColorShift( plant, startColor, endColor, startEnergy, endEnergy ) {
 }
 
 ///shifts an hsl color between start and end colors scaled proportionally to start and end plant energy levels
-function hslColorShift( plant, startColor, endColor, startEnergy, endEnergy ) {
+function hslPlantColorShift( plant, startColor, endColor, startEnergy, endEnergy ) {
   var p = plant;
   var curEn = p.energy;  // current energy level
   var h = endColor.h - ( (curEn-endEnergy) * (endColor.h-startColor.h) / (startEnergy-endEnergy) );  // redshift
@@ -504,15 +504,15 @@ function applyHealthColoration( plant, segment ) {
   var sel = p.maxEnergyLevel * sickEnergyLevelRatio;  // sick energy level (starts darkening)
   var del = p.maxEnergyLevel * deathEnergyLevelRatio;  // death energy level (fully darkened; dead)
   if ( cel <= uel && cel > sel )  {  // unhealthy energy levels (yellowing)
-    s.clS = rgbaColorShift( p, C.hdf, C.yf, uel, sel );  // stalks (dark fills)
-    s.clL = rgbaColorShift( p, C.hlf, C.yf, uel, sel );  // leaves (light fills)
-    s.clO = rgbaColorShift( p, C.hol, C.yol, uel, sel );  // outlines
-    s.clI = rgbaColorShift( p, C.hil, C.yil, uel, sel );  // inner lines
+    s.clS = rgbaPlantColorShift( p, C.hdf, C.yf, uel, sel );  // stalks (dark fills)
+    s.clL = rgbaPlantColorShift( p, C.hlf, C.yf, uel, sel );  // leaves (light fills)
+    s.clO = rgbaPlantColorShift( p, C.hol, C.yol, uel, sel );  // outlines
+    s.clI = rgbaPlantColorShift( p, C.hil, C.yil, uel, sel );  // inner lines
   } else if ( cel <= sel && cel > del ) {  // sick energy levels (darkening)
-    s.clS = rgbaColorShift( p, C.yf, C.df, sel, del );  // stalks 
-    s.clL = rgbaColorShift( p, C.yf, C.df, sel, del );  // leaves
-    s.clO = rgbaColorShift( p, C.yol, C.dol, sel, del );  // outlines
-    s.clI = rgbaColorShift( p, C.yil, C.dil, sel, del );  // inner lines
+    s.clS = rgbaPlantColorShift( p, C.yf, C.df, sel, del );  // stalks 
+    s.clL = rgbaPlantColorShift( p, C.yf, C.df, sel, del );  // leaves
+    s.clO = rgbaPlantColorShift( p, C.yol, C.dol, sel, del );  // outlines
+    s.clI = rgbaPlantColorShift( p, C.yil, C.dil, sel, del );  // inner lines
   }
   if ( p.hasFlowers && s.id === 1 ) {
     for ( var i=0; i<p.flowers.length; i++ ) {
@@ -523,16 +523,16 @@ function applyHealthColoration( plant, segment ) {
       //(petals)
       var ffel = p.maxEnergyLevel * flowerFadeEnergyLevelRatio;  
       if ( cel <= ffel && cel > sel ) {  // flower fading energy levels
-        f.clP = hslColorShift( p, fc, {h:fc.h,s:50,l:100}, ffel, sel );  // fade color
+        f.clP = hslPlantColorShift( p, fc, {h:fc.h,s:50,l:100}, ffel, sel );  // fade color
       } else if ( cel <= sel && cel > del ) {  // sick energy levels
-        f.clP = hslColorShift( p, {h:50,s:50,l:100}, {h:45,s:100,l:15 }, sel, del );  // darken color
+        f.clP = hslPlantColorShift( p, {h:50,s:50,l:100}, {h:45,s:100,l:15 }, sel, del );  // darken color
       }      
       //(polinator pad)
       var ppfel = p.maxEnergyLevel * polinatorPadFadeEnergyLevelRatio;
       if ( cel <= ppfel && cel > sel ) {  // polinator pad fading energy levels
-        f.clH = rgbaColorShift( p, p.pollenPadColor, {r:77,g:57,b:0,a:1}, ppfel, sel );  // fade color
+        f.clH = rgbaPlantColorShift( p, p.pollenPadColor, {r:77,g:57,b:0,a:1}, ppfel, sel );  // fade color
       } else if ( cel <= sel && cel > del ) {  // sick energy levels 
-        f.clH = rgbaColorShift( p, {r:77,g:57,b:0,a:1}, {r:51,g:37,b:0,a:1}, sel, del );  // darken color
+        f.clH = rgbaPlantColorShift( p, {r:77,g:57,b:0,a:1}, {r:51,g:37,b:0,a:1}, sel, del );  // darken color
       }
     }
   }
@@ -723,6 +723,13 @@ function renderPlants() {
     }
     renderSeed( plant );
   }
+  if ( viewShadows ) { renderShadows(); }
+}
+
+///renders scene
+function renderScene() {
+  renderBackground();
+  renderPlants();
 }
 
 
@@ -733,19 +740,18 @@ function renderPlants() {
 
 function display() {
   runVerlet();
-  trackSeasons();
   if ( worldTime % worldSpeed === 0 ) { 
+    trackSeasons();
     shedSunlight();
     growPlants(); 
   }
-  renderPlants();
-  if ( viewShadows ) { renderShadows(); }
+  renderScene();
   window.requestAnimationFrame(display);
 
-                                                          if ( worldTime % 60 === 0 ) {
-                                                            console.log( "yearTime: " + yearTime );
-                                                            console.log( "current season: " + currentSeason );
-                                                          }
+                                                          // if ( worldTime % 60 === 0 ) {
+                                                          //   console.log( "yearTime: " + yearTime );
+                                                          //   console.log( "current season: " + currentSeason );
+                                                          // }
 }
 
 createSunRays();

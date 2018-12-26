@@ -34,7 +34,7 @@ const Tl = {
   	do { now = Date.now(); } while ( now - then < milliseconds );
 	},
 
-	//creates arc between two points
+	//draws a simple symmetrical arc between two points
 	arcFromTo: function( startPoint, endPoint, arcHeight ) {
 	  var ah = arcHeight;  // arc height as ratio of distance between points
 	  var p1 = { x: startPoint.cx, y: startPoint.cy };
@@ -44,5 +44,28 @@ const Tl = {
 	  return ctx.quadraticCurveTo( ccp.x, ccp.y, p2.x, p2.y );
 	},
 
+	///rgba color shift (shifts an rgba color gradually over a designated number of iterations)
+	rgbaCs: function( startColor, endColor, currentColor, totalIterations ) {
+		var sc = startColor;
+		var ec = endColor;
+		var cc = currentColor;
+		var ti = totalIterations;
+		var rsi = (ec.r-sc.r)/ti;  // red shift increment
+		var gsi = (ec.g-sc.g)/ti;  // green shift increment
+		var bsi = (ec.b-sc.b)/ti;  // blue shift increment
+		var asi = (ec.a-sc.a)/ti;  // alpha shift increment
+
+		///																																																	XXXXXXX
+	  var r = Math.abs(ec.r-cc.r) < Math.abs(rsi) ? ec.r : cc.r + rsi;  // redshift
+	  var g = Math.abs(ec.g-cc.g) < Math.abs(gsi) ? ec.g : cc.g + gsi;  // greenshift
+	  var b = Math.abs(ec.b-cc.b) < Math.abs(bsi) ? ec.b : cc.b + bsi;  // blueshift
+	  var a = Math.abs(ec.a-cc.a) < Math.abs(asi) ? ec.a : cc.a + asi;  // alphashift
+
+	  return { r: r, g: g, b: b, a: a };
+	}
+
 
 };
+
+
+

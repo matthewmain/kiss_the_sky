@@ -20,7 +20,7 @@ var sunRays = [], sunRayCount = 0;
 var shadows = [], shadowCount = 0;
 
 ///settings
-var worldSpeed = 1;  // (as frames per iteration: higher is slower) (does not affect physics iterations)
+var worldSpeed = 1;//5;  // (as frames per iteration: higher is slower) (does not affect physics iterations)
 var viewShadows = false;  // (shadow visibility)
 var viewStalks = true;  // (stalk visibility) 
 var viewLeaves = true;  // (leaf visibility)
@@ -51,7 +51,7 @@ var collapseEnergyLevelRatio = -1.5;  // ratio of maximum energy when plant coll
 // livEnExp = 2;
 // energyStoreFactor = 25000;
 
-for ( var i=0; i<1; i++ ) {
+for ( var i=0; i<25; i++ ) {
   createSeed(null); 
 }
 
