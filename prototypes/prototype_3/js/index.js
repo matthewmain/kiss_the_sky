@@ -27,13 +27,13 @@ var viewStalks = true;  // (stalk visibility)
 var viewLeaves = true;  // (leaf visibility)
 var viewFlowers = true;  // (flower visibility)
 var viewPods = true;  // (pod visibilty)
+var seedsPerFlower = 2;  // number of seeds produced by a fertilized flower
 var restrictGrowthByEnergy = true;  // restricts plant growth by energy level (if false, plants grow freely)
 var sunRayIntensity = 1;  // total energy units per sun ray per iteration
-var photosynthesisRatio = 1;  // ratio of available sun ray energy stored by a leaf when a ray contacts it
-var seedsPerFlower = 2;  // number of seeds produced by a fertilized flower
+var photosynthesisRatio = 1;  // ratio of available sun energy stored by leaf when ray contacts it (varies by season)
 var groEnExp = 0.5;  // growth energy expenditure rate (rate energy is expended for growth)
 var livEnExp = 0.2;  // living energy expenditure rate (rate energy is expended for living)
-var energyStoreFactor = 1000;  // a plant's maximum storable energy units per segment
+var energyStoreFactor = 1000;  // (a plant's maximum storable energy units per segment)
 var oldAgeMarker = 10000;  // (age after flower bloom when plant starts dying of old age, in worldtime units)
 var oldAgeRate = 0.001;  // (additional energy reduction per iteration after plant reaches old age)
 var unhealthyEnergyLevelRatio = 0.075;  // ratio of maximum energy when plant becomes unhealthy (starts yellowing)
@@ -55,7 +55,7 @@ var collapseEnergyLevelRatio = -1.5;  // ratio of maximum energy when plant coll
 // energyStoreFactor = 25000;
 
 ///scatter seeds
-for ( var i=0; i<1; i++ ) {
+for ( var i=0; i<25; i++ ) {
   createSeed(null); 
 }
 
@@ -278,9 +278,9 @@ function plantSeed( seed ) {
   }
 }
 
-///germinates seeds when ready (after it has been planted)
+///germinates seeds when ready (after it has been planted and spring has arrived)
 function germinateSeedWhenReady( seed ) {
-  if ( seed.p1.cy > canvas.height-seed.p1.width/2-0.5 && !seed.planted ) {    
+  if ( seed.p1.cy > canvas.height-seed.p1.width/2-0.5 && !seed.planted && currentSeason === "spring") {    
     plantSeed( seed );
   }
   if ( seed.planted && !seed.hasGerminated ) {

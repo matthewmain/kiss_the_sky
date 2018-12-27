@@ -3,14 +3,22 @@
 ///////// SEASONS HANDLER /////////
 
 
-
+///trackets
 var currentYear = 1;
 var yearTime = 0;
 var currentSeason;
-var spLength = 2000;//10000;  // spring length
-var suLength = 4000;//40000;  // summer length
-var faLength = 2000;//5000;  // fall length
-var wiLength = 2000;//5000;  // winter length
+
+///settings
+var spL = 5000;  // spring length
+var suL = 40000;  // summer length
+var faL = 5000;  // fall length
+var wiL = 5000;  // winter length
+
+///testing
+// var spL = 2000;
+// var suL = 2000;
+// var faL = 2000;
+// var wiL = 2000;
 
 ///background gradient colors
 var BgG = {
@@ -50,17 +58,17 @@ var ccs2 = psbg.cs2;  // current color stop 2
 var ccs3 = psbg.cs3;  // current color stop 3
 var ccs4 = psbg.cs4;  // current color stop 4
 
-///season tracker
+///tracks seasons
 function trackSeasons() {
   yearTime++;
-  if ( yearTime < spLength ) { 
-    currentSeason = "spring";
-  } else if ( yearTime < spLength+suLength ) {
-    currentSeason = "summer";
-  } else if ( yearTime < spLength+suLength+faLength ) {
-    currentSeason = "fall";
-  } else if ( yearTime < spLength+suLength+faLength+wiLength ) {
-    currentSeason = "winter";
+  if ( yearTime < spL ) { 
+    currentSeason = "spring"; photosynthesisRatio = 2; livEnExp = 0.2;  
+  } else if ( yearTime < spL+suL ) {
+    currentSeason = "summer"; photosynthesisRatio = 1; livEnExp = 0.2;  
+  } else if ( yearTime < spL+suL+faL ) {
+    currentSeason = "fall"; photosynthesisRatio = 0.25; livEnExp = 0.5;  
+  } else if ( yearTime < spL+suL+faL+wiL ) {
+    currentSeason = "winter"; photosynthesisRatio = 0; livEnExp = 1;  
   } else {
     currentYear++;
     yearTime = 0;
@@ -88,25 +96,15 @@ function renderBackground() {
   ctx.fillRect(0, 0, canvas.width, canvas.height);
 }
 
-
-
-
+///renders seasons meter UI
 function renderUI() {
-
-  var dateDeg;  // degree corresponding to time of year
-
-  //marker position, calibrated by season lengths
-  switch( currentSeason ) {
-    case "spring":
-      dateDeg = 270 + 90 * yearTime / spLength; break;
-    case "summer":
-      dateDeg = 0 + 90 * (yearTime-spLength) / suLength; break;
-    case "fall": 
-      dateDeg = 90 + 90 * (yearTime-spLength-suLength) / faLength; break;
-    case "winter": 
-      dateDeg = 180 + 90 * (yearTime-spLength-suLength-faLength) / wiLength;
+  var dateDeg;  // degree corresponding to time of year on meter
+  switch( currentSeason ) {  // marker position, calibrated different season lengths to uniform season arcs on meter
+    case "spring": dateDeg = 270 + 90 * yearTime / spL; break;
+    case "summer": dateDeg = 0 + 90 * (yearTime-spL) / suL; break;
+    case "fall": dateDeg = 90 + 90 * (yearTime-spL-suL) / faL; break;
+    case "winter": dateDeg = 180 + 90 * (yearTime-spL-suL-faL) / wiL;
   }
-
   //outer circle
   ctx.beginPath();
   ctx.strokeStyle="#2b4f0c";  // very dark green
@@ -114,7 +112,6 @@ function renderUI() {
   ctx.lineCap="butt";
   ctx.arc( xValFromPct(93), yValFromPct(7), 36, Tl.degToRad(0), Tl.degToRad(360) );
   ctx.stroke();
-
   //seasons arcs
   ctx.lineWidth="15";
   ctx.beginPath();  // spring
@@ -133,7 +130,6 @@ function renderUI() {
   ctx.arc( xValFromPct(93), yValFromPct(7), 36, Tl.degToRad(180), Tl.degToRad(270) );
   ctx.strokeStyle="#ffffff";  // white
   ctx.stroke();
-
   //marker
   ctx.beginPath();
   ctx.lineWidth="8";
@@ -141,18 +137,12 @@ function renderUI() {
   ctx.arc( xValFromPct(93), yValFromPct(7), 36, Tl.degToRad( dateDeg ), Tl.degToRad( dateDeg ) );
   ctx.strokeStyle="#222222";
   ctx.stroke();
-
-  //text
+  //year counter text
   ctx.font = "30px roboto";
   ctx.textAlign = "center";
   ctx.fillStyle="#222222";
   ctx.fillText(currentYear, xValFromPct(93), yValFromPct(8.1) );
-
 }
-
-
-
-
 
 
 
