@@ -21,6 +21,7 @@ var shadows = [], shadowCount = 0;
 
 ///settings
 var worldSpeed = 1;//5;  // (as frames per iteration: higher is slower) (does not affect physics iterations)
+var viewUI = true;
 var viewShadows = false;  // (shadow visibility)
 var viewStalks = true;  // (stalk visibility) 
 var viewLeaves = true;  // (leaf visibility)
@@ -54,7 +55,7 @@ var collapseEnergyLevelRatio = -1.5;  // ratio of maximum energy when plant coll
 // energyStoreFactor = 25000;
 
 ///scatter seeds
-for ( var i=0; i<25; i++ ) {
+for ( var i=0; i<1; i++ ) {
   createSeed(null); 
 }
 
@@ -619,9 +620,9 @@ function renderSeed( resultingPlant ) {
   var h4x = r1x - h1l * ( p1y - r1y ) / (p1.width*0.5);
   var h4y = r1y + h1l * ( p1x - r1x ) / (p1.width*0.5);
   //rendering
-  ctx.lineWidth = 0;
   ctx.strokeStyle = "rgba( 0, 0, 0, "+seed.opacity+" )";
   ctx.fillStyle = "rgba( 73, 5, 51, "+seed.opacity+" )";
+  ctx.lineWidth = "1";
   ctx.beginPath();
   ctx.moveTo( r1x, r1y );
   ctx.bezierCurveTo( h1x, h1y, h2x, h2y, r2x, r2y );
@@ -730,6 +731,7 @@ function renderPlants() {
 function renderScene() {
   renderBackground();
   renderPlants();
+  if ( viewUI ) { renderUI(); }
 }
 
 
