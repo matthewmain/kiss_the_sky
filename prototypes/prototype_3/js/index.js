@@ -34,7 +34,7 @@ var photosynthesisRatio = 1;  // ratio of available sun energy stored by leaf wh
 var groEnExp = 0.5;  // growth energy expenditure rate (rate energy is expended for growth)
 var livEnExp = 0.2;  // living energy expenditure rate (rate energy is expended for living)
 var energyStoreFactor = 1000;  // (a plant's maximum storable energy units per segment)
-var oldAgeMarker = 10000;  // (age after flower bloom when plant starts dying of old age, in worldtime units)
+var oldAgeMarker = 20000;  // (age after flower bloom when plant starts dying of old age, in worldtime units)
 var oldAgeRate = 0.001;  // (additional energy reduction per iteration after plant reaches old age)
 var unhealthyEnergyLevelRatio = 0.075;  // ratio of maximum energy when plant becomes unhealthy (starts yellowing)
 var flowerFadeEnergyLevelRatio = -0.025;  // ratio of maximum energy when flower begins to fade
@@ -42,22 +42,7 @@ var polinatorPadFadeEnergyLevelRatio = -0.075;  // ratio of maximum energy when 
 var sickEnergyLevelRatio = -0.2;  // ratio of maximum energy when plant becomes sick (starts darkening)
 var podOpenEnergyLevelRatio = -0.5; // ratio of maximum energy when seed pod disperses seeds
 var deathEnergyLevelRatio = -1;  // ratio of maximum energy when plant dies (fully darkened)
-var collapseEnergyLevelRatio = -1.5;  // ratio of maximum energy when plant collapses
-
-
-
-
-////---(TESTING)---////
-
-
-///for quickly testing full life cycle (fast growth then quick death)
-// livEnExp = 2;
-// energyStoreFactor = 25000;
-
-///scatter seeds
-for ( var i=0; i<25; i++ ) {
-  createSeed(null); 
-}
+var collapseEnergyLevelRatio = -2;  // ratio of maximum energy when plant collapses
 
 
 
@@ -79,11 +64,14 @@ var C = {
   //inner lines
   hil: { r: 0, g: 112, b: 0, a: 1 },  // healthy inner line color (slightly darker green than leaf fill)
   yil: { r: 107, g: 90, b: 31, a: 1 },  // yellowed inner line color (slightly darker sickly yellow than leaf fill) 
-  dil: { r: 56, g: 47, b: 12, a: 1 }  // dead inner line color (slightly darker brown than leaf fill)
+  dil: { r: 56, g: 47, b: 12, a: 1 },  // dead inner line color (slightly darker brown than leaf fill)
+  //pollen pad
+  pp: { r: 255, g: 217, b: 102, a: 1 }  // pollen pad color
 };
 
 ///seed constructor
 function Seed( parentFlower ) {
+  this.id = seedCount;
   this.parentFlower = parentFlower;
   if ( parentFlower === null ) {
     this.sw = 14;  // seed width 
@@ -112,6 +100,7 @@ function Seed( parentFlower ) {
 ///plant constructor
 function Plant( sourceSeed ) {
   this.sourceSeed = sourceSeed;
+  this.sourceSeedHasBeenRemoved = false;
   this.id = plantCount;
   this.segments = []; this.segmentCount = 0;
   this.flowers = []; this.flowerCount = 0;
@@ -123,6 +112,7 @@ function Plant( sourceSeed ) {
   this.ph = Tl.rib( 0, 260 ); if ( this.ph > 65 && this.ph < 165) { this.ph += 100; }  // petal hue
   this.ps = Tl.rib( 50, 100 );  // petal saturation
   this.pl = Tl.rib( 35, 70 );  // petal lightness
+  this.germinationYear = currentYear;  // germination year
   this.age = 0;  // plant age in worldtime units 
   this.isAlive = true;
   this.hasReachedOldAge = false;
@@ -140,7 +130,7 @@ function Plant( sourceSeed ) {
   this.leafGrowthRate = this.forwardGrowthRate * Tl.rfb(1.4,1.6);  // leaf growth rate
   this.flowerBudHeight = 1;  // bud height ( from hex top, in units of hex heights )
   this.flowerColor = { h: this.ph, s: this.ps, l: this.pl };  // flower color
-  this.pollenPadColor = { r: 255, g: 217, b: 102, a: 1 };  // pollen pad color
+  this.pollenPadColor = C.pp;  // pollen pad color
   this.maxFlowerBaseWidth = 1;  // max flower base width, in units of plant max segment width
   //base segment (values assigned at source seed germination)
   this.xLocation = null;  // x value where plant is rooted to the ground
@@ -167,7 +157,7 @@ function Segment( plant, parentSegment, basePoint1, basePoint2 ) {
   this.ptB2 = basePoint2;  // base point 2
   //extension points
   var originX = ( this.ptB1.cx + this.ptB2.cx ) / 2;  // center of base points x values
-  var originY = ( this.ptB1.cy + this.ptB2.cy ) / 2;  // center of base points y values
+  var originY = ( this.ptB1.cy + this.ptB2.cy ) / 2;  // center of base points y values                    
   this.ptE1 = addPt( pctFromXVal( originX ) - 0.1, pctFromYVal( originY ) - 0.1 );  // extension point 1
   this.ptE2 = addPt( pctFromXVal( originX ) + 0.1, pctFromYVal( originY ) - 0.1 );  // extension point 2
   this.ptE1.mass = this.mass / 2;
@@ -240,11 +230,23 @@ function createSegment( plant, parentSegment, basePoint1, basePoint2 ) {
   }
 }
 
+///removes a seed by id from seeds array
+function removeSeed( id ) {
+  for( var i=0; i<seeds.length; i++){ 
+    if ( seeds[i].id === id) { seeds.splice(i, 1); }
+  }
+}
+
+///removes a plant by id from plants array
+function removePlant( id ) {
+  for( var i=0; i<plants.length; i++){ 
+    if ( plants[i].id === id) { plants.splice(i, 1); }
+  }
+}
 
 
 
 /// Component Functions ///
-
 
 ///scatters seeds (for initiation)
 function scatterSeed( seed ) {
@@ -283,11 +285,8 @@ function germinateSeedWhenReady( seed ) {
   if ( seed.p1.cy > canvas.height-seed.p1.width/2-0.5 && !seed.planted && currentSeason === "spring") {    
     plantSeed( seed );
   }
-  if ( seed.planted && !seed.hasGerminated ) {
+  if ( seed.planted ) {
     germinateSeed( seed );
-  }
-  if ( seed.hasGerminated && seed.opacity > 0 ) {
-    fadeSeedOut( seed );
   }
 }
 
@@ -301,6 +300,20 @@ function germinateSeed( seed ) {
   plant.spB = addSp( plant.ptB1.id, plant.ptB2.id );  // adds base span
   createSegment( plant, null, plant.ptB1, plant.ptB2 );  // creates the base segment (with "null" parent)
   seed.hasGerminated = true;
+  plant.germinationYear = currentYear;
+}
+
+///removes seed when ready
+function removeSeedWhenReady( seed ) {
+  if ( seed.opacity > 0 ) {
+    fadeSeedOut( seed );
+  } else if ( seed.opacity <= 0 ) {
+    removePoint( seed.p1.id );
+    removePoint( seed.p2.id );
+    removeSpan( seed.sp.id );
+    removeSeed( seed.id );
+    seed.resultingPlant.sourceSeedHasBeenRemoved = true;
+  } 
 }
 
 ///fades out seed visibility gradually (for after germination)
@@ -424,7 +437,12 @@ function growPlants() {
     var plant = plants[i];
     if ( plant.isActive ) {
       plant.age++;
-      germinateSeedWhenReady( plant.sourceSeed );  // germinates a planted seed
+      if ( !plant.sourceSeed.hasGerminated ) { 
+        germinateSeedWhenReady( plant.sourceSeed );  // germinates a planted seed
+      }
+      if ( !plant.sourceSeedHasBeenRemoved ) {
+        removeSeedWhenReady( plant.sourceSeed );  // removes seed after germination
+      }
       if ( plant.energy > plant.segmentCount*energyStoreFactor && plant.energy>plant.seedEnergy ) {
         plant.energy = plant.segmentCount*energyStoreFactor;  // caps plant max energy level based on segment count
       }
@@ -548,8 +566,11 @@ function killPlant( plant ) {
     if ( s.hasLeaves && s.spLf1.l > plant.maxLeaflength/3 ) {  
       removeSpan( s.leafTipsTetherSpan.id );  // removes large leaf bud tethers 
     }
-    if ( s.hasLeafScaffolding ) {  
-      removeSpan(s.spLf1ScA.id); removeSpan(s.spLf2ScA.id);  // removes leaf scaffolding 
+    if ( s.hasLeafScaffolding ) {  // removes leaf scaffolding
+      removePoint(s.ptLf1ScA.id); removePoint(s.ptLf2ScA.id);
+      removePoint(s.ptLf1ScB.id); removePoint(s.ptLf2ScB.id);
+      removeSpan(s.spLf1ScA.id); removeSpan(s.spLf2ScA.id);   
+      removeSpan(s.spLf1ScB.id); removeSpan(s.spLf2ScB.id);
     }
     if ( s.hasLeaves && s.ptLf1.cy>s.ptB1.cy && s.ptLf2.cy>s.ptB2.cy ) {  // prevents dead leaves from swinging
       s.ptLf1.mass = s.ptLf2.mass = 0.5;
@@ -574,10 +595,12 @@ function collapsePlant( plant ) {
   if ( p.hasFlowers ) {
     for (var j=0; j<p.flowers.length; j++ ) {
       var f = p.flowers[j];
+      f.podOpenRatio = 0;
       removeSpan(f.spCuP.id);
       removeSpan(f.spCdP.id);
       removeSpan(f.spCu.id);
       removeSpan(f.spCu.id);
+      removeSpan(f.spHbM.id);
       removeSpan(f.spHcDB.id);
       removeSpan(f.spHcUB.id);
       removeSpan(f.spHcH.id);
@@ -739,6 +762,13 @@ function renderScene() {
 
 ////---DISPLAY---////
 
+///TESTING
+for ( var i=0; i<25; i++ ) {
+  createSeed(null); 
+}
+
+
+// createSeed(null);
 
 function display() {
   runVerlet();
@@ -750,10 +780,12 @@ function display() {
   renderScene();
   window.requestAnimationFrame(display);
 
-                                                          // if ( worldTime % 60 === 0 ) {
-                                                          //   console.log( "yearTime: " + yearTime );
-                                                          //   console.log( "current season: " + currentSeason );
-                                                          // }
+                                                                ///TESTING  
+                                                                if ( worldTime % 60 === 0 ) { 
+                                                                  // console.log(seedCount);
+                                                                  // console.log(seeds);
+                                                                }
+
 }
 
 createSunRays();

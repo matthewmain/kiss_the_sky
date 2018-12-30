@@ -137,13 +137,6 @@ function midPoint( point1, point2 ) {
   return { x: mx, y: my};
 }
 
-///removes a span by id
-function removeSpan(id) {
-  for( var i = 0; i < spans.length-1; i++){ 
-    if ( spans[i].id === id) { spans.splice(i, 1); }
-  }
-}
-
 ///creates a point object instance
 function addPt(xPercent,yPercent,materiality="material") {
   points.push( new Point( xValFromPct(xPercent), yValFromPct(yPercent), materiality ) );
@@ -157,13 +150,38 @@ function addSp(p1,p2,visibility="visible") {
 }
 
 ///creates a skin object instance
-function addSk(id_path_array, color) {
-  var points_array = [];
-  for ( var i=0; i<id_path_array.length; i++) {
-    points_array.push(points[id_path_array[i]]);
+function addSk(idPathArray, color) {
+  var skinPointsArray = [];
+  for ( var i=0; i<idPathArray.length; i++) {
+    for( var j=0; j<points.length; j++){ 
+      if ( points[j].id === idPathArray[i] ) { 
+        skinPointsArray.push( points[j] ); 
+      }
+    }
   }
-  skins.push( new Skin(points_array,color) );
+  skins.push( new Skin(skinPointsArray,color) );
   return skins[skins.length-1];
+}
+
+///removes a point by id
+function removePoint(id) {
+  for( var i=0; i<points.length; i++){ 
+    if ( points[i].id === id) { points.splice(i,1); }
+  }
+}
+
+///removes a span by id
+function removeSpan(id) {
+  for( var i=0; i<spans.length; i++){ 
+    if ( spans[i].id === id) { spans.splice(i,1); }
+  }
+}
+
+///removes a span by id
+function removeSkin(id) {
+  for( var i=0; i<skins.length; i++){ 
+    if ( skins[i].id === id) { skins.splice(i,1); }
+  }
 }
 
 ///updates point positions based on verlet velocity (i.e., current coord minus previous coord)
