@@ -512,13 +512,13 @@ function rgbaPlantColorShift( plant, startColor, endColor, startEnergy, endEnerg
 }
 
 ///shifts an hsl color between start and end colors scaled proportionally to start and end plant energy levels
-function hslPlantColorShift( plant, startColor, endColor, startEnergy, endEnergy ) {
+function hslaPlantColorShift( plant, startColor, endColor, startEnergy, endEnergy ) {
   var p = plant;
   var curEn = p.energy;  // current energy level
   var h = endColor.h - ( (curEn-endEnergy) * (endColor.h-startColor.h) / (startEnergy-endEnergy) );  // redshift
   var s = endColor.s - ( (curEn-endEnergy) * (endColor.s-startColor.s) / (startEnergy-endEnergy) );  // greenshift
   var l = endColor.l - ( (curEn-endEnergy) * (endColor.l-startColor.l) / (startEnergy-endEnergy) );  // blueshift
-  return { h: h, s: s, l: l };
+  return { h: h, s: s, l: l, a: 1 };
 }
 
 ///changes plant colors based on plant health
@@ -549,9 +549,9 @@ function applyHealthColoration( plant, segment ) {
       //(petals)
       var ffel = p.maxEnergyLevel * flowerFadeEnergyLevelRatio;  
       if ( cel <= ffel && cel > sel ) {  // flower fading energy levels
-        f.clP = hslPlantColorShift( p, fc, {h:fc.h,s:50,l:100}, ffel, sel );  // fade color
+        f.clP = hslaPlantColorShift( p, fc, {h:fc.h,s:50,l:100}, ffel, sel );  // fade color
       } else if ( cel <= sel && cel > del ) {  // sick energy levels
-        f.clP = hslPlantColorShift( p, {h:50,s:50,l:100}, {h:45,s:100,l:15 }, sel, del );  // darken color
+        f.clP = hslaPlantColorShift( p, {h:50,s:50,l:100}, {h:45,s:100,l:15}, sel, del );  // darken color
       }      
       //(polinator pad)
       var ppfel = p.maxEnergyLevel * polinatorPadFadeEnergyLevelRatio;
@@ -615,6 +615,7 @@ function collapsePlant( plant ) {
       removeSpan(f.spHcH.id);
       removeSpan(f.spBTSL.id);
       removeSpan(f.spBTSL.id);
+      f.ptBudTip.mass = 1;
     }
   }
   p.hasCollapsed = true; 
@@ -843,10 +844,8 @@ function display() {
   window.requestAnimationFrame(display);
 
                                                         ///TESTING  
-                                                        if ( worldTime % 600 === 0 ) { 
-                                                          console.log("plants: "+plants.length);
-                                                          console.log("points: "+points.length);
-                                                          console.log("spans: "+spans.length);
+                                                        if ( worldTime % 60 === 0 ) { 
+                                                          // console.log();
                                                         }
 
 }

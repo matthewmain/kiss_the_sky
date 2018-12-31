@@ -300,8 +300,7 @@ function renderFlowers( plant ) {
         ctx.lineCap = "round";
         ctx.lineWidth = 1;
         //top petals
-        ctx.globalAlpha = p.opacity;  // (sets global opacity to plant opacity for plant fadeout)
-        ctx.fillStyle = "hsl("+f.clP.h+","+f.clP.s+"%,"+f.clP.l+"%)";  // violet
+        ctx.fillStyle = "hsla("+f.clP.h+","+f.clP.s+"%,"+f.clP.l+"%,"+p.opacity+")";  // violet
         ctx.strokeStyle = "rgba("+f.clO.r+","+f.clO.g+","+f.clO.b+","+f.clO.a+")";  // dark brown
         ctx.beginPath();  // top middle petal
         ctx.moveTo( f.ptHtL.cx, f.ptHtL.cy ); 
@@ -320,8 +319,8 @@ function renderFlowers( plant ) {
         ctx.fill(); ctx.stroke();
         //ovule
         ctx.beginPath();
-        ctx.fillStyle = "rgba("+f.clOv.r+","+f.clOv.g+","+f.clOv.b+","+f.clOv.a+")";  // dark green
-        ctx.strokeStyle = "rgba("+f.clO.r+","+f.clO.g+","+f.clO.b+","+f.clO.a+")";  // dark brown
+        ctx.fillStyle = "rgba("+f.clOv.r+","+f.clOv.g+","+f.clOv.b+","+p.opacity+")";  // dark green
+        ctx.strokeStyle = "rgba("+f.clO.r+","+f.clO.g+","+f.clO.b+","+p.opacity+")";  // dark brown
         ctx.moveTo(f.ptBL.cx, f.ptBL.cy);
         Tl.arcFromTo( f.ptBL, f.ptHoL, 0.1 );
         ctx.lineTo(f.ptHoR.cx, f.ptHoR.cy);
@@ -330,7 +329,7 @@ function renderFlowers( plant ) {
         ctx.stroke();     
         //hex (polinator pad)
         ctx.beginPath();
-        ctx.fillStyle = "rgba("+f.clH.r+","+f.clH.g+","+f.clH.b+","+f.clH.a+")";  // yellow
+        ctx.fillStyle = "rgba("+f.clH.r+","+f.clH.g+","+f.clH.b+","+p.opacity+")";  // yellow
         ctx.moveTo(f.ptHtR.cx, f.ptHtR.cy);
         ctx.lineTo(f.ptHoR.cx, f.ptHoR.cy);
         ctx.lineTo(f.ptHbR.cx, f.ptHbR.cy);
@@ -339,7 +338,7 @@ function renderFlowers( plant ) {
         ctx.lineTo(f.ptHtL.cx, f.ptHtL.cy);
         ctx.fill();
         ctx.beginPath();
-        ctx.strokeStyle = "rgba("+f.clO.r+","+f.clO.g+","+f.clO.b+","+f.clO.a+")";  // dark brown
+        ctx.strokeStyle = "rgba("+f.clO.r+","+f.clO.g+","+f.clO.b+","+p.opacity+")";  // dark brown
         ctx.moveTo(f.ptHoL.cx, f.ptHoL.cy);
         ctx.lineTo(f.ptHtL.cx, f.ptHtL.cy);
         ctx.lineTo(f.ptHtR.cx, f.ptHtR.cy);
@@ -350,8 +349,8 @@ function renderFlowers( plant ) {
         ctx.lineTo(f.ptHoL.cx, f.ptHoL.cy);
         ctx.stroke();
         //bottom petals
-        ctx.fillStyle = "hsl("+f.clP.h+","+f.clP.s+"%,"+f.clP.l+"%)";  // white
-        ctx.strokeStyle = "rgba("+f.clO.r+","+f.clO.g+","+f.clO.b+","+f.clO.a+")";  // dark brown
+        ctx.fillStyle = "hsla("+f.clP.h+","+f.clP.s+"%,"+f.clP.l+"%,"+p.opacity+")";  // white
+        ctx.strokeStyle = "rgba("+f.clO.r+","+f.clO.g+","+f.clO.b+","+p.opacity+")";  // dark brown
         ctx.beginPath();  // bottom left petal
         ctx.moveTo( f.ptHoL.cx, f.ptHoL.cy );
         pah = petalArcAdjustment( f, f.ptHoL, f.ptHbL, f.ptPbL, 0.35, 0.35);
@@ -367,7 +366,6 @@ function renderFlowers( plant ) {
         pah = petalArcAdjustment( f, f.ptHbL, f.ptHbR, f.ptPbM, 0.2, 0.45);
         Tl.arcFromTo( f.ptHbL, f.ptPbM, pah ); Tl.arcFromTo( f.ptPbM, f.ptHbR, pah );
         ctx.fill(); ctx.stroke();
-        ctx.globalAlpha = 1;  // (resets global opacity after plant fadeout during removal)
       }
       //pods
       if ( viewPods ) { renderPods( f ); }
