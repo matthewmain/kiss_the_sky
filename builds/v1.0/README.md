@@ -4,4 +4,5 @@
 <br>
 <br>
 
-- [] ... 
+- [] identify plant traits to be used as genes
+- [] ...
