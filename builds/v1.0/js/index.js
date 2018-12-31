@@ -109,11 +109,7 @@ function Plant( sourceSeed ) {
   this.seedEnergy = energyStoreFactor * Tl.rfb(8,12);  // energy level from seed at plant initiation
   this.energy = this.seedEnergy;  // energy (starts with seed energy at germination)
   this.maxEnergyLevel = this.segmentCount * energyStoreFactor;
-  this.leafArcHeight = 0.35;  // arc height (as ratio of leaf length)
   this.hasFlowers = false;
-  this.ph = Tl.rib( 0, 260 ); if ( this.ph > 65 && this.ph < 165) { this.ph += 100; }  // petal hue
-  this.ps = Tl.rib( 50, 100 );  // petal saturation
-  this.pl = Tl.rib( 35, 70 );  // petal lightness
   this.isAlive = true;
   this.hasReachedOldAge = false;
   this.oldAgeReduction = 0;  // (energy reduction per plant iteration, when plant is dying of old age)
@@ -122,7 +118,7 @@ function Plant( sourceSeed ) {
   this.hasDecomposed = false;  // decomposed plants are compressed to floor y-value and ready to be removed
   this.opacity = 1;
   this.hasBeenRemoved = false;
-  //settings
+  //genes
   this.forwardGrowthRate = gravity * Tl.rfb(18,22);  // (rate of cross spans increase per frame)
   this.outwardGrowthRate = this.forwardGrowthRate * Tl.rfb(0.18,0.22);  // (rate forward span widens per frame)
   this.maxSegmentWidth = Tl.rfb(10,12);  // maximum segment width (in pixels)
@@ -131,10 +127,15 @@ function Plant( sourceSeed ) {
   this.leafFrequency = Tl.rib(2,3);  // (number of segments until next leaf set)
   this.maxLeaflength = this.maxSegmentWidth * Tl.rfb(4,7);  // maximum leaf length at maturity
   this.leafGrowthRate = this.forwardGrowthRate * Tl.rfb(1.4,1.6);  // leaf growth rate
-  this.flowerBudHeight = 1;  // bud height ( from hex top, in units of hex heights )
-  this.flowerColor = { h: this.ph, s: this.ps, l: this.pl };  // flower color
-  this.pollenPadColor = C.pp;  // pollen pad color
+  this.leafArcHeight = 0.35;  // arc height (as ratio of leaf length)
   this.maxFlowerBaseWidth = 1;  // max flower base width, in units of plant max segment width
+  this.flowerBudHeight = 1;  // bud height ( from hex top, in units of hex heights )
+  this.pollenPadColor = C.pp;  // pollen pad color
+  this.ph = Tl.rib( 0, 260 ); if ( this.ph > 65 && this.ph < 165) { this.ph += 100; }  // petal hue
+  this.ps = Tl.rib( 50, 100 );  // petal saturation
+  this.pl = Tl.rib( 35, 70 );  // petal lightness
+  //combined genes
+  this.flowerColor = { h: this.ph, s: this.ps, l: this.pl };  // flower color
   //base segment (values assigned at source seed germination)
   this.xLocation = null;  // x value where plant is rooted to the ground
   this.ptB1 = null;  // base point 1
@@ -607,13 +608,10 @@ function collapsePlant( plant ) {
       removeSpan(f.spCuP.id);
       removeSpan(f.spCdP.id);
       removeSpan(f.spCu.id);
-      removeSpan(f.spCu.id);
-      removeSpan(f.spHbM.id);
+      removeSpan(f.spCd.id);
       removeSpan(f.spHcDB.id);
       removeSpan(f.spHcUB.id);
       removeSpan(f.spHcH.id);
-      removeSpan(f.spBTSL.id);
-      removeSpan(f.spBTSL.id);
     }
   }
   p.hasCollapsed = true; 
@@ -819,7 +817,7 @@ for ( var i=0; i<1; i++ ) {
 }
 
 ///fast growth & fast seasons for testing
-sunRayIntensity = 3;
+sunRayIntensity = 4;
 spL = 2000; suL = 2000; faL = 2000; wiL = 2000;
 
 
