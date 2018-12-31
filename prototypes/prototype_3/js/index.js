@@ -27,7 +27,7 @@ var viewStalks = true;  // (stalk visibility)
 var viewLeaves = true;  // (leaf visibility)
 var viewFlowers = true;  // (flower visibility)
 var viewPods = true;  // (pod visibilty)
-var seedsPerFlower = 0;//3;  // number of seeds produced by a fertilized flower
+var seedsPerFlower = 3;  // number of seeds produced by a fertilized flower
 var restrictGrowthByEnergy = true;  // restricts plant growth by energy level (if false, plants grow freely)
 var sunRayIntensity = 1;  // total energy units per sun ray per iteration
 var photosynthesisRatio = 1;  // ratio of available sun energy stored by leaf when ray contacts it (varies by season)
@@ -615,7 +615,6 @@ function collapsePlant( plant ) {
       removeSpan(f.spHcH.id);
       removeSpan(f.spBTSL.id);
       removeSpan(f.spBTSL.id);
-      f.ptBudTip.mass = 1;
     }
   }
   p.hasCollapsed = true; 
@@ -844,9 +843,9 @@ function display() {
   window.requestAnimationFrame(display);
 
                                                         ///TESTING  
-                                                        if ( worldTime % 60 === 0 ) { 
-                                                          // console.log();
-                                                        }
+                                                        // if ( worldTime % 60 === 0 ) { 
+                                                        //   console.log();
+                                                        // }
 
 }
 
