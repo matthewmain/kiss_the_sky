@@ -5,7 +5,7 @@
 
 - [X] [Prototype 1](https://github.com/matthewmain/plant_evolution_app/tree/master/prototypes/prototype_1) - _Environment Physics & Basic Competitive Growth_  
 - [X] [Prototype 2](https://github.com/matthewmain/plant_evolution_app/tree/master/prototypes/prototype_2) - _Flowers, Seeds, & Reproduction with Randomized Traits_  
-- [ ] [Prototype 3](https://github.com/matthewmain/plant_evolution_app/tree/master/prototypes/prototype_3) - _Seasons_
+- [X] [Prototype 3](https://github.com/matthewmain/plant_evolution_app/tree/master/prototypes/prototype_3) - _Seasons_
 
 <br>
 
