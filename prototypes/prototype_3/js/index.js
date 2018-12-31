@@ -27,7 +27,7 @@ var viewStalks = true;  // (stalk visibility)
 var viewLeaves = true;  // (leaf visibility)
 var viewFlowers = true;  // (flower visibility)
 var viewPods = true;  // (pod visibilty)
-var seedsPerFlower = 2;  // number of seeds produced by a fertilized flower
+var seedsPerFlower = 1;//3;  // number of seeds produced by a fertilized flower
 var restrictGrowthByEnergy = true;  // restricts plant growth by energy level (if false, plants grow freely)
 var sunRayIntensity = 1;  // total energy units per sun ray per iteration
 var photosynthesisRatio = 1;  // ratio of available sun energy stored by leaf when ray contacts it (varies by season)
@@ -102,23 +102,27 @@ function Plant( sourceSeed ) {
   this.sourceSeed = sourceSeed;
   this.sourceSeedHasBeenRemoved = false;
   this.id = plantCount;
+  this.germinationYear = currentYear;  // germination year
+  this.age = 0;  // plant age in worldtime units 
   this.segments = []; this.segmentCount = 0;
   this.flowers = []; this.flowerCount = 0;
   this.xLocation = null;
   this.seedEnergy = energyStoreFactor * Tl.rfb(8,12);  // energy level from seed at plant initiation
   this.energy = this.seedEnergy;  // energy (starts with seed energy at germination)
   this.maxEnergyLevel = this.segmentCount * energyStoreFactor;
+  this.leafArcHeight = 0.35;  // arc height (as ratio of leaf length)
   this.hasFlowers = false;
   this.ph = Tl.rib( 0, 260 ); if ( this.ph > 65 && this.ph < 165) { this.ph += 100; }  // petal hue
   this.ps = Tl.rib( 50, 100 );  // petal saturation
   this.pl = Tl.rib( 35, 70 );  // petal lightness
-  this.germinationYear = currentYear;  // germination year
-  this.age = 0;  // plant age in worldtime units 
   this.isAlive = true;
   this.hasReachedOldAge = false;
   this.oldAgeReduction = 0;  // (energy reduction per plant iteration, when plant is dying of old age)
   this.hasCollapsed = false;
   this.isActive = true;  // (inactive plants are rendered but ignored by all other local plant & light iterations)
+  this.hasDecomposed = false;  // decomposed plants are compressed to floor y-value and ready to be removed
+  this.opacity = 1;
+  this.hasBeenRemoved = false;
   //settings
   this.forwardGrowthRate = gravity * Tl.rfb(18,22);  // (rate of cross spans increase per frame)
   this.outwardGrowthRate = this.forwardGrowthRate * Tl.rfb(0.18,0.22);  // (rate forward span widens per frame)
@@ -174,7 +178,7 @@ function Segment( plant, parentSegment, basePoint1, basePoint2 ) {
   }
   //skins
   this.skins = [];
-  this.skins.push( addSk( [ this.ptE1.id, this.ptE2.id, this.ptB2.id, this.ptB1.id ], "darkgreen" ) );
+  this.skins.push( addSk( [ this.ptE1.id, this.ptE2.id, this.ptB2.id, this.ptB1.id ], null ) );
   //leaves
   this.ptLf1 = null;  // leaf point 1 (leaf tip)
   this.ptLf2 = null;  // leaf point 2 (leaf tip)  
@@ -231,16 +235,16 @@ function createSegment( plant, parentSegment, basePoint1, basePoint2 ) {
 }
 
 ///removes a seed by id from seeds array
-function removeSeed( id ) {
+function removeSeed( seedId ) {
   for( var i=0; i<seeds.length; i++){ 
-    if ( seeds[i].id === id) { seeds.splice(i, 1); }
+    if ( seeds[i].id === seedId ) { seeds.splice(i, 1); }
   }
 }
 
 ///removes a plant by id from plants array
-function removePlant( id ) {
+function removePlant( plantId ) {
   for( var i=0; i<plants.length; i++){ 
-    if ( plants[i].id === id) { plants.splice(i, 1); }
+    if ( plants[i].id === plantId ) { plants.splice(i, 1); }
   }
 }
 
@@ -304,7 +308,7 @@ function germinateSeed( seed ) {
 }
 
 ///removes seed when ready
-function removeSeedWhenReady( seed ) {
+function hideAndRemoveSeed( seed ) {
   if ( seed.opacity > 0 ) {
     fadeSeedOut( seed );
   } else if ( seed.opacity <= 0 ) {
@@ -361,7 +365,6 @@ function plantReadyForLeaves( plant, segment ) {
 function generateLeavesWhenReady( plant, segment ) {
   var p = plant;
   var s = segment;
-  var segmentIsFirstLeafSegment;
   if ( plantReadyForLeaves( plant, segment ) ) {
     var fsmp = spanMidPoint( s.spF );  // forward span mid point
     var pbsmp = midPoint( s.parentSegment.ptB1, s.parentSegment.ptB2 );  // parent base span mid point
@@ -434,62 +437,66 @@ function growLeaves( plant, segment ) {
 ///grows all plants
 function growPlants() {
   for (var i=0; i<plants.length; i++) {
-    var plant = plants[i];
-    if ( plant.isActive ) {
-      plant.age++;
-      if ( !plant.sourceSeed.hasGerminated ) { 
-        germinateSeedWhenReady( plant.sourceSeed );  // germinates a planted seed
+    var p = plants[i];
+    if ( p.isActive ) {
+      p.age++;
+      if ( !p.sourceSeed.hasGerminated ) { 
+        germinateSeedWhenReady( p.sourceSeed );  // germinates a ped seed
+      } else if ( !p.sourceSeedHasBeenRemoved ) {
+        hideAndRemoveSeed( p.sourceSeed );  // removes seed after germination
       }
-      if ( !plant.sourceSeedHasBeenRemoved ) {
-        removeSeedWhenReady( plant.sourceSeed );  // removes seed after germination
+      if ( p.energy > p.segmentCount*energyStoreFactor && p.energy>p.seedEnergy ) {
+        p.energy = p.segmentCount*energyStoreFactor;  // caps plant max energy level based on segment count
       }
-      if ( plant.energy > plant.segmentCount*energyStoreFactor && plant.energy>plant.seedEnergy ) {
-        plant.energy = plant.segmentCount*energyStoreFactor;  // caps plant max energy level based on segment count
-      }
-      if ( plant.hasFlowers ) { 
-        for ( var j=0; j<plant.flowers.length; j++ ) {
-          var flower = plant.flowers[j];
-          developFlower( plant, flower );  
+      if ( p.hasFlowers ) { 
+        for ( var j=0; j<p.flowers.length; j++ ) {
+          var flower = p.flowers[j];
+          developFlower( p, flower );  
           if ( flower.ageSinceBlooming > oldAgeMarker ) {  // plant starts dying of old age (*remove later...)
-            plant.hasReachedOldAge = true;
+            p.hasReachedOldAge = true;
           } 
         }
       }
-      if ( plant.energy > 0 || !restrictGrowthByEnergy && !plant.hasReachedOldAge ) { 
-        for (var k=0; k<plant.segments.length; k++) { 
-          var segment = plant.segments[k];
-          if ( segment.spF.l < plant.maxSegmentWidth ) { 
-            lengthenSegmentSpans( plant, segment ); 
-            plant.energy -= segment.spCd.l * groEnExp;  // reduces energy by segment size
+      if ( p.energy > 0 || !restrictGrowthByEnergy && !p.hasReachedOldAge ) { 
+        for (var k=0; k<p.segments.length; k++) { 
+          var s = p.segments[k];
+          if ( s.spF.l < p.maxSegmentWidth ) { 
+            lengthenSegmentSpans( p, s ); 
+            p.energy -= s.spCd.l * groEnExp;  // reduces energy by segment size
           }
-          if ( readyForChildSegment( plant, segment ) ) { 
-            createSegment( plant, segment, segment.ptE1, segment.ptE2 ); 
+          if ( readyForChildSegment( p, s ) ) { 
+            createSegment( p, s, s.ptE1, s.ptE2 ); 
           }
-          if ( !segment.hasLeaves ) { 
-            generateLeavesWhenReady( plant, segment ); 
+          if ( !s.hasLeaves ) { 
+            generateLeavesWhenReady( p, s ); 
           } else {
-            growLeaves( plant, segment ); 
-            plant.energy -= ( segment.spLf1.l + segment.spLf2.l ) * groEnExp;  // reduces energy by leaf length
+            growLeaves( p, s ); 
+            p.energy -= ( s.spLf1.l + s.spLf2.l ) * groEnExp;  // reduces energy by leaf length
           }
-          if ( !plant.hasFlowers && readyForFlower( plant, segment ) ) {
-            createFlower( plant, segment, segment.ptE1, segment.ptE2 ); 
+          if ( !p.hasFlowers && readyForFlower( p, s ) ) {
+            createFlower( p, s, s.ptE1, s.ptE2 ); 
           }
         }
       }
-      if ( plant.hasReachedOldAge ) {
-        plant.oldAgeReduction += oldAgeRate;
-        plant.energy -= plant.oldAgeReduction;  
+      if ( p.hasReachedOldAge ) {
+        p.oldAgeReduction += oldAgeRate;
+        p.energy -= p.oldAgeReduction;  
       }
-      if ( plant.sourceSeed.hasGerminated ) {
-        plant.energy -= plant.segmentCount * livEnExp;  // cost of living: reduces energy by a ratio of segment count
+      if ( p.sourceSeed.hasGerminated ) {
+        p.energy -= p.segmentCount * livEnExp;  // cost of living: reduces energy by a ratio of segment count
       } 
-      if ( plant.energy < plant.maxEnergyLevel*deathEnergyLevelRatio && restrictGrowthByEnergy ) {
-        killPlant( plant );  // plant dies if energy level falls below minimum to be alive
+      if ( p.energy < p.maxEnergyLevel*deathEnergyLevelRatio && restrictGrowthByEnergy ) {
+        killPlant( p );  // plant dies if energy level falls below minimum to be alive
       }
-      if ( plant.energy < plant.maxEnergyLevel*collapseEnergyLevelRatio && restrictGrowthByEnergy ) {
-        collapsePlant( plant );  // plant collapses if energy level falls below minimum to stay standing
-        plant.isActive = false;  // removes plant from local plant iterations
+      if ( !p.hasCollapsed && p.energy<p.maxEnergyLevel*collapseEnergyLevelRatio && restrictGrowthByEnergy ) {
+        collapsePlant( p );  // plant collapses if energy level falls below minimum to stay standing
+        p.isActive = false;  // removes plant from local plant iterations
       }
+    } else if ( p.hasCollapsed && currentYear - p.germinationYear >= 2 ) {
+      decomposePlant( p );
+    }
+    if ( p.hasDecomposed && !p.hasBeenRemoved) {
+      fadePlantOutAndRemove( p );
     }
   }
 }
@@ -564,13 +571,15 @@ function killPlant( plant ) {
   for (var i=0; i<plant.segments.length; i++) {
     var s = plant.segments[i];
     if ( s.hasLeaves && s.spLf1.l > plant.maxLeaflength/3 ) {  
-      removeSpan( s.leafTipsTetherSpan.id );  // removes large leaf bud tethers 
+      removeSpan( s.leafTipsTetherSpan.id );  // removes large leaf bud tethers
     }
     if ( s.hasLeafScaffolding ) {  // removes leaf scaffolding
-      removePoint(s.ptLf1ScA.id); removePoint(s.ptLf2ScA.id);
-      removePoint(s.ptLf1ScB.id); removePoint(s.ptLf2ScB.id);
       removeSpan(s.spLf1ScA.id); removeSpan(s.spLf2ScA.id);   
       removeSpan(s.spLf1ScB.id); removeSpan(s.spLf2ScB.id);
+      removeSpan(s.spLf1ScC.id); removeSpan(s.spLf2ScC.id);
+      removeSpan(s.spLf1ScD.id); removeSpan(s.spLf2ScD.id);
+      removePoint(s.ptLf1ScA.id); removePoint(s.ptLf2ScA.id);
+      removePoint(s.ptLf1ScB.id); removePoint(s.ptLf2ScB.id);
     }
     if ( s.hasLeaves && s.ptLf1.cy>s.ptB1.cy && s.ptLf2.cy>s.ptB2.cy ) {  // prevents dead leaves from swinging
       s.ptLf1.mass = s.ptLf2.mass = 0.5;
@@ -610,6 +619,56 @@ function collapsePlant( plant ) {
   }
   p.hasCollapsed = true; 
 }
+
+///decomposes plant after collapse
+function decomposePlant( plant ) {
+  if ( plant.leafArcHeight > 0.05 ) {  
+    plant.leafArcHeight -= 0.0001;
+  } else {
+    plant.leafArcHeight = 0.05;
+    plant.hasDecomposed = true;
+  }
+}
+
+///removes plant and all of its associated points, spans, and skins
+function fadePlantOutAndRemove( plant ) {
+  var p = plant;
+  if (p.opacity > 0) {
+    p.opacity -= 0.005;
+  } else {
+    p.opacity = 0;
+    removePoint( p.ptB1.id );  // plant base point 1
+    removePoint( p.ptB2.id );  // plant base point 2
+    removeSpan( p.spB.id );  // plant base span
+    for ( var i=0; i<p.segments.length; i++ ) {
+      sg = p.segments[i];
+      removePoint( sg.ptE1.id );  // segment extension point 1
+      removePoint( sg.ptE2.id );  // segment extension point 1
+      removeSpan( sg.spL.id );  // segment left span
+      removeSpan( sg.spR.id );  // segment right span
+      removeSpan( sg.spF.id );  // segment forward span
+      removeSpan( sg.spCd.id );  // segment downward (l to r) cross span
+      removeSpan( sg.spCu.id );  // segment upward (l to r) cross span
+      for (var j=0; j<sg.skins.length; j++) {
+        removeSkin( sg.skins[j].id );
+      } 
+      if (!sg.isBaseSegment) {
+        removeSpan( sg.spCdP.id );  // segment downward (l to r) cross span to parent
+        removeSpan( sg.spCuP.id );  // segment upward (l to r) cross span to parent
+      }
+      if ( sg.hasLeaves ) {
+        removePoint( sg.ptLf1.id );  // segment leaf point 1 (leaf tip)
+        removePoint( sg.ptLf2.id );  // segment leaf point 2 (leaf tip)  
+        removeSpan( sg.spLf1.id );  // segment leaf 1 Span
+        removeSpan( sg.spLf2.id );  // segment leaf 2 Span
+      }
+    }
+    removeAllflowerPointsAndSpans( p );
+    removePlant( p.id );
+    plant.hasBeenRemoved = true;
+  }
+}
+
 
 /// Renderers ///
 
@@ -664,20 +723,19 @@ function renderLeaf( plant, segment, leafSpan ) {
   var mpx = ( p1x + p2x ) / 2;  // mid point x
   var mpy = ( p1y + p2y ) / 2;  // mid point y
   ctx.lineWidth = 2;
-  ctx.strokeStyle = "rgba("+s.clO.r+","+s.clO.g+","+s.clO.b+","+s.clO.a+")";
-  ctx.fillStyle = "rgba("+s.clL.r+","+s.clL.g+","+s.clL.b+","+s.clL.a+")";
-  var ah = 0.35;  // arc height (as ratio of leaf length)
+  ctx.strokeStyle = "rgba("+s.clO.r+","+s.clO.g+","+s.clO.b+","+p.opacity+")";
+  ctx.fillStyle = "rgba("+s.clL.r+","+s.clL.g+","+s.clL.b+","+p.opacity+")";
   //leaf top
-  var ccpx = mpx + ( p2y - p1y ) * ah;  // curve control point x
-  var ccpy = mpy + ( p1x - p2x ) * ah;  // curve control point y
+  var ccpx = mpx + ( p2y - p1y ) * p.leafArcHeight;  // curve control point x
+  var ccpy = mpy + ( p1x - p2x ) * p.leafArcHeight;  // curve control point y
   ctx.beginPath();
   ctx.moveTo(p1x,p1y);
   ctx.quadraticCurveTo(ccpx,ccpy,p2x,p2y);
   ctx.stroke();
   ctx.fill();
   //leaf bottom
-  ccpx = mpx + ( p1y - p2y ) * ah;  // curve control point x
-  ccpy = mpy + ( p2x - p1x ) * ah;  // curve control point y
+  ccpx = mpx + ( p1y - p2y ) * p.leafArcHeight;  // curve control point x
+  ccpy = mpy + ( p2x - p1x ) * p.leafArcHeight;  // curve control point y
   ctx.beginPath();
   ctx.moveTo(p1x,p1y);
   ctx.quadraticCurveTo(ccpx,ccpy,p2x,p2y);
@@ -686,7 +744,7 @@ function renderLeaf( plant, segment, leafSpan ) {
   //leaf center
   ctx.beginPath();
   ctx.lineWidth = 1;
-  ctx.strokeStyle = "rgba("+s.clI.r+","+s.clI.g+","+s.clI.b+","+s.clI.a+")";
+  ctx.strokeStyle = "rgba("+s.clI.r+","+s.clI.g+","+s.clI.b+","+p.opacity+")";
   ctx.moveTo(p1x,p1y);
   ctx.lineTo(p2x,p2y);
   ctx.stroke();
@@ -703,12 +761,13 @@ function renderLeaves( plant, segment ) {
 
 ///renders stalks
 function renderStalks( plant, segment ) {
+  var p = plant;
   var sg = segment;
   for (var i=0; i<sg.skins.length; i++) {
     var sk = segment.skins[i];
     //fills
     ctx.beginPath();
-    ctx.fillStyle = "rgba("+sg.clS.r+","+sg.clS.g+","+sg.clS.b+","+sg.clS.a+")";
+    ctx.fillStyle = "rgba("+sg.clS.r+","+sg.clS.g+","+sg.clS.b+","+p.opacity+")";
     ctx.lineWidth = 1;
     ctx.strokeStyle = ctx.fillStyle;
     ctx.moveTo(sk.points[0].cx, sk.points[0].cy);
@@ -719,7 +778,7 @@ function renderStalks( plant, segment ) {
     //outlines
     ctx.beginPath();
     ctx.lineWidth = 1;
-    ctx.strokeStyle = "rgba("+sg.clO.r+","+sg.clO.g+","+sg.clO.b+","+sg.clO.a+")";
+    ctx.strokeStyle = "rgba("+sg.clO.r+","+sg.clO.g+","+sg.clO.b+","+p.opacity+")";
     ctx.moveTo(sk.points[3].cx, sk.points[3].cy);
     ctx.lineTo(sk.points[0].cx, sk.points[0].cy);
     ctx.moveTo(sk.points[2].cx, sk.points[2].cy);
@@ -750,41 +809,45 @@ function renderPlants() {
   if ( viewShadows ) { renderShadows(); }
 }
 
-///renders scene
-function renderScene() {
-  renderBackground();
-  renderPlants();
-  if ( viewUI ) { renderUI(); }
+
+
+
+////---TESTING---////
+
+///seed initiation for testing
+for ( var i=0; i<1; i++ ) {
+  createSeed(null); 
 }
+
+///fast growth & fast seasons for testing
+sunRayIntensity = 4;
+spL = 2000; suL = 2000; faL = 2000; wiL = 2000;
 
 
 
 
 ////---DISPLAY---////
 
-///TESTING
-for ( var i=0; i<25; i++ ) {
-  createSeed(null); 
-}
-
-
 // createSeed(null);
 
 function display() {
+  renderBackground();
   runVerlet();
   if ( worldTime % worldSpeed === 0 ) { 
     trackSeasons();
     shedSunlight();
     growPlants(); 
   }
-  renderScene();
+  renderPlants();
+  if ( viewUI ) { renderUI(); }
   window.requestAnimationFrame(display);
 
-                                                                ///TESTING  
-                                                                if ( worldTime % 60 === 0 ) { 
-                                                                  // console.log(seedCount);
-                                                                  // console.log(seeds);
-                                                                }
+                                                        ///TESTING  
+                                                        if ( worldTime % 600 === 0 ) { 
+                                                          console.log("plants: "+plants.length);
+                                                          console.log("points: "+points.length);
+                                                          console.log("spans: "+spans.length);
+                                                        }
 
 }
 

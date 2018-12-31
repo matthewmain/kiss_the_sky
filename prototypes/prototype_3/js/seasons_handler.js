@@ -3,6 +3,7 @@
 ///////// SEASONS HANDLER /////////
 
 
+
 ///trackets
 var currentYear = 1;
 var yearTime = 0;
@@ -13,12 +14,6 @@ var spL = 5000;  // spring length
 var suL = 30000;  // summer length
 var faL = 5000;  // fall length
 var wiL = 3000;  // winter length
-
-///testing
-// var spL = 2000;
-// var suL = 2000;
-// var faL = 2000;
-// var wiL = 2000;
 
 ///background gradient colors
 var BgG = {
@@ -46,7 +41,7 @@ var BgG = {
     cs3: { r: 233, g: 229, b: 224, a: 1 }, 
     cs4: { r: 248, g: 252, b: 255, a: 1 }
   }
-}
+};
 
 ///current and previous season background color stop collection objects
 var csbg = BgG.sp;  // current season background
@@ -89,8 +84,8 @@ function renderBackground() {
   ccs4 = Tl.rgbaCs( psbg.cs4, csbg.cs4, ccs4, 500 );  // current color stop alphashift
   var grd=ctx.createLinearGradient( 0, 0, 0, canvas.height );
   grd.addColorStop(0,"rgba("+ccs1.r+","+ccs1.g+","+ccs1.b+","+ccs1.a+")");
-  grd.addColorStop(.4,"rgba("+ccs2.r+","+ccs2.g+","+ccs2.b+","+ccs2.a+")");
-  grd.addColorStop(.6,"rgba("+ccs3.r+","+ccs3.g+","+ccs3.b+","+ccs3.a+")");
+  grd.addColorStop(0.4,"rgba("+ccs2.r+","+ccs2.g+","+ccs2.b+","+ccs2.a+")");
+  grd.addColorStop(0.6,"rgba("+ccs3.r+","+ccs3.g+","+ccs3.b+","+ccs3.a+")");
   grd.addColorStop(1,"rgba("+ccs4.r+","+ccs4.g+","+ccs4.b+","+ccs4.a+")");
   ctx.fillStyle=grd;
   ctx.fillRect(0, 0, canvas.width, canvas.height);

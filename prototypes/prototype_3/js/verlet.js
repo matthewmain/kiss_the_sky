@@ -25,7 +25,7 @@ var worldTime = 0;  // time as frame count
 var viewPoints = false;  // (point visibility)
 var viewSpans = false;  // (span visibility)
 var viewScaffolding = false; // (scaffolding visibility)
-var viewSkins = true; // (skin visibility)
+var viewSkins = false; // (skin visibility)
 var gravity = 0.01;  // (rate of y-velocity increase per frame per point mass of 1)
 var rigidity = 10;  // global span rigidity (as iterations of position accuracy refinement)
 var friction = 0.999;  // (proportion of previous velocity after frame refresh)
@@ -363,7 +363,7 @@ function runVerlet() {
 	scaleToWindow();
   updatePoints();
   refinePositions();
-  clearCanvas();
+  //clearCanvas();  // canvas clearing handled by renderBackground() in season_handler.js
   renderImages();
   worldTime++;
 }
