@@ -27,7 +27,7 @@ var viewStalks = true;  // (stalk visibility)
 var viewLeaves = true;  // (leaf visibility)
 var viewFlowers = true;  // (flower visibility)
 var viewPods = true;  // (pod visibilty)
-var seedsPerFlower = 1;//3;  // number of seeds produced by a fertilized flower
+var seedsPerFlower = 0;//3;  // number of seeds produced by a fertilized flower
 var restrictGrowthByEnergy = true;  // restricts plant growth by energy level (if false, plants grow freely)
 var sunRayIntensity = 1;  // total energy units per sun ray per iteration
 var photosynthesisRatio = 1;  // ratio of available sun energy stored by leaf when ray contacts it (varies by season)
@@ -441,7 +441,7 @@ function growPlants() {
     if ( p.isActive ) {
       p.age++;
       if ( !p.sourceSeed.hasGerminated ) { 
-        germinateSeedWhenReady( p.sourceSeed );  // germinates a ped seed
+        germinateSeedWhenReady( p.sourceSeed );  // germinates seed
       } else if ( !p.sourceSeedHasBeenRemoved ) {
         hideAndRemoveSeed( p.sourceSeed );  // removes seed after germination
       }
@@ -452,7 +452,7 @@ function growPlants() {
         for ( var j=0; j<p.flowers.length; j++ ) {
           var flower = p.flowers[j];
           developFlower( p, flower );  
-          if ( flower.ageSinceBlooming > oldAgeMarker ) {  // plant starts dying of old age (*remove later...)
+          if ( flower.ageSinceBlooming > oldAgeMarker ) {  // plant starts dying of old age
             p.hasReachedOldAge = true;
           } 
         }
@@ -634,7 +634,7 @@ function decomposePlant( plant ) {
 function fadePlantOutAndRemove( plant ) {
   var p = plant;
   if (p.opacity > 0) {
-    p.opacity -= 0.005;
+    p.opacity -= 0.001;
   } else {
     p.opacity = 0;
     removePoint( p.ptB1.id );  // plant base point 1
@@ -820,7 +820,7 @@ for ( var i=0; i<1; i++ ) {
 }
 
 ///fast growth & fast seasons for testing
-sunRayIntensity = 4;
+sunRayIntensity = 3;
 spL = 2000; suL = 2000; faL = 2000; wiL = 2000;
 
 
