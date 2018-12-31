@@ -9,7 +9,7 @@
 
 <br>
 
-- [ ] Version 1.0 - _Genes, Alleles, Mutations, & Reproduction with Mendelian Genetics (random polination among bloomed flowers)_
+- [ ] [Version 1.0](https://github.com/matthewmain/plant_evolution_app/tree/master/builds/v1.0) - _Genes, Alleles, Mutations, & Reproduction with Mendelian Genetics (random polination among bloomed flowers)_
 - [ ] Version 1.1 - _Polinators (selective polination based on flower characteristics & accessibility)_
 - [ ] Version 1.2 - _Plant Branching_
 
