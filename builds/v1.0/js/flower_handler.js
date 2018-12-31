@@ -6,8 +6,9 @@
 
 ///flower constructor 
 function Flower( plant, parentSegment, basePoint1, basePoint2 ) {
-  this.plantId = plant.id;
   this.id = plant.flowerCount;
+  this.plantId = plant.id;
+  this.parentPlant = plant;
   this.parentSegment = parentSegment;
   this.seeds = [];
   this.mass = 0;
@@ -376,11 +377,12 @@ function renderFlowers( plant ) {
 ///renders pods
 function renderPods( flower ) {
   var f = flower;
+  var opacity = f.podOpacity <= f.parentPlant.opacity ? f.podOpacity : f.parentPlant.opacity; 
   ctx.lineJoin = "round";
   ctx.lineCap = "round";
   ctx.lineWidth = 2.5;
-  ctx.fillStyle = "rgba("+f.clOv.r+","+f.clOv.g+","+f.clOv.b+","+f.podOpacity+")";  // dark green
-  ctx.strokeStyle = "rgba("+f.clO.r+","+f.clO.g+","+f.clO.b+","+f.podOpacity+")";  // dark brown
+  ctx.fillStyle = "rgba("+f.clOv.r+","+f.clOv.g+","+f.clOv.b+","+opacity+")";  // dark green
+  ctx.strokeStyle = "rgba("+f.clO.r+","+f.clO.g+","+f.clO.b+","+opacity+")";  // dark brown
   ctx.beginPath();
   ctx.moveTo(f.ptBL.cx, f.ptBL.cy);
   Tl.arcFromTo( f.ptBL, f.ptHoL, 0.1 );
