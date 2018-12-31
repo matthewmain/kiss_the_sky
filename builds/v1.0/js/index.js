@@ -285,10 +285,10 @@ function plantSeed( seed ) {
 
 ///germinates seeds when ready (after it has been planted and spring has arrived)
 function germinateSeedWhenReady( seed ) {
-  if ( seed.p1.cy > canvas.height-seed.p1.width/2-0.5 && !seed.planted && currentSeason === "spring") {    
+  if ( seed.p1.cy > canvas.height-seed.p1.width/2-0.5 && !seed.planted ) {    
     plantSeed( seed );
   }
-  if ( seed.planted ) {
+  if ( seed.planted && currentSeason === "spring" ) {
     germinateSeed( seed );
   }
 }
