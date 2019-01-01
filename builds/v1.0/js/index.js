@@ -850,9 +850,9 @@ function display() {
   window.requestAnimationFrame(display);
 
                                                         ///TESTING  
-                                                        if ( worldTime % 600 === 0 ) { 
-                                                          console.log( plants );
-                                                        }
+                                                        // if ( worldTime % 600 === 0 ) { 
+                                                        //   console.log( plants );
+                                                        // }
 
 }
 
