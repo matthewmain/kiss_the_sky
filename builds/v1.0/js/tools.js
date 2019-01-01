@@ -18,6 +18,11 @@ var Tl = {
  		return Math.random() * ( max - min ) + min;
 	},
 
+	//random element from array
+	refa: function( array ) {
+		return array[ Math.floor( Math.random() * array.length ) ];
+	},
+
 	//converts radians to degrees
 	radToDeg: function( radian ) {
 	  return radian * 180 / Math.PI;

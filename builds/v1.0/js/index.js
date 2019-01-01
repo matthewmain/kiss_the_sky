@@ -26,7 +26,7 @@ var viewStalks = true;  // (stalk visibility)
 var viewLeaves = true;  // (leaf visibility)
 var viewFlowers = true;  // (flower visibility)
 var viewPods = true;  // (pod visibilty)
-var seedsPerFlower = 3;  // number of seeds produced by a fertilized flower
+var maxSeedsPerFlower = 3;  // number of seeds produced by a fertilized flower
 var restrictGrowthByEnergy = true;  // restricts plant growth by energy level (if false, plants grow freely)
 var sunRayIntensity = 1;  // total energy units per sun ray per iteration
 var photosynthesisRatio = 1;  // ratio of available sun energy stored by leaf when ray contacts it (varies by season)
@@ -69,20 +69,24 @@ var C = {
 };
 
 ///seed constructor
-function Seed( parentFlower ) {
+function Seed( parentFlower, zygoteGenome ) {
   this.id = seedCount;
   this.parentFlower = parentFlower;
   if ( parentFlower === null ) {
     this.sw = 14;  // seed width 
     this.p1 = addPt( Tl.rib(33,66), Tl.rib(5,25) );  // seed point 1 (placed in air for scattering at initiation)
     this.p2 = addPt( pctFromXVal( this.p1.cx + this.sw*1.6 ), pctFromYVal( this.p1.cy ) );  // seed point 2
+    this.generation = 1;
   } else {
     this.sw = this.parentFlower.spHcH.l/2;  // seed width
     var p1 = spanMidPoint( this.parentFlower.spHbM );  // positions seed p1 at bottom of parent flower's hex
     this.p1 = addPt( pctFromXVal(p1.x), pctFromYVal(p1.y) );  // seed point 1
     var p2 = spanMidPoint( this.parentFlower.spHtM );  // positions seed p2 at top of parent flower's hex
     this.p2 = addPt( pctFromXVal(p2.x), pctFromYVal(p2.y) );  // seed point 2
+    this.generation = this.parentFlower.generation + 1;
   }
+  this.genome = zygoteGenome;  
+  this.phenotype = new Phenotype( this.genome );
   this.p1.width = this.sw*1; 
   this.p1.mass = 5;
   this.p2.width = this.sw*0.35; this.p2.mass = 5; 
@@ -101,6 +105,7 @@ function Plant( sourceSeed ) {
   this.sourceSeed = sourceSeed;
   this.sourceSeedHasBeenRemoved = false;
   this.id = plantCount;
+  this.generation = sourceSeed.generation;
   this.germinationYear = currentYear;  // germination year
   this.age = 0;  // plant age in worldtime units 
   this.segments = []; this.segmentCount = 0;
@@ -119,6 +124,8 @@ function Plant( sourceSeed ) {
   this.opacity = 1;
   this.hasBeenRemoved = false;
   //genes
+  this.genome = this.sourceSeed.genome;
+  this.phenotype = this.sourceSeed.phenotype;
   this.forwardGrowthRate = gravity * Tl.rfb(18,22);  // (rate of cross spans increase per frame)
   this.outwardGrowthRate = this.forwardGrowthRate * Tl.rfb(0.18,0.22);  // (rate forward span widens per frame)
   this.maxSegmentWidth = Tl.rfb(10,12);  // maximum segment width (in pixels)
@@ -131,11 +138,11 @@ function Plant( sourceSeed ) {
   this.maxFlowerBaseWidth = 1;  // max flower base width, in units of plant max segment width
   this.flowerBudHeight = 1;  // bud height ( from hex top, in units of hex heights )
   this.pollenPadColor = C.pp;  // pollen pad color
-  this.ph = Tl.rib( 0, 260 ); if ( this.ph > 65 && this.ph < 165) { this.ph += 100; }  // petal hue
-  this.ps = Tl.rib( 50, 100 );  // petal saturation
-  this.pl = Tl.rib( 35, 70 );  // petal lightness
+  this.fh = this.phenotype.flowerHueValue; if ( this.fh > 65 && this.fh < 165) { this.fh += 100; }  // flower hue
+  this.fs = Tl.rib( 50, 100 );  // flower saturation
+  this.fl = Tl.rib( 35, 70 );  // flower lightness
   //combined genes
-  this.flowerColor = { h: this.ph, s: this.ps, l: this.pl };  // flower color
+  this.flowerColor = { h: this.fh, s: this.fs, l: this.fl };  // flower color
   //base segment (values assigned at source seed germination)
   this.xLocation = null;  // x value where plant is rooted to the ground
   this.ptB1 = null;  // base point 1
@@ -199,10 +206,10 @@ function Segment( plant, parentSegment, basePoint1, basePoint2 ) {
 
 /// Instance Creators ///
 
-///creates a new seed
-function createSeed( parentFlower ) {
+///creates a new seed  {{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{ XXX }}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}
+function createSeed( parentFlower, zygoteGenome ) {
   seedCount++;
-  seeds.push( new Seed( parentFlower ) );
+  seeds.push( new Seed( parentFlower, zygoteGenome ) );
   if ( parentFlower !== null ) { parentFlower.seeds.push( seeds[seeds.length-1] ); }
   return seeds[seeds.length-1];
 }
@@ -812,9 +819,12 @@ function renderPlants() {
 ////---TESTING---////
 
 ///seed initiation for testing
-for ( var i=0; i<1; i++ ) {
-  createSeed(null); 
-}
+// for ( var i=0; i<2; i++ ) {
+//   createSeed( null, firstGenerationGenome );
+// }
+createSeed( null, { flowerHue: new Gene( new Allele(185,0), new Allele(185,0), "partial" )} );
+createSeed( null, { flowerHue: new Gene( new Allele(360,0), new Allele(360,0), "partial" )} );
+
 
 ///fast growth & fast seasons for testing
 sunRayIntensity = 4;
@@ -825,7 +835,7 @@ spL = 2000; suL = 2000; faL = 2000; wiL = 2000;
 
 ////---DISPLAY---////
 
-// createSeed(null);
+// createSeed(null,firstGenerationGenome);
 
 function display() {
   renderBackground();
@@ -840,9 +850,9 @@ function display() {
   window.requestAnimationFrame(display);
 
                                                         ///TESTING  
-                                                        // if ( worldTime % 60 === 0 ) { 
-                                                        //   console.log();
-                                                        // }
+                                                        if ( worldTime % 600 === 0 ) { 
+                                                          console.log( plants );
+                                                        }
 
 }
 
