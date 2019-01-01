@@ -213,8 +213,10 @@ function acceptPollination( pollinatedFlower ) {
       if ( plants[i].flowers.length > 0 ) {
         for ( j=0; j<plants[i].flowers.length; j++ ) {
           var potentialPollinatorFlower = plants[i].flowers[j];
-          if ( potentialPollinatorFlower.hasFullyBloomed && !potentialPollinatorFlower.hasFullyClosed ) {
-            openFlowers.push( potentialPollinatorFlower );
+          if ( potentialPollinatorFlower != pollinatedFlower || allowSelfPollination ) {
+            if ( potentialPollinatorFlower.hasFullyBloomed && !potentialPollinatorFlower.hasFullyClosed ) {
+              openFlowers.push( potentialPollinatorFlower );
+            }
           }
         }
       }
@@ -306,7 +308,7 @@ function developFlower( plant, flower ) {
 
 
   //         {{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{ XXX }}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}
-  //otherwise, if bud has fully bloomed and it's summer, accepts pollination until zygote count reaches max seed count
+  //otherwise, if fully bloomed and summer, flower accepts pollination until zygote count reaches max seed count
   } else if ( f.hasFullyBloomed && currentSeason === "summer") {
     if ( f.zygoteGenomes.length < maxSeedsPerFlower ) { 
       acceptPollination( f );

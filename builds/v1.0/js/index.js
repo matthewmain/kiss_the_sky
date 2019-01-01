@@ -26,6 +26,7 @@ var viewStalks = true;  // (stalk visibility)
 var viewLeaves = true;  // (leaf visibility)
 var viewFlowers = true;  // (flower visibility)
 var viewPods = true;  // (pod visibilty)
+var allowSelfPollination = true;  // allows flowers to pollinate themselves
 var maxSeedsPerFlower = 3;  // number of seeds produced by a fertilized flower
 var restrictGrowthByEnergy = true;  // restricts plant growth by energy level (if false, plants grow freely)
 var sunRayIntensity = 1;  // total energy units per sun ray per iteration
@@ -818,17 +819,25 @@ function renderPlants() {
 
 ////---TESTING---////
 
-///seed initiation for testing
-// for ( var i=0; i<2; i++ ) {
-//   createSeed( null, firstGenerationGenome );
-// }
-createSeed( null, { flowerHue: new Gene( new Allele(185,0), new Allele(185,0), "partial" )} );
-createSeed( null, { flowerHue: new Gene( new Allele(360,0), new Allele(360,0), "partial" )} );
-
-
-///fast growth & fast seasons for testing
+///fast growth & fast seasons
 sunRayIntensity = 4;
 spL = 2000; suL = 2000; faL = 2000; wiL = 2000;
+
+///multiple seeds
+for ( var i=0; i<25; i++ ) {
+  //createSeed( null, firstGenerationGenome );
+  createSeed( null, { flowerHue: new Gene( new Allele(Tl.rib(0,360),0), new Allele(Tl.rib(0,360),0), "partial" )} );
+}
+///a red and blue seed
+// createSeed( null, { flowerHue: new Gene( new Allele(185,0), new Allele(185,0), "partial" )} );
+// createSeed( null, { flowerHue: new Gene( new Allele(360,0), new Allele(360,0), "partial" )} );
+///two seeds of random color
+// createSeed( null, { flowerHue: new Gene( new Allele(Tl.rib(0,360),0), new Allele(Tl.rib(0,360),0), "partial" )} );
+// createSeed( null, { flowerHue: new Gene( new Allele(Tl.rib(0,360),0), new Allele(Tl.rib(0,360),0), "partial" )} );
+
+
+
+
 
 
 
