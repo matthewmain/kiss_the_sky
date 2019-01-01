@@ -4,10 +4,10 @@
 <br>
 <br>
 
-- [X] add genetics handler with allele, gene, genome, & phenotype object constructors
-- [X] add gene dominance/recessivity
-- [ ] apply genes as plant traits, including flower color, leaf frequency & length, stalk width, etc.
-- [X] add pollination events when open flowers are pollinated by other open flowers
-- [X] add meiosis event when parent genes combine to create a child genome with combined inherited traits
-- [X] 
-- [ ] add gene mutations
+- [X] genetics handler with allele, gene, genome, & phenotype object constructors
+- [X] gene dominance/recessivity, with complete, co, and partial dominance types
+- [ ] convert variable plant traits as genes, including flower color, leaf frequency & length, stalk width, etc.
+- [X] pollination events when open flowers are randomly pollinated by other open flowers
+- [X] meiosis event following pollination when parent genes combine to create a child genome with combined inherited traits, stored as zygote genome in new seed
+- [X] phenotype event following meiosis when a plant's expressed traits are extracted from genome and applied as fixed plant variables to seed before plant growth
+- [ ] gene mutations
