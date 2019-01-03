@@ -116,6 +116,7 @@ function Plant( sourceSeed ) {
   this.energy = this.seedEnergy;  // energy (starts with seed energy at germination)
   this.maxEnergyLevel = this.segmentCount * energyStoreFactor;
   this.hasFlowers = false;
+  this.pollenPadColor = C.pp;  // pollen pad color
   this.isAlive = true;
   this.hasReachedOldAge = false;
   this.oldAgeReduction = 0;  // (energy reduction per plant iteration, when plant is dying of old age)
@@ -127,22 +128,22 @@ function Plant( sourceSeed ) {
   //genes
   this.genome = this.sourceSeed.genome;
   this.phenotype = this.sourceSeed.phenotype;
-  this.forwardGrowthRate = gravity * Tl.rfb(18,22);  // (rate of cross spans increase per frame)
-  this.outwardGrowthRate = this.forwardGrowthRate * Tl.rfb(0.18,0.22);  // (rate forward span widens per frame)
-  this.maxSegmentWidth = Tl.rfb(10,12);  // maximum segment width (in pixels)
-  this.maxTotalSegments = Tl.rib(8,15);  // maximum total number of segments at maturity
-  this.firstLeafSegment = Tl.rib(2,3);  // (segment on which first leaf set grows)
-  this.leafFrequency = Tl.rib(2,3);  // (number of segments until next leaf set)
-  this.maxLeaflength = this.maxSegmentWidth * Tl.rfb(4,7);  // maximum leaf length at maturity
-  this.leafGrowthRate = this.forwardGrowthRate * Tl.rfb(1.4,1.6);  // leaf growth rate
-  this.leafArcHeight = 0.35;  // arc height (as ratio of leaf length)
-  this.maxFlowerBaseWidth = 1;  // max flower base width, in units of plant max segment width
-  this.flowerBudHeight = 1;  // bud height ( from hex top, in units of hex heights )
-  this.pollenPadColor = C.pp;  // pollen pad color
-  this.fh = this.phenotype.flowerHueValue; if ( this.fh > 65 && this.fh < 165) { this.fh += 100; }  // flower hue
-  this.fs = Tl.rib( 50, 100 );  // flower saturation
-  this.fl = Tl.rib( 35, 70 );  // flower lightness
-  //combined genes
+  var ph = this.phenotype;
+  this.forwardGrowthRate = gravity * ph.forwardGrowthRateValue;  // (rate of cross span increase per frame)
+  this.outwardGrowthRate = this.forwardGrowthRate * ph.outwardGrowthRateValue;  // (rate forward span widens / frame)
+  this.maxSegmentWidth = ph.maxSegmentWidthValue;  // maximum segment width (in pixels)
+  this.maxTotalSegments = ph.maxTotalSegmentsValue;  // maximum total number of segments at maturity
+  this.firstLeafSegment = ph.firstLeafSegmentValue;  // (segment on which first leaf set grows)
+  this.leafFrequency = ph.leafFrequencyValue;  // (number of segments until next leaf set)
+  this.maxLeaflength = this.maxSegmentWidth * ph.maxLeaflengthValue;  // maximum leaf length at maturity
+  this.leafGrowthRate = this.forwardGrowthRate * ph.leafGrowthRateValue;  // leaf growth rate
+  this.leafArcHeight = ph.leafArcHeightValue;  // arc height (as ratio of leaf length)
+  this.maxFlowerBaseWidth = ph.maxFlowerBaseWidthValue;  // max flower base width, in units of plant maxSegmentWidth
+  this.flowerBudHeight = ph.flowerBudHeightValue;  // bud height ( from hex top, in units of hex heights )
+  this.fh = ph.flowerHueValue; if ( this.fh > 65 ) { this.fh += 100; }  // flower hue (omits greens)
+  this.fs = ph.flowerSaturationValue;  // flower saturation
+  this.fl = ph.flowerLightnessValue;  // flower lightness
+  //gene combinations
   this.flowerColor = { h: this.fh, s: this.fs, l: this.fl };  // flower color
   //base segment (values assigned at source seed germination)
   this.xLocation = null;  // x value where plant is rooted to the ground
@@ -825,26 +826,15 @@ spL = 2000; suL = 2000; faL = 2000; wiL = 2000;
 
 ///multiple seeds
 for ( var i=0; i<25; i++ ) {
-  //createSeed( null, firstGenerationGenome );
-  createSeed( null, { flowerHue: new Gene( new Allele(Tl.rib(0,360),0), new Allele(Tl.rib(0,360),0), "partial" )} );
+  createSeed( null, generateNewFirstGenerationPlantGenome() );
 }
-///a red and blue seed
-// createSeed( null, { flowerHue: new Gene( new Allele(185,0), new Allele(185,0), "partial" )} );
-// createSeed( null, { flowerHue: new Gene( new Allele(360,0), new Allele(360,0), "partial" )} );
-///two seeds of random color
-// createSeed( null, { flowerHue: new Gene( new Allele(Tl.rib(0,360),0), new Allele(Tl.rib(0,360),0), "partial" )} );
-// createSeed( null, { flowerHue: new Gene( new Allele(Tl.rib(0,360),0), new Allele(Tl.rib(0,360),0), "partial" )} );
-
-
-
-
 
 
 
 
 ////---DISPLAY---////
 
-// createSeed(null,firstGenerationGenome);
+// createSeed( null, generateNewFirstGenerationPlantGenome() );
 
 function display() {
   renderBackground();
@@ -858,10 +848,38 @@ function display() {
   if ( viewUI ) { renderUI(); }
   window.requestAnimationFrame(display);
 
-                                                        ///TESTING  
-                                                        // if ( worldTime % 600 === 0 ) { 
-                                                        //   console.log( plants );
-                                                        // }
+                                          ///TESTING  
+                                          if ( worldTime % 600 === 0 ) { 
+
+
+                                            var genArr = [];
+                                            for (i=0;i<plants.length;i++) {
+                                              var mll = plants[i].genome.maxLeaflength;
+                                              genArr.push( mll.allele1.dominanceIndex.toString().slice(0,4)+" ["+mll.allele1.value.toString().slice(0,3)+"]" );
+                                              genArr.push( mll.allele2.dominanceIndex.toString().slice(0,4)+" ["+mll.allele2.value.toString().slice(0,3)+"]" );                          
+                                            }
+                                            genArr2 = [];
+                                            for (j=0;j<genArr.length;j++) {
+                                              if ( !genArr2.includes(genArr[j]) ) { genArr2.push(genArr[j]); } 
+                                            }
+                                            console.log( genArr2.sort() );
+
+
+                                            var genArr3 = [];
+                                            for (k=0;k<plants.length;k++) {
+                                              var mll = plants[k].genome.maxLeaflength;
+                                              genArr3.push( mll.allele1.value );
+                                              genArr3.push( mll.allele2.value );                         
+                                            }
+                                            var avg = 0;
+                                            for (l=0;l<genArr3.length;l++) {
+                                              avg += genArr3[l];
+                                            }
+                                            avg /= genArr3.length; 
+                                            console.log( "average maxLeaflength alelle value: "+avg);
+
+
+                                          }
 
 }
 
