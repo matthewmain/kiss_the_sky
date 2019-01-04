@@ -830,8 +830,8 @@ function recordInitialGeneValueAverages() {
   }
 }
 
-///logs gene changes, as "geneName: originalValue -> currentValue (+XXX)" (includes inactive plants, but not removed)
-function logGeneChanges() {
+///logs all gene average value changes since first generation (includes inactive plants, but not removed)
+function logAllGeneChanges() {
   console.log( "\nGENE AVERAGE VALUE CHANGES SINCE FIRST GENERATION" );
   for ( gene in Genome ) {
     var currentAlleleAvg = 0;
@@ -847,8 +847,22 @@ function logGeneChanges() {
   }
 }
 
+///logs a gene's average value change since first generation (includes inactive plants, but not removed)
+function logGeneChange( geneName ) {  // (enter name as string)
+  var currentAlleleAvg = 0;
+  for ( i=0; i<plants.length; i++ ) {
+    var p = plants[i];
+    currentAlleleAvg += p.genotype[geneName].allele1.value;
+    currentAlleleAvg += p.genotype[geneName].allele2.value;      
+  }
+  currentAlleleAvg = currentAlleleAvg/(plants.length*2);
+  var change = currentAlleleAvg - initialGeneValueAverages[geneName];
+  change = change > 0 ? "+"+change : change;
+  console.log( geneName+": "+initialGeneValueAverages[geneName].toString().slice(0,5)+" -> "+currentAlleleAvg.toString().slice(0,5)+" ("+change.toString().slice(0,6)+")" );
+}
+
 ///logs a gene's presence across the current population by value, ordered by dominance index
-function logCurrentGenePresence( geneName ) {
+function logCurrentGenePresence( geneName ) {  // (enter name as string)
   var genArr = [];
   for (i=0;i<plants.length;i++) {
     var g = plants[i].genotype[geneName];  // gene
@@ -897,13 +911,12 @@ function display() {
   if ( viewUI ) { renderUI(); }
   window.requestAnimationFrame(display);
 
-                                          ///TESTING  
-                                          if ( worldTime % 600 === 0 ) { 
-
-                                            logGeneChanges();
-                                            logCurrentGenePresence( "maxLeafLength" );
-
-                                          }
+  ///logging
+  if ( worldTime % 600 === 0 ) { 
+    logAllGeneChanges();
+    //logGeneChange( "maxTotalSegments" )
+    //logCurrentGenePresence( "maxTotalSegments" );
+  }
 
 }
 
