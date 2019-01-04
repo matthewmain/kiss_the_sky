@@ -17,6 +17,7 @@ var seeds = [], seedCount = 0;
 var plants = [], plantCount = 0;
 var sunRays = [], sunRayCount = 0;
 var shadows = [], shadowCount = 0;
+var initialGeneValueAverages = {};
 
 ///settings
 var worldSpeed = 1;//5;  // (as frames per iteration: higher is slower) (does not affect physics iterations)
@@ -70,7 +71,7 @@ var C = {
 };
 
 ///seed constructor
-function Seed( parentFlower, zygoteGenome ) {
+function Seed( parentFlower, zygoteGenotype ) {
   this.id = seedCount;
   this.parentFlower = parentFlower;
   if ( parentFlower === null ) {
@@ -86,8 +87,8 @@ function Seed( parentFlower, zygoteGenome ) {
     this.p2 = addPt( pctFromXVal(p2.x), pctFromYVal(p2.y) );  // seed point 2
     this.generation = this.parentFlower.generation + 1;
   }
-  this.genome = zygoteGenome;  
-  this.phenotype = new Phenotype( this.genome );
+  this.genotype = zygoteGenotype;  
+  this.phenotype = new Phenotype( this.genotype );
   this.p1.width = this.sw*1; 
   this.p1.mass = 5;
   this.p2.width = this.sw*0.35; this.p2.mass = 5; 
@@ -116,6 +117,7 @@ function Plant( sourceSeed ) {
   this.energy = this.seedEnergy;  // energy (starts with seed energy at germination)
   this.maxEnergyLevel = this.segmentCount * energyStoreFactor;
   this.hasFlowers = false;
+  this.pollenPadColor = C.pp;  // pollen pad color
   this.isAlive = true;
   this.hasReachedOldAge = false;
   this.oldAgeReduction = 0;  // (energy reduction per plant iteration, when plant is dying of old age)
@@ -125,24 +127,24 @@ function Plant( sourceSeed ) {
   this.opacity = 1;
   this.hasBeenRemoved = false;
   //genes
-  this.genome = this.sourceSeed.genome;
+  this.genotype = this.sourceSeed.genotype;
   this.phenotype = this.sourceSeed.phenotype;
-  this.forwardGrowthRate = gravity * Tl.rfb(18,22);  // (rate of cross spans increase per frame)
-  this.outwardGrowthRate = this.forwardGrowthRate * Tl.rfb(0.18,0.22);  // (rate forward span widens per frame)
-  this.maxSegmentWidth = Tl.rfb(10,12);  // maximum segment width (in pixels)
-  this.maxTotalSegments = Tl.rib(8,15);  // maximum total number of segments at maturity
-  this.firstLeafSegment = Tl.rib(2,3);  // (segment on which first leaf set grows)
-  this.leafFrequency = Tl.rib(2,3);  // (number of segments until next leaf set)
-  this.maxLeaflength = this.maxSegmentWidth * Tl.rfb(4,7);  // maximum leaf length at maturity
-  this.leafGrowthRate = this.forwardGrowthRate * Tl.rfb(1.4,1.6);  // leaf growth rate
-  this.leafArcHeight = 0.35;  // arc height (as ratio of leaf length)
-  this.maxFlowerBaseWidth = 1;  // max flower base width, in units of plant max segment width
-  this.flowerBudHeight = 1;  // bud height ( from hex top, in units of hex heights )
-  this.pollenPadColor = C.pp;  // pollen pad color
-  this.fh = this.phenotype.flowerHueValue; if ( this.fh > 65 && this.fh < 165) { this.fh += 100; }  // flower hue
-  this.fs = Tl.rib( 50, 100 );  // flower saturation
-  this.fl = Tl.rib( 35, 70 );  // flower lightness
-  //combined genes
+  var ph = this.phenotype;
+  this.forwardGrowthRate = gravity * ph.forwardGrowthRateValue;  // (rate of cross span increase per frame)
+  this.outwardGrowthRate = this.forwardGrowthRate * ph.outwardGrowthRateValue;  // (rate forward span widens / frame)
+  this.maxSegmentWidth = ph.maxSegmentWidthValue;  // maximum segment width (in pixels)
+  this.maxTotalSegments = ph.maxTotalSegmentsValue;  // maximum total number of segments at maturity
+  this.firstLeafSegment = ph.firstLeafSegmentValue;  // (segment on which first leaf set grows)
+  this.leafFrequency = ph.leafFrequencyValue;  // (number of segments until next leaf set)
+  this.maxLeafLength = this.maxSegmentWidth * ph.maxLeafLengthValue;  // maximum leaf length at maturity
+  this.leafGrowthRate = this.forwardGrowthRate * ph.leafGrowthRateValue;  // leaf growth rate
+  this.leafArcHeight = ph.leafArcHeightValue;  // arc height (as ratio of leaf length)
+  this.maxFlowerBaseWidth = ph.maxFlowerBaseWidthValue;  // max flower base width, in units of plant maxSegmentWidth
+  this.flowerBudHeight = ph.flowerBudHeightValue;  // bud height ( from hex top, in units of hex heights )
+  this.fh = ph.flowerHueValue; if ( this.fh > 65 ) { this.fh += 100; }  // flower hue (omits greens)
+  this.fs = ph.flowerSaturationValue;  // flower saturation
+  this.fl = ph.flowerLightnessValue;  // flower lightness
+  //gene combinations
   this.flowerColor = { h: this.fh, s: this.fs, l: this.fl };  // flower color
   //base segment (values assigned at source seed germination)
   this.xLocation = null;  // x value where plant is rooted to the ground
@@ -208,9 +210,9 @@ function Segment( plant, parentSegment, basePoint1, basePoint2 ) {
 /// Instance Creators ///
 
 ///creates a new seed  {{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{ XXX }}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}
-function createSeed( parentFlower, zygoteGenome ) {
+function createSeed( parentFlower, zygoteGenotype ) {
   seedCount++;
-  seeds.push( new Seed( parentFlower, zygoteGenome ) );
+  seeds.push( new Seed( parentFlower, zygoteGenotype ) );
   if ( parentFlower !== null ) { parentFlower.seeds.push( seeds[seeds.length-1] ); }
   return seeds[seeds.length-1];
 }
@@ -425,7 +427,7 @@ function addLeafScaffolding( plant, segment ) {
 function growLeaves( plant, segment ) {
   var p = plant;
   var s = segment;
-  if ( s.spLf1.l < p.maxLeaflength ) {
+  if ( s.spLf1.l < p.maxLeafLength ) {
     s.spLf1.l = s.spLf2.l += p.leafGrowthRate;  // extend leaves
     if ( s.spF.l > p.maxSegmentWidth*0.6 && !s.hasLeafScaffolding ) {
       addLeafScaffolding( plant, segment );  // add scaffolding
@@ -578,7 +580,7 @@ function killPlant( plant ) {
   p.isAlive = false;  
   for (var i=0; i<plant.segments.length; i++) {
     var s = plant.segments[i];
-    if ( s.hasLeaves && s.spLf1.l > plant.maxLeaflength/3 ) {  
+    if ( s.hasLeaves && s.spLf1.l > plant.maxLeafLength/3 ) {  
       removeSpan( s.leafTipsTetherSpan.id );  // removes large leaf bud tethers
     }
     if ( s.hasLeafScaffolding ) {  // removes leaf scaffolding
@@ -814,6 +816,67 @@ function renderPlants() {
   if ( viewShadows ) { renderShadows(); }
 }
 
+///records average gene value changes  // {{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{ xxx }}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}
+function recordInitialGeneValueAverages() {
+  for ( gene in Genome ) {
+    var alleleAvg = 0;
+    for ( i=0; i<plants.length; i++ ) {
+      var p = plants[i];
+      alleleAvg += p.genotype[gene].allele1.value;
+      alleleAvg += p.genotype[gene].allele2.value;      
+    }
+    alleleAvg = alleleAvg/(plants.length*2);
+    initialGeneValueAverages[gene] = alleleAvg;
+  }
+}
+
+///logs all gene average value changes since first generation (includes inactive plants, but not removed)
+function logAllGeneChanges() {
+  console.log( "\nGENE AVERAGE VALUE CHANGES SINCE FIRST GENERATION" );
+  for ( gene in Genome ) {
+    var currentAlleleAvg = 0;
+    for ( i=0; i<plants.length; i++ ) {
+      var p = plants[i];
+      currentAlleleAvg += p.genotype[gene].allele1.value;
+      currentAlleleAvg += p.genotype[gene].allele2.value;      
+    }
+    currentAlleleAvg = currentAlleleAvg/(plants.length*2);
+    var change = currentAlleleAvg - initialGeneValueAverages[gene];
+    change = change > 0 ? "+"+change : change;
+    console.log( gene+": "+initialGeneValueAverages[gene].toString().slice(0,5)+" -> "+currentAlleleAvg.toString().slice(0,5)+" ("+change.toString().slice(0,6)+")" );
+  }
+}
+
+///logs a gene's average value change since first generation (includes inactive plants, but not removed)
+function logGeneChange( geneName ) {  // (enter name as string)
+  var currentAlleleAvg = 0;
+  for ( i=0; i<plants.length; i++ ) {
+    var p = plants[i];
+    currentAlleleAvg += p.genotype[geneName].allele1.value;
+    currentAlleleAvg += p.genotype[geneName].allele2.value;      
+  }
+  currentAlleleAvg = currentAlleleAvg/(plants.length*2);
+  var change = currentAlleleAvg - initialGeneValueAverages[geneName];
+  change = change > 0 ? "+"+change : change;
+  console.log( geneName+": "+initialGeneValueAverages[geneName].toString().slice(0,5)+" -> "+currentAlleleAvg.toString().slice(0,5)+" ("+change.toString().slice(0,6)+")" );
+}
+
+///logs a gene's presence across the current population by value, ordered by dominance index
+function logCurrentGenePresence( geneName ) {  // (enter name as string)
+  var genArr = [];
+  for (i=0;i<plants.length;i++) {
+    var g = plants[i].genotype[geneName];  // gene
+    genArr.push( g.allele1.dominanceIndex.toString().slice(0,4)+" ["+g.allele1.value.toString().slice(0,3)+"]" );
+    genArr.push( g.allele2.dominanceIndex.toString().slice(0,4)+" ["+g.allele2.value.toString().slice(0,3)+"]" );
+  }
+  genArr2 = [];
+  for (j=0;j<genArr.length;j++) {
+    if ( !genArr2.includes(genArr[j]) ) { genArr2.push(genArr[j]); } 
+  }
+  console.log( "\ncurrent '"+geneName+"' gene presence, by value, in order of dominance index: " );
+  console.log( genArr2.sort() );
+}
+
 
 
 
@@ -825,26 +888,16 @@ spL = 2000; suL = 2000; faL = 2000; wiL = 2000;
 
 ///multiple seeds
 for ( var i=0; i<25; i++ ) {
-  //createSeed( null, firstGenerationGenome );
-  createSeed( null, { flowerHue: new Gene( new Allele(Tl.rib(0,360),0), new Allele(Tl.rib(0,360),0), "partial" )} );
+  createSeed( null, generateNewFirstGenerationPlantGenotype() );
 }
-///a red and blue seed
-// createSeed( null, { flowerHue: new Gene( new Allele(185,0), new Allele(185,0), "partial" )} );
-// createSeed( null, { flowerHue: new Gene( new Allele(360,0), new Allele(360,0), "partial" )} );
-///two seeds of random color
-// createSeed( null, { flowerHue: new Gene( new Allele(Tl.rib(0,360),0), new Allele(Tl.rib(0,360),0), "partial" )} );
-// createSeed( null, { flowerHue: new Gene( new Allele(Tl.rib(0,360),0), new Allele(Tl.rib(0,360),0), "partial" )} );
-
-
-
-
 
 
 
 
 ////---DISPLAY---////
 
-// createSeed(null,firstGenerationGenome);
+// createSeed( null, generateNewFirstGenerationPlantGenotype() );
+recordInitialGeneValueAverages();
 
 function display() {
   renderBackground();
@@ -858,10 +911,12 @@ function display() {
   if ( viewUI ) { renderUI(); }
   window.requestAnimationFrame(display);
 
-                                                        ///TESTING  
-                                                        // if ( worldTime % 600 === 0 ) { 
-                                                        //   console.log( plants );
-                                                        // }
+  ///logging
+  if ( worldTime % 600 === 0 ) { 
+    logAllGeneChanges();
+    //logGeneChange( "maxTotalSegments" )
+    //logCurrentGenePresence( "maxTotalSegments" );
+  }
 
 }
 

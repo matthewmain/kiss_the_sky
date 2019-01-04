@@ -11,7 +11,7 @@ function Flower( plant, parentSegment, basePoint1, basePoint2 ) {
   this.parentPlant = plant;
   this.generation = this.parentPlant.generation;
   this.parentSegment = parentSegment;
-  this.zygoteGenomes = [];
+  this.zygoteGenotypes = [];
   this.seeds = [];
   this.mass = 0;
   this.bloomRatio = 0; 
@@ -230,16 +230,16 @@ function acceptPollination( pollinatedFlower ) {
 
 ///pollinates flower
 function pollinateFlower( pollinatedFlower, pollinatorFlower ) {
-  var zygoteGenome = meiosis( pollinatedFlower.parentPlant.genome, pollinatorFlower.parentPlant.genome );
-  pollinatedFlower.zygoteGenomes.push( zygoteGenome );
+  var zygoteGenotype = meiosis( pollinatedFlower.parentPlant.genotype, pollinatorFlower.parentPlant.genotype );
+  pollinatedFlower.zygoteGenotypes.push( zygoteGenotype );
   pollinatedFlower.isPollinated = true;
 }
 
 ///places seeds in pod
 function placeSeedsInPod( flower ) {
   if ( !flower.hasSeeds ) {
-    for ( var i=0; i<flower.zygoteGenomes.length; i++ ) {
-      createSeed( flower, flower.zygoteGenomes[i] ); 
+    for ( var i=0; i<flower.zygoteGenotypes.length; i++ ) {
+      createSeed( flower, flower.zygoteGenotypes[i] ); 
     }
     flower.hasSeeds = true;
   }
@@ -295,11 +295,11 @@ function developFlower( plant, flower ) {
   var f = flower;
   if ( f.hasFullyBloomed ) { f.ageSinceBlooming++; } 
   //if bud is not fully grown and has enough energy for growth, it continues to grow until mature
-  if ( !f.budHasFullyMatured && plant.energy > 0 ) {
+  if ( !f.budHasFullyMatured && p.energy > 0 ) {
     expandFlowerBud( p, f);
-    f.budHasFullyMatured = flower.spHbM.l >= plant.maxSegmentWidth*plant.maxFlowerBaseWidth;
+    f.budHasFullyMatured = f.spHbM.l >= p.maxSegmentWidth*p.maxFlowerBaseWidth;
   //otherwise, if bud has not fully bloomed, it continues to bloom
-  } else if ( f.budHasFullyMatured && !f.hasFullyBloomed && plant.energy > 0) {
+  } else if ( f.budHasFullyMatured && !f.hasFullyBloomed && p.energy > 0) {
     if ( f.bloomRatio < 1 ) { 
       f.bloomRatio += 0.01; 
     } else { 
@@ -309,8 +309,8 @@ function developFlower( plant, flower ) {
 
   //         {{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{ XXX }}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}
   //otherwise, if fully bloomed and summer, flower accepts pollination until zygote count reaches max seed count
-  } else if ( f.hasFullyBloomed && currentSeason === "summer") {
-    if ( f.zygoteGenomes.length < maxSeedsPerFlower ) { 
+  } else if ( f.hasFullyBloomed && currentSeason === "summer" && p.energy > p.maxEnergyLevel*sickEnergyLevelRatio ) {
+    if ( f.zygoteGenotypes.length < maxSeedsPerFlower ) { 
       acceptPollination( f );
     }  
 
