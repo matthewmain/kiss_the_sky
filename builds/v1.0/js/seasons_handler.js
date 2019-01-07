@@ -57,18 +57,19 @@ var ccs4 = psbg.cs4;  // current color stop 4
 function trackSeasons() {
   yearTime++;
   if ( yearTime < spL ) { 
-    currentSeason = "spring"; photosynthesisRatio = 2; livEnExp = 0.2;  
+    currentSeason = "spring"; photosynthesisRatio = 1; livEnExp = 0.75;  
   } else if ( yearTime < spL+suL ) {
-    currentSeason = "summer"; photosynthesisRatio = 1; livEnExp = 0.2;  
+    currentSeason = "summer"; photosynthesisRatio = 1; livEnExp = 1;  
   } else if ( yearTime < spL+suL+faL ) {
-    currentSeason = "fall"; photosynthesisRatio = 0.25; livEnExp = 0.4;  
+    currentSeason = "fall"; photosynthesisRatio = 0.25; livEnExp = 3;
   } else if ( yearTime < spL+suL+faL+wiL ) {
-    currentSeason = "winter"; photosynthesisRatio = 0; livEnExp = 1;  
+    currentSeason = "winter"; photosynthesisRatio = 0; livEnExp = 3;
   } else {
     currentYear++;
     yearTime = 0;
   }
 }
+
 
 ///renders background
 function renderBackground() {
@@ -78,7 +79,7 @@ function renderBackground() {
     case "fall": csbg = BgG.fa; psbg = BgG.su; break;
     case "winter": csbg = BgG.wi; psbg = BgG.fa; break;
   }
-  ccs1 = Tl.rgbaCs( psbg.cs1, csbg.cs1, ccs1, 500 );  // current color stop redshift  ////////////////// XXXXXXXXXXX
+  ccs1 = Tl.rgbaCs( psbg.cs1, csbg.cs1, ccs1, 500 );  // current color stop redshift 
   ccs2 = Tl.rgbaCs( psbg.cs2, csbg.cs2, ccs2, 500 );  // current color stop greenshift
   ccs3 = Tl.rgbaCs( psbg.cs3, csbg.cs3, ccs3, 500 );  // current color stop blueshift
   ccs4 = Tl.rgbaCs( psbg.cs4, csbg.cs4, ccs4, 500 );  // current color stop alphashift

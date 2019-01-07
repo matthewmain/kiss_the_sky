@@ -205,10 +205,10 @@ function positionAllPetals( plant, flower ) {
 
 
 
-///readies flower to accept pollination   {{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{ XXX }}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}
+///readies flower to accept pollination
 function acceptPollination( pollinatedFlower ) { 
   var openFlowers = [];
-  if ( Tl.rib( 1, Math.round(suL/maxSeedsPerFlower) ) === 1 ) {
+  if ( Tl.rib( 1, Math.round(suL/pollinationFrequency) ) === 1 ) {
     for ( i=0; i<plants.length; i++ ) {
       if ( plants[i].flowers.length > 0 ) {
         for ( j=0; j<plants[i].flowers.length; j++ ) {
@@ -244,10 +244,6 @@ function placeSeedsInPod( flower ) {
     flower.hasSeeds = true;
   }
 }
-
-
-
-
 
 function keepSeedsInPod( flower) {
   if ( flower.hasSeeds ) {
@@ -296,25 +292,20 @@ function developFlower( plant, flower ) {
   if ( f.hasFullyBloomed ) { f.ageSinceBlooming++; } 
   //if bud is not fully grown and has enough energy for growth, it continues to grow until mature
   if ( !f.budHasFullyMatured && p.energy > 0 ) {
-    expandFlowerBud( p, f);
+    expandFlowerBud( p, f );
     f.budHasFullyMatured = f.spHbM.l >= p.maxSegmentWidth*p.maxFlowerBaseWidth;
   //otherwise, if bud has not fully bloomed, it continues to bloom
-  } else if ( f.budHasFullyMatured && !f.hasFullyBloomed && p.energy > 0) {
+  } else if ( f.budHasFullyMatured && !f.hasFullyBloomed && p.energy > p.maxEnergyLevel*minBloomEnLevRatio ) {
     if ( f.bloomRatio < 1 ) { 
       f.bloomRatio += 0.01; 
     } else { 
       f.bloomRatio = 1;
       f.hasFullyBloomed = true; }
-
-
-  //         {{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{ XXX }}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}
   //otherwise, if fully bloomed and summer, flower accepts pollination until zygote count reaches max seed count
-  } else if ( f.hasFullyBloomed && currentSeason === "summer" && p.energy > p.maxEnergyLevel*sickEnergyLevelRatio ) {
+  } else if ( f.hasFullyBloomed && currentSeason === "summer" && p.energy > p.maxEnergyLevel*minPollEnLevRatio ){
     if ( f.zygoteGenotypes.length < maxSeedsPerFlower ) { 
       acceptPollination( f );
     }  
-
-
   //otherwise, if flower is pollinated, has not fully closed, and has reached a "sick" energy level, it closes
   } else if ( f.isPollinated && !f.hasFullyClosed && p.energy < p.maxEnergyLevel*sickEnergyLevelRatio ) { 
     if ( f.bloomRatio > 0 ) { f.bloomRatio -= 0.01; } else { f.hasFullyClosed = true; } // closes petals
@@ -329,7 +320,7 @@ function developFlower( plant, flower ) {
     keepSeedsInPod( f );
   //otherwise, if the seed pod hasn't released seeds and pod is ready to open, it opens
   } else if ( !f.podHasOpened && podReadyToOpen(p) ) {
-    if ( f.podOpenRatio < 1 ) { f.podOpenRatio += 0.001; } else { f.podHasOpened = true; } // opens pod 
+    if ( f.podOpenRatio < 1 ) { f.podOpenRatio += 0.01; } else { f.podHasOpened = true; } // opens pod 
     keepSeedsInPod( f );
   //otherwise, if the plant is still alive, hold seeds in the opened pod
   } else if ( p.isAlive ) {
