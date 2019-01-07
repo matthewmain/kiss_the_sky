@@ -10,4 +10,4 @@
 - [X] pollination events when open flowers are randomly pollinated by other open flowers
 - [X] meiosis event following pollination when parent genes combine to create a child genotype with combined inherited traits, stored as zygote genotype in new seed
 - [X] phenotype event following meiosis when a plant's expressed traits are extracted from genotype and applied as fixed plant variables to seed before plant growth
-- [ ] gene mutations
+- [X] gene mutations

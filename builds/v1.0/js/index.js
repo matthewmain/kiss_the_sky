@@ -210,7 +210,7 @@ function Segment( plant, parentSegment, basePoint1, basePoint2 ) {
 
 /// Instance Creators ///
 
-///creates a new seed  {{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{ XXX }}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}
+///creates a new seed
 function createSeed( parentFlower, zygoteGenotype ) {
   seedCount++;
   seeds.push( new Seed( parentFlower, zygoteGenotype ) );
@@ -817,7 +817,7 @@ function renderPlants() {
   if ( viewShadows ) { renderShadows(); }
 }
 
-///records average gene value changes  // {{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{ xxx }}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}
+///records average gene value changes
 function recordInitialGeneValueAverages() {
   for ( gene in Genome ) {
     var alleleAvg = 0;

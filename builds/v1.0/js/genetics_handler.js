@@ -7,7 +7,7 @@
 ////---GENES---////
 
 
-///genome (an object collection of all plant genes)  {{{{{{{{{{{  xxx }}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}
+///genome (an object collection of all plant genes)
 var Genome = {
   forwardGrowthRate:  { initialValue: function(){ return Tl.rfb(18,22) },     
                         mutationParameter: { range: 2, min: 0, max: null }, expressionType: "partial" },
@@ -86,13 +86,13 @@ function Phenotype( genotype ) {  // object collection of genes as { traitName: 
 ////---FUNCTIONS---////
 
 
-///generates a first generation genotype  {{{{{{{{{{{{{{{{{{{{{{{{{{{{{ xxx }}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}
+///generates a first generation genotype
 function generateNewFirstGenerationPlantGenotype() {
   var newGenotype = {};
   for ( geneName in Genome ) {
     newGenotype[geneName] = createGene( Genome[geneName].initialValue(), 
-                                    Genome[geneName].mutationParameter, 
-                                    Genome[geneName].expressionType );
+                                        Genome[geneName].mutationParameter, 
+                                        Genome[geneName].expressionType );
   }
   return newGenotype;
 }
