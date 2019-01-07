@@ -28,21 +28,25 @@ var viewLeaves = true;  // (leaf visibility)
 var viewFlowers = true;  // (flower visibility)
 var viewPods = true;  // (pod visibilty)
 var allowSelfPollination = true;  // allows flowers to pollinate themselves
+var pollinationFrequency = 10;  // (as average number of pollination events per summer)
 var maxSeedsPerFlower = 5;//3;  // number of seeds produced by a fertilized flower
-var mutationRate = 5;  // (as meiosis events per mutation: higher is less frequent)
+var mutationRate = 5;  // (as meiosis events per mutation; higher is less frequent)
 var restrictGrowthByEnergy = true;  // restricts plant growth by energy level (if false, plants grow freely)
 var sunRayIntensity = 1;  // total energy units per sun ray per iteration
 var photosynthesisRatio = 1;  // ratio of available sun energy stored by leaf when ray contacts it (varies by season)
-var groEnExp = 0.5;  // growth energy expenditure rate (rate energy is expended for growth)
-var livEnExp = 0.2;  // living energy expenditure rate (rate energy is expended for living)
+var groEnExp = 0.2;  // growth energy expenditure rate (rate energy is expended for growth)
+var livEnExp = 0.1;  // living energy expenditure rate (rate energy is expended for living)
 var energyStoreFactor = 1000;  // (a plant's maximum storable energy units per segment)
+var seedEnergy = energyStoreFactor*5;  // (a plant's starting enegy store)
 var oldAgeMarker = 20000;  // (age after flower bloom when plant starts dying of old age, in worldtime units)
 var oldAgeRate = 0.001;  // (additional energy reduction per iteration after plant reaches old age)
 var unhealthyEnergyLevelRatio = 0.075;  // ratio of maximum energy when plant becomes unhealthy (starts yellowing)
+var minBloomEnLevRatio = 0;  // min energy level ratio for flower to bloom 
+var minPollEnLevRatio = 0;  // min energy level ratio for flower to be pollinated 
 var flowerFadeEnergyLevelRatio = -0.025;  // ratio of maximum energy when flower begins to fade
 var polinatorPadFadeEnergyLevelRatio = -0.075;  // ratio of maximum energy when polinator pad begins to fade
 var sickEnergyLevelRatio = -0.2;  // ratio of maximum energy when plant becomes sick (starts darkening)
-var podOpenEnergyLevelRatio = -0.5; // ratio of maximum energy when seed pod disperses seeds
+var podOpenEnergyLevelRatio = -0.5;  // ratio of maximum energy when seed pod disperses seeds
 var deathEnergyLevelRatio = -1;  // ratio of maximum energy when plant dies (fully darkened)
 var collapseEnergyLevelRatio = -2;  // ratio of maximum energy when plant collapses
 
@@ -114,8 +118,7 @@ function Plant( sourceSeed ) {
   this.segments = []; this.segmentCount = 0;
   this.flowers = []; this.flowerCount = 0;
   this.xLocation = null;
-  this.seedEnergy = energyStoreFactor * Tl.rfb(8,12);  // energy level from seed at plant initiation
-  this.energy = this.seedEnergy;  // energy (starts with seed energy at germination)
+  this.energy = seedEnergy;  // energy (starts with seed energy at germination)
   this.maxEnergyLevel = this.segmentCount * energyStoreFactor;
   this.hasFlowers = false;
   this.pollenPadColor = C.pp;  // pollen pad color
@@ -428,20 +431,18 @@ function addLeafScaffolding( plant, segment ) {
 function growLeaves( plant, segment ) {
   var p = plant;
   var s = segment;
-  if ( s.spLf1.l < p.maxLeafLength ) {
-    s.spLf1.l = s.spLf2.l += p.leafGrowthRate;  // extend leaves
-    if ( s.spF.l > p.maxSegmentWidth*0.6 && !s.hasLeafScaffolding ) {
-      addLeafScaffolding( plant, segment );  // add scaffolding
-    } else if ( s.hasLeafScaffolding ) {  // extend scaffolding
-      s.spLf1ScA.l += p.leafGrowthRate * 1.25;
-      s.spLf1ScB.l += p.leafGrowthRate * 1.5;
-      s.spLf1ScC.l += p.leafGrowthRate * 0.06;
-      s.spLf1ScD.l += p.leafGrowthRate * 0.06;
-      s.spLf2ScA.l += p.leafGrowthRate * 1.25;
-      s.spLf2ScB.l += p.leafGrowthRate * 1.5;
-      s.spLf2ScC.l += p.leafGrowthRate * 0.06;
-      s.spLf2ScD.l += p.leafGrowthRate * 0.06;
-    }
+  s.spLf1.l = s.spLf2.l += p.leafGrowthRate;  // extend leaves
+  if ( s.spF.l > p.maxSegmentWidth*0.6 && !s.hasLeafScaffolding ) {
+    addLeafScaffolding( plant, segment );  // add scaffolding
+  } else if ( s.hasLeafScaffolding ) {  // extend scaffolding
+    s.spLf1ScA.l += p.leafGrowthRate * 1.25;
+    s.spLf1ScB.l += p.leafGrowthRate * 1.5;
+    s.spLf1ScC.l += p.leafGrowthRate * 0.06;
+    s.spLf1ScD.l += p.leafGrowthRate * 0.06;
+    s.spLf2ScA.l += p.leafGrowthRate * 1.25;
+    s.spLf2ScB.l += p.leafGrowthRate * 1.5;
+    s.spLf2ScC.l += p.leafGrowthRate * 0.06;
+    s.spLf2ScD.l += p.leafGrowthRate * 0.06;
   }
 }
 
@@ -456,7 +457,7 @@ function growPlants() {
       } else if ( !p.sourceSeedHasBeenRemoved ) {
         hideAndRemoveSeed( p.sourceSeed );  // removes seed after germination
       }
-      if ( p.energy > p.segmentCount*energyStoreFactor && p.energy>p.seedEnergy ) {
+      if ( p.energy > p.segmentCount*energyStoreFactor && p.energy>seedEnergy ) {
         p.energy = p.segmentCount*energyStoreFactor;  // caps plant max energy level based on segment count
       }
       if ( p.hasFlowers ) { 
@@ -472,17 +473,17 @@ function growPlants() {
         for (var k=0; k<p.segments.length; k++) { 
           var s = p.segments[k];
           if ( s.spF.l < p.maxSegmentWidth ) { 
-            lengthenSegmentSpans( p, s ); 
-            p.energy -= s.spCd.l * groEnExp;  // reduces energy by segment size
+            lengthenSegmentSpans( p, s );
+            p.energy -= s.spCd.l * groEnExp;  // reduces energy by segment size while growing
           }
           if ( readyForChildSegment( p, s ) ) { 
             createSegment( p, s, s.ptE1, s.ptE2 ); 
           }
           if ( !s.hasLeaves ) { 
             generateLeavesWhenReady( p, s ); 
-          } else {
+          } else if ( s.spLf1.l < p.maxLeafLength ) {
             growLeaves( p, s ); 
-            p.energy -= ( s.spLf1.l + s.spLf2.l ) * groEnExp;  // reduces energy by leaf length
+            p.energy -= ( s.spLf1.l + s.spLf2.l ) * groEnExp;  // reduces energy by leaf length while growing
           }
           if ( !p.hasFlowers && readyForFlower( p, s ) ) {
             createFlower( p, s, s.ptE1, s.ptE2 ); 
@@ -879,7 +880,7 @@ function logCurrentGenePresence( geneName ) {  // (enter name as string)
 }
 
 ///runs logs (frequency in screen repaints)
-function runLogs( frequency) {
+function runLogs( frequency ) {
   if ( worldTime % frequency === 0 ) { 
     //logAllGeneChanges();
     console.log("\n");
@@ -891,13 +892,15 @@ function runLogs( frequency) {
     logGeneChange( "leafFrequency" );
     logGeneChange( "maxLeafLength" );
     logGeneChange( "leafGrowthRate" );
-    // logGeneChange( "leafArcHeight" );
+    logGeneChange( "leafArcHeight" );
     // logGeneChange( "maxFlowerBaseWidth" );
     // logGeneChange( "flowerBudHeight" );
     // logGeneChange( "flowerHue" );
     // logGeneChange( "flowerSaturation" );
     // logGeneChange( "flowerLightness" );
     // logCurrentGenePresence( "maxLeafLength" );
+
+    //console.log( plants[0].energy );
   }
 }
 
@@ -907,8 +910,8 @@ function runLogs( frequency) {
 ////---TESTING---////
 
 ///fast growth & fast seasons
-sunRayIntensity = 4;
-spL = 2000; suL = 2000; faL = 2000; wiL = 2000;
+sunRayIntensity = 3;
+spL = 1000; suL = 1000; faL = 1000; wiL = 1000;  ///////////////////////////////////////  XXXXXXXX
 
 ///multiple seeds
 for ( var i=0; i<25; i++ ) {
