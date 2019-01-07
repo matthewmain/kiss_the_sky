@@ -21,7 +21,6 @@ var initialGeneValueAverages = {};
 
 ///settings
 var worldSpeed = 1;//5;  // (as frames per iteration: higher is slower) (does not affect physics iterations)
-var verletSpeed = 5;  // (as frames per iteration: higher is slower) (affects physics iterations only)
 var viewUI = true;
 var viewShadows = false;  // (shadow visibility)
 var viewStalks = true;  // (stalk visibility) 
@@ -30,6 +29,7 @@ var viewFlowers = true;  // (flower visibility)
 var viewPods = true;  // (pod visibilty)
 var allowSelfPollination = true;  // allows flowers to pollinate themselves
 var maxSeedsPerFlower = 5;//3;  // number of seeds produced by a fertilized flower
+var mutationRate = 5;  // (as meiosis events per mutation: higher is less frequent)
 var restrictGrowthByEnergy = true;  // restricts plant growth by energy level (if false, plants grow freely)
 var sunRayIntensity = 1;  // total energy units per sun ray per iteration
 var photosynthesisRatio = 1;  // ratio of available sun energy stored by leaf when ray contacts it (varies by season)
@@ -897,7 +897,7 @@ function runLogs( frequency) {
     // logGeneChange( "flowerHue" );
     // logGeneChange( "flowerSaturation" );
     // logGeneChange( "flowerLightness" );
-    logCurrentGenePresence( "flowerHue" );
+    // logCurrentGenePresence( "maxLeafLength" );
   }
 }
 
@@ -925,9 +925,7 @@ recordInitialGeneValueAverages();
 
 function display() {
   renderBackground();
-  if ( worldTime % verletSpeed === 0 ) { 
-    runVerlet() 
-  }
+  runVerlet();
   if ( worldTime % worldSpeed === 0 ) { 
     trackSeasons();
     shedSunlight();
@@ -935,8 +933,8 @@ function display() {
   }
   renderPlants();
   if ( viewUI ) { renderUI(); }
-  runLogs(600);
-  window.requestAnimationFrame(display);
+  runLogs( 600 );
+  window.requestAnimationFrame( display );
 }
 
 createSunRays();
