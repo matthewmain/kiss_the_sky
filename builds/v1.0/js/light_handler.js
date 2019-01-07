@@ -78,7 +78,7 @@ function photosynthesize() {
     //when a sun ray hits a leaf, transfers half of the ray's intensity to the plant as energy
     for ( var j=0; j<sr.leafContacts.length; j++) {
       var lc = sr.leafContacts[j];  // leaf contact ({ y: <leaf contact y value>, plant: <plant> })
-      sr.intensity /= 2;  ///////////////////////////////////////////////////////////////////////////// XXXXXXX
+      sr.intensity /= 2;
       lc.plant.energy += sr.intensity * photosynthesisRatio;
     }
     sr.leafContacts = []; sr.intensity = sunRayIntensity;  // resets sun ray's leaf contact points & intensity

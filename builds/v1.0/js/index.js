@@ -911,7 +911,7 @@ function runLogs( frequency ) {
 
 ///fast growth & fast seasons
 sunRayIntensity = 3;
-spL = 1000; suL = 1000; faL = 1000; wiL = 1000;  ///////////////////////////////////////  XXXXXXXX
+spL = 1000; suL = 1000; faL = 1000; wiL = 1000;
 
 ///multiple seeds
 for ( var i=0; i<25; i++ ) {

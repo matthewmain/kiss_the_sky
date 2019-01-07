@@ -59,11 +59,11 @@ function trackSeasons() {
   if ( yearTime < spL ) { 
     currentSeason = "spring"; photosynthesisRatio = 1; livEnExp = 0.75;  
   } else if ( yearTime < spL+suL ) {
-    currentSeason = "summer"; photosynthesisRatio = 1; livEnExp = 1;//0.1;  
+    currentSeason = "summer"; photosynthesisRatio = 1; livEnExp = 1;  
   } else if ( yearTime < spL+suL+faL ) {
-    currentSeason = "fall"; photosynthesisRatio = 0.25; livEnExp = 3;  ///////////////////////////  XXXXXX
+    currentSeason = "fall"; photosynthesisRatio = 0.25; livEnExp = 3;
   } else if ( yearTime < spL+suL+faL+wiL ) {
-    currentSeason = "winter"; photosynthesisRatio = 0; livEnExp = 3;  //////////////////////////////  XXXXXX
+    currentSeason = "winter"; photosynthesisRatio = 0; livEnExp = 3;
   } else {
     currentYear++;
     yearTime = 0;
