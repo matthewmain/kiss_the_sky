@@ -21,6 +21,7 @@ function Flower( plant, parentSegment, basePoint1, basePoint2 ) {
   this.hasFullyBloomed = false;
   this.ageSinceBlooming = 0;  // flower age since blooming in worldtime units
   this.isPollinated = false;
+  this.hasReachedMaxSeeds = false;
   this.hasFullyClosed = false;
   this.hasSeeds = false;
   this.seedPodIsMature = false;
@@ -202,9 +203,6 @@ function positionAllPetals( plant, flower ) {
   positionPetal( plant, flower, flower.ptPbR, 1.75, 3 );  // bottom right petal
 }
 
-
-
-
 ///readies flower to accept pollination
 function acceptPollination( pollinatedFlower ) { 
   var openFlowers = [];
@@ -225,6 +223,9 @@ function acceptPollination( pollinatedFlower ) {
   if ( openFlowers.length > 0 ) {
     var pollinatorFlower = Tl.refa( openFlowers );
     pollinateFlower( pollinatedFlower, pollinatorFlower );
+  }
+  if ( pollinatedFlower.zygoteGenotypes.length === maxSeedsPerFlower ) {
+    pollinatedFlower.hasReachedMaxSeeds = true;
   }
 }
 
@@ -302,14 +303,12 @@ function developFlower( plant, flower ) {
       f.bloomRatio = 1;
       f.hasFullyBloomed = true; }
   //otherwise, if fully bloomed and summer, flower accepts pollination until zygote count reaches max seed count
-  } else if ( f.hasFullyBloomed && currentSeason === "summer" && p.energy > p.maxEnergyLevel*minPollEnLevRatio ){
-    if ( f.zygoteGenotypes.length < maxSeedsPerFlower ) { 
-      acceptPollination( f );
-    }  
+  } else if ( f.hasFullyBloomed && p.energy > p.maxEnergyLevel*minPollEnLevRatio && !f.hasReachedMaxSeeds ) {    
+    acceptPollination( f );
   //otherwise, if flower is pollinated, has not fully closed, and has reached a "sick" energy level, it closes
-  } else if ( f.isPollinated && !f.hasFullyClosed && p.energy < p.maxEnergyLevel*sickEnergyLevelRatio ) { 
+  } else if ( f.isPollinated && !f.hasFullyClosed /*&& p.energy < p.maxEnergyLevel*sickEnergyLevelRatio*/ ) { 
     if ( f.bloomRatio > 0 ) { f.bloomRatio -= 0.01; } else { f.hasFullyClosed = true; } // closes petals
-  //otherise, if flower has fully closed, it develops into a seed pod 
+  //otherise, if flower has fully closed, it develops into a seed pod
   } else if ( f.hasFullyClosed && !f.seedPodIsMature ) {
     placeSeedsInPod( f );
     keepSeedsInPod( f );
