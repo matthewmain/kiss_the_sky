@@ -28,16 +28,15 @@ var viewLeaves = true;  // (leaf visibility)
 var viewFlowers = true;  // (flower visibility)
 var viewPods = true;  // (pod visibilty)
 var allowSelfPollination = true;  // allows flowers to pollinate themselves
-var pollinationFrequency = 10;  // (as average number of pollination events per summer)
-var maxSeedsPerFlower = 5;//3;  // number of seeds produced by a fertilized flower
+var pollinationFrequency = 5;  // (as average number of pollination events per open flower per length of summer)
+var maxSeedsPerFlower = 4;  // number of seeds produced by a fertilized flower
 var mutationRate = 5;  // (as meiosis events per mutation; higher is less frequent)
 var restrictGrowthByEnergy = true;  // restricts plant growth by energy level (if false, plants grow freely)
-var sunRayIntensity = 1;  // total energy units per sun ray per iteration
+var sunRayIntensity = 3;  // total energy units per sun ray per iteration
 var photosynthesisRatio = 1;  // ratio of available sun energy stored by leaf when ray contacts it (varies by season)
 var groEnExp = 0.2;  // growth energy expenditure rate (rate energy is expended for growth)
 var livEnExp = 0.1;  // living energy expenditure rate (rate energy is expended for living)
 var energyStoreFactor = 1000;  // (a plant's maximum storable energy units per segment)
-var seedEnergy = energyStoreFactor*5;  // (a plant's starting enegy store)
 var oldAgeMarker = 20000;  // (age after flower bloom when plant starts dying of old age, in worldtime units)
 var oldAgeRate = 0.001;  // (additional energy reduction per iteration after plant reaches old age)
 var unhealthyEnergyLevelRatio = 0.075;  // ratio of maximum energy when plant becomes unhealthy (starts yellowing)
@@ -118,7 +117,6 @@ function Plant( sourceSeed ) {
   this.segments = []; this.segmentCount = 0;
   this.flowers = []; this.flowerCount = 0;
   this.xLocation = null;
-  this.energy = seedEnergy;  // energy (starts with seed energy at germination)
   this.maxEnergyLevel = this.segmentCount * energyStoreFactor;
   this.hasFlowers = false;
   this.pollenPadColor = C.pp;  // pollen pad color
@@ -130,31 +128,35 @@ function Plant( sourceSeed ) {
   this.hasDecomposed = false;  // decomposed plants are compressed to floor y-value and ready to be removed
   this.opacity = 1;
   this.hasBeenRemoved = false;
-  //genes
-  this.genotype = this.sourceSeed.genotype;
-  this.phenotype = this.sourceSeed.phenotype;
-  var ph = this.phenotype;
-  this.forwardGrowthRate = gravity * ph.forwardGrowthRateValue;  // (rate of cross span increase per frame)
-  this.outwardGrowthRate = this.forwardGrowthRate * ph.outwardGrowthRateValue;  // (rate forward span widens / frame)
-  this.maxSegmentWidth = ph.maxSegmentWidthValue;  // maximum segment width (in pixels)
-  this.maxTotalSegments = ph.maxTotalSegmentsValue;  // maximum total number of segments at maturity
-  this.firstLeafSegment = ph.firstLeafSegmentValue;  // (segment on which first leaf set grows)
-  this.leafFrequency = ph.leafFrequencyValue;  // (number of segments until next leaf set)
-  this.maxLeafLength = this.maxSegmentWidth * ph.maxLeafLengthValue;  // maximum leaf length at maturity
-  this.leafGrowthRate = this.forwardGrowthRate * ph.leafGrowthRateValue;  // leaf growth rate
-  this.leafArcHeight = ph.leafArcHeightValue;  // arc height (as ratio of leaf length)
-  this.maxFlowerBaseWidth = ph.maxFlowerBaseWidthValue;  // max flower base width, in units of plant maxSegmentWidth
-  this.flowerBudHeight = ph.flowerBudHeightValue;  // bud height ( from hex top, in units of hex heights )
-  this.fh = ph.flowerHueValue; if ( this.fh > 65 ) { this.fh += 100; }  // flower hue (omits greens)
-  this.fs = ph.flowerSaturationValue;  // flower saturation
-  this.fl = ph.flowerLightnessValue;  // flower lightness
-  //gene combinations
-  this.flowerColor = { h: this.fh, s: this.fs, l: this.fl };  // flower color
   //base segment (values assigned at source seed germination)
   this.xLocation = null;  // x value where plant is rooted to the ground
   this.ptB1 = null;  // base point 1
   this.ptB2 = null;  // base point 2
   this.spB = null;  // adds base span
+  //genes
+  this.genotype = this.sourceSeed.genotype;
+  this.phenotype = this.sourceSeed.phenotype;
+  var ph = this.phenotype;
+  this.maxSegmentWidth = ph.maxSegmentWidthValue;  // maximum segment width (in pixels)
+  this.maxTotalSegments = ph.maxTotalSegmentsValue;  // maximum total number of segments at maturity
+  this.firstLeafSegment = ph.firstLeafSegmentValue;  // (segment on which first leaf set grows)
+  this.leafFrequency = ph.leafFrequencyValue;  // (number of segments until next leaf set)
+  this.maxLeafLength = this.maxSegmentWidth * ph.maxLeafLengthValue;  // maximum leaf length at maturity
+  this.fh = ph.flowerHueValue; if ( this.fh > 65 ) { this.fh += 100; }  // flower hue (omits greens)
+  this.fs = ph.flowerSaturationValue;  // flower saturation
+  this.fl = ph.flowerLightnessValue; if ( this.fl > 70 ) { this.fl += 25; }  // flower lightness
+  //gene combinations
+  this.flowerColor = { h: this.fh, s: this.fs, l: this.fl };  // flower color
+  //non-gene qualities
+  this.forwardGrowthRate = gravity * this.maxSegmentWidth*2;  // (rate of cross span increase per frame)
+  this.outwardGrowthRate = this.forwardGrowthRate * Tl.rfb(0.18,0.22);  // (rate forward span widens / frame)
+  this.leafGrowthRate = this.forwardGrowthRate * Tl.rfb(1.4,1.6);  // leaf growth rate
+  this.leafArcHeight = Tl.rfb(0.3,0.4);  // arc height (as ratio of leaf length)
+  this.maxFlowerBaseWidth = 1;  // max flower base width, in units of plant maxSegmentWidth
+  this.flowerBudHeight = 1;  // bud height ( from hex top, in units of hex heights )
+  //energy
+  this.seedEnergy = this.maxTotalSegments*275;  // energy contained in seed
+  this.energy = this.seedEnergy;  // energy (starts with seed energy at germination)
 }
 
 ///segment constructor
@@ -457,7 +459,7 @@ function growPlants() {
       } else if ( !p.sourceSeedHasBeenRemoved ) {
         hideAndRemoveSeed( p.sourceSeed );  // removes seed after germination
       }
-      if ( p.energy > p.segmentCount*energyStoreFactor && p.energy>seedEnergy ) {
+      if ( p.energy > p.segmentCount*energyStoreFactor && p.energy>p.seedEnergy ) {
         p.energy = p.segmentCount*energyStoreFactor;  // caps plant max energy level based on segment count
       }
       if ( p.hasFlowers ) { 
@@ -474,7 +476,7 @@ function growPlants() {
           var s = p.segments[k];
           if ( s.spF.l < p.maxSegmentWidth ) { 
             lengthenSegmentSpans( p, s );
-            p.energy -= s.spCd.l * groEnExp;  // reduces energy by segment size while growing
+            p.energy -= s.spCd.l * groEnExp;  // reduces energy by segment width while growing
           }
           if ( readyForChildSegment( p, s ) ) { 
             createSegment( p, s, s.ptE1, s.ptE2 ); 
@@ -483,7 +485,7 @@ function growPlants() {
             generateLeavesWhenReady( p, s ); 
           } else if ( s.spLf1.l < p.maxLeafLength ) {
             growLeaves( p, s ); 
-            p.energy -= ( s.spLf1.l + s.spLf2.l ) * groEnExp;  // reduces energy by leaf length while growing
+            p.energy -= s.spLf1.l*groEnExp;  // reduces energy by one leaf length while leaves growing
           }
           if ( !p.hasFlowers && readyForFlower( p, s ) ) {
             createFlower( p, s, s.ptE1, s.ptE2 ); 
@@ -859,8 +861,8 @@ function logGeneChange( geneName ) {  // (enter name as string)
   }
   currentAlleleAvg = currentAlleleAvg/(plants.length*2);
   var change = currentAlleleAvg - initialGeneValueAverages[geneName];
-  change = change > 0 ? "+"+change : change;
-  console.log( geneName+": "+initialGeneValueAverages[geneName].toString().slice(0,5)+" -> "+currentAlleleAvg.toString().slice(0,5)+" ("+change.toString().slice(0,6)+")" );
+  change = change >= 0 ? "+"+change : change;
+  console.log( geneName+": "+change.toString().slice(0,6)+"  ("+initialGeneValueAverages[geneName].toString().slice(0,5)+"->"+currentAlleleAvg.toString().slice(0,5)+")" );
 }
 
 ///logs a gene's presence across the current population by value, ordered by dominance index
@@ -882,22 +884,17 @@ function logCurrentGenePresence( geneName ) {  // (enter name as string)
 ///runs logs (frequency in screen repaints)
 function runLogs( frequency ) {
   if ( worldTime % frequency === 0 ) { 
-    //logAllGeneChanges();
+    // logAllGeneChanges();
     console.log("\n");
-    logGeneChange( "forwardGrowthRate" );
-    logGeneChange( "outwardGrowthRate" );
-    logGeneChange( "maxSegmentWidth" );
     logGeneChange( "maxTotalSegments" );
+    logGeneChange( "maxSegmentWidth" );
     logGeneChange( "firstLeafSegment" );
     logGeneChange( "leafFrequency" );
     logGeneChange( "maxLeafLength" );
-    logGeneChange( "leafGrowthRate" );
-    logGeneChange( "leafArcHeight" );
-    // logGeneChange( "maxFlowerBaseWidth" );
-    // logGeneChange( "flowerBudHeight" );
-    // logGeneChange( "flowerHue" );
-    // logGeneChange( "flowerSaturation" );
-    // logGeneChange( "flowerLightness" );
+    logGeneChange( "flowerHue" );
+    logGeneChange( "flowerSaturation" );
+    logGeneChange( "flowerLightness" );
+
     // logCurrentGenePresence( "maxLeafLength" );
 
     //console.log( plants[0].energy );
@@ -909,21 +906,19 @@ function runLogs( frequency ) {
 
 ////---TESTING---////
 
-///fast growth & fast seasons
-sunRayIntensity = 3;
-spL = 1000; suL = 1000; faL = 1000; wiL = 1000;
 
-///multiple seeds
-for ( var i=0; i<25; i++ ) {
-  createSeed( null, generateNewFirstGenerationPlantGenotype() );
-}
+///scenarios
+// for ( var i=0; i<25; i++ ) { createSeed( null, generateRandomNewPlantGenotype() ); }
+// for ( var i=0; i<10; i++ ) { createSeed( null, generateLargePlantGenotype() ); }
+// for ( var i=0; i<10; i++ ) { createSeed( null, generateSmallPlantGenotype() ); }  
+for ( var i=0; i<1; i++ ) { createSeed( null, generateTinyWhiteFlowerGenotype() ); }
 
 
 
 
 ////---DISPLAY---////
 
-// createSeed( null, generateNewFirstGenerationPlantGenotype() );
+// createSeed( null, generateRandomNewPlantGenotype() );
 recordInitialGeneValueAverages();
 
 function display() {

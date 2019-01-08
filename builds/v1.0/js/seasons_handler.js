@@ -10,10 +10,10 @@ var yearTime = 0;
 var currentSeason;
 
 ///settings
-var spL = 5000;  // spring length
-var suL = 30000;  // summer length
-var faL = 5000;  // fall length
-var wiL = 3000;  // winter length
+var spL = 1000;  // spring length
+var suL = 1000;  // summer length
+var faL = 1000;  // fall length
+var wiL = 1000;  // winter length
 
 ///background gradient colors
 var BgG = {
@@ -59,7 +59,7 @@ function trackSeasons() {
   if ( yearTime < spL ) { 
     currentSeason = "spring"; photosynthesisRatio = 1; livEnExp = 0.75;  
   } else if ( yearTime < spL+suL ) {
-    currentSeason = "summer"; photosynthesisRatio = 1; livEnExp = 1;  
+    currentSeason = "summer"; photosynthesisRatio = 1; livEnExp = 1;
   } else if ( yearTime < spL+suL+faL ) {
     currentSeason = "fall"; photosynthesisRatio = 0.25; livEnExp = 3;
   } else if ( yearTime < spL+suL+faL+wiL ) {
