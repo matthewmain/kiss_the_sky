@@ -139,6 +139,7 @@ function Plant( sourceSeed ) {
   var ph = this.phenotype;
   this.maxSegmentWidth = ph.maxSegmentWidthValue;  // maximum segment width (in pixels)
   this.maxTotalSegments = ph.maxTotalSegmentsValue;  // maximum total number of segments at maturity
+  this.stalkStrength = ph.stalkStrengthValue;
   this.firstLeafSegment = ph.firstLeafSegmentValue;  // (segment on which first leaf set grows)
   this.leafFrequency = ph.leafFrequencyValue;  // (number of segments until next leaf set)
   this.maxLeafLength = this.maxSegmentWidth * ph.maxLeafLengthValue;  // maximum leaf length at maturity
@@ -191,7 +192,14 @@ function Segment( plant, parentSegment, basePoint1, basePoint2 ) {
   if (!this.isBaseSegment) {
     this.spCdP = addSp( this.ptE1.id, this.parentSegment.ptB2.id ); // downward (l to r) cross span to parent
     this.spCuP = addSp( this.parentSegment.ptB1.id, this.ptE2.id ); // upward (l to r) cross span to parent
+    this.spCdP.strength = plant.stalkStrength;
+    this.spCuP.strength = plant.stalkStrength;
   }
+  this.spL.strength = plant.stalkStrength;
+  this.spR.strength = plant.stalkStrength;
+  this.spF.strength = plant.stalkStrength;
+  this.spCd.strength = plant.stalkStrength;
+  this.spCu.strength = plant.stalkStrength;
   //skins
   this.skins = [];
   this.skins.push( addSk( [ this.ptE1.id, this.ptE2.id, this.ptB2.id, this.ptB1.id ], null ) );
@@ -846,7 +854,7 @@ function logAllGeneChanges() {
     currentAlleleAvg = currentAlleleAvg/(plants.length*2);
     var change = currentAlleleAvg - initialGeneValueAverages[geneName];
     change = change > 0 ? "+"+change : change;
-    console.log( geneName+": "+change.toString().slice(0,6)+"  ("+initialGeneValueAverages[geneName].toString().slice(0,5)+"->"+currentAlleleAvg.toString().slice(0,5)+")" );
+    console.log( geneName+" change: "+change.toString().slice(0,6)+"  ("+initialGeneValueAverages[geneName].toString().slice(0,5)+"->"+currentAlleleAvg.toString().slice(0,5)+")" );
   }
 }
 
@@ -861,7 +869,7 @@ function logGeneChange( geneName ) {  // (enter name as string)
   currentAlleleAvg = currentAlleleAvg/(plants.length*2);
   var change = currentAlleleAvg - initialGeneValueAverages[geneName];
   change = change >= 0 ? "+"+change : change;
-  console.log( geneName+": "+change.toString().slice(0,6)+"  ("+initialGeneValueAverages[geneName].toString().slice(0,5)+"->"+currentAlleleAvg.toString().slice(0,5)+")" );
+  console.log( geneName+" change: "+change.toString().slice(0,6)+"  ("+initialGeneValueAverages[geneName].toString().slice(0,5)+"->"+currentAlleleAvg.toString().slice(0,5)+")" );
 }
 
 ///logs a gene's presence across the current population by value, ordered by dominance index
@@ -886,9 +894,10 @@ function runLogs( frequency ) {
 
     console.log("\n");
 
-    logAllGeneChanges();
+    // logAllGeneChanges();
     // logGeneChange( "maxTotalSegments" );
     // logGeneChange( "maxSegmentWidth" );
+    logGeneChange( "stalkStrength" );
     // logGeneChange( "firstLeafSegment" );
     // logGeneChange( "leafFrequency" );
     // logGeneChange( "maxLeafLength" );
@@ -896,7 +905,7 @@ function runLogs( frequency ) {
     // logGeneChange( "flowerSaturation" );
     // logGeneChange( "flowerLightness" );
 
-    // logCurrentGenePresence( "flowerLightness" );
+    logCurrentGenePresence( "stalkStrength" );
 
   }
 }
@@ -908,12 +917,13 @@ function runLogs( frequency ) {
 
 
 ///scenarios
-//for ( var i=0; i<25; i++ ) { createSeed( null, generateRandomNewPlantGenotype() ); }
+for ( var i=0; i<25; i++ ) { createSeed( null, generateRandomNewPlantGenotype() ); }
 //for ( var i=0; i<5; i++ ) { createSeed( null, generateSmallPlantGenotype() ); }  
 //for ( var i=0; i<5; i++ ) { createSeed( null, generateMediumPlantGenotype() ); }
 //for ( var i=0; i<5; i++ ) { createSeed( null, generateLargePlantGenotype() ); }
-for ( var i=0; i<5; i++ ) { createSeed( null, generateHugePlantGenotype() ); }
-//for ( var i=0; i<1; i++ ) { createSeed( null, generateTinyWhiteFlowerGenotype() ); }
+//for ( var i=0; i<5; i++ ) { createSeed( null, generateHugePlantGenotype() ); }
+//for ( var i=0; i<5; i++ ) { createSeed( null, generateTinyWhiteFlowerPlantGenotype() ); }
+//for ( var i=0; i<5; i++ ) { createSeed( null, generateTallPlantGenotype() ); }
 
 
 
