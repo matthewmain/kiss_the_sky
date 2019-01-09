@@ -10,7 +10,8 @@
 <br>
 
 - [X] [Version 1.0](https://github.com/matthewmain/plant_evolution_app/tree/master/builds/v1.0) - _Genes, Alleles, Mutations, & Reproduction with Mendelian Genetics (random pollination among bloomed flowers)_
-- [ ] [Version 1.1](https://github.com/matthewmain/plant_evolution_app/tree/master/builds/v1.1) - _Pollinators (selective pollination based on disirability of flower characteristics & accessibility of flowers to pollinators)_
+- [ ] [Version 1.0.1](https://github.com/matthewmain/plant_evolution_app/tree/master/builds/v1.1) - _Performance Enhancement_
+- [ ] Version 1.1 - _Pollinators (selective pollination based on disirability of flower characteristics & accessibility of flowers to pollinators)_
 - [ ] Version 1.2 - _Plant Branching_
 
 <br>
@@ -25,5 +26,6 @@
 to add/ideas:
 
  - performance enhancement
+   - run sun rays less often with stronger intensity
  - image capture every mid summer
  - ...
