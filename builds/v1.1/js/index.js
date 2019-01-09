@@ -836,18 +836,17 @@ function recordInitialGeneValueAverages() {
 
 ///logs all gene average value changes since first generation (includes inactive plants, but not removed)
 function logAllGeneChanges() {
-  console.log( "\nGENE AVERAGE VALUE CHANGES SINCE FIRST GENERATION" );
-  for ( gene in Genome ) {
+  for ( var geneName in Genome ) {
     var currentAlleleAvg = 0;
     for ( i=0; i<plants.length; i++ ) {
       var p = plants[i];
-      currentAlleleAvg += p.genotype[gene].allele1.value;
-      currentAlleleAvg += p.genotype[gene].allele2.value;      
+      currentAlleleAvg += p.genotype[geneName].allele1.value;
+      currentAlleleAvg += p.genotype[geneName].allele2.value;      
     }
     currentAlleleAvg = currentAlleleAvg/(plants.length*2);
-    var change = currentAlleleAvg - initialGeneValueAverages[gene];
+    var change = currentAlleleAvg - initialGeneValueAverages[geneName];
     change = change > 0 ? "+"+change : change;
-    console.log( gene+": "+initialGeneValueAverages[gene].toString().slice(0,5)+" -> "+currentAlleleAvg.toString().slice(0,5)+" ("+change.toString().slice(0,6)+")" );
+    console.log( geneName+": "+change.toString().slice(0,6)+"  ("+initialGeneValueAverages[geneName].toString().slice(0,5)+"->"+currentAlleleAvg.toString().slice(0,5)+")" );
   }
 }
 
@@ -884,20 +883,21 @@ function logCurrentGenePresence( geneName ) {  // (enter name as string)
 ///runs logs (frequency in screen repaints)
 function runLogs( frequency ) {
   if ( worldTime % frequency === 0 ) { 
-    // logAllGeneChanges();
+
     console.log("\n");
-    logGeneChange( "maxTotalSegments" );
-    logGeneChange( "maxSegmentWidth" );
-    logGeneChange( "firstLeafSegment" );
-    logGeneChange( "leafFrequency" );
-    logGeneChange( "maxLeafLength" );
-    logGeneChange( "flowerHue" );
-    logGeneChange( "flowerSaturation" );
-    logGeneChange( "flowerLightness" );
 
-    // logCurrentGenePresence( "maxLeafLength" );
+    logAllGeneChanges();
+    // logGeneChange( "maxTotalSegments" );
+    // logGeneChange( "maxSegmentWidth" );
+    // logGeneChange( "firstLeafSegment" );
+    // logGeneChange( "leafFrequency" );
+    // logGeneChange( "maxLeafLength" );
+    // logGeneChange( "flowerHue" );
+    // logGeneChange( "flowerSaturation" );
+    // logGeneChange( "flowerLightness" );
 
-    //console.log( plants[0].energy );
+    // logCurrentGenePresence( "flowerLightness" );
+
   }
 }
 
@@ -908,10 +908,12 @@ function runLogs( frequency ) {
 
 
 ///scenarios
-// for ( var i=0; i<25; i++ ) { createSeed( null, generateRandomNewPlantGenotype() ); }
-// for ( var i=0; i<10; i++ ) { createSeed( null, generateLargePlantGenotype() ); }
-// for ( var i=0; i<10; i++ ) { createSeed( null, generateSmallPlantGenotype() ); }  
-for ( var i=0; i<1; i++ ) { createSeed( null, generateTinyWhiteFlowerGenotype() ); }
+//for ( var i=0; i<25; i++ ) { createSeed( null, generateRandomNewPlantGenotype() ); }
+//for ( var i=0; i<5; i++ ) { createSeed( null, generateSmallPlantGenotype() ); }  
+//for ( var i=0; i<5; i++ ) { createSeed( null, generateMediumPlantGenotype() ); }
+//for ( var i=0; i<5; i++ ) { createSeed( null, generateLargePlantGenotype() ); }
+for ( var i=0; i<5; i++ ) { createSeed( null, generateHugePlantGenotype() ); }
+//for ( var i=0; i<1; i++ ) { createSeed( null, generateTinyWhiteFlowerGenotype() ); }
 
 
 
