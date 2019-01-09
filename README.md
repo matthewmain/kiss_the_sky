@@ -28,5 +28,6 @@ to add/ideas:
    - run sun rays less often with stronger intensity
    - remove more (all?) spans on plant collapse
    - fade out/remove plants earlier 
+   - possibly run verlet less often
  - image capture every mid summer
  - ...
