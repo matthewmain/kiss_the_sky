@@ -10,14 +10,14 @@
 <br>
 
 - [X] [Version 1.0](https://github.com/matthewmain/plant_evolution_app/tree/master/builds/v1.0) - _Genes, Alleles, Mutations, & Reproduction with Mendelian Genetics (random pollination among bloomed flowers)_
+- [ ] Version 1.0.1 - _Performance Enhancement_
 - [ ] [Version 1.1](https://github.com/matthewmain/plant_evolution_app/tree/master/builds/v1.1) - _Pollinators (selective pollination based on disirability of flower characteristics & accessibility of flowers to pollinators)_
 - [ ] Version 1.2 - _Plant Branching_
-- [ ] Version 1.2 - _Performance Enhancement_
 
 <br>
 
 - [ ] Version 2.0 - _Stylization (advanced sprouting, blooming, pod development, seed dispersal, and plant collapse animations, plus plant and flower petal styling, advanced colors and gradients, lighting, changing seasonal background imagery, possibly winter snowfall, etc.)_ 
-- [ ] Version 2.1 - _Plant interaction (swiping for breeze, cutting/pruning) & gamification (storing & planting seeds, etc.)_
+- [ ] Version 2.1 - _Plant interaction (swiping for breeze, cutting/pruning) & gamification (storing & planting seeds, possibly ability to apply shade and/or other ways to manipulate environment, goals like height or flower color, etc.)_
 
 <br>
 <br>
