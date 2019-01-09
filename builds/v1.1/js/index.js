@@ -442,7 +442,7 @@ function growLeaves( plant, segment ) {
   var p = plant;
   var s = segment;
   s.spLf1.l = s.spLf2.l += p.leafGrowthRate;  // extend leaves
-  if ( s.spF.l > p.maxSegmentWidth*0.6 && !s.hasLeafScaffolding ) {
+  if ( s.spF.l > p.maxSegmentWidth*0.5 && !s.hasLeafScaffolding ) {
     addLeafScaffolding( plant, segment );  // add scaffolding
   } else if ( s.hasLeafScaffolding ) {  // extend scaffolding
     s.spLf1ScA.l += p.leafGrowthRate * 1.25;
@@ -514,7 +514,7 @@ function growPlants() {
         collapsePlant( p );  // plant collapses if energy level falls below minimum to stay standing
         p.isActive = false;  // removes plant from local plant iterations
       }
-    } else if ( p.hasCollapsed && currentYear - p.germinationYear >= 2 ) {
+    } else if ( p.hasCollapsed && currentYear - p.germinationYear >= 1 ) {
       decomposePlant( p );
     }
     if ( p.hasDecomposed && !p.hasBeenRemoved) {
@@ -892,9 +892,9 @@ function logCurrentGenePresence( geneName ) {  // (enter name as string)
 function runLogs( frequency ) {
   if ( worldTime % frequency === 0 ) { 
 
-    console.log("\n");
+    // console.log("\n");
 
-    // logAllGeneChanges();
+    //logAllGeneChanges();
     // logGeneChange( "maxTotalSegments" );
     // logGeneChange( "maxSegmentWidth" );
     logGeneChange( "stalkStrength" );
@@ -917,20 +917,20 @@ function runLogs( frequency ) {
 
 
 ///scenarios
-for ( var i=0; i<25; i++ ) { createSeed( null, generateRandomNewPlantGenotype() ); }
+//for ( var i=0; i<25; i++ ) { createSeed( null, generateRandomNewPlantGenotype() ); }
 //for ( var i=0; i<5; i++ ) { createSeed( null, generateSmallPlantGenotype() ); }  
 //for ( var i=0; i<5; i++ ) { createSeed( null, generateMediumPlantGenotype() ); }
 //for ( var i=0; i<5; i++ ) { createSeed( null, generateLargePlantGenotype() ); }
 //for ( var i=0; i<5; i++ ) { createSeed( null, generateHugePlantGenotype() ); }
 //for ( var i=0; i<5; i++ ) { createSeed( null, generateTinyWhiteFlowerPlantGenotype() ); }
-//for ( var i=0; i<5; i++ ) { createSeed( null, generateTallPlantGenotype() ); }
+for ( var i=0; i<25; i++ ) { createSeed( null, generateTallPlantGenotype( 1 ) ); }
 
 
 
 
 ////---DISPLAY---////
 
-// createSeed( null, generateRandomNewPlantGenotype() );
+// createSeed( null, generateTinyWhiteFlowerPlantGenotype() );
 recordInitialGeneValueAverages();
 
 function display() {
