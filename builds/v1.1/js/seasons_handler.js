@@ -134,10 +134,10 @@ function renderUI() {
   ctx.strokeStyle="#222222";
   ctx.stroke();
   //year counter text
-  ctx.font = "30px roboto";
+  ctx.font = "28px roboto";
   ctx.textAlign = "center";
   ctx.fillStyle="#222222";
-  ctx.fillText(currentYear, xValFromPct(93), yValFromPct(8.1) );
+  ctx.fillText(currentYear, xValFromPct(93), yValFromPct(8) );
 }
 
 
