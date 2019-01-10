@@ -25,9 +25,9 @@
 to add/ideas:
 
  - performance enhancement
-   - run sun rays less often with stronger intensity
    - remove more (all?) spans on plant collapse
    - fade out/remove plants earlier 
+   - run sun rays less often with stronger intensity
    - possibly run verlet less often
  - image capture every mid summer
  - ...
