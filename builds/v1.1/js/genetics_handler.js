@@ -14,7 +14,7 @@ var Genome = {
   maxSegmentWidth:    { initialValue: function(){ return Tl.rfb(8,12); },
                         mutationParameter: { range: 2, min: 8, max: null }, expressionType: "partial" },
   stalkStrength:      { initialValue: function(){ return Tl.rib(1,1); },
-                        mutationParameter: { range: 2, min: 1, max: 6 }, expressionType: "complete" },
+                        mutationParameter: { range: 2, min: 1, max: 4 }, expressionType: "complete" },
   firstLeafSegment:   { initialValue: function(){ return Tl.rib(2,3); },
                         mutationParameter: { range: 4, min: 2, max: null }, expressionType: "complete" },
   leafFrequency:      { initialValue: function(){ return Tl.rib(2,3); },
