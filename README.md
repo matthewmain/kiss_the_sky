@@ -27,8 +27,7 @@ to add/ideas:
  - update flowers so that all points are non-verlet, built relationally around the uppermost segment
    - add complexity to flowers by adding radial symmetry, variable petal counts, petal layers, petal lengths, petal shapes, petal gradients/stripes, etc.
  - performance enhancement
-   - fade out/remove plants earlier 
-   - run sun rays less often with stronger intensity
-   - possibly run verlet less often, or with fewer rigidity iterations after updating flowers
+   - run sun rays less often with stronger intensity (probably need to address plant color-change flashing)
+   - possibly run verlet less often, or with fewer rigidity iterations (after updating flowers)
  - image capture every mid summer
  - ...
