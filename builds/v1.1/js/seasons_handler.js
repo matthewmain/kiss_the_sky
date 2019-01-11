@@ -36,7 +36,7 @@ var BgG = {
     cs4: { r: 248, g: 252, b: 255, a: 1 }
   },
   wi: {  // winter
-    cs1: { r: 214, g: 209, b: 204, a: 1 }, 
+    cs1: { r: 57, g: 51, b: 45, a: 1 }, 
     cs2: { r: 220, g: 215, b: 210, a: 1 }, 
     cs3: { r: 233, g: 229, b: 224, a: 1 }, 
     cs4: { r: 248, g: 252, b: 255, a: 1 }
@@ -70,19 +70,18 @@ function trackSeasons() {
   }
 }
 
-
 ///renders background
 function renderBackground() {
-  switch( currentSeason ) {  // updates current and previous season backgrounds
+  switch( currentSeason ) {  // updates current and previous season 
     case "spring": csbg = BgG.sp; psbg = BgG.wi; break;
     case "summer": csbg = BgG.su; psbg = BgG.sp; break;
     case "fall": csbg = BgG.fa; psbg = BgG.su; break;
     case "winter": csbg = BgG.wi; psbg = BgG.fa; break;
   }
-  ccs1 = Tl.rgbaCs( psbg.cs1, csbg.cs1, ccs1, 500 );  // current color stop redshift 
-  ccs2 = Tl.rgbaCs( psbg.cs2, csbg.cs2, ccs2, 500 );  // current color stop greenshift
-  ccs3 = Tl.rgbaCs( psbg.cs3, csbg.cs3, ccs3, 500 );  // current color stop blueshift
-  ccs4 = Tl.rgbaCs( psbg.cs4, csbg.cs4, ccs4, 500 );  // current color stop alphashift
+  ccs1 = Tl.rgbaCs( psbg.cs1, csbg.cs1, ccs1, 300 );  // current color stop redshift 
+  ccs2 = Tl.rgbaCs( psbg.cs2, csbg.cs2, ccs2, 300 );  // current color stop greenshift
+  ccs3 = Tl.rgbaCs( psbg.cs3, csbg.cs3, ccs3, 300 );  // current color stop blueshift
+  ccs4 = Tl.rgbaCs( psbg.cs4, csbg.cs4, ccs4, 300 );  // current color stop alphashift
   var grd=ctx.createLinearGradient( 0, 0, 0, canvas.height );
   grd.addColorStop(0,"rgba("+ccs1.r+","+ccs1.g+","+ccs1.b+","+ccs1.a+")");
   grd.addColorStop(0.4,"rgba("+ccs2.r+","+ccs2.g+","+ccs2.b+","+ccs2.a+")");

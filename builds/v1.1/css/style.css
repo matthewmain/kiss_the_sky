@@ -1,3 +1,7 @@
+body {
+	background: #111111;
+}
+
 #canvas_container_div {
   position: absolute;
   top: 50%;

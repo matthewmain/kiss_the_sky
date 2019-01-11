@@ -14,7 +14,7 @@ var Genome = {
   maxSegmentWidth:    { initialValue: function(){ return Tl.rfb(8,12); },
                         mutationParameter: { range: 2, min: 8, max: null }, expressionType: "partial" },
   stalkStrength:      { initialValue: function(){ return Tl.rib(1,1); },
-                        mutationParameter: { range: 2, min: 1, max: 2 }, expressionType: "complete" },  // XXXXXX
+                        mutationParameter: { range: 2, min: 1, max: 2 }, expressionType: "complete" },
   firstLeafSegment:   { initialValue: function(){ return Tl.rib(2,3); },
                         mutationParameter: { range: 4, min: 2, max: null }, expressionType: "complete" },
   leafFrequency:      { initialValue: function(){ return Tl.rib(2,3); },
@@ -90,14 +90,13 @@ function mutate( geneName, alelleValue ) {
   var mn = Genome[geneName].mutationParameter.min;  // min
   var mx = Genome[geneName].mutationParameter.max;  // max
   var et = Genome[geneName].expressionType;  // expression type
-  var mutatedAlelleValue;
+  var mutatedAlelleVal;
   if (et === "complete") {
-    mutatedAlelleValue = Tl.rib( alelleValue-ra/2, alelleValue+ra/2 );
-    if ( mutatedAlelleValue > mn && ( mx === null || mutatedAlelleValue < mx ) ) { alelleValue = mutatedAlelleValue; 
-    }
+    mutatedAlelleVal = Tl.rib( alelleValue-ra/2, alelleValue+ra/2 );
+    if ( mutatedAlelleVal > mn && ( mx === null || mutatedAlelleVal <= mx ) ) { alelleValue = mutatedAlelleVal; }
   } else if ( et === "partial" || et === "co") {
-    mutatedAlelleValue = Tl.rfb( alelleValue-ra/2, alelleValue+ra/2 );
-    if ( mutatedAlelleValue > mn && ( mx === null || mutatedAlelleValue < mx ) ) { alelleValue = mutatedAlelleValue; }
+    mutatedAlelleVal = Tl.rfb( alelleValue-ra/2, alelleValue+ra/2 );
+    if ( mutatedAlelleVal > mn && ( mx === null || mutatedAlelleVal <= mx ) ) { alelleValue = mutatedAlelleVal; }
   }
   return alelleValue;
 }
@@ -222,7 +221,7 @@ function generateTallPlantGenotype( stalkStrength ) {
   var newGenotype = {};
   newGenotype.maxTotalSegments = createGene( 25, { range: 6, min: 2, max: null }, "complete" );
   newGenotype.maxSegmentWidth = createGene( 10, { range: 2, min: 8, max: null }, "partial" );
-  newGenotype.stalkStrength = createGene( stalkStrength, { range: 2, min: 1, max: 2 }, "complete" );
+  newGenotype.stalkStrength = createGene( stalkStrength, { range: 2, min: 1, max: 3 }, "partial" );
   newGenotype.firstLeafSegment = createGene( 2, { range: 4, min: 2, max: null }, "complete" );
   newGenotype.leafFrequency = createGene( 2, { range: 4, min: 1, max: null }, "complete" );
   newGenotype.maxLeafLength = createGene( 5, { range: 4, min: 0, max: null }, "partial" );

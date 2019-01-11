@@ -22,7 +22,7 @@ var initialGeneValueAverages = {};
 ///settings
 var worldSpeed = 1;//5;  // (as frames per iteration: higher is slower) (does not affect physics iterations)
 var viewUI = true;
-var viewShadows = false;  // (shadow visibility)
+var viewShadows = true;  // (shadow visibility)
 var viewStalks = true;  // (stalk visibility) 
 var viewLeaves = true;  // (leaf visibility)
 var viewFlowers = true;  // (flower visibility)
@@ -830,7 +830,7 @@ function renderPlants() {
 
 ///records average gene value changes
 function recordInitialGeneValueAverages() {
-  for ( gene in Genome ) {
+  for ( var gene in Genome ) {
     var alleleAvg = 0;
     for ( i=0; i<plants.length; i++ ) {
       var p = plants[i];

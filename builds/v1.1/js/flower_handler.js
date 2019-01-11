@@ -346,7 +346,7 @@ function renderFlowers( plant ) {
         ctx.lineWidth = 1;
         //top petals
         ctx.fillStyle = "hsla("+f.clP.h+","+f.clP.s+"%,"+f.clP.l+"%,"+p.opacity+")"; 
-        ctx.strokeStyle = "rgba("+f.clO.r+","+f.clO.g+","+f.clO.b+","+p.opacity+")"; 
+        ctx.strokeStyle = "rgba("+f.clO.r+","+f.clO.g+","+f.clO.b+","+p.opacity+")";
         ctx.beginPath();  // top middle petal
         ctx.moveTo( f.ptHtL.cx, f.ptHtL.cy ); 
         pah = petalArcAdjustment( f, f.ptHtL, f.ptHtR, f.ptPtM, 0.2, 0.45);
