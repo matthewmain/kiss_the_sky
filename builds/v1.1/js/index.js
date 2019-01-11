@@ -895,8 +895,8 @@ function runLogs( frequency ) {
     // console.log("\n");
 
     //logAllGeneChanges();
-    // logGeneChange( "maxTotalSegments" );
-    // logGeneChange( "maxSegmentWidth" );
+    logGeneChange( "maxTotalSegments" );
+    logGeneChange( "maxSegmentWidth" );
     logGeneChange( "stalkStrength" );
     // logGeneChange( "firstLeafSegment" );
     // logGeneChange( "leafFrequency" );
@@ -922,8 +922,8 @@ function runLogs( frequency ) {
 //for ( var i=0; i<5; i++ ) { createSeed( null, generateMediumPlantGenotype() ); }
 //for ( var i=0; i<5; i++ ) { createSeed( null, generateLargePlantGenotype() ); }
 //for ( var i=0; i<5; i++ ) { createSeed( null, generateHugePlantGenotype() ); }
-//for ( var i=0; i<5; i++ ) { createSeed( null, generateTinyWhiteFlowerPlantGenotype() ); }
-for ( var i=0; i<25; i++ ) { createSeed( null, generateTallPlantGenotype( 1 ) ); }
+for ( var i=0; i<1; i++ ) { createSeed( null, generateTinyWhiteFlowerPlantGenotype() ); }
+//for ( var i=0; i<25; i++ ) { createSeed( null, generateTallPlantGenotype( 1 ) ); }
 
 
 

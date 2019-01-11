@@ -121,7 +121,7 @@ function expandFlowerBud( plant, flower) {
   var budTipY = htmp.y + ( htmp.y - hbmp.y ) * p.flowerBudHeight;  // bud tip y value
   // (ovule)
   f.spOiL.l = distance( f.ptBL, f.ptHbL);  // ovule inner left span
-  f.spOiR.l = f.spOiL.l;  // ovule inner rightspan
+  f.spOiR.l = f.spOiL.l;  // ovule inner right span
   f.spCd.l = distance( f.ptHbL, f.ptBR );  // downward cross span
   f.spCu.l = f.spCd.l;  // upward cross span
   f.spCdP.l = distance( f.ptHbL, f.parentSegment.ptB2 ) + pfgr;  // downward cross span to parent
