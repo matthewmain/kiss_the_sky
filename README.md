@@ -29,8 +29,9 @@ to add/ideas:
    - at startup, provide info about how app harnesses biological evolution via plant competition for height/light.
    - allow users to choose 1) "tiny white flower" or 2) "random garden" to "see what happens" as the years pass and the plants evolve.
    - "Sew" button that kicks of initial falling seeds.
-   - add "year _X_, _season_>" to season meter, using title font 
+   - add "year _number_, _season_" to season meter, using title font 
    - add restart button
+   - add image download button
    - (possibly, add drawer with tree menu for each gene and current allele values for each)
  - update flowers so that all points are non-verlet, built relationally around the uppermost segment
    - add complexity to flowers by adding radial symmetry, variable petal counts, petal layers, petal lengths, petal shapes, petal gradients/stripes, etc.
@@ -38,4 +39,3 @@ to add/ideas:
    - run sun rays less often with stronger intensity (probably need to address plant color-change flashing)
    - possibly run verlet less often, or with fewer rigidity iterations (after updating flowers)
  - image capture every mid summer
- - ...
