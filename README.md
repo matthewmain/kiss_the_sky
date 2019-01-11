@@ -10,7 +10,7 @@
 <br>
 
 - [X] [Version 1.0](https://github.com/matthewmain/plant_evolution_app/tree/master/builds/v1.0) - _Genes, Alleles, Mutations, & Reproduction with Mendelian Genetics (random pollination among bloomed flowers)_
-- [ ] [Version 1.1](https://github.com/matthewmain/plant_evolution_app/tree/master/builds/v1.1) - _Pollinators (selective pollination based on disirability of flower characteristics & accessibility of flowers to pollinators)_
+- [ ] [Version 1.1](https://github.com/matthewmain/plant_evolution_app/tree/master/builds/v1.1) - _Pollinators (selective pollination based on disirability of flower characteristics & accessibility of flowers to pollinators)_ **decide whether to use insect polination only, user selection/manual polination only, or a combination in which user can select different bee types every year from a catalogue of bees that have different flower characterstics preferences.
 - [ ] Version 1.2 - _Plant Branching_
 
 <br>
