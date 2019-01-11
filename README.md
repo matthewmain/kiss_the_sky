@@ -33,6 +33,7 @@ to add/ideas:
    - add restart button
    - add shadow visibility toggle
    - add image download button
+   - fix safari issues (color value floats, etc.)
    - (possibly, add drawer with tree menu for each gene and current allele values for each)
  - update flowers so that all points are non-verlet, built relationally around the uppermost segment
    - add complexity to flowers by adding radial symmetry, variable petal counts, petal layers, petal lengths, petal shapes, petal gradients/stripes, etc.
