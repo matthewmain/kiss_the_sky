@@ -31,6 +31,7 @@ to add/ideas:
    - "Sew" button that kicks of initial falling seeds.
    - add "year _number_, _season_" to season meter, using title font 
    - add restart button
+   - add shadow visibility toggle
    - add image download button
    - (possibly, add drawer with tree menu for each gene and current allele values for each)
  - update flowers so that all points are non-verlet, built relationally around the uppermost segment
