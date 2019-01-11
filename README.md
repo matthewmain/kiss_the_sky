@@ -29,7 +29,7 @@ to add/ideas:
    - at startup, provide info about how app harnesses biological evolution via plant competition for height/light.
    - allow users to choose 1) "tiny white flower" or 2) "random garden" to "see what happens" as the years pass and the plants evolve.
    - "Sew" button that kicks of initial falling seeds.
-   - add "year <year>, <season>" to season meter, using title font 
+   - add "year _X_, _season_>" to season meter, using title font 
    - add restart button
    - (possibly, add drawer with tree menu for each gene and current allele values for each)
  - update flowers so that all points are non-verlet, built relationally around the uppermost segment
