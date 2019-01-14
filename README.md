@@ -12,16 +12,16 @@ Browser
 
 <br>
 
-- [X] [Version 1.0](https://github.com/matthewmain/plant_evolution_app/tree/master/builds/v1.0) - _Genes, Alleles, Mutations, & Reproduction with Mendelian Genetics (random pollination among bloomed flowers)_
-- [ ] [Version 1.1](https://github.com/matthewmain/plant_evolution_app/tree/master/builds/v1.1) - _Selective Pollination (sun shades) & Basic Browser UI_
+- [X] [Version 1.0](https://github.com/matthewmain/plant_evolution_app/tree/master/builds/v1.0) - _Genes, Alleles, Mutations, & Randomized Sexual Reproduction with Mendelian Genetics_
+- [ ] [Version 1.1](https://github.com/matthewmain/plant_evolution_app/tree/master/builds/v1.1) - _Basic Selective Pollination & Browser UI_
 
 <br>
 iOS
 <br>
 <br>
 
-- [ ] Version 2.0 - _Stylization (advanced sprouting, blooming, pod development, seed dispersal, and plant collapse animations, plus plant and flower petal styling, advanced colors and gradients, lighting, changing seasonal background imagery, possibly winter snowfall, etc.)_ 
-- [ ] Version 2.1 - _Plant interaction & advanced gamification
+- [ ] Version 2.0 - _Advanced Stylization & Game Design_ 
+- [ ] Version 2.1 - _Advanced Gamification_
 
 <br>
 <br>
@@ -55,3 +55,5 @@ to add/ideas:
  - selective storing & planting seeds
  - swiping for breeze
  - cutting/pruning
+ - changing seasonal background imagery
+ - possibly winter snowfall
