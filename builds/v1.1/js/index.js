@@ -774,7 +774,7 @@ function renderLeaves( plant, segment ) {
   if ( segment.hasLeaves ) {
     renderLeaf( plant, segment, segment.spLf1 );
     renderLeaf( plant, segment, segment.spLf2 );
-    if ( viewShadows ) { markShadowPositions( segment ); }
+    if ( viewShadows && plant.isAlive ) { markShadowPositions( segment ); }
   }
 }
 
@@ -892,15 +892,15 @@ function logCurrentGenePresence( geneName ) {  // (enter name as string)
 function runLogs( frequency ) {
   if ( worldTime % frequency === 0 ) { 
 
-    // console.log("\n");
+    console.log("\n");
 
     //logAllGeneChanges();
     logGeneChange( "maxTotalSegments" );
     logGeneChange( "maxSegmentWidth" );
     logGeneChange( "stalkStrength" );
-    // logGeneChange( "firstLeafSegment" );
-    // logGeneChange( "leafFrequency" );
-    // logGeneChange( "maxLeafLength" );
+    logGeneChange( "firstLeafSegment" );
+    logGeneChange( "leafFrequency" );
+    logGeneChange( "maxLeafLength" );
     // logGeneChange( "flowerHue" );
     // logGeneChange( "flowerSaturation" );
     // logGeneChange( "flowerLightness" );
@@ -917,12 +917,12 @@ function runLogs( frequency ) {
 
 
 ///scenarios
-//for ( var i=0; i<25; i++ ) { createSeed( null, generateRandomNewPlantGenotype() ); }
+for ( var i=0; i<25; i++ ) { createSeed( null, generateRandomNewPlantGenotype() ); }
 //for ( var i=0; i<5; i++ ) { createSeed( null, generateSmallPlantGenotype() ); }  
 //for ( var i=0; i<5; i++ ) { createSeed( null, generateMediumPlantGenotype() ); }
 //for ( var i=0; i<5; i++ ) { createSeed( null, generateLargePlantGenotype() ); }
 //for ( var i=0; i<5; i++ ) { createSeed( null, generateHugePlantGenotype() ); }
-for ( var i=0; i<1; i++ ) { createSeed( null, generateTinyWhiteFlowerPlantGenotype() ); }
+//for ( var i=0; i<1; i++ ) { createSeed( null, generateTinyWhiteFlowerPlantGenotype() ); }
 //for ( var i=0; i<25; i++ ) { createSeed( null, generateTallPlantGenotype( 1 ) ); }
 
 

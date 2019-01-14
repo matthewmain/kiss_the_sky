@@ -18,7 +18,7 @@ var wiL = 1000;  // winter length
 ///background gradient colors
 var BgG = {
   sp: {  // spring
-    cs1: { r: 244, g: 244, b: 244, a: 1 },  // color stop 1 ...
+    cs1: { r: 244, g: 244, b: 244, a: 1 },  // color stop 1 ... 
     cs2: { r: 242, g: 247, b: 250, a: 1 }, 
     cs3: { r: 240, g: 250, b: 255, a: 1 }, 
     cs4: { r: 225, g: 244, b: 255, a: 1 }

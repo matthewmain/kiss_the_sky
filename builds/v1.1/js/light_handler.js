@@ -38,7 +38,7 @@ function shedSunlight() {
 function markRayLeafIntersections() {
   for ( var i=0; i<plants.length; i++ ) {
     var p = plants[i];
-    if (p.isActive) {
+    if ( p.isAlive ) {
       for ( var j=0; j<p.segments.length; j++ ) {
         var s = p.segments[j];
         if ( s.hasLeaves ) {
