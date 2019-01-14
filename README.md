@@ -26,6 +26,8 @@ to add/ideas:
 
  - to make v1.0 presentable: 
    - app name and simple logo/title with decent font
+     -_dark, garden, flora, meiosis, lost,..._
+     -dark garden, lost garden, ...
    - at startup, provide info about how app harnesses biological evolution via plant competition for height/light.
    - allow users to choose 1) "tiny white flower" or 2) "random garden" to "see what happens" as the years pass and the plants evolve.
    - "Sew" button that kicks of initial falling seeds.
