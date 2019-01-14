@@ -41,8 +41,9 @@ to add/ideas:
    - add shadow visibility toggle
    - add image download button
    - fix safari issues (color value floats, etc.)
-   - possibly add slidable shaders to let user control which plants get sunlight
+   - slidable shaders to let user control which plants get sunlight
    - performance enhancement: run sun rays less often with stronger intensity (probably need to address plant color-change flashing)
+   - (possibly, some basic gamification like plant height or generation count)
    
 <br>
 
