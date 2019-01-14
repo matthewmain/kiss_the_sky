@@ -13,7 +13,7 @@ Browser
 <br>
 
 - [X] [Version 1.0](https://github.com/matthewmain/plant_evolution_app/tree/master/builds/v1.0) - _Genes, Alleles, Mutations, & Randomized Sexual Reproduction with Mendelian Genetics_
-- [ ] [Version 1.1](https://github.com/matthewmain/plant_evolution_app/tree/master/builds/v1.1) - _Basic Selective Pollination & Browser UI_
+- [ ] [Version 1.1](https://github.com/matthewmain/plant_evolution_app/tree/master/builds/v1.1) - _Basic Artificial Selection & UI_
 
 <br>
 iOS
@@ -31,10 +31,10 @@ to add/ideas:
 
  - to make v1.1 presentable: 
    - app name and simple logo/title with decent font 
-     - _dark, garden, flora, meiosis, lost, sun, light, evolve, pollen, photo, photosynthesis, shine, grow, natural, select, selection, hybrid, nudge ..._ 
-     - Dark Garden, Lost Garden, Pollen ... 
+     - _dark, garden, flora, meiosis, lost, sun, light, evolve, pollen, photo, photosynthesis, shine, grow, natural, select, selection, hybrid, nudge, pick ..._ 
+     - Bloom, Dark Garden, Lost Garden, Kiss The Sky ... 
    - at startup, provide info about how app harnesses biological evolution via plant competition for height/light.
-   - allow users to choose 1) "tiny white flower" or 2) "random garden" to "see what happens" as the years pass and the plants evolve.
+   - allow users to choose 1) "tiny white flower" or 2) "random garden" to "see what happens" as the years pass and the plants evolve. (maybe add option for one small & one large plant also.)
    - "Sew" button that kicks of initial falling seeds.
    - add "year _number_, _season_" to season meter, using title font 
    - add restart button
@@ -42,8 +42,12 @@ to add/ideas:
    - add image download button
    - fix safari issues (color value floats, etc.)
    - slidable shaders to let user control which plants get sunlight
+   - fade out shadows when leaf angle falls to below about -80 degrees from horizontal (will avoid narrow shadows when leaves are vertical as well as shadows flasing off at plant death)
+   - omit pod closure at plant death
+   - add shadow to gap between leaves
    - performance enhancement: run sun rays less often with stronger intensity (probably need to address plant color-change flashing)
-   - (possibly, some basic gamification like plant height or generation count)
+   - fix all forward growth based on y-values by replacing with trig formula to ensure new growth is forward regardless of stalk angle
+   - (possibly, some basic gamification like plant height or generation count--possibly to grow a flower tall enough to reach the top of the viewbox in the fewest generations, "kiss the sky")
    
 <br>
 
@@ -58,3 +62,7 @@ to add/ideas:
  - cutting/pruning
  - changing seasonal background imagery
  - possibly winter snowfall
+
+
+
+
