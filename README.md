@@ -4,6 +4,7 @@
 <br>
 Browser
 <br>
+<br>
 
 - [X] [Prototype 1](https://github.com/matthewmain/plant_evolution_app/tree/master/prototypes/prototype_1) - _Environment Physics & Basic Competitive Growth_  
 - [X] [Prototype 2](https://github.com/matthewmain/plant_evolution_app/tree/master/prototypes/prototype_2) - _Flowers, Seeds, & Reproduction with Randomized Traits_  
@@ -12,14 +13,15 @@ Browser
 <br>
 
 - [X] [Version 1.0](https://github.com/matthewmain/plant_evolution_app/tree/master/builds/v1.0) - _Genes, Alleles, Mutations, & Reproduction with Mendelian Genetics (random pollination among bloomed flowers)_
-- [ ] [Version 1.1](https://github.com/matthewmain/plant_evolution_app/tree/master/builds/v1.1) - _Selective Pollination (shades) & Basic Browser UI_
+- [ ] [Version 1.1](https://github.com/matthewmain/plant_evolution_app/tree/master/builds/v1.1) - _Selective Pollination (sun shades) & Basic Browser UI_
 
 <br>
 iOS
 <br>
+<br>
 
 - [ ] Version 2.0 - _Stylization (advanced sprouting, blooming, pod development, seed dispersal, and plant collapse animations, plus plant and flower petal styling, advanced colors and gradients, lighting, changing seasonal background imagery, possibly winter snowfall, etc.)_ 
-- [ ] Version 2.1 - _Plant interaction (swiping for breeze, cutting/pruning) & gamification (storing & planting seeds, possibly ability to apply shade and/or other ways to manipulate environment, goals like height or flower color, etc.)_
+- [ ] Version 2.1 - _Plant interaction & advanced gamification
 
 <br>
 <br>
@@ -42,9 +44,14 @@ to add/ideas:
    - possibly add slidable shaders to let user control which plants get sunlight
    - performance enhancement: run sun rays less often with stronger intensity (probably need to address plant color-change flashing)
    
+<br>
+
+ - update flower structure so that all points are non-verlet, built relationally around the uppermost segment; add complexity to flowers by adding radial symmetry, variable petal counts, petal layers, petal lengths, petal shapes, petal gradients/stripes, etc.
  - gamification: decide whether game should be based on goals like plant height/generations count/flower color/etc., or hybridizing/selecting beautiful complex flowers, or some combination of both?
- - update flowers so that all points are non-verlet, built relationally around the uppermost segment
-   - add complexity to flowers by adding radial symmetry, variable petal counts, petal layers, petal lengths, petal shapes, petal gradients/stripes, etc.
  - image capture every mid summer
  - possibly branching?
- - drawer with tree menu for each gene and current allele values averages, plus click plant to reveal individual plant's genes
+ - drawer with tree menu for each gene and current allele values averages, plus ability click plant to reveal individual plant's genes
+ - social: users can trade flower breeds for cross-breeding
+ - selective storing & planting seeds
+ - swiping for breeze
+ - cutting/pruning
