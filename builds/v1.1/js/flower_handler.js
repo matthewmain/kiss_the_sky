@@ -224,10 +224,14 @@ function acceptPollination( pollinatedFlower ) {
     var pollinatorFlower = Tl.refa( openFlowers );
     pollinateFlower( pollinatedFlower, pollinatorFlower );
   }
-  if ( pollinatedFlower.zygoteGenotypes.length === maxSeedsPerFlower ) {
+  var maxSeeds = Math.floor(pollinatedFlower.parentPlant.maxTotalSegments*maxSeedsPerFlowerRatio); 
+  maxSeeds = maxSeeds < 3 ? 3 : maxSeeds > 7 ? 7 : maxSeeds;
+  if ( pollinatedFlower.zygoteGenotypes.length === maxSeeds ) {
     pollinatedFlower.hasReachedMaxSeeds = true;
   }
 }
+
+//maxTotalSegments
 
 ///pollinates flower
 function pollinateFlower( pollinatedFlower, pollinatorFlower ) {

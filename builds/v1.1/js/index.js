@@ -29,7 +29,7 @@ var viewFlowers = true;  // (flower visibility)
 var viewPods = true;  // (pod visibilty)
 var allowSelfPollination = true;  // allows flowers to pollinate themselves
 var pollinationFrequency = 5;  // (as average number of pollination events per open flower per length of summer)
-var maxSeedsPerFlower = 4;  // number of seeds produced by a fertilized flower
+var maxSeedsPerFlowerRatio = 0.334;  // max seeds per flower (as ratio of plant's max total segments)
 var mutationRate = 5;  // (as meiosis events per mutation; higher is less frequent)
 var restrictGrowthByEnergy = true;  // restricts plant growth by energy level (if false, plants grow freely)
 var sunRayIntensity = 3;  // total energy units per sun ray per iteration
@@ -926,12 +926,12 @@ function runLogs( frequency ) {
 
 ///scenarios
 //for ( var i=0; i<25; i++ ) { createSeed( null, generateRandomNewPlantGenotype() ); }
+//for ( var i=0; i<1; i++ ) { createSeed( null, generateTinyWhiteFlowerPlantGenotype() ); }
 //for ( var i=0; i<5; i++ ) { createSeed( null, generateSmallPlantGenotype() ); }  
 //for ( var i=0; i<5; i++ ) { createSeed( null, generateMediumPlantGenotype() ); }
-//for ( var i=0; i<5; i++ ) { createSeed( null, generateLargePlantGenotype() ); }
+//for ( var i=0; i<25; i++ ) { createSeed( null, generateLargePlantGenotype() ); }
 //for ( var i=0; i<5; i++ ) { createSeed( null, generateHugePlantGenotype() ); }
-for ( var i=0; i<1; i++ ) { createSeed( null, generateTinyWhiteFlowerPlantGenotype() ); }
-//for ( var i=0; i<25; i++ ) { createSeed( null, generateTallPlantGenotype( 1 ) ); }
+for ( var i=0; i<25; i++ ) { createSeed( null, generateTallPlantGenotype( 1 ) ); }
 
 
 

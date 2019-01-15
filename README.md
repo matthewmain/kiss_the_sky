@@ -47,12 +47,16 @@ to add/ideas:
    - add shadow to gap between leaves
    - performance enhancement: run sun rays less often with stronger intensity (probably need to address plant color-change flashing)
    - fix all forward growth based on y-values by replacing with trig formula to ensure new growth is forward regardless of stalk angle
+   - change petal borders to darker hue of petal color
    - (possibly, some basic gamification like plant height or generation count--possibly to grow a flower tall enough to reach the top of the viewbox in the fewest generations, "kiss the sky")
    
 <br>
 
  - update flower structure so that all points are non-verlet, built relationally around the uppermost segment; add complexity to flowers by adding radial symmetry, variable petal counts, petal layers, petal lengths, petal shapes, petal gradients/stripes, etc.
  - gamification: decide whether game should be based on goals like plant height/generations count/flower color/etc., or hybridizing/selecting beautiful complex flowers, or some combination of both?
+   - flower qualities: petal count, color, etc.
+   - plant height
+   - color & height ( i.e., different goals progressively harder, like first to get a flower to touch the sky, then to get a red flower to touch the sky, etc.)
  - image capture every mid summer
  - possibly branching?
  - drawer with tree menu for each gene and current allele values averages, plus ability click plant to reveal individual plant's genes
@@ -62,6 +66,7 @@ to add/ideas:
  - cutting/pruning
  - changing seasonal background imagery
  - possibly winter snowfall
+ - ability to isolate flowers in different dections so that only flowers in same section polinate one another
 
 
 
