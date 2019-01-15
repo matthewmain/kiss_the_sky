@@ -67,6 +67,7 @@ to add/ideas:
  - changing seasonal background imagery
  - possibly winter snowfall
  - ability to isolate flowers in different dections so that only flowers in same section polinate one another
+ - music & sounds (birds chirping)
 
 
 
