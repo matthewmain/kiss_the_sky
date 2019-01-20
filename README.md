@@ -32,7 +32,7 @@ to add/ideas:
  - to make v1.1 presentable: 
    - app name and simple logo/title with decent font 
      - _dark, garden, flora, meiosis, lost, sun, light, evolve, pollen, photo, photosynthesis, shine, grow, natural, select, selection, hybrid, nudge, pick ..._ 
-     - Bloom, Dark Garden, Lost Garden, Kiss The Sky ... 
+     - Bloom, Dark Garden, Lost Garden, *Kiss The Sky, Dust to Dust ... 
    - at startup, provide info about how app harnesses biological evolution via plant competition for height/light.
    - allow users to choose 1) "tiny white flower" or 2) "random garden" to "see what happens" as the years pass and the plants evolve. (maybe add option for one small & one large plant also.)
    - "Sew" button that kicks of initial falling seeds.
