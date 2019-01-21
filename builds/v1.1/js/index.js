@@ -11,6 +11,9 @@
 
 ////---INITIATION---////
 
+///ui
+var headerDiv = document.getElementById("header_div");
+var footerDiv = document.getElementById("footer_div");
 
 ///trackers
 var seeds = [], seedCount = 0;
@@ -21,7 +24,7 @@ var initialGeneValueAverages = {};
 
 ///settings
 var worldSpeed = 1;//5;  // (as frames per iteration: higher is slower) (does not affect physics iterations)
-var viewUI = true;
+var viewMeter = false;  // (year/season meter visibility)
 var viewShadows = true;  // (shadow visibility)
 var viewStalks = true;  // (stalk visibility) 
 var viewLeaves = true;  // (leaf visibility)
@@ -219,6 +222,21 @@ function Segment( plant, parentSegment, basePoint1, basePoint2 ) {
 
 
 ////---FUNCTIONS---////
+
+
+/// UI ///
+
+///attaches header and footer to canvas (after canvas has been resized to window dimensions in verlet.js)
+function attachHeaderAndFooter() {
+  var canvasHeight = parseFloat(canvasContainerDiv.style.height);
+  var canvasTop = canvasContainerDiv.offsetTop - canvasHeight/2;
+  headerDiv.style.width = canvasContainerDiv.style.width;
+  headerDiv.style.height = canvasHeight*0.15+"px";
+  headerDiv.style.top = canvasTop-parseFloat(headerDiv.style.height)+"px";
+  footerDiv.style.width = canvasContainerDiv.style.width;
+  footerDiv.style.height = canvasHeight*0.075+"px";
+  footerDiv.style.top = canvasTop+canvasHeight+"px";
+}
 
 
 /// Instance Creators ///
@@ -722,7 +740,7 @@ function renderSeed( resultingPlant ) {
   var h4y = r1y + h1l * ( p1x - r1x ) / (p1.width*0.5);
   //rendering
   ctx.strokeStyle = "rgba( 0, 0, 0, "+seed.opacity+" )";
-  ctx.fillStyle = "rgba( 73, 5, 51, "+seed.opacity+" )";
+  ctx.fillStyle = "rgba( 73, 5, 0, "+seed.opacity+" )";
   ctx.lineWidth = "1";
   ctx.beginPath();
   ctx.moveTo( r1x, r1y );
@@ -925,8 +943,8 @@ function runLogs( frequency ) {
 
 
 ///scenarios
-for ( var i=0; i<25; i++ ) { createSeed( null, generateRandomNewPlantGenotype() ); }
-//for ( var i=0; i<1; i++ ) { createSeed( null, generateTinyWhiteFlowerPlantGenotype() ); }
+//for ( var i=0; i<25; i++ ) { createSeed( null, generateRandomNewPlantGenotype() ); }
+for ( var i=0; i<1; i++ ) { createSeed( null, generateTinyWhiteFlowerPlantGenotype() ); }
 //for ( var i=0; i<5; i++ ) { createSeed( null, generateSmallPlantGenotype() ); }  
 //for ( var i=0; i<5; i++ ) { createSeed( null, generateMediumPlantGenotype() ); }
 //for ( var i=0; i<25; i++ ) { createSeed( null, generateLargePlantGenotype() ); }
@@ -944,13 +962,14 @@ recordInitialGeneValueAverages();
 function display() {
   renderBackground();
   runVerlet();
+  attachHeaderAndFooter();
   if ( worldTime % worldSpeed === 0 ) { 
     trackSeasons();
     shedSunlight();
     growPlants(); 
   }
   renderPlants();
-  if ( viewUI ) { renderUI(); }
+  if ( viewMeter ) { renderUI(); }
   runLogs( 600 );
   window.requestAnimationFrame( display );
 }
