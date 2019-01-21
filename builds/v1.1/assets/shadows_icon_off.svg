@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="17px" height="16px" viewBox="0 0 17 16" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 52.6 (67491) - http://www.bohemiancoding.com/sketch -->
+    <title>shadows_icon_off</title>
+    <desc>Created with Sketch.</desc>
+    <g id="mockup" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" stroke-linecap="round" stroke-linejoin="round">
+        <g transform="translate(-595.000000, -130.000000)" fill-rule="nonzero" id="header" stroke="#74756F" stroke-width="0.903529412">
+            <g transform="translate(176.000000, 88.000000)">
+                <g id="icons" transform="translate(419.000000, 42.058824)">
+                    <g transform="translate(0.000000, 0.471993)" id="shadows_icon_off">
+                        <g transform="translate(0.825988, 0.000000)">
+                            <path d="M1.13686838e-13,14.1597893 C1.13686838e-13,14.1597893 0.424793679,10.2422476 1.27438104,2.40716418 C4.59406497,3.9490079 7.80361721,3.47701493 10.9030378,0.99118525 L15.3397717,14.1597893 L1.13686838e-13,14.1597893 Z" id="Path"></path>
+                            <path d="M1.27438104,2.40716418 C3.80741001,0.0157330992 7.01696225,-0.456259877 10.9030378,0.99118525 C7.9766813,3.53994732 4.76712906,4.0119403 1.27438104,2.40716418 Z" id="Path"></path>
+                            <path d="M1.53397717,2.35996488 L10.619842,1.0619842" id="Path-2"></path>
+                        </g>
+                    </g>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>

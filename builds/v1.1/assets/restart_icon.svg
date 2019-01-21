@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="18px" height="15px" viewBox="0 0 18 15" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 52.6 (67491) - http://www.bohemiancoding.com/sketch -->
+    <title>restart_icon</title>
+    <desc>Created with Sketch.</desc>
+    <g id="mockup" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" stroke-linecap="round">
+        <g transform="translate(-673.000000, -130.000000)" fill-rule="nonzero" id="header" stroke="#74756F" stroke-width="0.903529412">
+            <g transform="translate(176.000000, 88.000000)">
+                <g id="icons" transform="translate(419.000000, 42.058824)">
+                    <g transform="translate(0.000000, 0.471993)" id="restart_icon">
+                        <g transform="translate(78.350834, 0.000000)">
+                            <path d="M5.01084723,12.0378352 C6.22120772,13.1660668 7.84516115,13.8563652 9.63034241,13.8563652 C13.3728838,13.8563652 16.406813,10.822436 16.406813,7.07989464 C16.406813,3.33735328 13.3728838,0.303424056 9.63034241,0.303424056 C5.88780104,0.303424056 2.85387182,3.33735328 2.85387182,7.07989464" id="Path" stroke-linejoin="round"></path>
+                            <polyline id="Path-4" points="1.04681299 4.88469152 2.87789588 7.43388938 5.13671941 5.17506585"></polyline>
+                        </g>
+                    </g>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>

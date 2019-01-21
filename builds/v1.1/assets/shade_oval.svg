@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="21px" height="21px" viewBox="0 0 21 21" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 52.6 (67491) - http://www.bohemiancoding.com/sketch -->
+    <title>shade_oval</title>
+    <desc>Created with Sketch.</desc>
+    <g id="mockup" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g transform="translate(-170.000000, -182.000000)" fill-rule="nonzero" id="shades">
+            <g transform="translate(170.000000, 182.000000)">
+                <g id="shade_oval" transform="translate(0.111111, 0.000000)">
+                    <circle id="Oval" fill="#111111" cx="10.0020443" cy="10.8107413" r="10.0020443"></circle>
+                    <circle id="Oval" fill="#74756F" cx="10.0020445" cy="10.8107413" r="5.0020445"></circle>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>
