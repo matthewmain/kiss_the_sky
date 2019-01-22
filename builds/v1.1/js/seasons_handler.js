@@ -4,7 +4,7 @@
 
 
 
-///trackets
+///trackers
 var currentYear = 1;
 var yearTime = 0;
 var currentSeason;
@@ -92,51 +92,18 @@ function renderBackground() {
 }
 
 ///renders seasons meter UI
-function renderUI() {
+function updateSeasonPieChart() {
   var dateDeg;  // degree corresponding to time of year on meter
   switch( currentSeason ) {  // marker position, calibrated different season lengths to uniform season arcs on meter
-    case "spring": dateDeg = 270 + 90 * yearTime / spL; break;
-    case "summer": dateDeg = 0 + 90 * (yearTime-spL) / suL; break;
-    case "fall": dateDeg = 90 + 90 * (yearTime-spL-suL) / faL; break;
-    case "winter": dateDeg = 180 + 90 * (yearTime-spL-suL-faL) / wiL;
+    case "spring": dateDeg = yearTime*360 / spL; break;
+    case "summer": dateDeg = (yearTime-spL) * 360 / suL; break;
+    case "fall": dateDeg = (yearTime-spL-suL) * 360 / faL; break;
+    case "winter": dateDeg = (yearTime-spL-suL-faL) * 360 / wiL;
   }
-  //outer circle
-  ctx.beginPath();
-  ctx.strokeStyle="#2b4f0c";  // very dark green
-  ctx.lineWidth="17";
-  ctx.lineCap="butt";
-  ctx.arc( xValFromPct(93), yValFromPct(7), 36, Tl.degToRad(0), Tl.degToRad(360) );
-  ctx.stroke();
-  //seasons arcs
-  ctx.lineWidth="15";
-  ctx.beginPath();  // spring
-  ctx.arc( xValFromPct(93), yValFromPct(7), 36, Tl.degToRad(270), Tl.degToRad(360) );
-  ctx.strokeStyle="#A2D80D";  // light green 
-  ctx.stroke();
-  ctx.beginPath();  // summer
-  ctx.arc( xValFromPct(93), yValFromPct(7), 36, Tl.degToRad(0), Tl.degToRad(90) );
-  ctx.strokeStyle="#4b871d";  // dark green
-  ctx.stroke();
-  ctx.beginPath();  // fall
-  ctx.arc( xValFromPct(93), yValFromPct(7), 36, Tl.degToRad(90), Tl.degToRad(180) );
-  ctx.strokeStyle="#edd355";  // yellow
-  ctx.stroke();
-  ctx.beginPath();  // winter
-  ctx.arc( xValFromPct(93), yValFromPct(7), 36, Tl.degToRad(180), Tl.degToRad(270) );
-  ctx.strokeStyle="#ffffff";  // white
-  ctx.stroke();
-  //marker
-  ctx.beginPath();
-  ctx.lineWidth="8";
-  ctx.lineCap="round";
-  ctx.arc( xValFromPct(93), yValFromPct(7), 36, Tl.degToRad( dateDeg ), Tl.degToRad( dateDeg ) );
-  ctx.strokeStyle="#222222";
-  ctx.stroke();
-  //year counter text
-  ctx.font = "28px roboto";
-  ctx.textAlign = "center";
-  ctx.fillStyle="#222222";
-  ctx.fillText(currentYear, xValFromPct(93), yValFromPct(8) );
+  var pieValueAsDegree = dateDeg;
+  var pieCircumference = 2*Math.PI*25;  // (svg circle radius is 25)
+  var pieValue = pieCircumference*(pieValueAsDegree/360);
+  document.querySelector("circle").style.strokeDasharray = pieValue + " " + pieCircumference;
 }
 
 

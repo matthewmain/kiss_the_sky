@@ -14,7 +14,7 @@
 ///ui
 var headerDiv = document.getElementById("header_div");
 var footerDiv = document.getElementById("footer_div");
-
+ 
 ///trackers
 var seeds = [], seedCount = 0;
 var plants = [], plantCount = 0;
@@ -25,7 +25,6 @@ var highestFlowerPct = 0;
 
 ///settings
 var worldSpeed = 1;//5;  // (as frames per iteration: higher is slower) (does not affect physics iterations)
-var viewMeter = false;  // (year/season meter visibility)
 var viewShadows = true;  // (shadow visibility)
 var viewStalks = true;  // (stalk visibility) 
 var viewLeaves = true;  // (leaf visibility)
@@ -244,6 +243,7 @@ function updateUI() {
   attachHeaderAndFooter();
   $("#year_count").text( currentYear );
   $("#season").text( currentSeason );
+  updateSeasonPieChart();
   $("#highest_height").text( highestFlowerPct );
 }
 
@@ -986,8 +986,8 @@ $("#restart_icon_svg").click(function() {
 
 
 ///scenarios
-for ( var i=0; i<25; i++ ) { createSeed( null, generateRandomNewPlantGenotype() ); }
-//for ( var i=0; i<1; i++ ) { createSeed( null, generateTinyWhiteFlowerPlantGenotype() ); }
+//for ( var i=0; i<25; i++ ) { createSeed( null, generateRandomNewPlantGenotype() ); }
+for ( var i=0; i<1; i++ ) { createSeed( null, generateTinyWhiteFlowerPlantGenotype() ); }
 //for ( var i=0; i<5; i++ ) { createSeed( null, generateSmallPlantGenotype() ); }  
 //for ( var i=0; i<5; i++ ) { createSeed( null, generateMediumPlantGenotype() ); }
 //for ( var i=0; i<25; i++ ) { createSeed( null, generateLargePlantGenotype() ); }
@@ -1012,8 +1012,7 @@ function display() {
     growPlants(); 
   }
   renderPlants();
-  if ( viewMeter ) { renderUI(); }
-  //runLogs( 600 );
+  runLogs( 600 );
   window.requestAnimationFrame( display );
 }
 
