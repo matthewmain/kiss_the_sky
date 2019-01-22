@@ -1,5 +1,43 @@
+
 body {
 	background: #111111;
+}
+
+#header_div {
+	position: absolute;
+  left: 50%;
+  transform: translate(-50%);
+}
+
+#title_svg {
+	height: 86%;
+}
+
+.icon {
+	position: absolute;
+	bottom: 27%;
+	cursor: pointer;
+}
+
+#shadows_icon_on_svg {
+	right: 14.5%;
+	height: 20%;
+}
+
+#shadows_icon_off_svg {
+	right: 14.5%;
+	height: 20%;
+	visibility: hidden;
+}
+
+#camera_icon_svg {
+	right: 7%;
+	height: 19%;
+}
+
+#restart_icon_svg {
+	right: 0;
+	height: 20%;
 }
 
 #canvas_container_div {
@@ -12,5 +50,34 @@ body {
 #canvas {
   width: 100%;
   height: 100%;
-	border: solid 1px #000000;
 }
+
+#footer_div {
+	position: absolute;
+  left: 50%;
+  transform: translate(-50%);
+}
+
+.text {
+	font-family: 'Amatic SC', Avenir, sans-serif;
+	font-size: 0.9em;
+	letter-spacing: 0.4pt;
+	color: #D5D8C5;
+	margin: 0;
+	padding-top: 0.85em;
+}
+
+.number {
+	font-size: 1.2em;
+}
+
+#time {
+	float: left;
+}
+
+#height {
+	float: right;
+}
+
+
+

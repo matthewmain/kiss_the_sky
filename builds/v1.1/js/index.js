@@ -11,6 +11,9 @@
 
 ////---INITIATION---////
 
+///ui
+var headerDiv = document.getElementById("header_div");
+var footerDiv = document.getElementById("footer_div");
 
 ///trackers
 var seeds = [], seedCount = 0;
@@ -18,10 +21,11 @@ var plants = [], plantCount = 0;
 var sunRays = [], sunRayCount = 0;
 var shadows = [], shadowCount = 0;
 var initialGeneValueAverages = {};
+var highestFlowerPct = 0; 
 
 ///settings
 var worldSpeed = 1;//5;  // (as frames per iteration: higher is slower) (does not affect physics iterations)
-var viewUI = true;
+var viewMeter = false;  // (year/season meter visibility)
 var viewShadows = true;  // (shadow visibility)
 var viewStalks = true;  // (stalk visibility) 
 var viewLeaves = true;  // (leaf visibility)
@@ -219,6 +223,29 @@ function Segment( plant, parentSegment, basePoint1, basePoint2 ) {
 
 
 ////---FUNCTIONS---////
+
+
+/// UI ///
+
+///attaches header and footer to canvas (after canvas has been resized to window dimensions in verlet.js)
+function attachHeaderAndFooter() {
+  var canvasHeight = parseFloat(canvasContainerDiv.style.height);
+  var canvasTop = canvasContainerDiv.offsetTop - canvasHeight/2;
+  headerDiv.style.width = canvasContainerDiv.style.width;
+  headerDiv.style.height = canvasHeight*0.15+"px";
+  headerDiv.style.top = canvasTop-parseFloat(headerDiv.style.height)+"px";
+  footerDiv.style.width = canvasContainerDiv.style.width;
+  footerDiv.style.height = canvasHeight*0.075+"px";
+  footerDiv.style.top = canvasTop+canvasHeight+"px";
+}
+
+///updates UI (runs every iteration)
+function updateUI() {
+  attachHeaderAndFooter();
+  $("#year_count").text( currentYear );
+  $("#season").text( currentSeason );
+  $("#highest_height").text( highestFlowerPct );
+}
 
 
 /// Instance Creators ///
@@ -722,7 +749,7 @@ function renderSeed( resultingPlant ) {
   var h4y = r1y + h1l * ( p1x - r1x ) / (p1.width*0.5);
   //rendering
   ctx.strokeStyle = "rgba( 0, 0, 0, "+seed.opacity+" )";
-  ctx.fillStyle = "rgba( 73, 5, 51, "+seed.opacity+" )";
+  ctx.fillStyle = "rgba( 73, 5, 0, "+seed.opacity+" )";
   ctx.lineWidth = "1";
   ctx.beginPath();
   ctx.moveTo( r1x, r1y );
@@ -921,6 +948,40 @@ function runLogs( frequency ) {
 
 
 
+////---EVENTS---////
+
+
+///toggle shadow visibility
+$(".shadows_icon").click(function(){
+  if ( viewShadows === true ) {
+    document.getElementById("shadows_icon_on_svg").style.visibility = "hidden";
+    document.getElementById("shadows_icon_off_svg").style.visibility = "visible";
+    viewShadows = false;
+  } else {
+    document.getElementById("shadows_icon_on_svg").style.visibility = "visible";
+    document.getElementById("shadows_icon_off_svg").style.visibility = "hidden";
+    viewShadows = true;
+  }
+});
+
+///download canvas screengrab
+$("#save").click(function(){
+  var image = canvas.toDataURL("image/png");
+  console.log(image);
+  var download = document.getElementById("save");
+  download.href = image;
+  var seasonTitleCase = currentSeason.charAt(0).toUpperCase()+currentSeason.slice(1);
+  download.download = "Kiss the Sky - Year "+currentYear+", "+seasonTitleCase+".png";
+});
+
+///reloads game
+$("#restart_icon_svg").click(function() {
+  location.reload();
+});
+
+
+
+
 ////---TESTING---////
 
 
@@ -944,14 +1005,15 @@ recordInitialGeneValueAverages();
 function display() {
   renderBackground();
   runVerlet();
+  updateUI();
   if ( worldTime % worldSpeed === 0 ) { 
     trackSeasons();
     shedSunlight();
     growPlants(); 
   }
   renderPlants();
-  if ( viewUI ) { renderUI(); }
-  runLogs( 600 );
+  if ( viewMeter ) { renderUI(); }
+  //runLogs( 600 );
   window.requestAnimationFrame( display );
 }
 

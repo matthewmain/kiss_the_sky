@@ -13,7 +13,7 @@
 var canvasContainerDiv = document.getElementById("canvas_container_div");
 var canvas = document.getElementById("canvas");
 var ctx = canvas.getContext("2d");
-var canvRatio = 0.8;  // canvas ratio, as canvas size to lowest of window width or height
+var canvRatio = 0.7;  // canvas ratio, as canvas size to lowest of window width or height
 
 ///trackers
 var points = [], pointCount = 0;
