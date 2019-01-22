@@ -75,9 +75,25 @@ body {
 	float: left;
 }
 
+#pie_svg {
+	position: relative;
+	top: 17px;
+	left: 5px;
+	height: 12px;
+	transform: rotate(-90deg);
+}
+
+#pie_circle {
+	fill: none;
+  stroke: #D5D8C5;
+  stroke-width: 50;
+}
+
 #height {
 	float: right;
 }
+
+
 
 
 
