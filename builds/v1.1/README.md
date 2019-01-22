@@ -4,7 +4,7 @@
 <br>
 <br>
 
-- [X] choose game name and design title logo
+- [X] choose game name and design title logo (Kiss the Sky)
 - [X] add "year _number_, _season_" to season meter, using attractive font
 - [X] add restart button
 - [X] add shadow visibility toggle
