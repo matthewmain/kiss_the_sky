@@ -6,6 +6,7 @@
 
 - [X] choose game name and design title logo (Kiss the Sky)
 - [X] add "year _number_, _season_" to season meter, using attractive font
+- [X] add highest flower tracker
 - [X] add restart button
 - [X] add shadow visibility toggle
 - [X] add image download button
