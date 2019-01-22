@@ -416,6 +416,10 @@ function renderFlowers( plant ) {
         Tl.arcFromTo( f.ptHbL, f.ptPbM, pah ); Tl.arcFromTo( f.ptPbM, f.ptHbR, pah );
         ctx.fill(); ctx.stroke();
       }
+      //flower height tracker
+      if ( f.bloomRatio === 1 && Math.floor( (canvas.height-f.ptBudTip.cy)*100/canvas.height ) > highestFlowerPct ) { 
+        highestFlowerPct =  Math.floor( (canvas.height-f.ptBudTip.cy)*100/canvas.height ); 
+      }
       //pods
       if ( viewPods ) { renderPods( f ); }
     }

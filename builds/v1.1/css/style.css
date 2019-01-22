@@ -1,3 +1,4 @@
+
 body {
 	background: #111111;
 }
@@ -12,23 +13,29 @@ body {
 	height: 86%;
 }
 
-#shadows_icon_svg {
+.icon {
 	position: absolute;
 	bottom: 27%;
+	cursor: pointer;
+}
+
+#shadows_icon_on_svg {
 	right: 14.5%;
 	height: 20%;
 }
 
+#shadows_icon_off_svg {
+	right: 14.5%;
+	height: 20%;
+	visibility: hidden;
+}
+
 #camera_icon_svg {
-	position: absolute;
-	bottom: 27%;
 	right: 7%;
 	height: 19%;
 }
 
 #restart_icon_svg {
-	position: absolute;
-	bottom: 27%;
 	right: 0;
 	height: 20%;
 }
@@ -53,11 +60,11 @@ body {
 
 .text {
 	font-family: 'Amatic SC', Avenir, sans-serif;
-	font-size: 0.8em;
+	font-size: 0.9em;
 	letter-spacing: 0.4pt;
 	color: #D5D8C5;
 	margin: 0;
-	padding-top: 0.8em;
+	padding-top: 0.85em;
 }
 
 .number {

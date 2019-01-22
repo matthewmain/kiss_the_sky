@@ -21,6 +21,7 @@ var plants = [], plantCount = 0;
 var sunRays = [], sunRayCount = 0;
 var shadows = [], shadowCount = 0;
 var initialGeneValueAverages = {};
+var highestFlowerPct = 0; 
 
 ///settings
 var worldSpeed = 1;//5;  // (as frames per iteration: higher is slower) (does not affect physics iterations)
@@ -236,6 +237,14 @@ function attachHeaderAndFooter() {
   footerDiv.style.width = canvasContainerDiv.style.width;
   footerDiv.style.height = canvasHeight*0.075+"px";
   footerDiv.style.top = canvasTop+canvasHeight+"px";
+}
+
+///updates UI (runs every iteration)
+function updateUI() {
+  attachHeaderAndFooter();
+  $("#year_count").text( currentYear );
+  $("#season").text( currentSeason );
+  $("#highest_height").text( highestFlowerPct );
 }
 
 
@@ -939,12 +948,46 @@ function runLogs( frequency ) {
 
 
 
+////---EVENTS---////
+
+
+///toggle shadow visibility
+$(".shadows_icon").click(function(){
+  if ( viewShadows === true ) {
+    document.getElementById("shadows_icon_on_svg").style.visibility = "hidden";
+    document.getElementById("shadows_icon_off_svg").style.visibility = "visible";
+    viewShadows = false;
+  } else {
+    document.getElementById("shadows_icon_on_svg").style.visibility = "visible";
+    document.getElementById("shadows_icon_off_svg").style.visibility = "hidden";
+    viewShadows = true;
+  }
+});
+
+///download canvas screengrab
+$("#save").click(function(){
+  var image = canvas.toDataURL("image/png");
+  console.log(image);
+  var download = document.getElementById("save");
+  download.href = image;
+  var seasonTitleCase = currentSeason.charAt(0).toUpperCase()+currentSeason.slice(1);
+  download.download = "Kiss the Sky - Year "+currentYear+", "+seasonTitleCase+".png";
+});
+
+///reloads game
+$("#restart_icon_svg").click(function() {
+  location.reload();
+});
+
+
+
+
 ////---TESTING---////
 
 
 ///scenarios
-//for ( var i=0; i<25; i++ ) { createSeed( null, generateRandomNewPlantGenotype() ); }
-for ( var i=0; i<1; i++ ) { createSeed( null, generateTinyWhiteFlowerPlantGenotype() ); }
+for ( var i=0; i<25; i++ ) { createSeed( null, generateRandomNewPlantGenotype() ); }
+//for ( var i=0; i<1; i++ ) { createSeed( null, generateTinyWhiteFlowerPlantGenotype() ); }
 //for ( var i=0; i<5; i++ ) { createSeed( null, generateSmallPlantGenotype() ); }  
 //for ( var i=0; i<5; i++ ) { createSeed( null, generateMediumPlantGenotype() ); }
 //for ( var i=0; i<25; i++ ) { createSeed( null, generateLargePlantGenotype() ); }
@@ -962,7 +1005,7 @@ recordInitialGeneValueAverages();
 function display() {
   renderBackground();
   runVerlet();
-  attachHeaderAndFooter();
+  updateUI();
   if ( worldTime % worldSpeed === 0 ) { 
     trackSeasons();
     shedSunlight();
@@ -970,7 +1013,7 @@ function display() {
   }
   renderPlants();
   if ( viewMeter ) { renderUI(); }
-  runLogs( 600 );
+  //runLogs( 600 );
   window.requestAnimationFrame( display );
 }
 
