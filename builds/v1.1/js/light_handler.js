@@ -3,14 +3,18 @@
 ///////// LIGHT HANDLER /////////
 
 
+///interaction variables
+var mouseCanvasXPct;
+var mouseCanvasYPct;
+var sunShadeY = yValFromPct(5);  // sun shade elevation as canvas Y value
+var sunShadeHandleRadiusPct = 1.5;  // sun shade handle radius as percentage of canvas width
+var grabbedHandle = null;  // grabbed handle object (assigned when handle is clicked/touched)
 
-///creates a new sun ray (one for each x value as an integer percentage of the canvas's width)
-function createSunRays() {
-  for ( var i=0; i<101; i++ ) {
-    sunRays.push( new SunRay() );
-    sunRayCount++;
-  }
-}
+
+
+
+/////---OBJECTS---/////
+
 
 ///sun ray constructor
 function SunRay() {
@@ -26,6 +30,48 @@ function Shadow( leafSpan ) {
   this.p2 = leafSpan.p2;
   this.p3 = { cx: this.p2.cx, cy: yValFromPct( 100 ) };
   this.p4 = { cx: this.p1.cx, cy: yValFromPct( 100 ) };
+}
+
+///sun shade handle constructor
+function SunShadeHandle( xPositionPct ) {
+  this.x = xValFromPct(xPositionPct); 
+  this.y = sunShadeY;
+}
+
+///sun shade constructor
+function SunShade( handle1, handle2 ) {
+  this.h1 = handle1;
+  this.h2 = handle2; 
+}
+
+
+
+
+/////---FUNCTIONS---/////
+
+
+///creates a new sun ray (one for each x value as an integer percentage of the canvas's width)
+function createSunRays() {
+  for ( var i=0; i<101; i++ ) {
+    sunRays.push( new SunRay() );
+    sunRayCount++;
+  }
+}
+
+///creates a new sun shade handle
+function createSunShadeHandle( xPositionPct ) {
+  sunShadeHandles.push( new SunShadeHandle( xPositionPct ) );
+  sunShadeHandleCount++;
+  return sunShadeHandles[sunShadeHandles.length-1];
+}
+
+///creates a new sun shade
+function createSunShade( handle1XPct, handle2XPct ) {
+  var handle1 = createSunShadeHandle( handle1XPct );
+  var handle2 = createSunShadeHandle( handle2XPct );
+  sunShades.push ( new SunShade( handle1, handle2 ) );
+  sunShadeCount++;
+  return sunShades[sunShades.length-1];
 }
 
 ///sheds sunlight
@@ -109,8 +155,82 @@ function renderShadows() {
   shadows = []; shadowCount = 0;
 }
 
+///renders sun shades XXX  {{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}
+function renderSunShades() {
+  var y = sunShadeY;  // sun shade y value
+  var hr = xValFromPct( sunShadeHandleRadiusPct );  // handle radius
+  var c = "#000000";  // color
+  for ( i=0; i<sunShades.length; i++ ) {
+    var s = sunShades[i];
+    //line
+    ctx.beginPath();
+    ctx.lineWidth = 14;
+    ctx.strokeStyle = c;
+    ctx.moveTo(s.h1.x,y);
+    ctx.lineTo(s.h2.x,y);
+    ctx.stroke();
+    //handles
+    ctx.fillStyle = c;
+    ctx.arc( s.h1.x, y, hr, 0, 2*Math.PI );
+    ctx.arc( s.h2.x, y, hr, 0, 2*Math.PI );
+    ctx.fill();
+  }
+}
 
 
+
+/////---INTERACTION---/////
+
+
+//grabs handle on click/touch
+function grabHandle(e) {
+  var canvasWidthOnScreen = parseFloat(canvasContainerDiv.style.width);
+  var canvasHeightOnScreen = parseFloat(canvasContainerDiv.style.height);
+  mouseCanvasXPct = (e.pageX-canvasPositionLeft)*100/canvasWidthOnScreen;  // mouse canvas x percent
+  mouseCanvasYPct = (e.pageY-canvasPositionTop)*100/canvasHeightOnScreen;  // mouse canvas y percent
+  for ( var i=0; i<sunShadeHandles.length; i++ ) {
+    var h = sunShadeHandles[i];
+    var x_diff = pctFromXVal( h.x ) - mouseCanvasXPct;
+    var y_diff = pctFromYVal( h.y ) - mouseCanvasYPct;
+    var dist = Math.sqrt( x_diff*x_diff + y_diff*y_diff );
+    if ( dist <= sunShadeHandleRadiusPct ) {
+      grabbedHandle = h;
+    }
+  }
+}
+
+//moves handle
+function moveHandle(e) {
+  if ( grabbedHandle ) {
+    var canvasWidthOnScreen = parseFloat(canvasContainerDiv.style.width);
+    mouseCanvasXPct = (e.pageX-canvasPositionLeft)*100/canvasWidthOnScreen;  // mouse canvas x percent
+    //updates grabbed handle x position according to mouse x position
+    if ( mouseCanvasXPct < 0 ) {
+      grabbedHandle.x = 0;
+    } else if ( mouseCanvasXPct > 100 ) {
+      grabbedHandle.x = xValFromPct( 100 );
+    } else {
+      grabbedHandle.x = xValFromPct( mouseCanvasXPct );
+    }
+  }
+}
+
+//drops handle
+function dropHandle() {
+  grabbedHandle = null;
+}
+
+
+
+///---EVENTS---///
+
+document.addEventListener("mousedown", grabHandle);
+document.addEventListener("mousemove", moveHandle);
+document.addEventListener("mouseup", dropHandle);
+
+document.addEventListener("touchstart", grabHandle);
+document.addEventListener("touchmove", moveHandle);
+document.addEventListener("touchend", dropHandle);
 
 
 

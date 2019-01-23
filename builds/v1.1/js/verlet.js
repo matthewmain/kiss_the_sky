@@ -13,7 +13,9 @@
 var canvasContainerDiv = document.getElementById("canvas_container_div");
 var canvas = document.getElementById("canvas");
 var ctx = canvas.getContext("2d");
-var canvRatio = 0.7;  // canvas ratio, as canvas size to lowest of window width or height
+var canvRatio = 0.75;  // canvas ratio, as canvas size to lowest of window width or height
+var canvasPositionLeft = canvas.getBoundingClientRect().left + window.scrollX;
+var canvasPositionTop = canvas.getBoundingClientRect().top + window.scrollY;
 
 ///trackers
 var points = [], pointCount = 0;
@@ -87,6 +89,8 @@ function scaleToWindow() {
     canvasContainerDiv.style.width = window.innerWidth*canvRatio+"px";
     canvasContainerDiv.style.height = canvasContainerDiv.style.width;
   }
+  canvasPositionLeft = canvas.getBoundingClientRect().left + window.scrollX;
+  canvasPositionTop = canvas.getBoundingClientRect().top + window.scrollY;
 }
 
 ///converts percentage to canvas x value
