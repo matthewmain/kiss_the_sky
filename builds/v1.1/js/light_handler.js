@@ -1,5 +1,6 @@
 
 
+
 ///////// LIGHT HANDLER /////////
 
 
@@ -7,7 +8,7 @@
 var mouseCanvasXPct;
 var mouseCanvasYPct;
 var sunShadeY = yValFromPct(5);  // sun shade elevation as canvas Y value
-var sunShadeHandleRadiusPct = 1.5;  // sun shade handle radius as percentage of canvas width
+var sunShadeHandleRadiusPct = 1.75;  // sun shade handle radius as percentage of canvas width
 var grabbedHandle = null;  // grabbed handle object (assigned when handle is clicked/touched)
 
 
@@ -118,13 +119,20 @@ function markRayLeafIntersections() {
 ///transfers energy from sun rays to leaves
 function photosynthesize() {
   for ( var i=0; i<sunRays.length; i++ ) {
-    var sr = sunRays[i];  // sun ray  
+    var sr = sunRays[i];  // sun ray
+    //first, reduces a sun ray's intensity if it intersects a sun shade
+    for ( var j=0; j<sunShades.length; j++ ) {
+      var ss = sunShades[j];
+      var lhx = ss.h1.x <= ss.h2.x ? ss.h1.x : ss.h2.x;  // leftmost handle x value
+      var rhx = ss.h1.x <= ss.h2.x ? ss.h2.x : ss.h1.x;  // rightmost handle x value
+      if ( sr.x >= lhx && sr.x <= rhx ) { sr.intensity *= 0.0; }
+    }
     //sorts leaf contact points from highest to lowest elevation (increasing y value)
     sr.leafContacts.sort( function( a, b ) { return a.y - b.y; } );
     //when a sun ray hits a leaf, transfers half of the ray's intensity to the plant as energy
-    for ( var j=0; j<sr.leafContacts.length; j++) {
-      var lc = sr.leafContacts[j];  // leaf contact ({ y: <leaf contact y value>, plant: <plant> })
-      sr.intensity /= 2;
+    for ( var k=0; k<sr.leafContacts.length; k++) {
+      var lc = sr.leafContacts[k];  // leaf contact ({ y: <leaf contact y value>, plant: <plant> })
+      sr.intensity *= 0.5;
       lc.plant.energy += sr.intensity * photosynthesisRatio;
     }
     sr.leafContacts = []; sr.intensity = sunRayIntensity;  // resets sun ray's leaf contact points & intensity
@@ -132,13 +140,13 @@ function photosynthesize() {
 }
 
 ///marks shadow positions (based on position of leaf spans)
-function markShadowPositions( segment ) {
+function markLeafShadowPositions( segment ) {
   shadows.push( new Shadow( segment.spLf1 ) );
   shadows.push( new Shadow( segment.spLf2 ) );
 }
 
 ///renders shadows (from highest to lowest elevation)
-function renderShadows() {
+function renderLeafShadows() {
   shadows.sort( function( a, b ) { return a.p2.cy - b.p2.cy; } );
   for ( var i=0; i<shadows.length; i++ ) {
     var sh = shadows[i];
@@ -155,27 +163,58 @@ function renderShadows() {
   shadows = []; shadowCount = 0;
 }
 
-///renders sun shades XXX  {{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}
+///renders sun shades
 function renderSunShades() {
   var y = sunShadeY;  // sun shade y value
-  var hr = xValFromPct( sunShadeHandleRadiusPct );  // handle radius
-  var c = "#000000";  // color
-  for ( i=0; i<sunShades.length; i++ ) {
+  var r = xValFromPct( sunShadeHandleRadiusPct );  // handle radius
+  var c = "#111111";  // color
+  for ( var i=0; i<sunShades.length; i++ ) {
     var s = sunShades[i];
+    //shadow
+    if ( viewShadows ) {
+      ctx.fillStyle = "rgba( 0, 0, 0, 0.333 )";
+      ctx.beginPath();
+      ctx.moveTo( s.h1.x, y );
+      ctx.lineTo( s.h2.x, y ); 
+      ctx.lineTo( s.h2.x, yValFromPct(100) );
+      ctx.lineTo( s.h1.x, yValFromPct(100) );
+      ctx.fill();  
+    }
     //line
     ctx.beginPath();
-    ctx.lineWidth = 14;
+    ctx.lineWidth = xValFromPct( sunShadeHandleRadiusPct*0.75 );
     ctx.strokeStyle = c;
     ctx.moveTo(s.h1.x,y);
     ctx.lineTo(s.h2.x,y);
     ctx.stroke();
     //handles
-    ctx.fillStyle = c;
-    ctx.arc( s.h1.x, y, hr, 0, 2*Math.PI );
-    ctx.arc( s.h2.x, y, hr, 0, 2*Math.PI );
-    ctx.fill();
+    for ( var j=1; j<=2; j++) {
+      var hx = s["h"+j].x;
+      //outer circle
+      ctx.beginPath();
+      ctx.fillStyle = c;
+      ctx.arc( hx, y, r, 0, 2*Math.PI );
+      ctx.fill();
+      ctx.beginPath();
+      //inner shape
+      if ( hx === 0 || hx === canvas.width ) {
+        //diamond
+        ctx.fillStyle = "rgba( 213, 215, 197, 0.5 )";
+        ctx.moveTo( hx, y-r*0.45 );
+        ctx.lineTo( hx+r*0.6, y );
+        ctx.lineTo( hx, y+r*0.45 );
+        ctx.lineTo( hx-r*0.6, y );
+        ctx.fill();
+      } else {
+        //circle
+        ctx.fillStyle = "rgba( 213, 215, 197, 0.15 )";
+        ctx.arc( hx, y, r*0.666, 0, 2*Math.PI );
+        ctx.fill();
+      }
+    }
   }
 }
+
 
 
 

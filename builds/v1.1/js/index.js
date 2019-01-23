@@ -818,7 +818,7 @@ function renderLeaves( plant, segment ) {
   if ( segment.hasLeaves ) {
     renderLeaf( plant, segment, segment.spLf1 );
     renderLeaf( plant, segment, segment.spLf2 );
-    if ( viewShadows && plant.isAlive ) { markShadowPositions( segment ); }
+    if ( viewShadows && plant.isAlive ) { markLeafShadowPositions( segment ); }
   }
 }
 
@@ -869,7 +869,7 @@ function renderPlants() {
     }
     renderSeed( plant );
   }
-  if ( viewShadows ) { renderShadows(); }
+  if ( viewShadows ) { renderLeafShadows(); }
 }
 
 
@@ -1005,26 +1005,25 @@ for ( var i=0; i<1; i++ ) { createSeed( null, generateTinyWhiteFlowerPlantGenoty
 
 /////---DISPLAY---/////
 
-// createSeed( null, generateTinyWhiteFlowerPlantGenotype() );
+
 recordInitialGeneValueAverages();
 
 function display() {
   renderBackground();
   runVerlet();
-  updateUI();
   if ( worldTime % worldSpeed === 0 ) { 
     trackSeasons();
     shedSunlight();
     growPlants(); 
   }
   renderPlants();
-  //runLogs( 600 );
+  updateUI();
+  runLogs( 600 );
   window.requestAnimationFrame( display );
 }
 
-createSunShade( 33.3, 66.6 );  // XXX  {{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}
-
 createSunRays();
+for ( var i=0; i<5; i++ ) { createSunShade( 0, 0 ); }
 display();
 
 
