@@ -9,7 +9,7 @@
 
 
 
-////---INITIATION---////
+/////---INITIATION---/////
 
 ///ui
 var headerDiv = document.getElementById("header_div");
@@ -19,6 +19,8 @@ var footerDiv = document.getElementById("footer_div");
 var seeds = [], seedCount = 0;
 var plants = [], plantCount = 0;
 var sunRays = [], sunRayCount = 0;
+var sunShadeHandles = [], sunShadeHandleCount = 0;
+var sunShades = [], sunShadeCount = 0;
 var shadows = [], shadowCount = 0;
 var initialGeneValueAverages = {};
 var highestFlowerPct = 0; 
@@ -55,7 +57,7 @@ var collapseEnergyLevelRatio = -2;  // ratio of maximum energy when plant collap
 
 
 
-////---OBJECTS---////
+/////---OBJECTS---/////
 
 
 ///colors
@@ -221,10 +223,10 @@ function Segment( plant, parentSegment, basePoint1, basePoint2 ) {
 
 
 
-////---FUNCTIONS---////
+/////---FUNCTIONS---/////
 
 
-/// UI ///
+//// UI ////
 
 ///attaches header and footer to canvas (after canvas has been resized to window dimensions in verlet.js)
 function attachHeaderAndFooter() {
@@ -241,6 +243,7 @@ function attachHeaderAndFooter() {
 ///updates UI (runs every iteration)
 function updateUI() {
   attachHeaderAndFooter();
+  renderSunShades();
   $("#year_count").text( currentYear );
   $("#season").text( currentSeason );
   updateSeasonPieChart();
@@ -248,7 +251,7 @@ function updateUI() {
 }
 
 
-/// Instance Creators ///
+///// Instance Creators /////
 
 ///creates a new seed
 function createSeed( parentFlower, zygoteGenotype ) {
@@ -301,7 +304,21 @@ function removePlant( plantId ) {
 
 
 
-/// Component Functions ///
+//// Component Functions ////
+
+///records initial gene value averages
+function recordInitialGeneValueAverages() {
+  for ( var gene in Genome ) {
+    var alleleAvg = 0;
+    for ( i=0; i<plants.length; i++ ) {
+      var p = plants[i];
+      alleleAvg += p.genotype[gene].allele1.value;
+      alleleAvg += p.genotype[gene].allele2.value;      
+    }
+    alleleAvg = alleleAvg/(plants.length*2);
+    initialGeneValueAverages[gene] = alleleAvg;
+  }
+}
 
 ///scatters seeds (for initiation)
 function scatterSeed( seed ) {
@@ -716,7 +733,7 @@ function fadePlantOutAndRemove( plant ) {
 }
 
 
-/// Renderers ///
+//// Renderers ////
 
 ///renders seeds
 function renderSeed( resultingPlant ) {
@@ -801,7 +818,7 @@ function renderLeaves( plant, segment ) {
   if ( segment.hasLeaves ) {
     renderLeaf( plant, segment, segment.spLf1 );
     renderLeaf( plant, segment, segment.spLf2 );
-    if ( viewShadows && plant.isAlive ) { markShadowPositions( segment ); }
+    if ( viewShadows && plant.isAlive ) { markLeafShadowPositions( segment ); }
   }
 }
 
@@ -852,22 +869,11 @@ function renderPlants() {
     }
     renderSeed( plant );
   }
-  if ( viewShadows ) { renderShadows(); }
+  if ( viewShadows ) { renderLeafShadows(); }
 }
 
-///records average gene value changes
-function recordInitialGeneValueAverages() {
-  for ( var gene in Genome ) {
-    var alleleAvg = 0;
-    for ( i=0; i<plants.length; i++ ) {
-      var p = plants[i];
-      alleleAvg += p.genotype[gene].allele1.value;
-      alleleAvg += p.genotype[gene].allele2.value;      
-    }
-    alleleAvg = alleleAvg/(plants.length*2);
-    initialGeneValueAverages[gene] = alleleAvg;
-  }
-}
+
+//// Logging ////
 
 ///logs all gene average value changes since first generation (includes inactive plants, but not removed)
 function logAllGeneChanges() {
@@ -948,7 +954,7 @@ function runLogs( frequency ) {
 
 
 
-////---EVENTS---////
+/////---EVENTS---/////
 
 
 ///toggle shadow visibility
@@ -982,7 +988,7 @@ $("#restart_icon_svg").click(function() {
 
 
 
-////---TESTING---////
+/////---TESTING---/////
 
 
 ///scenarios
@@ -997,26 +1003,27 @@ for ( var i=0; i<1; i++ ) { createSeed( null, generateTinyWhiteFlowerPlantGenoty
 
 
 
-////---DISPLAY---////
+/////---DISPLAY---/////
 
-// createSeed( null, generateTinyWhiteFlowerPlantGenotype() );
+
 recordInitialGeneValueAverages();
 
 function display() {
   renderBackground();
   runVerlet();
-  updateUI();
   if ( worldTime % worldSpeed === 0 ) { 
     trackSeasons();
     shedSunlight();
     growPlants(); 
   }
   renderPlants();
+  updateUI();
   runLogs( 600 );
   window.requestAnimationFrame( display );
 }
 
 createSunRays();
+for ( var i=0; i<5; i++ ) { createSunShade( 0, 0 ); }
 display();
 
 

@@ -9,6 +9,10 @@ body {
   transform: translate(-50%);
 }
 
+.header_svg {
+	user-select: none;  /* prevents browser from highlighting the icon when sliding */
+}
+
 #title_svg {
 	height: 86%;
 }
@@ -42,7 +46,7 @@ body {
 
 #canvas_container_div {
   position: absolute;
-  top: 50%;
+  top: 53%;
   left: 50%;
   transform: translate(-50%,-50%);
 }
@@ -59,12 +63,13 @@ body {
 }
 
 .text {
+	position: relative;
 	font-family: 'Amatic SC', Avenir, sans-serif;
 	font-size: 0.9em;
 	letter-spacing: 0.4pt;
 	color: #D5D8C5;
 	margin: 0;
-	padding-top: 0.85em;
+	top: 33%;
 }
 
 .number {
@@ -77,10 +82,12 @@ body {
 
 #pie_svg {
 	position: relative;
-	top: 17px;
-	left: 5px;
-	height: 12px;
+	top: 45%;
+	left: 4px;
+	height: 10.5px;
 	transform: rotate(-90deg);
+	background-color: rgba(213,216,197,.25);
+	border-radius: 50%;
 }
 
 #pie_circle {
@@ -92,8 +99,4 @@ body {
 #height {
 	float: right;
 }
-
-
-
-
 
