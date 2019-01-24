@@ -7,7 +7,7 @@
 ///interaction variables
 var mouseCanvasXPct;
 var mouseCanvasYPct;
-var sunShadeY = yValFromPct(5);  // sun shade elevation as canvas Y value
+var sunShadeY = yValFromPct(8);  // sun shade elevation as canvas Y value
 var sunShadeHandleRadiusPct = 1.75;  // sun shade handle radius as percentage of canvas width
 var grabbedHandle = null;  // grabbed handle object (assigned when handle is clicked/touched)
 
@@ -73,6 +73,12 @@ function createSunShade( handle1XPct, handle2XPct ) {
   sunShades.push ( new SunShade( handle1, handle2 ) );
   sunShadeCount++;
   return sunShades[sunShades.length-1];
+}
+
+///places sun shade
+function placeSunShades( leftCount, rightCount ) {
+  for ( var i=0; i<leftCount; i++ ) { createSunShade( 0, 0 ); }
+  for ( var j=0; j<rightCount; j++ ) { createSunShade( 100, 100 ); }
 }
 
 ///sheds sunlight
@@ -190,23 +196,28 @@ function renderSunShades() {
     //handles
     for ( var j=1; j<=2; j++) {
       var hx = s["h"+j].x;
-      //outer circle
-      ctx.beginPath();
-      ctx.fillStyle = c;
-      ctx.arc( hx, y, r, 0, 2*Math.PI );
-      ctx.fill();
-      ctx.beginPath();
-      //inner shape
       if ( hx === 0 || hx === canvas.width ) {
-        //diamond
+        //tab (outer circle)
+        ctx.beginPath();
+        ctx.fillStyle = c;
+        ctx.arc( hx, y, r*1.1, 0, 2*Math.PI );
+        ctx.fill();
+        ctx.beginPath();
+        //arrow (diamond)
         ctx.fillStyle = "rgba( 213, 215, 197, 0.5 )";
-        ctx.moveTo( hx, y-r*0.45 );
-        ctx.lineTo( hx+r*0.6, y );
-        ctx.lineTo( hx, y+r*0.45 );
-        ctx.lineTo( hx-r*0.6, y );
+        ctx.moveTo( hx, y-r*0.5 );
+        ctx.lineTo( hx+r*0.7, y );
+        ctx.lineTo( hx, y+r*0.5 );
+        ctx.lineTo( hx-r*0.7, y );
         ctx.fill();
       } else {
-        //circle
+        //outer circle
+        ctx.beginPath();
+        ctx.fillStyle = c;
+        ctx.arc( hx, y, r, 0, 2*Math.PI );
+        ctx.fill();
+        ctx.beginPath();
+        //inner circle
         ctx.fillStyle = "rgba( 213, 215, 197, 0.15 )";
         ctx.arc( hx, y, r*0.666, 0, 2*Math.PI );
         ctx.fill();

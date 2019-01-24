@@ -1023,7 +1023,7 @@ function display() {
 }
 
 createSunRays();
-for ( var i=0; i<5; i++ ) { createSunShade( 0, 0 ); }
+placeSunShades(3,3);
 display();
 
 
