@@ -51,6 +51,9 @@ function Point(current_x, current_y, materiality="material") {  // materiality c
   this.width = 0;
   this.materiality = materiality;
   this.fixed = false;
+  this.grabbed = false;
+  this.mxd = null;  // mouse x distance (upon grab)
+  this.myd = null;  // mouse y distance (upon grab)
   this.id = pointCount;
   pointCount += 1;
 }

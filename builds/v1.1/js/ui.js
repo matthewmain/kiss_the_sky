@@ -14,6 +14,8 @@ var sunShadeY = yValFromPct(8);  // sun shade elevation as canvas Y value
 var sunShadeHandleRadiusPct = 1.75;  // sun shade handle radius as percentage of canvas width
 var grabbedHandle = null;  // grabbed handle object (assigned when handle is clicked/touched)
 
+var plantGrabRadiusPct = 5; 
+var plantsAreBeingMoved = false;  // (assigned when mousedown or touchstart events are active)
 
 
 
@@ -123,10 +125,10 @@ function grabHandle(e) {
   mouseCanvasYPct = (e.pageY-canvasPositionTop)*100/canvasHeightOnScreen;  // mouse canvas y percent
   for ( var i=0; i<sunShadeHandles.length; i++ ) {
     var h = sunShadeHandles[i];
-    var x_diff = pctFromXVal( h.x ) - mouseCanvasXPct;
-    var y_diff = pctFromYVal( h.y ) - mouseCanvasYPct;
-    var dist = Math.sqrt( x_diff*x_diff + y_diff*y_diff );
-    if ( dist <= sunShadeHandleRadiusPct ) {
+    var xDiffPct = pctFromXVal( h.x ) - mouseCanvasXPct;
+    var yDiffPct = pctFromYVal( h.y ) - mouseCanvasYPct;
+    var distancePct = Math.sqrt( xDiffPct*xDiffPct + yDiffPct*yDiffPct );
+    if ( distancePct <= sunShadeHandleRadiusPct ) {
       grabbedHandle = h;
     }
   }
@@ -155,16 +157,70 @@ function dropHandle() {
 
 
 
+
+/// plant interaction XXXXX {{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}
+//grabs plants
+function grabPlants(e) {
+  var canvasWidthOnScreen = parseFloat(canvasContainerDiv.style.width);
+  var canvasHeightOnScreen = parseFloat(canvasContainerDiv.style.height);
+  mouseCanvasXPct = (e.pageX-canvasPositionLeft)*100/canvasWidthOnScreen;  // mouse canvas x percent
+  mouseCanvasYPct = (e.pageY-canvasPositionTop)*100/canvasHeightOnScreen;  // mouse canvas y percent
+  for ( var i=0; i<points.length; i++ ) {
+    var p = points[i];
+    var xDiffPct = pctFromXVal( p.cx ) - mouseCanvasXPct;
+    var yDiffPct = pctFromYVal( p.cy ) - mouseCanvasYPct;
+    var distancePct = Math.sqrt( xDiffPct*xDiffPct + yDiffPct*yDiffPct );
+    if ( distancePct <= plantGrabRadiusPct ) {
+      p.grabbed = true;
+      p.mxd = xDiffPct;
+      p.myd = yDiffPct;
+    }
+  }
+  plantsAreBeingMoved = true;
+}
+
+//moves plants
+function movePlants(e) {
+  if ( plantsAreBeingMoved ) {
+    var canvasWidthOnScreen = parseFloat(canvasContainerDiv.style.width);
+    var canvasHeightOnScreen = parseFloat(canvasContainerDiv.style.height);
+    mouseCanvasXPct = (e.pageX-canvasPositionLeft)*100/canvasWidthOnScreen;  // mouse canvas x percent
+    mouseCanvasYPct = (e.pageY-canvasPositionTop)*100/canvasHeightOnScreen;  // mouse canvas y percent
+    //(drops plants if mouse leaves canvas)
+    if (  mouseCanvasXPct < 0 || mouseCanvasXPct > 100 || 
+          mouseCanvasYPct < 0 || mouseCanvasYPct > 100) { 
+      dropPlants(); 
+    }
+    //updates grabbed points according to mouse position
+    for (var i=0; i<points.length; i++) {
+      var p = points[i];
+      if (p.grabbed === true /*&& p.fixed === false*/) {
+        p.cx = p.px = xValFromPct( mouseCanvasXPct + p.mxd );
+        p.cy = p.py = xValFromPct( mouseCanvasYPct + p.myd );
+      }
+    }
+  }
+}
+
+//drops plants
+function dropPlants() {
+  for (var i=0; i<points.length; i++) {
+    points[i].grabbed = false;
+  }
+  plantsAreBeingMoved = false;
+}
+
+
+
 /////---EVENTS---/////
 
-document.addEventListener("mousedown", grabHandle);
-document.addEventListener("mousemove", moveHandle);
-document.addEventListener("mouseup", dropHandle);
+document.addEventListener("mousedown", function(e) { grabHandle(e); grabPlants(e); });
+document.addEventListener("mousemove", function(e) {  moveHandle(e); movePlants(e); });
+document.addEventListener("mouseup", function() {  dropHandle(); dropPlants(); });
 
-document.addEventListener("touchstart", grabHandle);
-document.addEventListener("touchmove", moveHandle);
-document.addEventListener("touchend", dropHandle);
-
+document.addEventListener("touchstart", function(e) { grabHandle(e); grabPlants(e); });
+document.addEventListener("touchmove", function(e) {  moveHandle(e); movePlants(e); });
+document.addEventListener("touchup", function() {  dropHandle(); dropPlants(); });
 
 
 

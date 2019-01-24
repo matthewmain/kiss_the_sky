@@ -26,5 +26,6 @@
 - [ ] omit pod closure at plant death
 - [ ] add shadow to gap between leaves
 - [ ] fix all forward growth based on y-values by replacing with trig formula to ensure new growth is forward regardless of stalk angle
+- [ ] give stalks & leaves variable fills instead of stroke outlines (should look better and may improve rendering performance)
 - [ ] performance enhancement: run sun rays less often with stronger intensity (probably need to address plant color-change flashing), and/or render less frequently
 - [ ] fix safari issues (color value floats, etc.)
