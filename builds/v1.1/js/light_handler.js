@@ -4,14 +4,6 @@
 ///////// LIGHT HANDLER /////////
 
 
-///interaction variables
-var mouseCanvasXPct;
-var mouseCanvasYPct;
-var sunShadeY = yValFromPct(8);  // sun shade elevation as canvas Y value
-var sunShadeHandleRadiusPct = 1.75;  // sun shade handle radius as percentage of canvas width
-var grabbedHandle = null;  // grabbed handle object (assigned when handle is clicked/touched)
-
-
 
 
 /////---OBJECTS---/////
@@ -33,18 +25,6 @@ function Shadow( leafSpan ) {
   this.p4 = { cx: this.p1.cx, cy: yValFromPct( 100 ) };
 }
 
-///sun shade handle constructor
-function SunShadeHandle( xPositionPct ) {
-  this.x = xValFromPct(xPositionPct); 
-  this.y = sunShadeY;
-}
-
-///sun shade constructor
-function SunShade( handle1, handle2 ) {
-  this.h1 = handle1;
-  this.h2 = handle2; 
-}
-
 
 
 
@@ -57,28 +37,6 @@ function createSunRays() {
     sunRays.push( new SunRay() );
     sunRayCount++;
   }
-}
-
-///creates a new sun shade handle
-function createSunShadeHandle( xPositionPct ) {
-  sunShadeHandles.push( new SunShadeHandle( xPositionPct ) );
-  sunShadeHandleCount++;
-  return sunShadeHandles[sunShadeHandles.length-1];
-}
-
-///creates a new sun shade
-function createSunShade( handle1XPct, handle2XPct ) {
-  var handle1 = createSunShadeHandle( handle1XPct );
-  var handle2 = createSunShadeHandle( handle2XPct );
-  sunShades.push ( new SunShade( handle1, handle2 ) );
-  sunShadeCount++;
-  return sunShades[sunShades.length-1];
-}
-
-///places sun shade
-function placeSunShades( leftCount, rightCount ) {
-  for ( var i=0; i<leftCount; i++ ) { createSunShade( 0, 0 ); }
-  for ( var j=0; j<rightCount; j++ ) { createSunShade( 100, 100 ); }
 }
 
 ///sheds sunlight
@@ -126,7 +84,7 @@ function markRayLeafIntersections() {
 function photosynthesize() {
   for ( var i=0; i<sunRays.length; i++ ) {
     var sr = sunRays[i];  // sun ray
-    //first, reduces a sun ray's intensity if it intersects a sun shade
+    //first, reduces a sun ray's intensity if it intersects a sun shade (see ui.js for sun shades)
     for ( var j=0; j<sunShades.length; j++ ) {
       var ss = sunShades[j];
       var lhx = ss.h1.x <= ss.h2.x ? ss.h1.x : ss.h2.x;  // leftmost handle x value
@@ -225,71 +183,6 @@ function renderSunShades() {
     }
   }
 }
-
-
-
-
-/////---INTERACTION---/////
-
-
-//grabs handle on click/touch
-function grabHandle(e) {
-  var canvasWidthOnScreen = parseFloat(canvasContainerDiv.style.width);
-  var canvasHeightOnScreen = parseFloat(canvasContainerDiv.style.height);
-  mouseCanvasXPct = (e.pageX-canvasPositionLeft)*100/canvasWidthOnScreen;  // mouse canvas x percent
-  mouseCanvasYPct = (e.pageY-canvasPositionTop)*100/canvasHeightOnScreen;  // mouse canvas y percent
-  for ( var i=0; i<sunShadeHandles.length; i++ ) {
-    var h = sunShadeHandles[i];
-    var x_diff = pctFromXVal( h.x ) - mouseCanvasXPct;
-    var y_diff = pctFromYVal( h.y ) - mouseCanvasYPct;
-    var dist = Math.sqrt( x_diff*x_diff + y_diff*y_diff );
-    if ( dist <= sunShadeHandleRadiusPct ) {
-      grabbedHandle = h;
-    }
-  }
-}
-
-//moves handle
-function moveHandle(e) {
-  if ( grabbedHandle ) {
-    var canvasWidthOnScreen = parseFloat(canvasContainerDiv.style.width);
-    mouseCanvasXPct = (e.pageX-canvasPositionLeft)*100/canvasWidthOnScreen;  // mouse canvas x percent
-    //updates grabbed handle x position according to mouse x position
-    if ( mouseCanvasXPct < 0 ) {
-      grabbedHandle.x = 0;
-    } else if ( mouseCanvasXPct > 100 ) {
-      grabbedHandle.x = xValFromPct( 100 );
-    } else {
-      grabbedHandle.x = xValFromPct( mouseCanvasXPct );
-    }
-  }
-}
-
-//drops handle
-function dropHandle() {
-  grabbedHandle = null;
-}
-
-
-
-///---EVENTS---///
-
-document.addEventListener("mousedown", grabHandle);
-document.addEventListener("mousemove", moveHandle);
-document.addEventListener("mouseup", dropHandle);
-
-document.addEventListener("touchstart", grabHandle);
-document.addEventListener("touchmove", moveHandle);
-document.addEventListener("touchend", dropHandle);
-
-
-
-
-
-
-
-
-
 
 
 
