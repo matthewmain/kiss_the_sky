@@ -29,7 +29,7 @@ var viewSpans = false;  // (span visibility)
 var viewScaffolding = false; // (scaffolding visibility)
 var viewSkins = false; // (skin visibility)
 var gravity = 0.01;  // (rate of y-velocity increase per frame per point mass of 1)
-var rigidity = 10;  // global span rigidity (as iterations of position accuracy refinement)         // XXXXXXX
+var rigidity = 10;  // global span rigidity (as iterations of position accuracy refinement)
 var friction = 0.999;  // (proportion of previous velocity after frame refresh)
 var bounceLoss = 0.9;  // (proportion of previous velocity after bouncing)
 var skidLoss = 0.9;  // (proportion of previous velocity if touching the ground)
@@ -170,17 +170,19 @@ function addSk(idPathArray, color) {
   return skins[skins.length-1];
 }
 
-///removes a point by id
+///removes a point by id     XXXXX FIX REDUNDANT REMOVALS {{{{{{{{{{{{{{{{{{{{{{{{{}}}}}}}}}}}}}}}}}}}}}}}}}
 function removePoint(id) {
   for( var i=0; i<points.length; i++){ 
     if ( points[i].id === id) { points.splice(i,1); }
+    //console.log("removePoint()");
   }
 }
 
-///removes a span by id
+///removes a span by id     XXXXX FIX REDUNDANT REMOVALS {{{{{{{{{{{{{{{{{{{{{{{{{}}}}}}}}}}}}}}}}}}}}}}}}}
 function removeSpan(id) {
   for( var i=0; i<spans.length; i++){ 
     if ( spans[i].id === id) { spans.splice(i,1); }
+    //console.log("removeSpan() hit");
   }
 }
 

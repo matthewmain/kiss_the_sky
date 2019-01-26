@@ -1,7 +1,9 @@
 
 
 
+
 //////////////////// UI ////////////////////////
+
 
 
 var headerDiv = document.getElementById("header_div");
@@ -14,8 +16,9 @@ var sunShadeY = yValFromPct(8);  // sun shade elevation as canvas Y value
 var sunShadeHandleRadiusPct = 1.75;  // sun shade handle radius as percentage of canvas width
 var grabbedHandle = null;  // grabbed handle object (assigned when handle is clicked/touched)
 
-var plantGrabRadiusPct = 5; 
-var plantsAreBeingMoved = false;  // (assigned when mousedown or touchstart events are active)
+var selectRadius= canvas.width*0.015; // radius from click/touch point within which an item is selected
+var plantsAreBeingEliminated = false;
+
 
 
 
@@ -39,6 +42,7 @@ function SunShade( handle1, handle2 ) {
 
 /////---FUNCTIONS---/////
 
+
 ///attaches header and footer to canvas (after canvas has been resized to window dimensions in verlet.js)
 function attachHeaderAndFooter() {
   var canvasHeight = parseFloat(canvasContainerDiv.style.height);
@@ -49,16 +53,6 @@ function attachHeaderAndFooter() {
   footerDiv.style.width = canvasContainerDiv.style.width;
   footerDiv.style.height = canvasHeight*0.075+"px";
   footerDiv.style.top = canvasTop+canvasHeight+"px";
-}
-
-///updates UI (runs every iteration)
-function updateUI() {
-  attachHeaderAndFooter();
-  renderSunShades();
-  $("#year_count").text( currentYear );
-  $("#season").text( currentSeason );
-  updateSeasonPieChart();
-  $("#highest_height").text( highestFlowerPct );
 }
 
 ///creates a new sun shade handle
@@ -86,8 +80,108 @@ function placeSunShades( leftCount, rightCount ) {
 
 
 
+/////---RENDERING---/////
+
+
+///renders pointer
+function displayKillPlantIconCursor(e) {
+  for ( var i=0; i<plants.length; i++ ) {
+    var p = plants[i];
+    if ( p.isAlive || !p.hasBeenEliminatedByPlayer ) {
+      for ( var j=0; j<p.segments.length; j++) {
+        var s = p.segments[j];
+        var xDiffPct1 = pctFromXVal( s.ptE1.cx ) - mouseCanvasXPct;
+        var yDiffPct1 = pctFromYVal( s.ptE1.cy ) - mouseCanvasYPct;
+        var distancePct1 = Math.sqrt( xDiffPct1*xDiffPct1 + yDiffPct1*yDiffPct1 );
+        var xDiffPct2 = pctFromXVal( s.ptE2.cx ) - mouseCanvasXPct;
+        var yDiffPct2 = pctFromYVal( s.ptE2.cy ) - mouseCanvasYPct;
+        var selectRadiusPct = selectRadius*100/canvas.width;
+        var distancePct2 = Math.sqrt( xDiffPct2*xDiffPct2 + yDiffPct2*yDiffPct2 );
+        if ( distancePct1 <= selectRadiusPct*2 || distancePct2 <= selectRadiusPct*2 ) {
+          //outer circle
+          ctx.beginPath();
+          ctx.fillStyle = "rgba(232,73,0,0.3)";
+          ctx.strokeStyle = "rgba(232,73,0,0.8)";
+          ctx.lineWidth = 1;
+          ctx.arc( xValFromPct(mouseCanvasXPct), yValFromPct(mouseCanvasYPct), selectRadius*1.3, 0, 2*Math.PI );
+          ctx.fill();
+          ctx.stroke();
+        }
+      }
+    }
+  }
+}
+
+///renders sun shades
+function renderSunShades() {
+  var y = sunShadeY;  // sun shade y value
+  var r = xValFromPct( sunShadeHandleRadiusPct );  // handle radius
+  var c = "#111111";  // color
+  for ( var i=0; i<sunShades.length; i++ ) {
+    var s = sunShades[i];
+    //shadow
+    if ( viewShadows ) {
+      ctx.fillStyle = "rgba( 0, 0, 0, 0.333 )";
+      ctx.beginPath();
+      ctx.moveTo( s.h1.x, y );
+      ctx.lineTo( s.h2.x, y ); 
+      ctx.lineTo( s.h2.x, yValFromPct(100) );
+      ctx.lineTo( s.h1.x, yValFromPct(100) );
+      ctx.fill();  
+    }
+    //line
+    ctx.beginPath();
+    ctx.lineWidth = xValFromPct( sunShadeHandleRadiusPct*0.75 );
+    ctx.strokeStyle = c;
+    ctx.moveTo(s.h1.x,y);
+    ctx.lineTo(s.h2.x,y);
+    ctx.stroke();
+    //handles
+    for ( var j=1; j<=2; j++) {
+      var hx = s["h"+j].x;
+      if ( hx === 0 || hx === canvas.width ) {
+        //tab (outer circle)
+        ctx.beginPath();
+        ctx.fillStyle = c;
+        ctx.arc( hx, y, r*1.1, 0, 2*Math.PI );
+        ctx.fill();
+        ctx.beginPath();
+        //arrow (diamond)
+        ctx.fillStyle = "rgba( 213, 215, 197, 0.5 )";
+        ctx.moveTo( hx, y-r*0.5 );
+        ctx.lineTo( hx+r*0.7, y );
+        ctx.lineTo( hx, y+r*0.5 );
+        ctx.lineTo( hx-r*0.7, y );
+        ctx.fill();
+      } else {
+        //outer circle
+        ctx.beginPath();
+        ctx.fillStyle = c;
+        ctx.arc( hx, y, r, 0, 2*Math.PI );
+        ctx.fill();
+        ctx.beginPath();
+        //inner circle
+        ctx.fillStyle = "rgba( 213, 215, 197, 0.15 )";
+        ctx.arc( hx, y, r*0.666, 0, 2*Math.PI );
+        ctx.fill();
+      }
+    }
+  }
+}
+
+
+
+
 /////---INTERACTION---/////
 
+
+///updates mouse position coordinates as percentages
+function updateMouse(e) {
+  var canvasWidthOnScreen = parseFloat(canvasContainerDiv.style.width);
+  var canvasHeightOnScreen = parseFloat(canvasContainerDiv.style.height);
+  mouseCanvasXPct = (e.pageX-canvasPositionLeft)*100/canvasWidthOnScreen;  // mouse canvas x percent
+  mouseCanvasYPct = (e.pageY-canvasPositionTop)*100/canvasHeightOnScreen;  // mouse canvas y percent
+}
 
 ///toggles shadow visibility on shadows icon click/touch
 $(".shadows_icon").click(function(){
@@ -119,10 +213,6 @@ $("#restart_icon_svg").click(function() {
 
 ///grabs handle
 function grabHandle(e) {
-  var canvasWidthOnScreen = parseFloat(canvasContainerDiv.style.width);
-  var canvasHeightOnScreen = parseFloat(canvasContainerDiv.style.height);
-  mouseCanvasXPct = (e.pageX-canvasPositionLeft)*100/canvasWidthOnScreen;  // mouse canvas x percent
-  mouseCanvasYPct = (e.pageY-canvasPositionTop)*100/canvasHeightOnScreen;  // mouse canvas y percent
   for ( var i=0; i<sunShadeHandles.length; i++ ) {
     var h = sunShadeHandles[i];
     var xDiffPct = pctFromXVal( h.x ) - mouseCanvasXPct;
@@ -137,9 +227,6 @@ function grabHandle(e) {
 ///moves handle
 function moveHandle(e) {
   if ( grabbedHandle ) {
-    var canvasWidthOnScreen = parseFloat(canvasContainerDiv.style.width);
-    mouseCanvasXPct = (e.pageX-canvasPositionLeft)*100/canvasWidthOnScreen;  // mouse canvas x percent
-    //updates grabbed handle x position according to mouse x position
     if ( mouseCanvasXPct < 0 ) {
       grabbedHandle.x = 0;
     } else if ( mouseCanvasXPct > 100 ) {
@@ -155,73 +242,86 @@ function dropHandle() {
   grabbedHandle = null;
 }
 
-
-
-
-/// plant interaction XXXXX {{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}
-//grabs plants
-function grabPlants(e) {
-  var canvasWidthOnScreen = parseFloat(canvasContainerDiv.style.width);
-  var canvasHeightOnScreen = parseFloat(canvasContainerDiv.style.height);
-  mouseCanvasXPct = (e.pageX-canvasPositionLeft)*100/canvasWidthOnScreen;  // mouse canvas x percent
-  mouseCanvasYPct = (e.pageY-canvasPositionTop)*100/canvasHeightOnScreen;  // mouse canvas y percent
-  for ( var i=0; i<points.length; i++ ) {
-    var p = points[i];
-    var xDiffPct = pctFromXVal( p.cx ) - mouseCanvasXPct;
-    var yDiffPct = pctFromYVal( p.cy ) - mouseCanvasYPct;
-    var distancePct = Math.sqrt( xDiffPct*xDiffPct + yDiffPct*yDiffPct );
-    if ( distancePct <= plantGrabRadiusPct ) {
-      p.grabbed = true;
-      p.mxd = xDiffPct;
-      p.myd = yDiffPct;
-    }
-  }
-  plantsAreBeingMoved = true;
+///activates plant elimination mode
+function startEliminatingPlants() {
+  plantsAreBeingEliminated = true;
 }
 
-//moves plants
-function movePlants(e) {
-  if ( plantsAreBeingMoved ) {
-    var canvasWidthOnScreen = parseFloat(canvasContainerDiv.style.width);
-    var canvasHeightOnScreen = parseFloat(canvasContainerDiv.style.height);
-    mouseCanvasXPct = (e.pageX-canvasPositionLeft)*100/canvasWidthOnScreen;  // mouse canvas x percent
-    mouseCanvasYPct = (e.pageY-canvasPositionTop)*100/canvasHeightOnScreen;  // mouse canvas y percent
-    //(drops plants if mouse leaves canvas)
-    if (  mouseCanvasXPct < 0 || mouseCanvasXPct > 100 || 
-          mouseCanvasYPct < 0 || mouseCanvasYPct > 100) { 
-      dropPlants(); 
-    }
-    //updates grabbed points according to mouse position
-    for (var i=0; i<points.length; i++) {
-      var p = points[i];
-      if (p.grabbed === true /*&& p.fixed === false*/) {
-        p.cx = p.px = xValFromPct( mouseCanvasXPct + p.mxd );
-        p.cy = p.py = xValFromPct( mouseCanvasYPct + p.myd );
+///deactivates plant elimination mode
+function stopEliminatingPlants() {
+  plantsAreBeingEliminated = false;
+}
+
+///eliminates plants (kills them and knocks them over)
+function eliminatePlants( e, plant ) {
+  for ( var i=0; i<plants.length; i++ ) {
+    var p = plants[i];
+    if ( plantsAreBeingEliminated && ( p.isAlive || !p.hasBeenEliminatedByPlayer ) ) {
+      for ( var j=0; j<p.segments.length; j++) {
+        var s = p.segments[j];
+        var xDiffPct1 = pctFromXVal( s.ptE1.cx ) - mouseCanvasXPct;
+        var yDiffPct1 = pctFromYVal( s.ptE1.cy ) - mouseCanvasYPct;
+        var distancePct1 = Math.sqrt( xDiffPct1*xDiffPct1 + yDiffPct1*yDiffPct1 );
+        var xDiffPct2 = pctFromXVal( s.ptE2.cx ) - mouseCanvasXPct;
+        var yDiffPct2 = pctFromYVal( s.ptE2.cy ) - mouseCanvasYPct;
+        var selectRadiusPct = selectRadius*100/canvas.width;
+        var distancePct2 = Math.sqrt( xDiffPct2*xDiffPct2 + yDiffPct2*yDiffPct2 );
+        if ( distancePct1 <= selectRadiusPct || distancePct2 <= selectRadiusPct ) {
+          s.ptE1.px += distancePct1 > distancePct2 ? 10 : -10;
+          p.energy = p.energy > energyStoreFactor*-1 ? energyStoreFactor*-1 : p.energy; 
+          killPlant(p);
+          for (var k=0; k<p.segments.length; k++) {
+            var s2 = p.segments[k];
+            s2.ptE1.mass = s2.ptE2.mass = 15;
+            if (!s2.isBaseSegment) {
+              removeSpan(s2.spCdP.id);  // downward (l to r) cross span to parent
+              removeSpan(s2.spCuP.id);  // upward (l to r) cross span to parent
+            }
+            removeSpan(s2.spCd.id);  // downward (l to r) cross span
+            removeSpan(s2.spCu.id);  // upward (l to r) cross span
+          }
+          p.hasBeenEliminatedByPlayer = true;
+        }
       }
     }
   }
 }
 
-//drops plants
-function dropPlants() {
-  for (var i=0; i<points.length; i++) {
-    points[i].grabbed = false;
-  }
-  plantsAreBeingMoved = false;
-}
 
 
 
 /////---EVENTS---/////
 
-document.addEventListener("mousedown", function(e) { grabHandle(e); grabPlants(e); });
-document.addEventListener("mousemove", function(e) {  moveHandle(e); movePlants(e); });
-document.addEventListener("mouseup", function() {  dropHandle(); dropPlants(); });
 
-document.addEventListener("touchstart", function(e) { grabHandle(e); grabPlants(e); });
-document.addEventListener("touchmove", function(e) {  moveHandle(e); movePlants(e); });
-document.addEventListener("touchup", function() {  dropHandle(); dropPlants(); });
+document.addEventListener("click", function(e) { 
+  startEliminatingPlants(); 
+  eliminatePlants(e); 
+  stopEliminatingPlants();
+});
 
+document.addEventListener("mousedown", function(e) { grabHandle(e); startEliminatingPlants(); });
+document.addEventListener("mousemove", function(e) {  updateMouse(e); moveHandle(e); eliminatePlants(e); });
+document.addEventListener("mouseup", function() {  dropHandle(); stopEliminatingPlants(); });
+
+document.addEventListener("touchstart", function(e) { grabHandle(e); startEliminatingPlants(); });
+document.addEventListener("touchmove", function(e) {  moveHandle(e); eliminatePlants(e); });
+document.addEventListener("touchup", function() {  dropHandle(); stopEliminatingPlants(); });
+
+
+
+
+/////---UPDATE---/////
+
+///updates UI (runs every iteration)
+function updateUI() {
+  attachHeaderAndFooter();
+  renderSunShades();
+  displayKillPlantIconCursor();
+  $("#year_count").text( currentYear );
+  $("#season").text( currentSeason );
+  updateSeasonPieChart();
+  $("#highest_height").text( highestFlowerPct );
+}
 
 
 

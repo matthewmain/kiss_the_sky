@@ -123,6 +123,7 @@ function Plant( sourceSeed ) {
   this.hasFlowers = false;
   this.pollenPadColor = C.pp;  // pollen pad color
   this.isAlive = true;
+  this.hasBeenEliminatedByPlayer = false;  // 
   this.hasReachedOldAge = false;
   this.oldAgeReduction = 0;  // (energy reduction per plant iteration, when plant is dying of old age)
   this.hasCollapsed = false;
@@ -162,9 +163,10 @@ function Plant( sourceSeed ) {
   this.energy = this.seedEnergy;  // energy (starts with seed energy at germination)
 }
 
-///segment constructor
+///plant stalk segment constructor
 function Segment( plant, parentSegment, basePoint1, basePoint2 ) {
   this.plantId = plant.id;
+  this.parentPlant = plant;
   this.id = plant.segmentCount;
   this.child = null;
   this.hasChild = false;
@@ -351,7 +353,8 @@ function germinateSeed( seed ) {
 function hideAndRemoveSeed( seed ) {
   if ( seed.opacity > 0 ) {
     fadeSeedOut( seed );
-  } else if ( seed.opacity <= 0 ) {
+  } else {
+    seed.opacity = 0;
     removePoint( seed.p1.id );
     removePoint( seed.p2.id );
     removeSpan( seed.sp.id );
@@ -608,11 +611,11 @@ function killPlant( plant ) {
   p.isAlive = false;  
   for (var i=0; i<plant.segments.length; i++) {
     var s = plant.segments[i];
-    if ( s.hasLeaves && s.spLf1.l > plant.maxLeafLength/3 ) {  
+    if ( s.hasLeaves && s.spLf1.l > plant.maxLeafLength/3 ) {
       removeSpan( s.leafTipsTetherSpan.id );  // removes large leaf bud tethers
     }
     if ( s.hasLeafScaffolding ) {  // removes leaf scaffolding
-      removeSpan(s.spLf1ScA.id); removeSpan(s.spLf2ScA.id);   
+      removeSpan(s.spLf1ScA.id); removeSpan(s.spLf2ScA.id);
       removeSpan(s.spLf1ScB.id); removeSpan(s.spLf2ScB.id);
       removeSpan(s.spLf1ScC.id); removeSpan(s.spLf2ScC.id);
       removeSpan(s.spLf1ScD.id); removeSpan(s.spLf2ScD.id);
@@ -668,10 +671,9 @@ function decomposePlant( plant ) {
 ///removes plant and all of its associated points, spans, and skins
 function fadePlantOutAndRemove( plant ) {
   var p = plant;
-  if (p.opacity > 0) {
+  if ( p.opacity > 0 ) {
     p.opacity -= 0.001;
   } else {
-    p.opacity = 0;
     removePoint( p.ptB1.id );  // plant base point 1
     removePoint( p.ptB2.id );  // plant base point 2
     removeSpan( p.spB.id );  // plant base span
@@ -930,8 +932,8 @@ function runLogs( frequency ) {
 
 
 ///scenarios
-for ( var i=0; i<25; i++ ) { createSeed( null, generateRandomNewPlantGenotype() ); }
-//for ( var i=0; i<1; i++ ) { createSeed( null, generateTinyWhiteFlowerPlantGenotype() ); }
+//for ( var i=0; i<25; i++ ) { createSeed( null, generateRandomNewPlantGenotype() ); }
+for ( var i=0; i<1; i++ ) { createSeed( null, generateTinyWhiteFlowerPlantGenotype() ); }
 //for ( var i=0; i<5; i++ ) { createSeed( null, generateSmallPlantGenotype() ); }  
 //for ( var i=0; i<5; i++ ) { createSeed( null, generateMediumPlantGenotype() ); }
 //for ( var i=0; i<25; i++ ) { createSeed( null, generateLargePlantGenotype() ); }
@@ -956,7 +958,7 @@ function display() {
   }
   renderPlants();
   updateUI();
-  runLogs( 600 );
+  //runLogs( 600 );
   window.requestAnimationFrame( display );
 }
 
