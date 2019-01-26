@@ -349,23 +349,17 @@ function germinateSeed( seed ) {
   plant.germinationYear = currentYear;
 }
 
-///removes seed when ready
+///fades seed out then removes it
 function hideAndRemoveSeed( seed ) {
   if ( seed.opacity > 0 ) {
-    fadeSeedOut( seed );
+    seed.opacity -= 0.001;
   } else {
-    seed.opacity = 0;
     removePoint( seed.p1.id );
     removePoint( seed.p2.id );
     removeSpan( seed.sp.id );
     removeSeed( seed.id );
     seed.resultingPlant.sourceSeedHasBeenRemoved = true;
   } 
-}
-
-///fades out seed visibility gradually (for after germination)
-function fadeSeedOut( seed ) {
-  seed.opacity -= 0.0015;
 }
 
 ///lengthens segment spans for growth
@@ -526,7 +520,7 @@ function growPlants() {
       if ( p.sourceSeed.hasGerminated ) {
         p.energy -= p.segmentCount * livEnExp;  // cost of living: reduces energy by a ratio of segment count
       } 
-      if ( p.energy < p.maxEnergyLevel*deathEnergyLevelRatio && restrictGrowthByEnergy ) {
+      if ( p.isAlive && p.energy < p.maxEnergyLevel*deathEnergyLevelRatio && restrictGrowthByEnergy ) {
         killPlant( p );  // plant dies if energy level falls below minimum to be alive
       }
       if ( !p.hasCollapsed && p.energy<p.maxEnergyLevel*collapseEnergyLevelRatio && restrictGrowthByEnergy ) {
@@ -932,8 +926,8 @@ function runLogs( frequency ) {
 
 
 ///scenarios
-//for ( var i=0; i<25; i++ ) { createSeed( null, generateRandomNewPlantGenotype() ); }
-for ( var i=0; i<1; i++ ) { createSeed( null, generateTinyWhiteFlowerPlantGenotype() ); }
+for ( var i=0; i<25; i++ ) { createSeed( null, generateRandomNewPlantGenotype() ); }
+//for ( var i=0; i<1; i++ ) { createSeed( null, generateTinyWhiteFlowerPlantGenotype() ); }
 //for ( var i=0; i<5; i++ ) { createSeed( null, generateSmallPlantGenotype() ); }  
 //for ( var i=0; i<5; i++ ) { createSeed( null, generateMediumPlantGenotype() ); }
 //for ( var i=0; i<25; i++ ) { createSeed( null, generateLargePlantGenotype() ); }

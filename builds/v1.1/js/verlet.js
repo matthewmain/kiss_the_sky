@@ -170,19 +170,17 @@ function addSk(idPathArray, color) {
   return skins[skins.length-1];
 }
 
-///removes a point by id     XXXXX FIX REDUNDANT REMOVALS {{{{{{{{{{{{{{{{{{{{{{{{{}}}}}}}}}}}}}}}}}}}}}}}}}
+///removes a point by id  
 function removePoint(id) {
   for( var i=0; i<points.length; i++){ 
     if ( points[i].id === id) { points.splice(i,1); }
-    //console.log("removePoint()");
   }
 }
 
-///removes a span by id     XXXXX FIX REDUNDANT REMOVALS {{{{{{{{{{{{{{{{{{{{{{{{{}}}}}}}}}}}}}}}}}}}}}}}}}
+///removes a span by id
 function removeSpan(id) {
   for( var i=0; i<spans.length; i++){ 
     if ( spans[i].id === id) { spans.splice(i,1); }
-    //console.log("removeSpan() hit");
   }
 }
 
