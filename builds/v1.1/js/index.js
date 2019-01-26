@@ -123,6 +123,7 @@ function Plant( sourceSeed ) {
   this.hasFlowers = false;
   this.pollenPadColor = C.pp;  // pollen pad color
   this.isAlive = true;
+  this.hasBeenEliminatedByPlayer = false;  // 
   this.hasReachedOldAge = false;
   this.oldAgeReduction = 0;  // (energy reduction per plant iteration, when plant is dying of old age)
   this.hasCollapsed = false;
@@ -162,9 +163,10 @@ function Plant( sourceSeed ) {
   this.energy = this.seedEnergy;  // energy (starts with seed energy at germination)
 }
 
-///segment constructor
+///plant stalk segment constructor
 function Segment( plant, parentSegment, basePoint1, basePoint2 ) {
   this.plantId = plant.id;
+  this.parentPlant = plant;
   this.id = plant.segmentCount;
   this.child = null;
   this.hasChild = false;
@@ -347,22 +349,17 @@ function germinateSeed( seed ) {
   plant.germinationYear = currentYear;
 }
 
-///removes seed when ready
+///fades seed out then removes it
 function hideAndRemoveSeed( seed ) {
   if ( seed.opacity > 0 ) {
-    fadeSeedOut( seed );
-  } else if ( seed.opacity <= 0 ) {
+    seed.opacity -= 0.001;
+  } else {
     removePoint( seed.p1.id );
     removePoint( seed.p2.id );
     removeSpan( seed.sp.id );
     removeSeed( seed.id );
     seed.resultingPlant.sourceSeedHasBeenRemoved = true;
   } 
-}
-
-///fades out seed visibility gradually (for after germination)
-function fadeSeedOut( seed ) {
-  seed.opacity -= 0.0015;
 }
 
 ///lengthens segment spans for growth
@@ -523,7 +520,7 @@ function growPlants() {
       if ( p.sourceSeed.hasGerminated ) {
         p.energy -= p.segmentCount * livEnExp;  // cost of living: reduces energy by a ratio of segment count
       } 
-      if ( p.energy < p.maxEnergyLevel*deathEnergyLevelRatio && restrictGrowthByEnergy ) {
+      if ( p.isAlive && p.energy < p.maxEnergyLevel*deathEnergyLevelRatio && restrictGrowthByEnergy ) {
         killPlant( p );  // plant dies if energy level falls below minimum to be alive
       }
       if ( !p.hasCollapsed && p.energy<p.maxEnergyLevel*collapseEnergyLevelRatio && restrictGrowthByEnergy ) {
@@ -608,11 +605,11 @@ function killPlant( plant ) {
   p.isAlive = false;  
   for (var i=0; i<plant.segments.length; i++) {
     var s = plant.segments[i];
-    if ( s.hasLeaves && s.spLf1.l > plant.maxLeafLength/3 ) {  
+    if ( s.hasLeaves && s.spLf1.l > plant.maxLeafLength/3 ) {
       removeSpan( s.leafTipsTetherSpan.id );  // removes large leaf bud tethers
     }
     if ( s.hasLeafScaffolding ) {  // removes leaf scaffolding
-      removeSpan(s.spLf1ScA.id); removeSpan(s.spLf2ScA.id);   
+      removeSpan(s.spLf1ScA.id); removeSpan(s.spLf2ScA.id);
       removeSpan(s.spLf1ScB.id); removeSpan(s.spLf2ScB.id);
       removeSpan(s.spLf1ScC.id); removeSpan(s.spLf2ScC.id);
       removeSpan(s.spLf1ScD.id); removeSpan(s.spLf2ScD.id);
@@ -668,10 +665,9 @@ function decomposePlant( plant ) {
 ///removes plant and all of its associated points, spans, and skins
 function fadePlantOutAndRemove( plant ) {
   var p = plant;
-  if (p.opacity > 0) {
+  if ( p.opacity > 0 ) {
     p.opacity -= 0.001;
   } else {
-    p.opacity = 0;
     removePoint( p.ptB1.id );  // plant base point 1
     removePoint( p.ptB2.id );  // plant base point 2
     removeSpan( p.spB.id );  // plant base span
@@ -956,7 +952,7 @@ function display() {
   }
   renderPlants();
   updateUI();
-  runLogs( 600 );
+  //runLogs( 600 );
   window.requestAnimationFrame( display );
 }
 

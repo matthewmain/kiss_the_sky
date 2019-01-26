@@ -127,64 +127,6 @@ function renderLeafShadows() {
   shadows = []; shadowCount = 0;
 }
 
-///renders sun shades
-function renderSunShades() {
-  var y = sunShadeY;  // sun shade y value
-  var r = xValFromPct( sunShadeHandleRadiusPct );  // handle radius
-  var c = "#111111";  // color
-  for ( var i=0; i<sunShades.length; i++ ) {
-    var s = sunShades[i];
-    //shadow
-    if ( viewShadows ) {
-      ctx.fillStyle = "rgba( 0, 0, 0, 0.333 )";
-      ctx.beginPath();
-      ctx.moveTo( s.h1.x, y );
-      ctx.lineTo( s.h2.x, y ); 
-      ctx.lineTo( s.h2.x, yValFromPct(100) );
-      ctx.lineTo( s.h1.x, yValFromPct(100) );
-      ctx.fill();  
-    }
-    //line
-    ctx.beginPath();
-    ctx.lineWidth = xValFromPct( sunShadeHandleRadiusPct*0.75 );
-    ctx.strokeStyle = c;
-    ctx.moveTo(s.h1.x,y);
-    ctx.lineTo(s.h2.x,y);
-    ctx.stroke();
-    //handles
-    for ( var j=1; j<=2; j++) {
-      var hx = s["h"+j].x;
-      if ( hx === 0 || hx === canvas.width ) {
-        //tab (outer circle)
-        ctx.beginPath();
-        ctx.fillStyle = c;
-        ctx.arc( hx, y, r*1.1, 0, 2*Math.PI );
-        ctx.fill();
-        ctx.beginPath();
-        //arrow (diamond)
-        ctx.fillStyle = "rgba( 213, 215, 197, 0.5 )";
-        ctx.moveTo( hx, y-r*0.5 );
-        ctx.lineTo( hx+r*0.7, y );
-        ctx.lineTo( hx, y+r*0.5 );
-        ctx.lineTo( hx-r*0.7, y );
-        ctx.fill();
-      } else {
-        //outer circle
-        ctx.beginPath();
-        ctx.fillStyle = c;
-        ctx.arc( hx, y, r, 0, 2*Math.PI );
-        ctx.fill();
-        ctx.beginPath();
-        //inner circle
-        ctx.fillStyle = "rgba( 213, 215, 197, 0.15 )";
-        ctx.arc( hx, y, r*0.666, 0, 2*Math.PI );
-        ctx.fill();
-      }
-    }
-  }
-}
-
-
 
 
 
