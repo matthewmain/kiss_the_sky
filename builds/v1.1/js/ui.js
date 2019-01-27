@@ -84,8 +84,8 @@ function placeSunShades( leftCount, rightCount ) {
 /////---RENDERING---/////
 
 
-///renders kill plant icon at cursor location
-function displayKillPlantIconCursor(e) {
+///renders eliminate plant icon at cursor location
+function displayEliminatePlantIconWithCursor(e) {
   var displayIcon = false;
   for ( var i=0; i<plants.length; i++ ) {
     var p = plants[i];
@@ -329,7 +329,7 @@ document.addEventListener("touchup", function() {  dropHandle(); stopEliminating
 function updateUI() {
   attachHeaderAndFooter();
   renderSunShades();
-  displayKillPlantIconCursor();
+  displayEliminatePlantIconWithCursor();
   $("#year_count").text( currentYear );
   $("#season").text( currentSeason );
   updateSeasonPieChart();
