@@ -2,7 +2,8 @@
 
 
 
-//////////////////// UI ////////////////////////
+//////////////////////////  UI  //////////////////////////////
+
 
 
 
@@ -83,8 +84,9 @@ function placeSunShades( leftCount, rightCount ) {
 /////---RENDERING---/////
 
 
-///renders pointer
+///renders kill plant icon at cursor location
 function displayKillPlantIconCursor(e) {
+  var displayIcon = false;
   for ( var i=0; i<plants.length; i++ ) {
     var p = plants[i];
     if ( p.isAlive || !p.hasBeenEliminatedByPlayer ) {
@@ -98,17 +100,28 @@ function displayKillPlantIconCursor(e) {
         var selectRadiusPct = selectRadius*100/canvas.width;
         var distancePct2 = Math.sqrt( xDiffPct2*xDiffPct2 + yDiffPct2*yDiffPct2 );
         if ( distancePct1 <= selectRadiusPct*2 || distancePct2 <= selectRadiusPct*2 ) {
-          //outer circle
-          ctx.beginPath();
-          ctx.fillStyle = "rgba(232,73,0,0.3)";
-          ctx.strokeStyle = "rgba(232,73,0,0.8)";
-          ctx.lineWidth = 1;
-          ctx.arc( xValFromPct(mouseCanvasXPct), yValFromPct(mouseCanvasYPct), selectRadius*1.3, 0, 2*Math.PI );
-          ctx.fill();
-          ctx.stroke();
+          displayIcon = true;
         }
       }
     }
+  }
+  if ( displayIcon ) {
+    ctx.fillStyle = "rgba(232,73,0,0.5)";
+    ctx.strokeStyle = "rgba(232,73,0,1)";
+    //circle
+    ctx.beginPath();
+    ctx.lineWidth = 1;
+    ctx.arc( xValFromPct(mouseCanvasXPct), yValFromPct(mouseCanvasYPct), selectRadius*1.3, 0, 2*Math.PI );
+    ctx.fill();
+    ctx.stroke();
+    //bar
+    ctx.beginPath();
+    ctx.lineWidth = 6;
+    ctx.lineCap = "butt";
+    ctx.moveTo( xValFromPct(mouseCanvasXPct-1.1), yValFromPct(mouseCanvasYPct) );
+    ctx.lineTo( xValFromPct(mouseCanvasXPct+1.1), yValFromPct(mouseCanvasYPct) );
+    ctx.fill();
+    ctx.stroke();
   }
 }
 
