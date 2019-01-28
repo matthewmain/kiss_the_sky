@@ -21,6 +21,7 @@ var sunShades = [], sunShadeCount = 0;
 var shadows = [], shadowCount = 0;
 var initialGeneValueAverages = {};
 var highestFlowerPct = 0; 
+var highestRedFlowerPct = 0;
 
 ///settings
 var worldSpeed = 1;//5;  // (as frames per iteration: higher is slower) (does not affect physics iterations)

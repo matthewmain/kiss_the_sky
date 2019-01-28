@@ -356,10 +356,8 @@ function renderFlowers( plant ) {
         positionAllPetals(p,f);  // ensures flower petal positions are updated every iteration
         ctx.lineJoin = "round";
         ctx.lineCap = "round";
-
-
-        //pulsing indication that flower color qualifies as red
-        if ( f.isRed && f.bloomRatio === 1 && p.isAlive ) {
+        //pulsing indicator showing that flower color qualifies as red
+        if ( f.isRed && f.bloomRatio === 1 && p.isAlive && p.energy > 0 ) {
           var fcp = spanMidPoint( f.spHcH );  // flower center point (center of hex)
           var pt = 100;  // pulse time (in worldTime units) 
           var ir = f.spHcH.l * (worldTime%pt)*0.011 + f.spHcH.l*0.75;  // indicator radius
@@ -370,8 +368,6 @@ function renderFlowers( plant ) {
           ctx.arc( fcp.x, fcp.y, ir, 0, 2*Math.PI );
           ctx.stroke();
         }
-
-
         //top petals
         ctx.lineWidth = 1;
         ctx.fillStyle = "hsla("+f.clP.h+","+f.clP.s+"%,"+f.clP.l+"%,"+p.opacity+")"; 
@@ -442,8 +438,10 @@ function renderFlowers( plant ) {
         ctx.fill(); ctx.stroke();
       }
       //flower height tracker
-      if ( f.bloomRatio === 1 && Math.floor( (canvas.height-f.ptBudTip.cy)*100/canvas.height ) > highestFlowerPct ) { 
-        highestFlowerPct =  Math.floor( (canvas.height-f.ptBudTip.cy)*100/canvas.height ); 
+      if ( f.bloomRatio === 1 ) {
+        var heightPct = Math.floor( (canvas.height-f.ptBudTip.cy)*100/canvas.height );
+        if ( heightPct > highestFlowerPct ) { highestFlowerPct = heightPct; }
+        if ( f.isRed && heightPct > highestRedFlowerPct ) { highestRedFlowerPct = heightPct; }
       }
       //pods
       if ( viewPods ) { renderPods( f ); }
