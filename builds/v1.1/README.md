@@ -18,7 +18,7 @@ Basic gamification: grow a red flower tall enough to reach the top of the viewbo
 - [X] slidable sun shades to let user control which plants get sunlight
 - [X] ability to pull/kill a plant
 - [X] adjust season lengths so that 1) fall & winter are much shorter so that periods of idle time when player doesn't have anything to do are dramatically reduced, and 2) make summer lengths variable based on average or greatest segment count so that as plants grow they have enough time to develop and bloom before fall.
-- [ ] faint red pulsing animation around red-hued flowers that qaulify as flowers that can be used to reach 100% height to win the game.
+- [X] faint red pulsing animation around red-hued flowers that qaulify as flowers that can be used to reach 100% height to win the game.
 - [ ] faint yellow pollen-release animation upon full flower bloom to indicate that flower has entered reproductive mode and can cross-polinate with other (nearby?) flowers
 - [ ] remove any present seeds from eliminated plant flowers, keep only if plant eliminated after it has already died
 - [ ] a line or pointer indicator to show 100% (and possibly add some supplimental arrow/line indicator for heighest flower height overall so far--as well as highest red flower height so far. Maybe update text indicator to include red flower height as well.)
@@ -38,6 +38,7 @@ Misc. improvements
 - [ ] fix all forward growth based on y-values by replacing with trig formula to ensure new growth is forward regardless of stalk angle
 - [ ] give stalks & leaves variable fills instead of stroke outlines (should look better and may improve rendering performance)
 - [ ] seeds plant firmly without swinging, even at worldspeed 1
+- [ ] change season background gradients so seasons are more distinct and changes are more dramatic
 
 <br>
 

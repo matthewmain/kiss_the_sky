@@ -1,7 +1,20 @@
 
 
-///////// FLOWER HANDLER /////////
 
+/////////////////// FLOWER HANDLER /////////////////////
+
+
+
+
+/////---TRACKERS---/////
+
+
+var pollinationAnimations = [];
+
+
+
+
+/////---OBJECTS---/////
 
 
 ///flower constructor 
@@ -20,6 +33,7 @@ function Flower( plant, parentSegment, basePoint1, basePoint2 ) {
   this.visible = true;
   this.hasFullyBloomed = false;
   this.ageSinceBlooming = 0;  // flower age since blooming in worldtime units
+  this.pollenDispersalAnimationTimeTracker = 0;  // pollen dispersal animation time tracker
   this.isPollinated = false;
   this.hasReachedMaxSeeds = false;
   this.hasFullyClosed = false;
@@ -90,6 +104,19 @@ function Flower( plant, parentSegment, basePoint1, basePoint2 ) {
   this.isRed = checkForRedPetals( this.clP );  // true if petals are a red hue
 }
 
+///pollination animation object constructor
+function PollinationAnimation( pollinatorFlower, pollinatedFlower ) {
+  this.f1 = pollinatorFlower;
+  this.f2 = pollinatedFlower;
+  this.elapsedTime = 0;
+}
+
+
+
+
+/////---FUNCTIONS---/////
+
+
 ///creates a new flower
 function createFlower( plant, parentSegment, basePoint1, basePoint2 ) {
   plant.flowerCount++;
@@ -97,6 +124,11 @@ function createFlower( plant, parentSegment, basePoint1, basePoint2 ) {
   plant.hasFlowers = true;
   parentSegment.child = plant.flowers[plant.flowers.length-1];
   parentSegment.hasChild = true;
+}
+
+///creates a new pollination animation
+function createPollinationAnimation( pollinatorFlower, pollinatedFlower ) {
+  pollinationAnimations.push( new PollinationAnimation( pollinatorFlower, pollinatedFlower ) );
 }
 
 ///checks whether a segment is ready to generate a flower
@@ -107,11 +139,11 @@ function readyForFlower( plant, segment ) {
   return segmentIsLastSegment && plantDoesNotHaveFlowers && segmentIsReadyForFlowerBud;
 }
 
-///checks whether a flower's petals are a hue of red
+///checks whether a flower's petals are red
 function checkForRedPetals( color ) {  // color as hsl object: { h: <value>, s: <value>, l: <value> }
   var hq = color.h <= 8 || color.h >= 352;  // hue qualifies
   var sq = color.s >= 85;  // saturation qualifies
-  var lq = color.l >= 50 && color.l <= 60;  // lightness qualifies
+  var lq = color.l >= 35 && color.l <= 60;  // lightness qualifies
   return hq && sq && lq;
 }
 
@@ -220,8 +252,8 @@ function acceptPollination( pollinatedFlower ) {
       if ( plants[i].flowers.length > 0 ) {
         for ( j=0; j<plants[i].flowers.length; j++ ) {
           var potentialPollinatorFlower = plants[i].flowers[j];
-          if ( potentialPollinatorFlower != pollinatedFlower || allowSelfPollination ) {
-            if ( potentialPollinatorFlower.hasFullyBloomed && !potentialPollinatorFlower.hasFullyClosed ) {
+          if ( allowSelfPollination || potentialPollinatorFlower != pollinatedFlower ) {
+            if ( potentialPollinatorFlower.bloomRatio === 1 ) {
               openFlowers.push( potentialPollinatorFlower );
             }
           }
@@ -233,17 +265,16 @@ function acceptPollination( pollinatedFlower ) {
     var pollinatorFlower = Tl.refa( openFlowers );
     pollinateFlower( pollinatedFlower, pollinatorFlower );
   }
-  var maxSeeds = Math.floor(pollinatedFlower.parentPlant.maxTotalSegments*maxSeedsPerFlowerRatio); 
+  var maxSeeds = Math.floor( pollinatedFlower.parentPlant.maxTotalSegments * maxSeedsPerFlowerRatio ); 
   maxSeeds = maxSeeds < 3 ? 3 : maxSeeds > 7 ? 7 : maxSeeds;
   if ( pollinatedFlower.zygoteGenotypes.length === maxSeeds ) {
     pollinatedFlower.hasReachedMaxSeeds = true;
   }
 }
 
-//maxTotalSegments
-
 ///pollinates flower
 function pollinateFlower( pollinatedFlower, pollinatorFlower ) {
+  createPollinationAnimation( pollinatorFlower, pollinatedFlower );
   var zygoteGenotype = meiosis( pollinatedFlower.parentPlant.genotype, pollinatorFlower.parentPlant.genotype );
   pollinatedFlower.zygoteGenotypes.push( zygoteGenotype );
   pollinatedFlower.isPollinated = true;
@@ -344,6 +375,63 @@ function developFlower( plant, flower ) {
   }
 }
 
+///track highest flower heights
+function trackMaxFlowerHeights( flower ) {
+  var f = flower;
+  if ( f.bloomRatio === 1 ) {
+    var heightPct = Math.floor( (canvas.height-f.ptBudTip.cy)*100/canvas.height );
+    if ( heightPct > highestFlowerPct ) { highestFlowerPct = heightPct; }
+    if ( f.isRed && heightPct > highestRedFlowerPct ) { highestRedFlowerPct = heightPct; }
+  }
+}
+
+///removes all flower points & spans
+function removeAllflowerPointsAndSpans( plant ) {
+  for ( var i=0; i<plant.flowers.length; i++ ) {
+    var f = plant.flowers[i];
+    removePoint( f.ptHbL.id );  // flower hex bottom left point
+    removePoint( f.ptHbR.id );  // flower hex bottom right point
+    removePoint( f.ptHoL.id );  // flower hex outer left point
+    removePoint( f.ptHoR.id );  // flower hex outer right point
+    removePoint( f.ptHtL.id );  // flower hex top left point
+    removePoint( f.ptHtR.id );  // flower hex top right point
+    removePoint( f.ptBudTip.id );  // flower bud tip point
+    removePoint( f.ptPtL.id );  // flower petal top left point  
+    removePoint( f.ptPtM.id );  // flower petal top middle point  
+    removePoint( f.ptPtR.id );  // flower petal top right point  
+    removePoint( f.ptPbL.id );  // flower petal bottom left point  
+    removePoint( f.ptPbM.id );  // flower petal bottom middle point  
+    removePoint( f.ptPbR.id );  // flower petal bottom right point  
+    removePoint( f.ptPodTipL.id );  // flower pod tip left point 
+    removePoint( f.ptPodTipR.id );  // flower pod tip right point
+    removeSpan( f.spOiL.id );  // flower ovule inner left span
+    removeSpan( f.spOiR.id );  // flower ovule inner right span
+    removeSpan( f.spCd.id );  // flower downward (l to r) cross span
+    removeSpan( f.spCu.id );  // flower upward (l to r) cross span
+    removeSpan( f.spCdP.id );  // flower downward (l to r) cross span to parent
+    removeSpan( f.spCuP.id );  // flower upward (l to r) cross span to parent
+    removeSpan( f.spOoL.id );  // flower ovule outer left span 
+    removeSpan( f.spOoR.id );  // flower ovule outer right span 
+    removeSpan( f.spHbM.id );  // flower hex bottom middle span
+    removeSpan( f.spHbL.id );  // flower hex bottom left span
+    removeSpan( f.spHbR.id );  // flower hex bottom right span
+    removeSpan( f.spHtL.id );  // flower hex top left span
+    removeSpan( f.spHtR.id );  // flower hex top right span
+    removeSpan( f.spHtM.id );  // flower hex top middle span
+    removeSpan( f.spHcH.id );  // flower hex cross horizontal span
+    removeSpan( f.spHcDB.id );  // flower hex cross downward span to flower base
+    removeSpan( f.spHcUB.id );  // flower hex cross upward span to flower base
+    removeSpan( f.spBTSL.id );  // flower bud tip scaffolding left span
+    removeSpan( f.spBTSR.id );  // flower bud tip scaffolding right span
+  }
+}
+
+
+
+
+/////---RENDERERS---/////
+
+
 ///renders flowers
 function renderFlowers( plant ) {
   var p = plant;
@@ -437,15 +525,35 @@ function renderFlowers( plant ) {
         Tl.arcFromTo( f.ptHbL, f.ptPbM, pah ); Tl.arcFromTo( f.ptPbM, f.ptHbR, pah );
         ctx.fill(); ctx.stroke();
       }
-      //flower height tracker
-      if ( f.bloomRatio === 1 ) {
-        var heightPct = Math.floor( (canvas.height-f.ptBudTip.cy)*100/canvas.height );
-        if ( heightPct > highestFlowerPct ) { highestFlowerPct = heightPct; }
-        if ( f.isRed && heightPct > highestRedFlowerPct ) { highestRedFlowerPct = heightPct; }
-      }
-      //pods
       if ( viewPods ) { renderPods( f ); }
+      trackMaxFlowerHeights(f);
     }
+  }
+}
+
+///render pollination animations  XXXXX {{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}
+function renderPollinationAnimations() {
+  for ( var i=0; i<pollinationAnimations.length; i++ ) {
+    var pa = pollinationAnimations[i];
+    pa.elapsedTime++;
+    var animationDuration = 200;  // animation duration
+    var f1 = pa.f1;  // flower 1 (pollinator)
+    var f2 = pa.f2;  // flower 2 (pollinated)
+    var f1cp = spanMidPoint( f1.spHcH );  // flower 1 center point (center of hex)
+    var f2cp = spanMidPoint( f2.spHcH );  // flower 2 center point (center of hex)
+    var pr = 2;  // pollen radius
+    var po = 0.8;  // pollen opacity
+
+    ctx.beginPath();
+    ctx.fillStyle = "rgba("+C.pp.r+","+C.pp.g+","+C.pp.b+","+po+")";
+    ctx.strokeStyle = "rgba(255, 159, 41,"+po+")";
+    ctx.lineWidth = 1;
+    ctx.arc( f1cp.x, f1cp.y, pr, 0, 2*Math.PI );
+    ctx.fill();
+    ctx.stroke();
+
+    //removes animation when complete
+    if ( pa.elapsedTime === animationDuration ) { pollinationAnimations.splice(i,1); }
   }
 }
 
@@ -473,46 +581,11 @@ function renderPods( flower ) {
   ctx.fill();
 }
 
-///removes all flower points & spans
-function removeAllflowerPointsAndSpans( plant ) {
-  for ( var i=0; i<plant.flowers.length; i++ ) {
-    var f = plant.flowers[i];
-    removePoint( f.ptHbL.id );  // flower hex bottom left point
-    removePoint( f.ptHbR.id );  // flower hex bottom right point
-    removePoint( f.ptHoL.id );  // flower hex outer left point
-    removePoint( f.ptHoR.id );  // flower hex outer right point
-    removePoint( f.ptHtL.id );  // flower hex top left point
-    removePoint( f.ptHtR.id );  // flower hex top right point
-    removePoint( f.ptBudTip.id );  // flower bud tip point
-    removePoint( f.ptPtL.id );  // flower petal top left point  
-    removePoint( f.ptPtM.id );  // flower petal top middle point  
-    removePoint( f.ptPtR.id );  // flower petal top right point  
-    removePoint( f.ptPbL.id );  // flower petal bottom left point  
-    removePoint( f.ptPbM.id );  // flower petal bottom middle point  
-    removePoint( f.ptPbR.id );  // flower petal bottom right point  
-    removePoint( f.ptPodTipL.id );  // flower pod tip left point 
-    removePoint( f.ptPodTipR.id );  // flower pod tip right point
-    removeSpan( f.spOiL.id );  // flower ovule inner left span
-    removeSpan( f.spOiR.id );  // flower ovule inner right span
-    removeSpan( f.spCd.id );  // flower downward (l to r) cross span
-    removeSpan( f.spCu.id );  // flower upward (l to r) cross span
-    removeSpan( f.spCdP.id );  // flower downward (l to r) cross span to parent
-    removeSpan( f.spCuP.id );  // flower upward (l to r) cross span to parent
-    removeSpan( f.spOoL.id );  // flower ovule outer left span 
-    removeSpan( f.spOoR.id );  // flower ovule outer right span 
-    removeSpan( f.spHbM.id );  // flower hex bottom middle span
-    removeSpan( f.spHbL.id );  // flower hex bottom left span
-    removeSpan( f.spHbR.id );  // flower hex bottom right span
-    removeSpan( f.spHtL.id );  // flower hex top left span
-    removeSpan( f.spHtR.id );  // flower hex top right span
-    removeSpan( f.spHtM.id );  // flower hex top middle span
-    removeSpan( f.spHcH.id );  // flower hex cross horizontal span
-    removeSpan( f.spHcDB.id );  // flower hex cross downward span to flower base
-    removeSpan( f.spHcUB.id );  // flower hex cross upward span to flower base
-    removeSpan( f.spBTSL.id );  // flower bud tip scaffolding left span
-    removeSpan( f.spBTSR.id );  // flower bud tip scaffolding right span
-  }
-}
+
+
+
+
+
 
 
 

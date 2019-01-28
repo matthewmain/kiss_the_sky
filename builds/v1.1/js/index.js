@@ -101,7 +101,7 @@ function Seed( parentFlower, zygoteGenotype ) {
   this.p2.width = this.sw*0.35; this.p2.mass = 5; 
   this.p2.materiality = "immaterial";
   this.sp = addSp( this.p1.id, this.p2.id );  // seed span
-  this.sp.strength = 1;
+  this.sp.strength = 2;
   this.opacity = 1;
   this.planted = false;
   this.hasGerminated = false;
@@ -927,8 +927,8 @@ function runLogs( frequency ) {
 
 
 ///scenarios
-for ( var i=0; i<18; i++ ) { createSeed( null, generateRandomNewPlantGenotype() ); }
-for ( var i=0; i<2; i++ ) { createSeed( null, generateRandomRedFlowerPlantGenotype() ); }
+for ( var i=0; i<20; i++ ) { createSeed( null, generateRandomNewPlantGenotype() ); }
+for ( var i=0; i<5; i++ ) { createSeed( null, generateRandomRedFlowerPlantGenotype() ); }
 //for ( var i=0; i<1; i++ ) { createSeed( null, generateTinyWhiteFlowerPlantGenotype() ); }
 //for ( var i=0; i<5; i++ ) { createSeed( null, generateSmallPlantGenotype() ); }  
 //for ( var i=0; i<5; i++ ) { createSeed( null, generateMediumPlantGenotype() ); }
@@ -953,6 +953,7 @@ function display() {
     growPlants(); 
   }
   renderPlants();
+  renderPollinationAnimations();
   updateUI();
   //runLogs( 600 );
   window.requestAnimationFrame( display );

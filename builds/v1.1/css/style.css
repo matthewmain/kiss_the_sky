@@ -1,16 +1,13 @@
 
 body {
 	background: #111111;
+	user-select: none;
 }
 
 #header_div {
 	position: absolute;
   left: 50%;
   transform: translate(-50%);
-}
-
-.header_svg {
-	user-select: none;  /* prevents browser from highlighting the icon when sliding */
 }
 
 #title_svg {
