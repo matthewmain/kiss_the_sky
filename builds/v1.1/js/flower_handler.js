@@ -87,6 +87,7 @@ function Flower( plant, parentSegment, basePoint1, basePoint2 ) {
   this.clH = plant.pollenPadColor;  // hex (pollen pad) color
   this.clOv = C.hdf;  // ovule color (dark green when healthy)
   this.clO = C.hol;  // outline color (very dark brown when healthy)
+  this.isRed = checkForRedPetals( this.clP );  // true if petals are a red hue
 }
 
 ///creates a new flower
@@ -104,6 +105,14 @@ function readyForFlower( plant, segment ) {
   var plantDoesNotHaveFlowers = !plant.hasFlowers;
   var segmentIsReadyForFlowerBud = segment.spF.l > plant.maxSegmentWidth*0.333;
   return segmentIsLastSegment && plantDoesNotHaveFlowers && segmentIsReadyForFlowerBud;
+}
+
+///checks whether a flower's petals are a hue of red
+function checkForRedPetals( color ) {  // color as hsl object: { h: <value>, s: <value>, l: <value> }
+  var hq = color.h <= 8 || color.h >= 352;  // hue qualifies
+  var sq = color.s >= 85;  // saturation qualifies
+  var lq = color.l >= 50 && color.l <= 60;  // lightness qualifies
+  return hq && sq && lq;
 }
 
 ///expands flower bud
@@ -347,8 +356,24 @@ function renderFlowers( plant ) {
         positionAllPetals(p,f);  // ensures flower petal positions are updated every iteration
         ctx.lineJoin = "round";
         ctx.lineCap = "round";
-        ctx.lineWidth = 1;
+
+
+        //pulsing indication that flower color qualifies as red
+        if ( f.isRed && f.bloomRatio === 1 && p.isAlive ) {
+          var fcp = spanMidPoint( f.spHcH );  // flower center point (center of hex)
+          var pt = 100;  // pulse time (in worldTime units) 
+          var ir = f.spHcH.l * (worldTime%pt)*0.011 + f.spHcH.l*0.75;  // indicator radius
+          var ia = 1-(worldTime%pt)/pt;  // indicator alpha
+          ctx.strokeStyle = "rgba(255,0,0,"+ia+")";
+          ctx.beginPath();
+          ctx.lineWidth = f.spHcH.l*0.2;
+          ctx.arc( fcp.x, fcp.y, ir, 0, 2*Math.PI );
+          ctx.stroke();
+        }
+
+
         //top petals
+        ctx.lineWidth = 1;
         ctx.fillStyle = "hsla("+f.clP.h+","+f.clP.s+"%,"+f.clP.l+"%,"+p.opacity+")"; 
         ctx.strokeStyle = "rgba("+f.clO.r+","+f.clO.g+","+f.clO.b+","+p.opacity+")";
         ctx.beginPath();  // top middle petal

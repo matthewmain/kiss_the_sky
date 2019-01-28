@@ -926,7 +926,8 @@ function runLogs( frequency ) {
 
 
 ///scenarios
-for ( var i=0; i<25; i++ ) { createSeed( null, generateRandomNewPlantGenotype() ); }
+for ( var i=0; i<18; i++ ) { createSeed( null, generateRandomNewPlantGenotype() ); }
+for ( var i=0; i<2; i++ ) { createSeed( null, generateRandomRedFlowerPlantGenotype() ); }
 //for ( var i=0; i<1; i++ ) { createSeed( null, generateTinyWhiteFlowerPlantGenotype() ); }
 //for ( var i=0; i<5; i++ ) { createSeed( null, generateSmallPlantGenotype() ); }  
 //for ( var i=0; i<5; i++ ) { createSeed( null, generateMediumPlantGenotype() ); }
