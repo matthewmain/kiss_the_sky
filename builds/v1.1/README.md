@@ -13,9 +13,10 @@
 
 <br>
 
+basic gamification: grow a red flower tall enough to reach the top of the viewbox in the fewest generations, "kiss the sky"
+
 - [X] slidable sun shades to let user control which plants get sunlight
 - [X] ability to pull/kill a plant
-- [ ] basic gamification: grow a red flower tall enough to reach the top of the viewbox in the fewest generations, "kiss the sky"
 - [ ] adjust season lengths so that 1) fall & winter are much shorter so that periods of idle time when player doesn't have anything to do are dramatically reduced, and 2) make summer lengths variable based on average or greatest segment count so that as plants grow they have enough time to develop and bloom before fall.
 - [ ] faint red pulsing animation around red-hued flowers that qaulify as flower colors that can be used to reach 100% height and win the game.
 - [ ] faint yellow pollen-release animation upon full flower bloom to indicate that flower has entered reproductive mode and can cross-polinate with other (nearby?) flowers
@@ -29,6 +30,7 @@
 
 <br>
 
+misc. improvements
 - [ ] fade out shadows when leaf angle falls to below about -80 degrees from horizontal (will avoid narrow shadows when leaves are vertical as well as shadows flashing off at plant death)
 - [ ] omit pod closure at plant death
 - [ ] add shadow to gap between leaves
@@ -37,6 +39,7 @@
 
 <br>
 
+fixes
 - [ ] performance enhancement: run sun rays less often with stronger intensity (probably need to address plant color-change flashing), and/or render less frequently
 - [ ] performance enhancement: consolidate redundant loops
 - [ ] performance enhancement: use Chrome performance tools to track down any other other performance issues

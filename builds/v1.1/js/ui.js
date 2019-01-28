@@ -87,9 +87,10 @@ function placeSunShades( leftCount, rightCount ) {
 ///renders eliminate plant icon at cursor location
 function displayEliminatePlantIconWithCursor(e) {
   var displayIcon = false;
+  //canvas.style.cursor = "default";
   for ( var i=0; i<plants.length; i++ ) {
     var p = plants[i];
-    if ( p.isAlive || !p.hasBeenEliminatedByPlayer ) {
+    if ( p.isAlive || (!p.hasCollapsed && !p.hasBeenEliminatedByPlayer) ) {
       for ( var j=0; j<p.segments.length; j++) {
         var s = p.segments[j];
         var xDiffPct1 = pctFromXVal( s.ptE1.cx ) - mouseCanvasXPct;
@@ -101,6 +102,7 @@ function displayEliminatePlantIconWithCursor(e) {
         var distancePct2 = Math.sqrt( xDiffPct2*xDiffPct2 + yDiffPct2*yDiffPct2 );
         if ( distancePct1 <= selectRadiusPct*2 || distancePct2 <= selectRadiusPct*2 ) {
           displayIcon = true;
+          //canvas.style.cursor = "none";
         }
       }
     }
@@ -111,15 +113,15 @@ function displayEliminatePlantIconWithCursor(e) {
     //circle
     ctx.beginPath();
     ctx.lineWidth = 1;
-    ctx.arc( xValFromPct(mouseCanvasXPct), yValFromPct(mouseCanvasYPct), selectRadius*1.3, 0, 2*Math.PI );
+    ctx.arc( xValFromPct(mouseCanvasXPct), yValFromPct(mouseCanvasYPct-0.5), selectRadius*1.3, 0, 2*Math.PI );
     ctx.fill();
     ctx.stroke();
     //bar
     ctx.beginPath();
     ctx.lineWidth = 6;
     ctx.lineCap = "butt";
-    ctx.moveTo( xValFromPct(mouseCanvasXPct-1.1), yValFromPct(mouseCanvasYPct) );
-    ctx.lineTo( xValFromPct(mouseCanvasXPct+1.1), yValFromPct(mouseCanvasYPct) );
+    ctx.moveTo( xValFromPct(mouseCanvasXPct-1.1), yValFromPct(mouseCanvasYPct-0.5) );
+    ctx.lineTo( xValFromPct(mouseCanvasXPct+1.1), yValFromPct(mouseCanvasYPct-0.5) );
     ctx.fill();
     ctx.stroke();
   }
@@ -269,7 +271,7 @@ function stopEliminatingPlants() {
 function eliminatePlants( e, plant ) {
   for ( var i=0; i<plants.length; i++ ) {
     var p = plants[i];
-    if ( plantsAreBeingEliminated && ( p.isAlive || !p.hasBeenEliminatedByPlayer ) ) {
+    if ( plantsAreBeingEliminated && ( p.isAlive || (!p.hasCollapsed && !p.hasBeenEliminatedByPlayer) ) ) {
       for ( var j=0; j<p.segments.length; j++) {
         var s = p.segments[j];
         var xDiffPct1 = pctFromXVal( s.ptE1.cx ) - mouseCanvasXPct;
