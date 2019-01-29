@@ -13,8 +13,8 @@ var currentGreatestMaxSegment;
 ///season lengths
 var spL = 1000;  // spring length
 var suL;  // summer length (updated ever year in trackSeasons() based on max plant segment count)
-var faL = 500;  // fall length
-var wiL = 500;  // winter length
+var faL = 200;  // fall length
+var wiL = 300;  // winter length
 
 ///background gradient colors
 var BgG = {
@@ -67,7 +67,7 @@ function trackSeasons() {
   } else if ( yearTime < spL+suL ) {
     currentSeason = "summer"; photosynthesisRatio = 1; livEnExp = 1;
   } else if ( yearTime < spL+suL+faL ) {
-    currentSeason = "fall"; photosynthesisRatio = 0.25; livEnExp = 3;
+    currentSeason = "fall"; photosynthesisRatio = 0; livEnExp = 7;
   } else if ( yearTime < spL+suL+faL+wiL ) {
     currentSeason = "winter"; photosynthesisRatio = 0; livEnExp = 10;
   } else {

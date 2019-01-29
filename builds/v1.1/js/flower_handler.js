@@ -9,7 +9,7 @@
 /////---TRACKERS---/////
 
 
-var pollinationAnimations = [];
+var pollinationAnimations = []; pollinationAnimationCount = 0;
 
 
 
@@ -106,9 +106,10 @@ function Flower( plant, parentSegment, basePoint1, basePoint2 ) {
 
 ///pollination animation object constructor
 function PollinationAnimation( pollinatorFlower, pollinatedFlower ) {
-  this.f1 = pollinatorFlower;
-  this.f2 = pollinatedFlower;
-  this.elapsedTime = 0;
+  this.id = pollinationAnimationCount;
+  this.f1 = pollinatorFlower;  // flower 1 (pollinator)
+  this.f2 = pollinatedFlower;  // flower 2 (pollinated)
+  this.pp = spanMidPoint( this.f1.spHcH );  // pollen position (begins at center of flower 1)
 }
 
 
@@ -128,6 +129,7 @@ function createFlower( plant, parentSegment, basePoint1, basePoint2 ) {
 
 ///creates a new pollination animation
 function createPollinationAnimation( pollinatorFlower, pollinatedFlower ) {
+  pollinationAnimationCount++;
   pollinationAnimations.push( new PollinationAnimation( pollinatorFlower, pollinatedFlower ) );
 }
 
@@ -142,7 +144,7 @@ function readyForFlower( plant, segment ) {
 ///checks whether a flower's petals are red
 function checkForRedPetals( color ) {  // color as hsl object: { h: <value>, s: <value>, l: <value> }
   var hq = color.h <= 8 || color.h >= 352;  // hue qualifies
-  var sq = color.s >= 85;  // saturation qualifies
+  var sq = color.s >= 75;  // saturation qualifies
   var lq = color.l >= 35 && color.l <= 60;  // lightness qualifies
   return hq && sq && lq;
 }
@@ -246,30 +248,24 @@ function positionAllPetals( plant, flower ) {
 
 ///readies flower to accept pollination
 function acceptPollination( pollinatedFlower ) { 
-  var openFlowers = [];
+  var availablePollinatorFlowers = [];
   if ( Tl.rib( 1, Math.round(suL/pollinationFrequency) ) === 1 ) {
-    for ( i=0; i<plants.length; i++ ) {
-      if ( plants[i].flowers.length > 0 ) {
-        for ( j=0; j<plants[i].flowers.length; j++ ) {
-          var potentialPollinatorFlower = plants[i].flowers[j];
-          if ( allowSelfPollination || potentialPollinatorFlower != pollinatedFlower ) {
-            if ( potentialPollinatorFlower.bloomRatio === 1 ) {
-              openFlowers.push( potentialPollinatorFlower );
-            }
-          }
-        }
+    for ( var i=0; i<plants.length; i++ ) {
+      for ( var j=0; j<plants[i].flowers.length; j++ ) {
+        var ppf = plants[i].flowers[j];  // potential pollinator flower
+        var ppfIsElegible = allowSelfPollination || ppf != pollinatedFlower;
+        var ppfIsReady = ppf.bloomRatio === 1 && plants[i].energy > plants[i].maxEnergyLevel*minPollEnLevRatio;
+        if ( ppfIsElegible && ppfIsReady ) { availablePollinatorFlowers.push( ppf ); }
       }
     }
   }
-  if ( openFlowers.length > 0 ) {
-    var pollinatorFlower = Tl.refa( openFlowers );
+  if ( availablePollinatorFlowers.length > 0 ) {
+    var pollinatorFlower = Tl.refa( availablePollinatorFlowers );
     pollinateFlower( pollinatedFlower, pollinatorFlower );
   }
   var maxSeeds = Math.floor( pollinatedFlower.parentPlant.maxTotalSegments * maxSeedsPerFlowerRatio ); 
   maxSeeds = maxSeeds < 3 ? 3 : maxSeeds > 7 ? 7 : maxSeeds;
-  if ( pollinatedFlower.zygoteGenotypes.length === maxSeeds ) {
-    pollinatedFlower.hasReachedMaxSeeds = true;
-  }
+  if ( pollinatedFlower.zygoteGenotypes.length === maxSeeds ) { pollinatedFlower.hasReachedMaxSeeds = true; }
 }
 
 ///pollinates flower
@@ -382,6 +378,13 @@ function trackMaxFlowerHeights( flower ) {
     var heightPct = Math.floor( (canvas.height-f.ptBudTip.cy)*100/canvas.height );
     if ( heightPct > highestFlowerPct ) { highestFlowerPct = heightPct; }
     if ( f.isRed && heightPct > highestRedFlowerPct ) { highestRedFlowerPct = heightPct; }
+  }
+}
+
+///removes a polination animation by id
+function removePollinationAnimation( id ) {
+  for ( var i=0; i<pollinationAnimations.length; i++){ 
+    if ( pollinationAnimations[i].id === id) { pollinationAnimations.splice(i,1); }
   }
 }
 
@@ -533,28 +536,30 @@ function renderFlowers( plant ) {
 
 ///render pollination animations  XXXXX {{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}
 function renderPollinationAnimations() {
+  var idsForRemoval = [];
   for ( var i=0; i<pollinationAnimations.length; i++ ) {
     var pa = pollinationAnimations[i];
-    pa.elapsedTime++;
-    var animationDuration = 200;  // animation duration
-    var f1 = pa.f1;  // flower 1 (pollinator)
-    var f2 = pa.f2;  // flower 2 (pollinated)
-    var f1cp = spanMidPoint( f1.spHcH );  // flower 1 center point (center of hex)
-    var f2cp = spanMidPoint( f2.spHcH );  // flower 2 center point (center of hex)
-    var pr = 2;  // pollen radius
-    var po = 0.8;  // pollen opacity
-
+    var f1cp = spanMidPoint( pa.f1.spHcH );  // flower 1 center point (pollinator)
+    var f2cp = spanMidPoint( pa.f2.spHcH );  // flower 2 center point (pollinated)
+    var pr = canvas.width*0.0015;  // pollen radius
+    var inc = canvas.width*0.005;  // increment of pollen movement per iteration
+    var xDiff = f2cp.x - pa.pp.x;  // x difference between flower 2 and pollen
+    var yDiff = f2cp.y - pa.pp.y;  // y difference between flower 2 and pollen
+    var dist =  Math.sqrt( xDiff*xDiff + yDiff*yDiff);  // distance between pollen and flower 2
+    var incRat = inc/dist;  // increment ratio (ratio of increment to current total distance)
+    var xInc = xDiff*incRat;  // pollen x increment this iteration
+    var yInc = yDiff*incRat;  // pollen y increment this iteration
+    if ( inc < dist ) { pa.pp.x += xInc; pa.pp.y += yInc; } else { pa.pp = f2cp; pr*=3; }  // updates pollen position
     ctx.beginPath();
-    ctx.fillStyle = "rgba("+C.pp.r+","+C.pp.g+","+C.pp.b+","+po+")";
-    ctx.strokeStyle = "rgba(255, 159, 41,"+po+")";
-    ctx.lineWidth = 1;
-    ctx.arc( f1cp.x, f1cp.y, pr, 0, 2*Math.PI );
+    ctx.fillStyle = "rgba(255, 159, 41, 1)";
+    ctx.strokeStyle = "rgba(255, 159, 41, 0.4)";
+    ctx.lineWidth = pr*1.5;
+    ctx.arc( pa.pp.x, pa.pp.y, pr, 0, 2*Math.PI );
     ctx.fill();
     ctx.stroke();
-
-    //removes animation when complete
-    if ( pa.elapsedTime === animationDuration ) { pollinationAnimations.splice(i,1); }
+    if ( pa.pp === f2cp ) { idsForRemoval.push( pa.id ); }  // removes pollen animation object after complete
   }
+  for ( var j=0; j<idsForRemoval.length; j++) { removePollinationAnimation( idsForRemoval[j] ); }
 }
 
 ///renders pods

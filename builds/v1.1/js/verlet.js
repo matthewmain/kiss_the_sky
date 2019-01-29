@@ -124,10 +124,10 @@ function getPt(id) {
 }
 
 ///gets distance between two points (pythogorian theorum)
-function distance(point_1, point_2) {
-  var x_difference = point_2.cx - point_1.cx;
-  var	y_difference = point_2.cy - point_1.cy;
-  return Math.sqrt( x_difference*x_difference + y_difference*y_difference);
+function distance(point1, point2) {
+  var xDiff = point2.cx - point1.cx;
+  var	yDiff = point2.cy - point1.cy;
+  return Math.sqrt( xDiff*xDiff + yDiff*yDiff);
 }
 
 ///gets a span's mid point (returns object: { x: <value>, y: <value> } )
