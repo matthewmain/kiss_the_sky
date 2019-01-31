@@ -330,7 +330,7 @@ document.addEventListener("touchup", function() {  dropHandle(); stopEliminating
 ///updates UI (runs every iteration)
 function updateUI() {
   attachHeaderAndFooter();
-  renderSunShades();
+  if ( useSunShades ) { renderSunShades(); }
   displayEliminatePlantIconWithCursor();
   $("#year_count").text( currentYear );
   $("#season").text( currentSeason );

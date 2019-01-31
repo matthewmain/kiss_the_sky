@@ -29,12 +29,13 @@ var viewShadows = true;  // (shadow visibility)
 var viewStalks = true;  // (stalk visibility) 
 var viewLeaves = true;  // (leaf visibility)
 var viewFlowers = true;  // (flower visibility)
+var viewPods = true;  // (pod visibilty)
 var viewRedFlowerIndicator = true;  // (red flower indicator animation visibility)
-var runPollinationAnimations = true;  // (whether to run pollination animations; overrides pollination views)
 var viewPollenBursts = true;  // (pollen burst visibility)
 var viewPollinatorLines = true;  // (pollination line visibility; i.e., pollen particals travelling between flowers)
 var viewPollinationGlow = true;  // (pollination glow visibility)
-var viewPods = true;  // (pod visibilty)
+var runPollinationAnimations = true;  // (whether to run pollination animations; overrides pollination views)
+var useSunShades = false;  // (whether to place extendable sun shades)
 var allowSelfPollination = true;  // allows flowers to pollinate themselves
 var pollinationFrequency = 5;  // (as average number of pollination events per open flower per length of summer)
 var maxSeedsPerFlowerRatio = 0.334;  // max seeds per flower (as ratio of plant's max total segments)
@@ -968,7 +969,7 @@ function display() {
 }
 
 createSunRays();
-placeSunShades(3,3);
+if ( useSunShades ) { placeSunShades(3,3); }
 display();
 
 
