@@ -29,6 +29,11 @@ var viewShadows = true;  // (shadow visibility)
 var viewStalks = true;  // (stalk visibility) 
 var viewLeaves = true;  // (leaf visibility)
 var viewFlowers = true;  // (flower visibility)
+var viewRedFlowerIndicator = true;  // (red flower indicator animation visibility)
+var runPollinationAnimations = true;  // (whether to run pollination animations; overrides pollination views)
+var viewPollenBursts = true;  // (pollen burst visibility)
+var viewPollinatorLines = true;  // (pollination line visibility; i.e., pollen particals travelling between flowers)
+var viewPollinationGlow = true;  // (pollination glow visibility)
 var viewPods = true;  // (pod visibilty)
 var allowSelfPollination = true;  // allows flowers to pollinate themselves
 var pollinationFrequency = 5;  // (as average number of pollination events per open flower per length of summer)
@@ -897,9 +902,9 @@ function logCurrentGenePresence( geneName ) {  // (enter name as string)
 function runLogs( frequency ) {
   if ( worldTime % frequency === 0 ) { 
 
-    console.log("\n");
+    // console.log("\n");
 
-    logAllGeneChanges();
+    // logAllGeneChanges();
     // logGeneChange( "maxTotalSegments" );
     // logGeneChange( "maxSegmentWidth" );
     // logGeneChange( "stalkStrength" );
@@ -956,7 +961,7 @@ function display() {
     growPlants(); 
   }
   renderPlants();
-  renderPollinationAnimations();
+  if ( runPollinationAnimations ) { renderPollinationAnimations(); }
   updateUI();
   //runLogs( 600 );
   window.requestAnimationFrame( display );
