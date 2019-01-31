@@ -335,8 +335,10 @@ function updateUI() {
   $("#year_count").text( currentYear );
   $("#season").text( currentSeason );
   updateSeasonPieChart();
-  $("#highest_height").text( highestFlowerPct );
+  $("#highest_height").text( highestRedFlowerPct );
 }
+
+
 
 
 

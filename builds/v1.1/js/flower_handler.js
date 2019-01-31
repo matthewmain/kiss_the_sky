@@ -1,7 +1,20 @@
 
 
-///////// FLOWER HANDLER /////////
 
+/////////////////// FLOWER HANDLER /////////////////////
+
+
+
+
+/////---TRACKERS---/////
+
+
+var pollinationAnimations = []; pollinationAnimationCount = 0;
+
+
+
+
+/////---OBJECTS---/////
 
 
 ///flower constructor 
@@ -20,6 +33,7 @@ function Flower( plant, parentSegment, basePoint1, basePoint2 ) {
   this.visible = true;
   this.hasFullyBloomed = false;
   this.ageSinceBlooming = 0;  // flower age since blooming in worldtime units
+  this.pollenDispersalAnimationTimeTracker = 0;  // pollen dispersal animation time tracker
   this.isPollinated = false;
   this.hasReachedMaxSeeds = false;
   this.hasFullyClosed = false;
@@ -87,7 +101,66 @@ function Flower( plant, parentSegment, basePoint1, basePoint2 ) {
   this.clH = plant.pollenPadColor;  // hex (pollen pad) color
   this.clOv = C.hdf;  // ovule color (dark green when healthy)
   this.clO = C.hol;  // outline color (very dark brown when healthy)
+  this.isRed = checkForRedPetals( this.clP );  // true if petals are a red hue
 }
+
+///pollination animation object constructor
+function PollinationAnimation( pollinatorFlower, pollinatedFlower ) {
+  this.id = pollinationAnimationCount;
+  this.f1 = pollinatorFlower;  // flower 1 (pollinator)
+  this.f2 = pollinatedFlower;  // flower 2 (pollinated)
+  this.bls = [];  // burst lines collection
+  this.pls = [];  // pollination lines collection
+  this.op = 0.9;  // pollination animation opacity (base number)
+  this.burstOrigin = spanMidPoint( this.f1.spHcH );
+  this.burstDuration = 120;  // pollen burst animation duration in iterations
+  this.iterationCount = 0;  // number of iterations since beginning of animation
+  this.glowIterationCount = 0;  // number of iterations since pollination glow began
+  this.pollenBurstComplete = false; 
+  this.pollinatorLinesHaveArrived = false;
+  this.pollenPadGlowHasBegun = false;
+  this.pollenPadGlowComplete = false;
+  //burst lines (pollen lines that burst randomly from flower 1)
+  for ( var i=0; i<20; i++) {  // creates a burst line each iteration
+    var totalDistance = Tl.rfb( canvas.width*0.03, canvas.width*0.1 );  // total distance burst line will travel
+    var xVal = Tl.rfb( 0, totalDistance );  // base x value (random)
+    var xDist = Tl.rib(1,2) == 1 ? xVal : -xVal;  // x distance burst line will travel 
+    var yVal = Math.sqrt( totalDistance*totalDistance - xDist*xDist );  // base y value (based on x total distance)
+    var yDist = Tl.rib(1,2) == 1 ? yVal : -yVal;  // y distance burst line will travel
+    var blxa = [];  // burst line x positions array 
+    var blya = [];  // burst line y positions array
+    for ( var j=0; j<10; j++ ) {  // populates burst line x & y positions arrays
+      blxa.push( this.burstOrigin.x ); 
+      blya.push( this.burstOrigin.y ); 
+    }
+    this.bls.push({  // burst line instances
+      dist: totalDistance,  // total distance burst point will travel
+      dx: this.burstOrigin.x + xDist,  // destination x position of burst line
+      dy: this.burstOrigin.y + yDist,  // destination y position of burst line
+      xa: blxa,  // x positions array 
+      ya: blya,  // y positions array 
+    });
+  }
+  //pollination lines (pollen lines that travel from flower 1 to flower 2)
+  for ( var k=0; k<3; k++) {  // creates a pollination line each iteration
+    var plxa = [];  // pollination line x positions array 
+    var plya = [];  // pollination line y positions array
+    for ( var l=0; l<3; l++ ) {  // populates pollination line x & y positions arrays
+      plxa.push( this.burstOrigin.x ); 
+      plya.push( this.burstOrigin.y ); 
+    }
+    this.pls.push({  // pollination line instances
+      xa: plxa,  // x positions array 
+      ya: plya,  // y positions array 
+    });
+  }
+}
+
+
+
+
+/////---FUNCTIONS---/////
+
 
 ///creates a new flower
 function createFlower( plant, parentSegment, basePoint1, basePoint2 ) {
@@ -98,12 +171,26 @@ function createFlower( plant, parentSegment, basePoint1, basePoint2 ) {
   parentSegment.hasChild = true;
 }
 
+///creates a new pollination animation
+function createPollinationAnimation( pollinatorFlower, pollinatedFlower ) {
+  pollinationAnimationCount++;
+  pollinationAnimations.push( new PollinationAnimation( pollinatorFlower, pollinatedFlower ) );
+}
+
 ///checks whether a segment is ready to generate a flower
 function readyForFlower( plant, segment ) {
   var segmentIsLastSegment = segment.id === plant.maxTotalSegments;
   var plantDoesNotHaveFlowers = !plant.hasFlowers;
   var segmentIsReadyForFlowerBud = segment.spF.l > plant.maxSegmentWidth*0.333;
   return segmentIsLastSegment && plantDoesNotHaveFlowers && segmentIsReadyForFlowerBud;
+}
+
+///checks whether a flower's petals are red
+function checkForRedPetals( color ) {  // color as hsl object: { h: <value>, s: <value>, l: <value> }
+  var hq = color.h <= 8 || color.h >= 352;  // hue qualifies
+  var sq = color.s >= 75;  // saturation qualifies
+  var lq = color.l >= 35 && color.l <= 60;  // lightness qualifies
+  return hq && sq && lq;
 }
 
 ///expands flower bud
@@ -205,36 +292,29 @@ function positionAllPetals( plant, flower ) {
 
 ///readies flower to accept pollination
 function acceptPollination( pollinatedFlower ) { 
-  var openFlowers = [];
+  var availablePollinatorFlowers = [];
   if ( Tl.rib( 1, Math.round(suL/pollinationFrequency) ) === 1 ) {
-    for ( i=0; i<plants.length; i++ ) {
-      if ( plants[i].flowers.length > 0 ) {
-        for ( j=0; j<plants[i].flowers.length; j++ ) {
-          var potentialPollinatorFlower = plants[i].flowers[j];
-          if ( potentialPollinatorFlower != pollinatedFlower || allowSelfPollination ) {
-            if ( potentialPollinatorFlower.hasFullyBloomed && !potentialPollinatorFlower.hasFullyClosed ) {
-              openFlowers.push( potentialPollinatorFlower );
-            }
-          }
-        }
+    for ( var i=0; i<plants.length; i++ ) {
+      for ( var j=0; j<plants[i].flowers.length; j++ ) {
+        var ppf = plants[i].flowers[j];  // potential pollinator flower
+        var ppfIsElegible = allowSelfPollination || ppf != pollinatedFlower;
+        var ppfIsReady = ppf.bloomRatio === 1 && plants[i].energy > plants[i].maxEnergyLevel*minPollEnLevRatio;
+        if ( ppfIsElegible && ppfIsReady ) { availablePollinatorFlowers.push( ppf ); }
       }
     }
   }
-  if ( openFlowers.length > 0 ) {
-    var pollinatorFlower = Tl.refa( openFlowers );
+  if ( availablePollinatorFlowers.length > 0 ) {
+    var pollinatorFlower = Tl.refa( availablePollinatorFlowers );
     pollinateFlower( pollinatedFlower, pollinatorFlower );
   }
-  var maxSeeds = Math.floor(pollinatedFlower.parentPlant.maxTotalSegments*maxSeedsPerFlowerRatio); 
+  var maxSeeds = Math.floor( pollinatedFlower.parentPlant.maxTotalSegments * maxSeedsPerFlowerRatio ); 
   maxSeeds = maxSeeds < 3 ? 3 : maxSeeds > 7 ? 7 : maxSeeds;
-  if ( pollinatedFlower.zygoteGenotypes.length === maxSeeds ) {
-    pollinatedFlower.hasReachedMaxSeeds = true;
-  }
+  if ( pollinatedFlower.zygoteGenotypes.length === maxSeeds ) { pollinatedFlower.hasReachedMaxSeeds = true; }
 }
-
-//maxTotalSegments
 
 ///pollinates flower
 function pollinateFlower( pollinatedFlower, pollinatorFlower ) {
+  if ( runPollinationAnimations ) { createPollinationAnimation( pollinatorFlower, pollinatedFlower ); }
   var zygoteGenotype = meiosis( pollinatedFlower.parentPlant.genotype, pollinatorFlower.parentPlant.genotype );
   pollinatedFlower.zygoteGenotypes.push( zygoteGenotype );
   pollinatedFlower.isPollinated = true;
@@ -335,6 +415,70 @@ function developFlower( plant, flower ) {
   }
 }
 
+///track highest flower heights
+function trackMaxFlowerHeights( flower ) {
+  var f = flower;
+  if ( f.bloomRatio === 1 ) {
+    var heightPct = Math.floor( (canvas.height-f.ptBudTip.cy)*100/canvas.height );
+    if ( heightPct > highestFlowerPct ) { highestFlowerPct = heightPct; }
+    if ( f.isRed && heightPct > highestRedFlowerPct ) { highestRedFlowerPct = heightPct; }
+  }
+}
+
+///removes a polination animation by id
+function removePollinationAnimation( id ) {
+  for ( var i=0; i<pollinationAnimations.length; i++){ 
+    if ( pollinationAnimations[i].id === id) { pollinationAnimations.splice(i,1); }
+  }
+}
+
+///removes all flower points & spans
+function removeAllflowerPointsAndSpans( plant ) {
+  for ( var i=0; i<plant.flowers.length; i++ ) {
+    var f = plant.flowers[i];
+    removePoint( f.ptHbL.id );  // flower hex bottom left point
+    removePoint( f.ptHbR.id );  // flower hex bottom right point
+    removePoint( f.ptHoL.id );  // flower hex outer left point
+    removePoint( f.ptHoR.id );  // flower hex outer right point
+    removePoint( f.ptHtL.id );  // flower hex top left point
+    removePoint( f.ptHtR.id );  // flower hex top right point
+    removePoint( f.ptBudTip.id );  // flower bud tip point
+    removePoint( f.ptPtL.id );  // flower petal top left point  
+    removePoint( f.ptPtM.id );  // flower petal top middle point  
+    removePoint( f.ptPtR.id );  // flower petal top right point  
+    removePoint( f.ptPbL.id );  // flower petal bottom left point  
+    removePoint( f.ptPbM.id );  // flower petal bottom middle point  
+    removePoint( f.ptPbR.id );  // flower petal bottom right point  
+    removePoint( f.ptPodTipL.id );  // flower pod tip left point 
+    removePoint( f.ptPodTipR.id );  // flower pod tip right point
+    removeSpan( f.spOiL.id );  // flower ovule inner left span
+    removeSpan( f.spOiR.id );  // flower ovule inner right span
+    removeSpan( f.spCd.id );  // flower downward (l to r) cross span
+    removeSpan( f.spCu.id );  // flower upward (l to r) cross span
+    removeSpan( f.spCdP.id );  // flower downward (l to r) cross span to parent
+    removeSpan( f.spCuP.id );  // flower upward (l to r) cross span to parent
+    removeSpan( f.spOoL.id );  // flower ovule outer left span 
+    removeSpan( f.spOoR.id );  // flower ovule outer right span 
+    removeSpan( f.spHbM.id );  // flower hex bottom middle span
+    removeSpan( f.spHbL.id );  // flower hex bottom left span
+    removeSpan( f.spHbR.id );  // flower hex bottom right span
+    removeSpan( f.spHtL.id );  // flower hex top left span
+    removeSpan( f.spHtR.id );  // flower hex top right span
+    removeSpan( f.spHtM.id );  // flower hex top middle span
+    removeSpan( f.spHcH.id );  // flower hex cross horizontal span
+    removeSpan( f.spHcDB.id );  // flower hex cross downward span to flower base
+    removeSpan( f.spHcUB.id );  // flower hex cross upward span to flower base
+    removeSpan( f.spBTSL.id );  // flower bud tip scaffolding left span
+    removeSpan( f.spBTSR.id );  // flower bud tip scaffolding right span
+  }
+}
+
+
+
+
+/////---RENDERERS---/////
+
+
 ///renders flowers
 function renderFlowers( plant ) {
   var p = plant;
@@ -347,8 +491,20 @@ function renderFlowers( plant ) {
         positionAllPetals(p,f);  // ensures flower petal positions are updated every iteration
         ctx.lineJoin = "round";
         ctx.lineCap = "round";
-        ctx.lineWidth = 1;
+        //pulsing indicator showing that flower color qualifies as red
+        if ( viewRedFlowerIndicator && f.isRed && f.bloomRatio === 1 && p.isAlive && p.energy > 0 ) {
+          var fcp = spanMidPoint( f.spHcH );  // flower center point (center of hex)
+          var pt = 100;  // pulse time (in worldTime units) 
+          var ir = f.spHcH.l * (worldTime%pt)*0.011 + f.spHcH.l*0.75;  // indicator radius
+          var ia = 1-(worldTime%pt)/pt;  // indicator alpha
+          ctx.strokeStyle = "rgba(255,0,0,"+ia+")";
+          ctx.beginPath();
+          ctx.lineWidth = f.spHcH.l*0.2;
+          ctx.arc( fcp.x, fcp.y, ir, 0, 2*Math.PI );
+          ctx.stroke();
+        }
         //top petals
+        ctx.lineWidth = 1;
         ctx.fillStyle = "hsla("+f.clP.h+","+f.clP.s+"%,"+f.clP.l+"%,"+p.opacity+")"; 
         ctx.strokeStyle = "rgba("+f.clO.r+","+f.clO.g+","+f.clO.b+","+p.opacity+")";
         ctx.beginPath();  // top middle petal
@@ -416,14 +572,128 @@ function renderFlowers( plant ) {
         Tl.arcFromTo( f.ptHbL, f.ptPbM, pah ); Tl.arcFromTo( f.ptPbM, f.ptHbR, pah );
         ctx.fill(); ctx.stroke();
       }
-      //flower height tracker
-      if ( f.bloomRatio === 1 && Math.floor( (canvas.height-f.ptBudTip.cy)*100/canvas.height ) > highestFlowerPct ) { 
-        highestFlowerPct =  Math.floor( (canvas.height-f.ptBudTip.cy)*100/canvas.height ); 
-      }
-      //pods
       if ( viewPods ) { renderPods( f ); }
+      trackMaxFlowerHeights(f);
     }
   }
+}
+
+///render pollen burst
+function renderPollenBurst( pollinationAnimation ) {
+  var pa = pollinationAnimation;
+  var blsqi = 1;  // burst line squiggle intensity
+  for ( var i=0; i<pa.bls.length; i++ ) {
+    var bl = pa.bls[i];  // burst line
+    var blInc = bl.dist / pa.burstDuration;  // increment of burst line movement per iteration
+    var blXDiff = bl.dx - pa.burstOrigin.x;  // x difference between flower 1 center and burst destination point
+    var blYDiff = bl.dy - pa.burstOrigin.y;  // y difference between flower 1 center and burst destination point
+    var blIncRat = blInc / bl.dist;  // increment ratio (ratio of increment to current total distance)
+    var blXInc = blXDiff*blIncRat;  // burst line x increment this iteration
+    var blYInc = blYDiff*blIncRat;  // burst line y increment this iteration
+    var blo = (1-pa.iterationCount/pa.burstDuration)*pa.op;  // burst line opacity (reduces gradually)
+    var burstComplete = ( pa.iterationCount >= pa.burstDuration );
+    blXInc += Tl.rfb(-blsqi,blsqi);  // adds x squiggle
+    blYInc += Tl.rfb(-blsqi,blsqi);  // adds y squiggle
+    ctx.lineJoin = "round";
+    ctx.lineCap = "round";
+    ctx.lineWidth = canvas.width*0.0015;
+    if ( pa.iterationCount <= pa.burstDuration ) { 
+      bl.xa.unshift( bl.xa[0] + blXInc );  // adds new x value to burst line x values array as first element
+      bl.xa.pop();  // removes last element of burst line x values array
+      bl.ya.unshift( bl.ya[0] + blYInc );  // adds new y value to burst line y values array as first element
+      bl.ya.pop();  // removes last element of burst line y values array
+      ctx.beginPath();
+      ctx.moveTo( bl.xa[0], bl.ya[0]);
+      var blto = blo;  // burst line tail opacity at head
+      for ( var j=1; j<bl.xa.length; j++) {  // draws burst line tail
+        blto -= blo/bl.xa.length;  
+        ctx.strokeStyle = "rgba( "+C.pl.r+", "+C.pl.g+", "+C.pl.b+", "+blto+" )";
+        ctx.lineTo( bl.xa[j], bl.ya[j] );
+        ctx.stroke();
+      }
+    } 
+  }
+  if ( pa.iterationCount >= pa.burstDuration ) { pa.pollenBurstComplete = true; }
+}
+
+///render pollination glow (temporary polinator pad glow indicating flower has been pollinated)
+function renderPollinationGlow( pollinationAnimation ) {
+  var pa = pollinationAnimation;
+  var glowDuration = pa.f1 === pa.f2 ? 240 : 120; 
+  if ( !pa.pollenPadGlowHasBegun ) {
+    pa.f2.clH = C.pg;  // changes pollen pad color to temporary glow color
+    pa.pollenPadGlowHasBegun = true;
+  }
+  if ( pa.pollenPadGlowHasBegun && !pa.pollenPadGlowComplete ) {
+    pa.f2.clH = Tl.rgbaCs( C.pg, C.pp, pa.f2.clH, glowDuration );  // fades pollen pad color back to normal
+    pa.glowIterationCount++;
+    if ( pa.glowIterationCount === glowDuration ) { 
+      pa.pollenPadGlowComplete = true; 
+    }
+  }
+}
+
+///render pollinator lines
+function renderPollinatorLines( pollinationAnimation ) {
+  var pa = pollinationAnimation;
+  var plInc = canvas.width*0.0075;  // increment of pollination line movement per iteration
+  var plsqi = 2;  // pollination line squiggle intensity
+  for ( var i=0; i<pa.pls.length; i++ ) {
+    var pl = pa.pls[i];  // pollination line
+    var f2cp = spanMidPoint( pa.f2.spHcH );  // flower 2 (pollinated flower) current center point position 
+    var plXDiff = f2cp.x - pl.xa[0];  // x difference between pollination line head and flower 2
+    var plYDiff = f2cp.y - pl.ya[0];  // y difference between pollination line head and flower 2
+    var plDist =  Math.sqrt( plXDiff*plXDiff + plYDiff*plYDiff);  // distance from pollination line head to flower 2
+    var plIncRat = plInc/plDist;  // increment ratio (ratio of increment to current total distance)
+    var plXInc = plXDiff*plIncRat;  // pollination line head x increment this iteration
+    var plYInc = plYDiff*plIncRat;  // pollination line head y increment this iteration
+    plXInc += Tl.rfb(-plsqi,plsqi);  // adds x squiggle
+    plYInc += Tl.rfb(-plsqi,plsqi);  // adds y squiggle
+    if ( plDist > plInc ) { 
+      pl.xa.unshift( pl.xa[0] + plXInc );  // adds new x value to pollination line x values array as first element
+      pl.ya.unshift( pl.ya[0] + plYInc );  // adds new y value to pollination line y values array as first element
+    } 
+    pl.xa.pop();  // removes last element of pollination line x values array
+    pl.ya.pop();  // removes last element of pollination line y values array
+    ctx.beginPath();
+    if ( pl.xa.length > 0 ) {
+      ctx.moveTo( pl.xa[0], pl.ya[0]);
+      var plto = pa.op;  // pollination line tail opacity at head
+      for ( var j=1; j<pl.xa.length; j++ ) {
+        plto -= pa.op/pl.xa.length;  
+        ctx.strokeStyle = ctx.strokeStyle = "rgba( "+C.pl.r+", "+C.pl.g+", "+C.pl.b+", "+plto+" )";
+        ctx.lineTo( pl.xa[j], pl.ya[j] );
+        ctx.stroke();
+      }
+    } else {
+      pa.pollinatorLinesHaveArrived = true;
+    }
+    if ( viewPollinationGlow && pa.pollinatorLinesHaveArrived ) {
+      renderPollinationGlow( pa );  // pollination pad glow
+    }
+  }
+}
+
+///render pollination animations
+function renderPollinationAnimations() {
+  var idsForRemoval = [];
+  for ( var i=0; i<pollinationAnimations.length; i++ ) {
+    var pa = pollinationAnimations[i];
+    // burst lines 
+    if ( viewPollenBursts ) { renderPollenBurst( pa ); } else { pa.pollenBurstComplete = true; }  
+    // pollination lines 
+    if ( viewPollinatorLines ) { renderPollinatorLines( pa ); } else { pa.pollinatorLinesHaveArrived = true; } 
+    // pollination glow (if pollinator lines haven been turned off; otherwise handled in renderPollinatorLines)
+    if ( !viewPollinatorLines && viewPollinationGlow  ) {
+      renderPollinationGlow( pa );
+    } else if ( !viewPollinationGlow ) {
+      pa.pollenPadGlowComplete = true;
+    }
+    pa.iterationCount++;
+    var animationComplete = ( pa.pollenBurstComplete && pa.pollinatorLinesHaveArrived && pa.pollenPadGlowComplete );
+    if ( animationComplete ) { idsForRemoval.push( pa.id ); }  // removes animation instance after complete
+  }
+  for ( var j=0; j<idsForRemoval.length; j++) { removePollinationAnimation( idsForRemoval[j] ); }
 }
 
 ///renders pods
@@ -450,46 +720,11 @@ function renderPods( flower ) {
   ctx.fill();
 }
 
-///removes all flower points & spans
-function removeAllflowerPointsAndSpans( plant ) {
-  for ( var i=0; i<plant.flowers.length; i++ ) {
-    var f = plant.flowers[i];
-    removePoint( f.ptHbL.id );  // flower hex bottom left point
-    removePoint( f.ptHbR.id );  // flower hex bottom right point
-    removePoint( f.ptHoL.id );  // flower hex outer left point
-    removePoint( f.ptHoR.id );  // flower hex outer right point
-    removePoint( f.ptHtL.id );  // flower hex top left point
-    removePoint( f.ptHtR.id );  // flower hex top right point
-    removePoint( f.ptBudTip.id );  // flower bud tip point
-    removePoint( f.ptPtL.id );  // flower petal top left point  
-    removePoint( f.ptPtM.id );  // flower petal top middle point  
-    removePoint( f.ptPtR.id );  // flower petal top right point  
-    removePoint( f.ptPbL.id );  // flower petal bottom left point  
-    removePoint( f.ptPbM.id );  // flower petal bottom middle point  
-    removePoint( f.ptPbR.id );  // flower petal bottom right point  
-    removePoint( f.ptPodTipL.id );  // flower pod tip left point 
-    removePoint( f.ptPodTipR.id );  // flower pod tip right point
-    removeSpan( f.spOiL.id );  // flower ovule inner left span
-    removeSpan( f.spOiR.id );  // flower ovule inner right span
-    removeSpan( f.spCd.id );  // flower downward (l to r) cross span
-    removeSpan( f.spCu.id );  // flower upward (l to r) cross span
-    removeSpan( f.spCdP.id );  // flower downward (l to r) cross span to parent
-    removeSpan( f.spCuP.id );  // flower upward (l to r) cross span to parent
-    removeSpan( f.spOoL.id );  // flower ovule outer left span 
-    removeSpan( f.spOoR.id );  // flower ovule outer right span 
-    removeSpan( f.spHbM.id );  // flower hex bottom middle span
-    removeSpan( f.spHbL.id );  // flower hex bottom left span
-    removeSpan( f.spHbR.id );  // flower hex bottom right span
-    removeSpan( f.spHtL.id );  // flower hex top left span
-    removeSpan( f.spHtR.id );  // flower hex top right span
-    removeSpan( f.spHtM.id );  // flower hex top middle span
-    removeSpan( f.spHcH.id );  // flower hex cross horizontal span
-    removeSpan( f.spHcDB.id );  // flower hex cross downward span to flower base
-    removeSpan( f.spHcUB.id );  // flower hex cross upward span to flower base
-    removeSpan( f.spBTSL.id );  // flower bud tip scaffolding left span
-    removeSpan( f.spBTSR.id );  // flower bud tip scaffolding right span
-  }
-}
+
+
+
+
+
 
 
 

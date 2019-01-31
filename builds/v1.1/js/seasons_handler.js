@@ -8,12 +8,13 @@
 var currentYear = 1;
 var yearTime = 0;
 var currentSeason;
+var currentGreatestMaxSegment;
 
-///settings
+///season lengths
 var spL = 1000;  // spring length
-var suL = 1000;  // summer length
-var faL = 1000;  // fall length
-var wiL = 1000;  // winter length
+var suL;  // summer length (updated ever year in trackSeasons() based on max plant segment count)
+var faL = 200;  // fall length
+var wiL = 300;  // winter length
 
 ///background gradient colors
 var BgG = {
@@ -53,21 +54,53 @@ var ccs2 = psbg.cs2;  // current color stop 2
 var ccs3 = psbg.cs3;  // current color stop 3
 var ccs4 = psbg.cs4;  // current color stop 4
 
+
 ///tracks seasons
 function trackSeasons() {
   yearTime++;
   if ( yearTime < spL ) { 
     currentSeason = "spring"; photosynthesisRatio = 1; livEnExp = 0.75;  
+    // adjusts summer length to plant size (300 minimum)
+    if ( yearTime === spL-1 ) { 
+      suL = 85*currentGreatestMaxSegment() > 300 ? 85*currentGreatestMaxSegment() : 300; 
+    }  
   } else if ( yearTime < spL+suL ) {
     currentSeason = "summer"; photosynthesisRatio = 1; livEnExp = 1;
   } else if ( yearTime < spL+suL+faL ) {
-    currentSeason = "fall"; photosynthesisRatio = 0.25; livEnExp = 3;
+    currentSeason = "fall"; photosynthesisRatio = 0; livEnExp = 7;
   } else if ( yearTime < spL+suL+faL+wiL ) {
-    currentSeason = "winter"; photosynthesisRatio = 0; livEnExp = 3;
+    currentSeason = "winter"; photosynthesisRatio = 0; livEnExp = 10;
   } else {
     currentYear++;
     yearTime = 0;
   }
+}
+
+/// gets greatest of all current plants' maximum total segment count
+function currentGreatestMaxSegment() {
+  cgms = 0;  // current greatest max segments
+  for ( i=0; i<plants.length; i++) {
+    var p = plants[i];
+    if (p.isAlive ) {
+      cgms = p.maxTotalSegments > cgms ? p.maxTotalSegments : cgms;
+    }
+  }
+  return cgms;
+}
+
+///renders seasons meter UI
+function updateSeasonPieChart() {
+  var dateDeg;  // degree corresponding to time of year on meter
+  switch( currentSeason ) {  // marker position, calibrated different season lengths to uniform season arcs on meter
+    case "spring": dateDeg = yearTime*360 / spL; break;
+    case "summer": dateDeg = (yearTime-spL) * 360 / suL; break;
+    case "fall": dateDeg = (yearTime-spL-suL) * 360 / faL; break;
+    case "winter": dateDeg = (yearTime-spL-suL-faL) * 360 / wiL;
+  }
+  var pieValueAsDegree = dateDeg;
+  var pieCircumference = 2*Math.PI*25;  // (svg circle radius is 25)
+  var pieValue = pieCircumference*(pieValueAsDegree/360);
+  document.querySelector("circle").style.strokeDasharray = pieValue + " " + pieCircumference;
 }
 
 ///renders background
@@ -89,21 +122,6 @@ function renderBackground() {
   grd.addColorStop(1,"rgba("+ccs4.r+","+ccs4.g+","+ccs4.b+","+ccs4.a+")");
   ctx.fillStyle=grd;
   ctx.fillRect(0, 0, canvas.width, canvas.height);
-}
-
-///renders seasons meter UI
-function updateSeasonPieChart() {
-  var dateDeg;  // degree corresponding to time of year on meter
-  switch( currentSeason ) {  // marker position, calibrated different season lengths to uniform season arcs on meter
-    case "spring": dateDeg = yearTime*360 / spL; break;
-    case "summer": dateDeg = (yearTime-spL) * 360 / suL; break;
-    case "fall": dateDeg = (yearTime-spL-suL) * 360 / faL; break;
-    case "winter": dateDeg = (yearTime-spL-suL-faL) * 360 / wiL;
-  }
-  var pieValueAsDegree = dateDeg;
-  var pieCircumference = 2*Math.PI*25;  // (svg circle radius is 25)
-  var pieValue = pieCircumference*(pieValueAsDegree/360);
-  document.querySelector("circle").style.strokeDasharray = pieValue + " " + pieCircumference;
 }
 
 

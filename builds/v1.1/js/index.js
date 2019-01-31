@@ -21,6 +21,7 @@ var sunShades = [], sunShadeCount = 0;
 var shadows = [], shadowCount = 0;
 var initialGeneValueAverages = {};
 var highestFlowerPct = 0; 
+var highestRedFlowerPct = 0;
 
 ///settings
 var worldSpeed = 1;//5;  // (as frames per iteration: higher is slower) (does not affect physics iterations)
@@ -28,6 +29,11 @@ var viewShadows = true;  // (shadow visibility)
 var viewStalks = true;  // (stalk visibility) 
 var viewLeaves = true;  // (leaf visibility)
 var viewFlowers = true;  // (flower visibility)
+var viewRedFlowerIndicator = true;  // (red flower indicator animation visibility)
+var runPollinationAnimations = true;  // (whether to run pollination animations; overrides pollination views)
+var viewPollenBursts = true;  // (pollen burst visibility)
+var viewPollinatorLines = true;  // (pollination line visibility; i.e., pollen particals travelling between flowers)
+var viewPollinationGlow = true;  // (pollination glow visibility)
 var viewPods = true;  // (pod visibilty)
 var allowSelfPollination = true;  // allows flowers to pollinate themselves
 var pollinationFrequency = 5;  // (as average number of pollination events per open flower per length of summer)
@@ -43,7 +49,7 @@ var oldAgeMarker = 20000;  // (age after flower bloom when plant starts dying of
 var oldAgeRate = 0.001;  // (additional energy reduction per iteration after plant reaches old age)
 var unhealthyEnergyLevelRatio = 0.075;  // ratio of maximum energy when plant becomes unhealthy (starts yellowing)
 var minBloomEnLevRatio = 0;  // min energy level ratio for flower to bloom 
-var minPollEnLevRatio = 0;  // min energy level ratio for flower to be pollinated 
+var minPollEnLevRatio = 0;  // min energy level ratio for flower to pollinate or be pollinated 
 var flowerFadeEnergyLevelRatio = -0.025;  // ratio of maximum energy when flower begins to fade
 var polinatorPadFadeEnergyLevelRatio = -0.075;  // ratio of maximum energy when polinator pad begins to fade
 var sickEnergyLevelRatio = -0.2;  // ratio of maximum energy when plant becomes sick (starts darkening)
@@ -73,7 +79,9 @@ var C = {
   yil: { r: 107, g: 90, b: 31, a: 1 },  // yellowed inner line color (slightly darker sickly yellow than leaf fill) 
   dil: { r: 56, g: 47, b: 12, a: 1 },  // dead inner line color (slightly darker brown than leaf fill)
   //pollen pad
-  pp: { r: 255, g: 217, b: 102, a: 1 }  // pollen pad color
+  pp: { r: 255, g: 217, b: 102, a: 1 },  // pollen pad color
+  pl: { r: 255, g: 159, b: 41, a: 1 },  // pollination line color
+  pg: { r: 255, g: 98, b: 41, a: 1 },  // pollen pad glow color ( temporary glow when polinated )
 };
 
 ///seed constructor
@@ -100,7 +108,7 @@ function Seed( parentFlower, zygoteGenotype ) {
   this.p2.width = this.sw*0.35; this.p2.mass = 5; 
   this.p2.materiality = "immaterial";
   this.sp = addSp( this.p1.id, this.p2.id );  // seed span
-  this.sp.strength = 1;
+  this.sp.strength = 2;
   this.opacity = 1;
   this.planted = false;
   this.hasGerminated = false;
@@ -624,7 +632,7 @@ function killPlant( plant ) {
   }
 }
 
-///collapses plant (*currently very clunky; revisit & improve during stylization)
+///collapses plant
 function collapsePlant( plant ) {
   var p = plant; 
   for (var i=0; i<plant.segments.length; i++) {
@@ -635,6 +643,7 @@ function collapsePlant( plant ) {
     }
     removeSpan(s.spCd.id);  // downward (l to r) cross span
     removeSpan(s.spCu.id);  // upward (l to r) cross span
+    s.ptE1.mass = s.ptE2.mass = 5;
   }
   if ( p.hasFlowers ) {
     for (var j=0; j<p.flowers.length; j++ ) {
@@ -893,15 +902,15 @@ function logCurrentGenePresence( geneName ) {  // (enter name as string)
 function runLogs( frequency ) {
   if ( worldTime % frequency === 0 ) { 
 
-    console.log("\n");
+    // console.log("\n");
 
-    //logAllGeneChanges();
-    logGeneChange( "maxTotalSegments" );
-    logGeneChange( "maxSegmentWidth" );
-    logGeneChange( "stalkStrength" );
-    logGeneChange( "firstLeafSegment" );
-    logGeneChange( "leafFrequency" );
-    logGeneChange( "maxLeafLength" );
+    // logAllGeneChanges();
+    // logGeneChange( "maxTotalSegments" );
+    // logGeneChange( "maxSegmentWidth" );
+    // logGeneChange( "stalkStrength" );
+    // logGeneChange( "firstLeafSegment" );
+    // logGeneChange( "leafFrequency" );
+    // logGeneChange( "maxLeafLength" );
     // logGeneChange( "flowerHue" );
     // logGeneChange( "flowerSaturation" );
     // logGeneChange( "flowerLightness" );
@@ -926,7 +935,8 @@ function runLogs( frequency ) {
 
 
 ///scenarios
-for ( var i=0; i<25; i++ ) { createSeed( null, generateRandomNewPlantGenotype() ); }
+for ( var i=0; i<20; i++ ) { createSeed( null, generateRandomNewPlantGenotype() ); }
+for ( var i=0; i<5; i++ ) { createSeed( null, generateRandomRedFlowerPlantGenotype() ); }
 //for ( var i=0; i<1; i++ ) { createSeed( null, generateTinyWhiteFlowerPlantGenotype() ); }
 //for ( var i=0; i<5; i++ ) { createSeed( null, generateSmallPlantGenotype() ); }  
 //for ( var i=0; i<5; i++ ) { createSeed( null, generateMediumPlantGenotype() ); }
@@ -951,6 +961,7 @@ function display() {
     growPlants(); 
   }
   renderPlants();
+  if ( runPollinationAnimations ) { renderPollinationAnimations(); }
   updateUI();
   //runLogs( 600 );
   window.requestAnimationFrame( display );

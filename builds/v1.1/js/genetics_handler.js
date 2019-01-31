@@ -4,7 +4,7 @@
 
 
 
-////---GENES---////
+/////---GENES---/////
 
 
 ///genome (an object collection of all plant genes)
@@ -21,7 +21,7 @@ var Genome = {
                         mutationParameter: { range: 2, min: 2, max: null }, expressionType: "complete" },
   maxLeafLength:      { initialValue: function(){ return Tl.rfb(4,7); },
                         mutationParameter: { range: 3, min: 4, max: null}, expressionType: "partial" },
-  flowerHue:          { initialValue: function(){ return Tl.rib(0,260); },
+  flowerHue:          { initialValue: function(){ return Tl.rib(0,260); },  // (corrected to omit greens in Plant() )
                         mutationParameter: { range: 100, min: 0, max: 260 }, expressionType: "complete" },
   flowerSaturation:   { initialValue: function(){ return Tl.rib(50,100); },    
                         mutationParameter: { range: 20, min: 50, max: 100 }, expressionType: "complete" },
@@ -32,7 +32,7 @@ var Genome = {
 
 
 
-////---OBJECT CONSTRUCTORS---////
+/////---OBJECT CONSTRUCTORS---/////
 
 
 ///allele object constructor (trait)
@@ -73,7 +73,7 @@ function Phenotype( genotype ) {  // object collection of genes as { traitName: 
 
 
 
-////---FUNCTIONS---////
+/////---FUNCTIONS---/////
 
 
 ///creates a new gene ( with random allele dominance indexes )
@@ -127,7 +127,7 @@ function meiosis( parentGenotype1, parentGenotype2 ) {
 
 
 
-////---GENOTYPE CONSTRUCTORS---////
+/////---GENOTYPE GENERATORS---/////
 
 
 ///random genotype
@@ -138,6 +138,21 @@ function generateRandomNewPlantGenotype() {
                                         Genome[geneName].mutationParameter, 
                                         Genome[geneName].expressionType );
   }
+  return newGenotype;
+}
+
+///random red flower plant genotype
+function generateRandomRedFlowerPlantGenotype() {
+  var newGenotype = {};
+  newGenotype.maxTotalSegments = createGene( Tl.rib(4,12), { range: 6, min: 2, max: null }, "complete" );
+  newGenotype.maxSegmentWidth = createGene( Tl.rfb(8,12), { range: 4, min: 8, max: null }, "partial" );
+  newGenotype.stalkStrength = createGene( Tl.rfb(0.7,0.8), { range: 0.2, min: 0.7, max: 1 }, "partial" );
+  newGenotype.firstLeafSegment = createGene( Tl.rib(2,3), { range: 4, min: 2, max: null }, "complete" );
+  newGenotype.leafFrequency = createGene( Tl.rib(2,3), { range: 2, min: 2, max: null }, "complete" );
+  newGenotype.maxLeafLength = createGene( Tl.rfb(4,7), { range: 4, min: 0, max: null }, "partial" );
+  newGenotype.flowerHue = createGene( 0, { range: 100, min: 0, max: 260 }, "complete" );
+  newGenotype.flowerSaturation = createGene( 100, { range: 20, min: 50, max: 100 }, "complete" );
+  newGenotype.flowerLightness = createGene( 40, { range: 20, min: 35, max: 75 }, "complete" );
   return newGenotype;
 }
 
