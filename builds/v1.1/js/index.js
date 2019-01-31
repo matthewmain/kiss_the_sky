@@ -74,7 +74,9 @@ var C = {
   yil: { r: 107, g: 90, b: 31, a: 1 },  // yellowed inner line color (slightly darker sickly yellow than leaf fill) 
   dil: { r: 56, g: 47, b: 12, a: 1 },  // dead inner line color (slightly darker brown than leaf fill)
   //pollen pad
-  pp: { r: 255, g: 217, b: 102, a: 1 }  // pollen pad color
+  pp: { r: 255, g: 217, b: 102, a: 1 },  // pollen pad color
+  pl: { r: 255, g: 159, b: 41, a: 1 },  // pollination line color
+  pg: { r: 255, g: 98, b: 41, a: 1 },  // pollen pad glow color ( temporary glow when polinated )
 };
 
 ///seed constructor
@@ -625,7 +627,7 @@ function killPlant( plant ) {
   }
 }
 
-///collapses plant (*currently very clunky; revisit & improve during stylization)
+///collapses plant
 function collapsePlant( plant ) {
   var p = plant; 
   for (var i=0; i<plant.segments.length; i++) {
@@ -636,6 +638,7 @@ function collapsePlant( plant ) {
     }
     removeSpan(s.spCd.id);  // downward (l to r) cross span
     removeSpan(s.spCu.id);  // upward (l to r) cross span
+    s.ptE1.mass = s.ptE2.mass = 5;
   }
   if ( p.hasFlowers ) {
     for (var j=0; j<p.flowers.length; j++ ) {
@@ -896,13 +899,13 @@ function runLogs( frequency ) {
 
     console.log("\n");
 
-    //logAllGeneChanges();
-    logGeneChange( "maxTotalSegments" );
-    logGeneChange( "maxSegmentWidth" );
-    logGeneChange( "stalkStrength" );
-    logGeneChange( "firstLeafSegment" );
-    logGeneChange( "leafFrequency" );
-    logGeneChange( "maxLeafLength" );
+    logAllGeneChanges();
+    // logGeneChange( "maxTotalSegments" );
+    // logGeneChange( "maxSegmentWidth" );
+    // logGeneChange( "stalkStrength" );
+    // logGeneChange( "firstLeafSegment" );
+    // logGeneChange( "leafFrequency" );
+    // logGeneChange( "maxLeafLength" );
     // logGeneChange( "flowerHue" );
     // logGeneChange( "flowerSaturation" );
     // logGeneChange( "flowerLightness" );

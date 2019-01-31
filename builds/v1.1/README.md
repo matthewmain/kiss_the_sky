@@ -19,9 +19,9 @@ Basic gamification: grow a red flower tall enough to reach the top of the viewbo
 - [X] ability to pull/kill a plant
 - [X] adjust season lengths so that 1) fall & winter are much shorter so that periods of idle time when player doesn't have anything to do are dramatically reduced, and 2) make summer lengths variable based on average or greatest segment count so that as plants grow they have enough time to develop and bloom before fall.
 - [X] faint red pulsing animation around red-hued flowers that qaulify as flowers that can be used to reach 100% height to win the game.
-- [ ] faint yellow pollen-release animation upon full flower bloom to indicate that flower has entered reproductive mode and can cross-polinate with other (nearby?) flowers
-- [ ] remove any present seeds from eliminated plant flowers, keep only if plant eliminated after it has already died
-- [ ] a line or pointer indicator to show 100% (and possibly add some supplimental arrow/line indicator for heighest flower height overall so far--as well as highest red flower height so far. Maybe update text indicator to include red flower height as well.)
+- [ ] faint yellow pollen-release animation upon full flower bloom to indicate that flower has entered reproductive mode and can cross-polinate with other open flowers
+- [ ] a line or pointer indicator to show 100% height
+- [ ] a supplimental arrow/line indicator for highest red flower height so far
 - [ ] at startup, provide info about game goals about how app harnesses biological evolution via plant competition for height/light. (probably also add an info button that provides this information on demand during game play too.)
 - [ ] allow users to choose 1) easy "red flower garden", 2) medium "random flower garden", and 3) hard "tiny white flower"
 - [ ] "Sew" button that kicks off initial falling seeds.

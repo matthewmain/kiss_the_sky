@@ -104,12 +104,51 @@ function Flower( plant, parentSegment, basePoint1, basePoint2 ) {
   this.isRed = checkForRedPetals( this.clP );  // true if petals are a red hue
 }
 
-///pollination animation object constructor
+///pollination animation object constructor  XXXXX {{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}
 function PollinationAnimation( pollinatorFlower, pollinatedFlower ) {
   this.id = pollinationAnimationCount;
   this.f1 = pollinatorFlower;  // flower 1 (pollinator)
   this.f2 = pollinatedFlower;  // flower 2 (pollinated)
-  this.pp = spanMidPoint( this.f1.spHcH );  // pollen position (begins at center of flower 1)
+  this.bls = [];  // burst lines collection
+  this.pls = [];  // pollination lines collection
+  this.iterationCount = 0;  // number of iterations since beginning of animation
+  this.pollenPadGlowHasBegun = false;
+  this.pollenPadGlowIsComplete = false;
+  var f1cp = spanMidPoint( this.f1.spHcH );  // flower 1 center point
+  //burst lines (pollen lines that burst randomly from flower 1)
+  for ( var i=0; i<20; i++) {  // creates a burst line each iteration
+    var totalDistance = Tl.rfb( canvas.width*0.03, canvas.width*0.1 );  // total distance burst line will travel
+    var xVal = Tl.rfb( 0, totalDistance );  // base x value (random)
+    var xDist = Tl.rib(1,2) == 1 ? xVal : -xVal;  // x distance burst line will travel 
+    var yVal = Math.sqrt( totalDistance*totalDistance - xDist*xDist );  // base y value (based on x total distance)
+    var yDist = Tl.rib(1,2) == 1 ? yVal : -yVal;  // y distance burst line will travel
+    var blxa = [];  // burst line x positions array 
+    var blya = [];  // burst line y positions array
+    for ( var j=0; j<10; j++ ) {  // populates burst line x & y positions arrays
+      blxa.push( f1cp.x ); 
+      blya.push( f1cp.y ); 
+    }
+    this.bls.push({  // burst line instances
+      dist: totalDistance,  // total distance burst point will travel
+      dx: f1cp.x + xDist,  // destination x position of burst line
+      dy: f1cp.y + yDist,  // destination y position of burst line
+      xa: blxa,  // x positions array 
+      ya: blya,  // y positions array 
+    });
+  }
+  //pollination lines (pollen lines that travel from flower 1 to flower 2)
+  for ( var k=0; k<3; k++) {  // creates a pollination line each iteration
+    var plxa = [];  // pollination line x positions array 
+    var plya = [];  // pollination line y positions array
+    for ( var l=0; l<3; l++ ) {  // populates pollination line x & y positions arrays
+      plxa.push( f1cp.x ); 
+      plya.push( f1cp.y ); 
+    }
+    this.pls.push({  // pollination line instances
+      xa: plxa,  // x positions array 
+      ya: plya,  // y positions array 
+    });
+  }
 }
 
 
@@ -541,25 +580,91 @@ function renderPollinationAnimations() {
     var pa = pollinationAnimations[i];
     var f1cp = spanMidPoint( pa.f1.spHcH );  // flower 1 center point (pollinator)
     var f2cp = spanMidPoint( pa.f2.spHcH );  // flower 2 center point (pollinated)
-    var pr = canvas.width*0.0015;  // pollen radius
-    var inc = canvas.width*0.005;  // increment of pollen movement per iteration
-    var xDiff = f2cp.x - pa.pp.x;  // x difference between flower 2 and pollen
-    var yDiff = f2cp.y - pa.pp.y;  // y difference between flower 2 and pollen
-    var dist =  Math.sqrt( xDiff*xDiff + yDiff*yDiff);  // distance between pollen and flower 2
-    var incRat = inc/dist;  // increment ratio (ratio of increment to current total distance)
-    var xInc = xDiff*incRat;  // pollen x increment this iteration
-    var yInc = yDiff*incRat;  // pollen y increment this iteration
-    if ( inc < dist ) { pa.pp.x += xInc; pa.pp.y += yInc; } else { pa.pp = f2cp; pr*=3; }  // updates pollen position
-    ctx.beginPath();
-    ctx.fillStyle = "rgba(255, 159, 41, 1)";
-    ctx.strokeStyle = "rgba(255, 159, 41, 0.4)";
-    ctx.lineWidth = pr*1.5;
-    ctx.arc( pa.pp.x, pa.pp.y, pr, 0, 2*Math.PI );
-    ctx.fill();
-    ctx.stroke();
-    if ( pa.pp === f2cp ) { idsForRemoval.push( pa.id ); }  // removes pollen animation object after complete
+    var pao = 0.9;  // pollination animation opacity (base number)
+    //burst lines (pollen lines burst randomly from flower 1)
+    var burstDuration = 100;  // burst duration in iterations
+    for ( var j=0; j<pa.bls.length; j++ ) {
+      var bl = pa.bls[j];  // burst line
+      var blInc = bl.dist / burstDuration;  // increment of burst line movement per iteration
+      var blXDiff = bl.dx - f1cp.x;  // x difference between flower 1 center and burst destination point
+      var blYDiff = bl.dy - f1cp.y;  // y difference between flower 1 center and burst destination point
+      var blIncRat = blInc / bl.dist;  // increment ratio (ratio of increment to current total distance)
+      var blXInc = blXDiff*blIncRat;  // burst line x increment this iteration
+      var blYInc = blYDiff*blIncRat;  // burst line y increment this iteration
+      var blo = (1-pa.iterationCount/burstDuration)*pao;  // burst line opacity (reduces gradually)
+      var burstComplete = ( pa.iterationCount >= burstDuration );
+      var blsqi = 1;  // burst line squiggle intensity
+      blXInc += Tl.rfb(-blsqi,blsqi);  // adds x squiggle
+      blYInc += Tl.rfb(-blsqi,blsqi);  // adds y squiggle
+      ctx.lineJoin = "round";
+      ctx.lineCap = "round";
+      ctx.lineWidth = canvas.width*0.0015;
+      if ( pa.iterationCount <= burstDuration ) { 
+        bl.xa.unshift( bl.xa[0] + blXInc );  // adds new x value to burst line x values array as first element
+        bl.xa.pop();  // removes last element of burst line x values array
+        bl.ya.unshift( bl.ya[0] + blYInc );  // adds new y value to burst line y values array as first element
+        bl.ya.pop();  // removes last element of burst line y values array
+        ctx.beginPath();
+        ctx.moveTo( bl.xa[0], bl.ya[0]);
+        var blto = blo;  // burst line tail opacity at head
+        for ( var k=1; k<bl.xa.length; k++) {  // draws burst line tail
+          blto -= blo/bl.xa.length;  
+          ctx.strokeStyle = "rgba( "+C.pl.r+", "+C.pl.g+", "+C.pl.b+", "+blto+" )";
+          ctx.lineTo( bl.xa[k], bl.ya[k] );
+          ctx.stroke();
+        }
+      } 
+    }
+    //pollination lines (pollen lines that travel from flower 1 to flower 2)
+    var pollinatorLinesHaveArrived = false;
+    for ( var l=0; l<pa.pls.length; l++ ) {
+      var pl = pa.pls[l];  // pollination line
+      var plInc = canvas.width*0.0075;  // increment of pollination line movement per iteration
+      var plXDiff = f2cp.x - pl.xa[0];  // x difference between pollination line head and flower 2
+      var plYDiff = f2cp.y - pl.ya[0];  // y difference between pollination line head and flower 2
+      var plDist =  Math.sqrt( plXDiff*plXDiff + plYDiff*plYDiff);  // distance from pollination line head to flower 2
+      var plIncRat = plInc/plDist;  // increment ratio (ratio of increment to current total distance)
+      var plXInc = plXDiff*plIncRat;  // pollination line head x increment this iteration
+      var plYInc = plYDiff*plIncRat;  // pollination line head y increment this iteration
+      var plsqi = 2;  // pollination line squiggle intensity
+      plXInc += Tl.rfb(-plsqi,plsqi);  // adds x squiggle
+      plYInc += Tl.rfb(-plsqi,plsqi);  // adds y squiggle
+      if ( plDist > plInc ) { 
+        pl.xa.unshift( pl.xa[0] + plXInc );  // adds new x value to pollination line x values array as first element
+        pl.ya.unshift( pl.ya[0] + plYInc );  // adds new y value to pollination line y values array as first element
+      } else if ( !pa.pollenPadGlowHasBegun ) {
+        pa.f2.clH = C.pg;  // changes pollen pad color to temporary glow color
+        pa.pollenPadGlowHasBegun = true;
+      }
+      pl.xa.pop();  // removes last element of pollination line x values array
+      pl.ya.pop();  // removes last element of pollination line y values array
+      ctx.beginPath();
+      if ( pl.xa.length > 0 ) {
+        ctx.moveTo( pl.xa[0], pl.ya[0]);
+        var plto = pao;  // pollination line tail opacity at head
+        for ( var m=1; m<pl.xa.length; m++ ) {
+          plto -= pao/pl.xa.length;  
+          ctx.strokeStyle = ctx.strokeStyle = "rgba( "+C.pl.r+", "+C.pl.g+", "+C.pl.b+", "+plto+" )";
+          ctx.lineTo( pl.xa[m], pl.ya[m] );
+          ctx.stroke();
+        }
+      } else {
+        pollinatorLinesHaveArrived = true;
+      }
+      if ( pa.pollenPadGlowHasBegun && !pa.pollenPadGlowIsComplete ) {
+        pa.f2.clH = Tl.rgbaCs( C.pg, C.pp, pa.f2.clH, 120 );
+        if ( pa.f2.clH.r === C.pp.r && pa.f2.clH.g === C.pp.g && pa.f2.clH.b === C.pp.b ) { 
+          pa.pollenPadGlowIsComplete = true; 
+        }
+      }
+    }
+    pa.iterationCount++;
+    var animationComplete = ( pa.iterationCount >= burstDuration && 
+                              pollinatorLinesHaveArrived && 
+                              pa.pollenPadGlowIsComplete );
+    if ( animationComplete ) { idsForRemoval.push( pa.id ); }  // removes animation instance after complete
   }
-  for ( var j=0; j<idsForRemoval.length; j++) { removePollinationAnimation( idsForRemoval[j] ); }
+  for ( var o=0; o<idsForRemoval.length; o++) { removePollinationAnimation( idsForRemoval[o] ); }
 }
 
 ///renders pods
