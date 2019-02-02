@@ -7,7 +7,6 @@
 
 var Tl = {
 
-
 	//random integer between two numbers (min/max inclusive)
 	rib: function( min, max ) {
  		return Math.floor( Math.random() * ( Math.floor(max) - Math.ceil(min) + 1 ) ) + Math.ceil(min);

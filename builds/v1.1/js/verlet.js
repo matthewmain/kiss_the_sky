@@ -218,7 +218,7 @@ function applyConstraints( currentIteration ) {
     var yv = p.cy - p.py;  // y velocity
     //wall constraints (inverts velocity if point moves beyond a canvas edge)
     if (p.materiality === "material") {
-      if (p.cx > canvas.width - pr) {
+      if (p.cx > canvas.width - pr) { 
         p.cx = canvas.width - pr;  // move point back to wall
         p.px = p.cx + xv * bounceLoss;  // reverse velocity
       }
@@ -230,10 +230,10 @@ function applyConstraints( currentIteration ) {
         p.cy = canvas.height - pr;
         p.py = p.cy + yv * bounceLoss;
       }
-      if (p.cy < 0 + pr) {
-        p.cy = pr;
-        p.py = p.cy + yv * bounceLoss;
-      }
+      // if (p.cy < 0 + pr) {  // (ceiling constraints omitted so flowers can pass through without bouncing)
+      //   p.cy = pr;
+      //   p.py = p.cy + yv * bounceLoss;
+      // }
     }
   }
 }
