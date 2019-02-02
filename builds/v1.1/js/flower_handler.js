@@ -419,9 +419,12 @@ function developFlower( plant, flower ) {
 function trackMaxFlowerHeights( flower ) {
   var f = flower;
   if ( f.bloomRatio === 1 ) {
-    var heightPct = Math.floor( (canvas.height-f.ptBudTip.cy)*100/canvas.height );
+    var heightPct = (canvas.height-f.ptPtM.cy)*100/canvas.height ;
     if ( heightPct > highestFlowerPct ) { highestFlowerPct = heightPct; }
-    if ( f.isRed && heightPct > highestRedFlowerPct ) { highestRedFlowerPct = heightPct; }
+    if ( f.isRed && heightPct > highestRedFlowerPct ) { 
+      highestRedFlowerPct = heightPct; 
+      HeightMarker.chfx = f.ptPtM.cx;  // flower's top petal tip x value
+    }
   }
 }
 

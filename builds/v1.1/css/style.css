@@ -1,6 +1,7 @@
 
 body {
 	background: #111111;
+	font-family: 'Amatic SC', Avenir, sans-serif;
 	user-select: none;
 }
 
@@ -43,7 +44,7 @@ body {
 
 #canvas_container_div {
   position: absolute;
-  top: 53%;
+  top: 50%;
   left: 50%;
   transform: translate(-50%,-50%);
 }
@@ -61,12 +62,12 @@ body {
 
 .text {
 	position: relative;
-	font-family: 'Amatic SC', Avenir, sans-serif;
 	font-size: 0.9em;
+	font-weight: normal;
 	letter-spacing: 0.4pt;
 	color: #D5D8C5;
 	margin: 0;
-	top: 33%;
+	top: 12px;
 }
 
 .number {
@@ -79,9 +80,9 @@ body {
 
 #pie_svg {
 	position: relative;
-	top: 45%;
+	top: 42%;
 	left: 4px;
-	height: 10.5px;
+	height: 12px;
 	transform: rotate(-90deg);
 	background-color: rgba(213,216,197,.25);
 	border-radius: 50%;
@@ -93,7 +94,40 @@ body {
   stroke-width: 50;
 }
 
-#height {
+#height_text {
 	float: right;
+	margin: 3px 47px 0 0;
 }
+
+#tag_div {
+	position: absolute;
+	top: 0;
+	right: 5px;
+	width: 34px;
+}
+
+#tag_svg {
+	position: absolute;
+	width: 34px;
+}
+
+#tag_content {
+	position: absolute;
+  margin: 0;
+	top: 12px;
+  left: 50%;
+  transform: translate(-45%);
+  color: #D5D8C5;
+  font-weight: bold;
+}
+
+#percent {
+	position: relative;
+	top: -1px;
+	padding-left: 1px;
+	font-weight: bold;
+}
+
+
+
 

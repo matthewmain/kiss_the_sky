@@ -127,6 +127,76 @@ function displayEliminatePlantIconWithCursor(e) {
   }
 }
 
+///renders markers that track the highest red flower height so far  XXXX {{{{{{{{{{{{{{{{{{{{{}}}}}}}}}}}}}}}}}}}}}
+
+var HeightMarker = {
+  w: canvas.width*0.025,  // marker width 
+  h: canvas.width*0.025,  // marker height
+  y: canvas.height,  // marker position y value (at point)
+  chfx: null,  // current highest flower x value
+  baa: false,  // bounce animation active
+  bat: 0,  // bounce animation time
+  laa: false,  // line animation active
+  lat: 0,  // line animation time
+};
+
+function renderHeightMarker() {
+  var hrfy = canvas.height - yValFromPct( highestRedFlowerPct );  // highest red flower y value currently
+  var chmp = 100-pctFromYVal(HeightMarker.y);  // current height marker percentage
+  if ( Math.floor(highestRedFlowerPct) > Math.floor(chmp) ) {   // initializes animations if new highest red flower
+    HeightMarker.y = hrfy;  
+    HeightMarker.baa = true;
+    HeightMarker.bat = 0;  
+    HeightMarker.laa = true;
+    HeightMarker.lat = 0;  
+  }
+  if ( HeightMarker.baa ) {  // marker bounce animation (size expansion & contraction)
+    HeightMarker.bat++;
+    var a = -0.3;  // corresponds to animation duration ( higher value is longer duration; 0 is infinite)
+    var b = 3;  // extent of expansion ( higher value is greater expansion )
+    var x = HeightMarker.bat; 
+    var y = a*Math.pow(x,2) + b*x;  // current marker expansion extent (quadratic formula; y = ax^2 + bx + c)
+    HeightMarker.w = canvas.width*0.025 + y;
+    if ( y <= 0 ) { HeightMarker.baa = false; HeightMarker.bat = 0; }
+  }
+  if ( HeightMarker.laa ) {  // line animation
+    HeightMarker.lat++;
+    var lad = 15;  // line animation duration
+    var rl = (canvas.width/lad)*HeightMarker.lat;  // ray length
+    ctx.beginPath();
+    ctx.lineWidth = 1;
+    var lGrad = ctx.createLinearGradient( HeightMarker.chfx, HeightMarker.y, HeightMarker.chfx-rl, HeightMarker.y);
+    lGrad.addColorStop("0", "rgba( 161, 0, 0, 0 )");
+    lGrad.addColorStop("1.0", "rgba( 161, 0, 0, 0.8 )");
+    ctx.strokeStyle = lGrad;
+    ctx.moveTo( HeightMarker.chfx, HeightMarker.y );
+    ctx.lineTo( HeightMarker.chfx-rl, HeightMarker.y );
+    ctx.stroke();
+    var rGrad = ctx.createLinearGradient( HeightMarker.chfx, HeightMarker.y, HeightMarker.chfx+rl, HeightMarker.y);
+    rGrad.addColorStop("0", "rgba( 161, 0, 0, 0 )");
+    rGrad.addColorStop("1.0", "rgba( 161, 0, 0, 0.8 )");
+    ctx.strokeStyle = rGrad;
+    ctx.moveTo( HeightMarker.chfx, HeightMarker.y );
+    ctx.lineTo( HeightMarker.chfx+rl, HeightMarker.y );
+    ctx.stroke();
+    if ( HeightMarker.lat > lad ) { HeightMarker.laa = false; HeightMarker.lat = 0; }
+  }
+  if ( highestRedFlowerPct > 0 ) {  // draws marker
+    ctx.beginPath();  // top triangle
+    ctx.fillStyle = "#D32100";
+    ctx.moveTo( canvas.width, HeightMarker.y );  
+    ctx.lineTo( canvas.width, HeightMarker.y - HeightMarker.h/2 ); 
+    ctx.lineTo( canvas.width-HeightMarker.w, HeightMarker.y ); 
+    ctx.fill();  
+    ctx.beginPath();  // bottom triangle
+    ctx.fillStyle = "#A10000";
+    ctx.moveTo( canvas.width, HeightMarker.y );  
+    ctx.lineTo( canvas.width, HeightMarker.y + HeightMarker.h/2 ); 
+    ctx.lineTo( canvas.width-HeightMarker.w, HeightMarker.y ); 
+    ctx.fill();
+  }
+}
+
 ///renders sun shades
 function renderSunShades() {
   var y = sunShadeY;  // sun shade y value
@@ -331,11 +401,12 @@ document.addEventListener("touchup", function() {  dropHandle(); stopEliminating
 function updateUI() {
   attachHeaderAndFooter();
   if ( useSunShades ) { renderSunShades(); }
+  renderHeightMarker();
   displayEliminatePlantIconWithCursor();
   $("#year_count").text( currentYear );
   $("#season").text( currentSeason );
   updateSeasonPieChart();
-  $("#highest_height").text( highestRedFlowerPct );
+  $("#height_number").text( Math.floor( highestRedFlowerPct ) );
 }
 
 
