@@ -21,29 +21,37 @@ Basic gamification: grow a red flower tall enough to reach the top of the viewbo
 - [X] faint red pulsing animation around red-hued flowers that qaulify as flowers that can be used to reach 100% height to win the game.
 - [X] faint yellow pollen-release animation upon full flower bloom to indicate that flower has entered reproductive mode and can cross-polinate with other open flowers
 - [X] a supplimental arrow/line indicator for highest red flower height so far (also add red tag to percentage number at bottom right)
+- [X] landing page with title/logo and play button
 - [ ] at startup, provide info about game goals and how app harnesses biological evolution via plant competition for height/light. (probably also add an info button that provides this information on demand during game play too.)
-- [ ] allow users to choose 1) easy "red flower garden", 2) medium "random flower garden", and 3) hard "tiny white flower"
-- [ ] "Sew" button that kicks off initial falling seeds.
+- [ ] allow users to choose 1) easy "red flower garden", 2) medium "random flower garden", or 3) hard "tiny white flower", along with option for observation mode
+- [ ] "Sow" button that kicks off initial falling seeds.
 - [ ] add stylized on-screen text notifications throughout game: season change announcements, new best height announcement when current record broken, periodic/annual progress updates about how far average sizes/colors have progressed, etc. (and possibly quotes from biologists, or weird mountain-like phrases in first person plural as if coming from plants)
 - [ ] game win announcement screen with some kind of weird cool animation
 
 <br>
 
-Misc. improvements
+Improvements & Fixes
 
+- [ ] resolve red-flower color ambiguity: set saturation to 100 and remove gene, adjust criteria for redness
 - [ ] fade out shadows when leaf angle falls to below about -80 degrees from horizontal (will avoid narrow shadows when leaves are vertical as well as shadows flashing off at plant death)
-- [ ] omit pod closure at plant death
+- [ ] omit pod closure at plant death, and speed up opening to accomodate faster seasonal changes 
 - [ ] add shadow to gap between leaves
 - [ ] fix all forward growth based on y-values by replacing with trig formula to ensure new growth is forward regardless of stalk angle
-- [ ] give stalks & leaves variable fills instead of stroke outlines (should look better and may improve rendering performance)
+- [ ] give stalks & leaves variable fills (gradient, if possible) instead of stroke outlines (should look better and may improve rendering performance)
 - [ ] seeds plant firmly without swinging, even at worldspeed 1
 - [ ] change season background gradients so seasons are more distinct and changes are more dramatic
+- [ ] fix safari issues (color value floats, etc.)
 
 <br>
 
-Fixes
+Performance
 
-- [ ] performance enhancement: run sun rays less often with stronger intensity (probably need to address plant color-change flashing), and/or render less frequently
-- [ ] performance enhancement: consolidate redundant loops
-- [ ] performance enhancement: use Chrome performance tools to track down any other other performance issues
-- [ ] fix safari issues (color value floats, etc.)
+- [ ] run sun rays less often with stronger intensity (will probably need to address plant color-change flashing)
+- [ ] render less frequently
+- [ ] run verlet less frequently
+- [ ] consolidate redundant loops
+- [ ] use Chrome performance tools to track down any other other performance issues
+
+
+
+

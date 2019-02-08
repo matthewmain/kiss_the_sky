@@ -11,20 +11,11 @@
 
 /////---INITIATION---/////
 
- 
-///trackers
-var seeds = [], seedCount = 0;
-var plants = [], plantCount = 0;
-var sunRays = [], sunRayCount = 0;
-var sunShadeHandles = [], sunShadeHandleCount = 0;
-var sunShades = [], sunShadeCount = 0;
-var shadows = [], shadowCount = 0;
-var initialGeneValueAverages = {};
-var highestFlowerPct = 0; 
-var highestRedFlowerPct = 0;
 
 ///settings
 var worldSpeed = 1;//5;  // (as frames per iteration: higher is slower) (does not affect physics iterations)
+var gameHasBegun = false;  // (whether user has initiated game play)
+var gamePaused = false;  // (whether game is paused)
 var viewShadows = true;  // (shadow visibility)
 var viewStalks = true;  // (stalk visibility) 
 var viewLeaves = true;  // (leaf visibility)
@@ -58,6 +49,16 @@ var podOpenEnergyLevelRatio = -0.5;  // ratio of maximum energy when seed pod di
 var deathEnergyLevelRatio = -1;  // ratio of maximum energy when plant dies (fully darkened)
 var collapseEnergyLevelRatio = -2;  // ratio of maximum energy when plant collapses
 
+///trackers
+var seeds = [], seedCount = 0;
+var plants = [], plantCount = 0;
+var sunRays = [], sunRayCount = 0;
+var sunShadeHandles = [], sunShadeHandleCount = 0;
+var sunShades = [], sunShadeCount = 0;
+var shadows = [], shadowCount = 0;
+var initialGeneValueAverages = {};
+var highestFlowerPct = 0; 
+var highestRedFlowerPct = 0;
 
 
 
@@ -114,7 +115,6 @@ function Seed( parentFlower, zygoteGenotype ) {
   this.planted = false;
   this.hasGerminated = false;
   this.resultingPlant = createPlant( this );
-  if ( worldTime === 0 ) { scatterSeed( this ); }  // scatters seeds at initiation
 }
 
 ///plant constructor
@@ -132,7 +132,7 @@ function Plant( sourceSeed ) {
   this.hasFlowers = false;
   this.pollenPadColor = C.pp;  // pollen pad color
   this.isAlive = true;
-  this.hasBeenEliminatedByPlayer = false;  // 
+  this.hasBeenEliminatedByPlayer = false;
   this.hasReachedOldAge = false;
   this.oldAgeReduction = 0;  // (energy reduction per plant iteration, when plant is dying of old age)
   this.hasCollapsed = false;
@@ -311,7 +311,7 @@ function scatterSeed( seed ) {
 
 ///drops seeds (for releasing seed from pod)
 function dropSeed( seed ) {
-  seed.p2.px += Tl.rfb(-3,3);
+  seed.p2.px += Tl.rfb(-5,5);
 }
 
 ///plants seed (secures its position to ground)
@@ -936,8 +936,8 @@ function runLogs( frequency ) {
 
 
 ///scenarios
-for ( var i=0; i<20; i++ ) { createSeed( null, generateRandomNewPlantGenotype() ); }
-for ( var i=0; i<5; i++ ) { createSeed( null, generateRandomRedFlowerPlantGenotype() ); }
+//for ( var i=0; i<20; i++ ) { createSeed( null, generateRandomNewPlantGenotype() ); }
+//for ( var i=0; i<5; i++ ) { createSeed( null, generateRandomRedFlowerPlantGenotype() ); }
 //for ( var i=0; i<1; i++ ) { createSeed( null, generateTinyWhiteFlowerPlantGenotype() ); }
 //for ( var i=0; i<5; i++ ) { createSeed( null, generateSmallPlantGenotype() ); }  
 //for ( var i=0; i<5; i++ ) { createSeed( null, generateMediumPlantGenotype() ); }
@@ -956,16 +956,16 @@ recordInitialGeneValueAverages();
 function display() {
   renderBackground();
   runVerlet();
-  if ( worldTime % worldSpeed === 0 ) { 
+  if ( gameHasBegun ) {
     trackSeasons();
     shedSunlight();
     growPlants(); 
+    renderPlants();
+    if ( runPollinationAnimations ) { renderPollinationAnimations(); }
   }
-  renderPlants();
-  if ( runPollinationAnimations ) { renderPollinationAnimations(); }
   updateUI();
   //runLogs( 600 );
-  window.requestAnimationFrame( display );
+  if ( !gamePaused ) { window.requestAnimationFrame( display ); }
 }
 
 createSunRays();

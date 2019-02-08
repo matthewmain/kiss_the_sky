@@ -17,8 +17,10 @@ var sunShadeY = yValFromPct(8);  // sun shade elevation as canvas Y value
 var sunShadeHandleRadiusPct = 1.75;  // sun shade handle radius as percentage of canvas width
 var grabbedHandle = null;  // grabbed handle object (assigned when handle is clicked/touched)
 
-var selectRadius= canvas.width*0.015; // radius from click/touch point within which an item is selected
+var selectRadius = canvas.width*0.015; // radius from click/touch point within which an item is selected
 var plantsAreBeingEliminated = false;
+
+var gameDifficulty = "beginner";
 
 
 
@@ -38,6 +40,16 @@ function SunShade( handle1, handle2 ) {
   this.h2 = handle2; 
 }
 
+var HeightMarker = {
+  w: canvas.width*0.025,  // marker width 
+  h: canvas.width*0.025,  // marker height
+  y: canvas.height,  // marker position y value (at point)
+  chfx: null,  // current highest flower x value
+  baa: false,  // bounce animation active
+  bat: 0,  // bounce animation time
+  laa: false,  // line animation active
+  lat: 0,  // line animation time
+};
 
 
 
@@ -127,30 +139,19 @@ function displayEliminatePlantIconWithCursor(e) {
   }
 }
 
-///renders markers that track the highest red flower height so far  XXXX {{{{{{{{{{{{{{{{{{{{{}}}}}}}}}}}}}}}}}}}}}
-
-var HeightMarker = {
-  w: canvas.width*0.025,  // marker width 
-  h: canvas.width*0.025,  // marker height
-  y: canvas.height,  // marker position y value (at point)
-  chfx: null,  // current highest flower x value
-  baa: false,  // bounce animation active
-  bat: 0,  // bounce animation time
-  laa: false,  // line animation active
-  lat: 0,  // line animation time
-};
-
+///renders markers that track the highest red flower height so far
 function renderHeightMarker() {
   var hrfy = canvas.height - yValFromPct( highestRedFlowerPct );  // highest red flower y value currently
   var chmp = 100-pctFromYVal(HeightMarker.y);  // current height marker percentage
   if ( Math.floor(highestRedFlowerPct) > Math.floor(chmp) ) {   // initializes animations if new highest red flower
-    HeightMarker.y = hrfy;  
-    HeightMarker.baa = true;
-    HeightMarker.bat = 0;  
-    HeightMarker.laa = true;
-    HeightMarker.lat = 0;  
+    HeightMarker.y = hrfy;  // y value
+    HeightMarker.baa = true;  // bounce animation active
+    HeightMarker.bat = 0;  // bounce animation time elapsed
+    HeightMarker.laa = true;  // line animation active
+    HeightMarker.lat = 0;  // line animation time elapsed
   }
-  if ( HeightMarker.baa ) {  // marker bounce animation (size expansion & contraction)
+  //new highest height marker bounce animation (size expansion & contraction)
+  if ( HeightMarker.baa ) {  
     HeightMarker.bat++;
     var a = -0.3;  // corresponds to animation duration ( higher value is longer duration; 0 is infinite)
     var b = 3;  // extent of expansion ( higher value is greater expansion )
@@ -159,21 +160,22 @@ function renderHeightMarker() {
     HeightMarker.w = canvas.width*0.025 + y;
     if ( y <= 0 ) { HeightMarker.baa = false; HeightMarker.bat = 0; }
   }
-  if ( HeightMarker.laa ) {  // line animation
+  //new highest height line animation
+  if ( HeightMarker.laa ) {  
     HeightMarker.lat++;
-    var lad = 15;  // line animation duration
+    var lad = 30;  // line animation duration
     var rl = (canvas.width/lad)*HeightMarker.lat;  // ray length
     ctx.beginPath();
-    ctx.lineWidth = 1;
+    ctx.lineWidth = 3;
     var lGrad = ctx.createLinearGradient( HeightMarker.chfx, HeightMarker.y, HeightMarker.chfx-rl, HeightMarker.y);
-    lGrad.addColorStop("0", "rgba( 161, 0, 0, 0 )");
+    lGrad.addColorStop("0", "rgba( 161, 0, 0, 0.2 )");
     lGrad.addColorStop("1.0", "rgba( 161, 0, 0, 0.8 )");
     ctx.strokeStyle = lGrad;
     ctx.moveTo( HeightMarker.chfx, HeightMarker.y );
     ctx.lineTo( HeightMarker.chfx-rl, HeightMarker.y );
     ctx.stroke();
     var rGrad = ctx.createLinearGradient( HeightMarker.chfx, HeightMarker.y, HeightMarker.chfx+rl, HeightMarker.y);
-    rGrad.addColorStop("0", "rgba( 161, 0, 0, 0 )");
+    rGrad.addColorStop("0", "rgba( 161, 0, 0, 0.2 )");
     rGrad.addColorStop("1.0", "rgba( 161, 0, 0, 0.8 )");
     ctx.strokeStyle = rGrad;
     ctx.moveTo( HeightMarker.chfx, HeightMarker.y );
@@ -181,7 +183,8 @@ function renderHeightMarker() {
     ctx.stroke();
     if ( HeightMarker.lat > lad ) { HeightMarker.laa = false; HeightMarker.lat = 0; }
   }
-  if ( highestRedFlowerPct > 0 ) {  // draws marker
+  //draws marker
+  if ( highestRedFlowerPct > 0 ) {  
     ctx.beginPath();  // top triangle
     ctx.fillStyle = "#D32100";
     ctx.moveTo( canvas.width, HeightMarker.y );  
@@ -260,25 +263,134 @@ function renderSunShades() {
 /////---INTERACTION---/////
 
 
-///updates mouse position coordinates as percentages
-function updateMouse(e) {
-  var canvasWidthOnScreen = parseFloat(canvasContainerDiv.style.width);
-  var canvasHeightOnScreen = parseFloat(canvasContainerDiv.style.height);
-  mouseCanvasXPct = (e.pageX-canvasPositionLeft)*100/canvasWidthOnScreen;  // mouse canvas x percent
-  mouseCanvasYPct = (e.pageY-canvasPositionTop)*100/canvasHeightOnScreen;  // mouse canvas y percent
-}
+//// Clicks ////
+
+
+//choose game mode on landing
+$("#button_game_mode_hover").click(function(){
+  $("#landing_page_div").hide();
+  $("#overlay_game_mode_options_div").css("visibility", "visible");
+});
+
+//choose ambient mode on landing
+$("#button_ambient_mode_hover").click(function(){
+  $("#landing_page_div").hide();
+  $("#overlay_ambient_mode_options_div").css("visibility", "visible");
+});
+
+//get game info on game options overlay
+$("#helper_game_info").click(function(){
+  $("#modal_game_info").css("visibility", "visible");
+  $("#icon_exit_modal_game_info").css("visibility", "visible");
+});
+
+//get ambient mode info on ambient options overlay
+$("#helper_ambient_info").click(function(){
+  $("#modal_ambient_info").css("visibility", "visible");
+  $("#icon_exit_modal_ambient_info").css("visibility", "visible");
+});
+
+//exit game info modal
+$(".icon_exit_modal").click(function(){
+  $(".modal").css("visibility", "hidden");
+  $(".icon_exit_modal").css("visibility", "hidden");
+});
+
+//select beginner on game options overlay
+$("#option_beginner").click(function(){
+  $("#option_beginner").css("opacity", "1");
+  $("#option_intermediate").css("opacity", "0");
+  $("#option_expert").css("opacity", "0");
+  gameDifficulty = "beginner";
+});
+
+//select intermediate on game options overlay
+$("#option_intermediate").click(function(){
+  $("#option_beginner").css("opacity", "0");
+  $("#option_intermediate").css("opacity", "1");
+  $("#option_expert").css("opacity", "0");
+  gameDifficulty = "intermediate";
+});
+
+//select expert on game options overlay
+$("#option_expert").click(function(){
+  $("#option_beginner").css("opacity", "0");
+  $("#option_intermediate").css("opacity", "0");
+  $("#option_expert").css("opacity", "1");
+  gameDifficulty = "expert";
+});
+
+//select first option on ambient options overlay
+$("#option_first").click(function(){
+  $("#option_first").css("opacity", "1");
+  $("#option_second").css("opacity", "0");
+  $("#option_third").css("opacity", "0");
+  gameDifficulty = "beginner";
+});
+
+//select second option on ambient options overlay
+$("#option_second").click(function(){
+  $("#option_first").css("opacity", "0");
+  $("#option_second").css("opacity", "1");
+  $("#option_third").css("opacity", "0");
+  gameDifficulty = "intermediate";
+});
+
+//select third option on ambient options overlay
+$("#option_third").click(function(){
+  $("#option_first").css("opacity", "0");
+  $("#option_second").css("opacity", "0");
+  $("#option_third").css("opacity", "1");
+  gameDifficulty = "expert";
+});
+
+
+
+
+
+
+
+///actives game when "sow" button is clicked
+$(".button_sow").click(function(){   // XXXXX {{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}
+
+  switch( gameDifficulty ) {
+    case "beginner":
+      for ( var i=0; i<15; i++ ) { createSeed( null, generateRandomRedFlowerPlantGenotype() ); } 
+      break;
+    case "intermediate":
+      for ( var j=0; j<20; j++ ) { createSeed( null, generateRandomNewPlantGenotype() ); }
+      for ( var k=0; k<5; k++ ) { createSeed( null, generateRandomRedFlowerPlantGenotype() ); }
+      break;
+    case "expert":
+      for ( var l=0; l<1; l++ ) { createSeed( null, generateTinyWhiteFlowerPlantGenotype() ); }
+  }
+
+  for ( var m=0; m<seeds.length; m++ ) { scatterSeed( seeds[m] ); }
+
+  $("#overlay_game_mode_options_div, #overlay_ambient_mode_options_div").fadeOut(500, function(){ 
+    $(".icon").fadeIn(5000);
+    $("#footer_div").fadeIn(5000);
+  });
+
+  gameHasBegun = true;
+
+});
+
+
+
 
 ///toggles shadow visibility on shadows icon click/touch
-$(".shadows_icon").click(function(){
+$(".icon_shadows").click(function(){
   if ( viewShadows === true ) {
-    document.getElementById("shadows_icon_on_svg").style.visibility = "hidden";
-    document.getElementById("shadows_icon_off_svg").style.visibility = "visible";
+    document.getElementById("icon_shadows_on").style.visibility = "hidden";
+    document.getElementById("icon_shadows_off").style.visibility = "visible";
     viewShadows = false;
   } else {
-    document.getElementById("shadows_icon_on_svg").style.visibility = "visible";
-    document.getElementById("shadows_icon_off_svg").style.visibility = "hidden";
+    document.getElementById("icon_shadows_on").style.visibility = "visible";
+    document.getElementById("icon_shadows_off").style.visibility = "hidden";
     viewShadows = true;
   }
+  if ( gamePaused ) { clearCanvas(); renderBackground(); renderPlants(); }
 });
 
 ///downloads canvas screengrab on camera icon click/touch
@@ -291,10 +403,35 @@ $("#save").click(function(){
   download.download = "Kiss the Sky - Year "+currentYear+", "+seasonTitleCase+".png";
 });
 
+///toggles game pause/resume
+$(".icon_game_run").click(function(){
+  if ( gamePaused === false ) {
+    document.getElementById("icon_pause").style.visibility = "hidden";
+    document.getElementById("icon_play").style.visibility = "visible";
+    gamePaused = true;
+  } else {
+    document.getElementById("icon_pause").style.visibility = "visible";
+    document.getElementById("icon_play").style.visibility = "hidden";
+    gamePaused = false;
+    display();
+  }
+});
+
 ///reloads game on reload icon click/touch
-$("#restart_icon_svg").click(function() {
+$("#icon_restart").click(function() {
   location.reload();
 });
+
+
+//// Event Functions ////
+
+///updates mouse position coordinates as percentages
+function updateMouse(e) {
+  var canvasWidthOnScreen = parseFloat(canvasContainerDiv.style.width);
+  var canvasHeightOnScreen = parseFloat(canvasContainerDiv.style.height);
+  mouseCanvasXPct = (e.pageX-canvasPositionLeft)*100/canvasWidthOnScreen;  // mouse canvas x percent
+  mouseCanvasYPct = (e.pageY-canvasPositionTop)*100/canvasHeightOnScreen;  // mouse canvas y percent
+}
 
 ///grabs handle
 function grabHandle(e) {
@@ -375,7 +512,7 @@ function eliminatePlants( e, plant ) {
 
 
 
-/////---EVENTS---/////
+/////---LISTENERS---/////
 
 
 document.addEventListener("click", function(e) { 

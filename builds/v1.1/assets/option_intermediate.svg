@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="368px" height="96px" viewBox="0 0 368 96" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 53 (72520) - https://sketchapp.com -->
+    <title>intermediate_selected</title>
+    <desc>Created with Sketch.</desc>
+    <defs>
+        <rect id="path-1" x="0" y="0" width="352" height="81" rx="2"></rect>
+        <filter x="-3.4%" y="-14.8%" width="106.8%" height="129.6%" filterUnits="objectBoundingBox" id="filter-2">
+            <feOffset dx="0" dy="0" in="SourceAlpha" result="shadowOffsetOuter1"></feOffset>
+            <feGaussianBlur stdDeviation="4" in="shadowOffsetOuter1" result="shadowBlurOuter1"></feGaussianBlur>
+            <feColorMatrix values="0 0 0 0 0   0 0 0 0 0   0 0 0 0 0  0 0 0 0.302065122 0" type="matrix" in="shadowBlurOuter1"></feColorMatrix>
+        </filter>
+    </defs>
+    <g id="[Screens]" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="game-mode-settings" transform="translate(-541.000000, -497.000000)">
+            <g id="intermediate_selected" transform="translate(549.000000, 504.500000)">
+                <g id="Rectangle" fill-rule="nonzero">
+                    <use fill="black" fill-opacity="1" filter="url(#filter-2)" xlink:href="#path-1"></use>
+                    <use fill="#FFFFFF" xlink:href="#path-1"></use>
+                </g>
+                <g id="content" transform="translate(54.000000, 15.000000)">
+                    <g id="text" transform="translate(67.500000, 0.000000)" fill="#111111">
+                        <text id="Intermediate" font-family="Dosis-Light, Dosis" font-size="14" font-weight="300">
+                            <tspan x="0.5" y="43">Intermediate</tspan>
+                        </text>
+                        <text id="Colorful-Garden" font-family="Dosis-SemiBold, Dosis" font-size="22" font-weight="500">
+                            <tspan x="0" y="23">Colorful Garden</tspan>
+                        </text>
+                    </g>
+                    <g id="check" transform="translate(0.000000, 1.000000)" fill-rule="nonzero">
+                        <circle id="Oval" fill="#FAE264" cx="25" cy="25" r="25"></circle>
+                        <g transform="translate(12.000000, 17.000000)" fill="#111111" id="Path">
+                            <path d="M25.090379,0.946058091 L25.090379,0.946058091 C25.5984236,1.4744537 25.5984236,2.30977867 25.090379,2.83817427 L10.2718726,18.2502723 C9.88909022,18.648388 9.25604726,18.6608181 8.85793159,18.2780357 C8.84849632,18.2689638 8.83924008,18.2597076 8.83016821,18.2502723 L0.9138322,10.016828 C0.403435511,9.48598615 0.403435511,8.64679393 0.9138322,8.11595205 L0.9138322,8.11595205 C1.39908961,7.61125646 2.20160508,7.59549871 2.70630067,8.08075612 C2.71826185,8.09225663 2.72999609,8.10399086 2.7414966,8.11595205 L9.55944282,15.2070078 L23.271137,0.946058091 C23.7541582,0.44368829 24.5529755,0.428003151 25.0553453,0.911024354 C25.0672513,0.922471862 25.0789315,0.934152025 25.090379,0.946058091 Z"></path>
+                        </g>
+                    </g>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>
