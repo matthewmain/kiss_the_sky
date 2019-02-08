@@ -1,24 +1,48 @@
-<!DOCTYPE html>
-<html lang="en" >
 
 <head>
   <meta charset="UTF-8">
   <link rel="stylesheet" href="css/style.css">
+  <link href="https://fonts.googleapis.com/css?family=Megrim" rel="stylesheet">
   <link href="https://fonts.googleapis.com/css?family=Amatic+SC:400,700" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css?family=Dosis" rel="stylesheet">
 </head>
 
 <body>
 
-	<div id="header_div">
-		<img id="title_svg" class="header_svg" src="assets/title.svg">
-		<img id="shadows_icon_on_svg" class="header_svg shadows_icon icon" title="toggle leaf shadow visibility" src="assets/shadows_icon_on.svg">
-		<img id="shadows_icon_off_svg" class="header_svg shadows_icon icon" title="toggle leaf shadow visibility" src="assets/shadows_icon_off.svg">
-		<a id="save" title="take a screenshot">
-			<img id="camera_icon_svg" class="header_svg icon" src="assets/camera_icon.svg">
-		</a>
-		<img id="restart_icon_svg" class="header_svg icon" title="restart the game" src="assets/restart_icon.svg">
+
+
+	<!-- 	LANDING -->
+
+	<div id="landing_page_div">
+		<div id="landing_logo_div">
+			<img id="landing_title_svg" src="assets/title_landing.svg">
+			<img id="button_game_mode" class="landing_button_left" src="assets/button_game_mode.svg">
+			<img id="button_game_mode_hover" class="landing_button_left hover" src="assets/button_game_mode_hover.svg">
+			<img id="button_ambient_mode" class="landing_button_right" src="assets/button_ambient_mode.svg">
+			<img id="button_ambient_mode_hover" class="landing_button_right hover" src="assets/button_ambient_mode_hover.svg">
+		</div>
 	</div>
 
+
+
+	<!-- 	HEADER -->
+
+	<div id="header_div">
+		<img id="title_header_svg" src="assets/title_header.svg">
+		<img id="icon_info" class="header_svg icon" title="learn more about the game" src="assets/icon_info.svg">
+		<img id="icon_shadows_on" class="header_svg icon_shadows icon" title="toggle leaf shadow visibility" src="assets/icon_shadows_on.svg">
+		<img id="icon_shadows_off" class="header_svg icon_shadows icon" title="toggle leaf shadow visibility" src="assets/icon_shadows_off.svg">
+		<a id="save" title="take a screenshot">
+			<img id="icon_camera" class="header_svg icon" src="assets/icon_camera.svg">
+		</a>
+		<img id="icon_pause" class="header_svg icon_game_run icon" title="pause the game" src="assets/icon_pause.svg">
+		<img id="icon_play" class="header_svg icon_game_run icon" title="resume the game" src="assets/icon_play.svg">
+		<img id="icon_restart" class="header_svg icon" title="restart the game" src="assets/icon_restart.svg">
+	</div>
+
+
+
+	<!-- FOOTER -->
 
 	<div id="footer_div">
 		<p id="time" class="text">Year <span id="year_count" class="number">1</span>, <span id="season">Spring</span></p>
@@ -30,10 +54,50 @@
 		</div>
 	</div>
 
+
+
+	<!-- SCREEN -->
+
   <div id="canvas_container_div">
-  	<canvas id="canvas" width=1000" height="1000"></canvas> <!--(large size for higher resolution)-->
+
+
+  	<!-- canvas (large width/height for higher resolution) -->
+
+  	<canvas id="canvas" width=1000" height="1000"></canvas> 
+
+
+	  <!-- overlays -->
+
+	  <div id="overlay_game_mode_options_div" class="overlay_div">
+		  <img id="overlay_game_mode_options_bg" class="overlay_bg" src="assets/overlay_game_mode_options_bg.svg">
+		  <img id="helper_game_info" class="helper" src="assets/helper.svg">
+		  <img id="option_beginner" class="option" src="assets/option_beginner.svg">
+		  <img id="option_intermediate" class="option" src="assets/option_intermediate.svg">
+		  <img id="option_expert" class="option" src="assets/option_expert.svg">
+			<img class="button_sow" src="assets/button_sow.svg">
+			<img id="modal_game_info" class="modal" src="assets/modal_game_info.svg">
+			<img id="icon_exit_modal_game_info" class="icon_exit_modal" src="assets/icon_exit_modal.svg">
+		</div>
+
+		<div id="overlay_ambient_mode_options_div" class="overlay_div">
+		  <img id="overlay_ambient_mode_options_bg" class="overlay_bg" src="assets/overlay_ambient_mode_options_bg.svg">
+			<img id="helper_ambient_info" class="helper" src="assets/helper.svg">
+		  <img id="option_first" class="option" src="assets/option_first.svg">
+		  <img id="option_second" class="option" src="assets/option_second.svg">
+		  <img id="option_third" class="option" src="assets/option_third.svg">
+			<img class="button_sow" src="assets/button_sow.svg">
+			<img id="modal_ambient_info" class="modal" src="assets/modal_ambient_info.svg">
+			<img id="icon_exit_modal_ambient_info" class="icon_exit_modal" src="assets/icon_exit_modal.svg">
+		</div>
+
+
 	</div>
-  
+
+
+
+
+  <!-- SCRIPTS -->
+
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 	<script src="js/tools.js"></script>
 	<script src="js/verlet.js"></script>
@@ -43,6 +107,7 @@
 	<script src="js/seasons_handler.js"></script>
 	<script src="js/genetics_handler.js"></script>
 	<script src="js/index.js"></script>
+
 
 </body>
 

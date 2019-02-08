@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="287px" height="98px" viewBox="0 0 287 98" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 53 (72520) - https://sketchapp.com -->
+    <title>button_ambient_mode</title>
+    <desc>Created with Sketch.</desc>
+    <g id="[Screens]" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="landing" transform="translate(-796.000000, -722.000000)">
+            <g id="buttons" transform="translate(357.000000, 722.000000)">
+                <g id="button_ambient_mode" transform="translate(439.000000, 0.000000)">
+                    <rect id="bg" fill="#FFFFFF" fill-rule="nonzero" x="0" y="0" width="287" height="98"></rect>
+                    <text id="Sit-back-and-watch-n" font-family="Dosis-ExtraLight, Dosis" font-size="18" font-weight="300" line-spacing="21" letter-spacing="-0.1" fill="#111111">
+                        <tspan x="10.75" y="90">Sit back and watch nature take its course.</tspan>
+                    </text>
+                    <g id="ambient_mode_button" transform="translate(18.234000, 1.000000)" stroke="#111111">
+                        <rect id="button" stroke-width="1.30339075" stroke-linecap="round" stroke-linejoin="round" fill-rule="nonzero" x="0" y="0" width="250" height="50" rx="1.30339075"></rect>
+                        <text id="button" stroke-width="0.588785047" fill="#111111" font-family="Megrim" font-size="24" font-weight="400" letter-spacing="2.5">
+                            <tspan x="36.213" y="34">Ambient Mod</tspan>
+                            <tspan x="202.385" y="34">e</tspan>
+                        </text>
+                    </g>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>

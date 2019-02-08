@@ -2,8 +2,61 @@
 body {
 	background: #111111;
 	font-family: 'Amatic SC', Avenir, sans-serif;
+	margin: 0;
 	user-select: none;
 }
+
+.hover {
+	opacity: 0;
+}
+.hover:hover { 
+  opacity: 1;
+}
+
+
+/*** LANDING ***/
+
+#landing_page_div {
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  background: #FFFFFF;
+  z-index: 1;
+}
+
+#landing_logo_div {
+  position: absolute;
+  width: 68%;
+  top: 31%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+#landing_title_svg {
+	width: 100%;
+}
+
+.landing_button_left {
+  position: absolute;
+  width: 37%;
+  top: 140%;
+  left: 26%;
+  transform: translate(-50%, -50%);
+  cursor: pointer;
+}
+
+.landing_button_right {
+  position: absolute;
+  width: 37%;
+  top: 140%;
+  left: 74%;
+  transform: translate(-50%, -50%);
+  cursor: pointer;
+}
+
+
+
+/*** HEADER ***/
 
 #header_div {
 	position: absolute;
@@ -11,40 +64,59 @@ body {
   transform: translate(-50%);
 }
 
-#title_svg {
+#title_header_svg {
 	height: 86%;
 }
 
 .icon {
 	position: absolute;
 	bottom: 27%;
+	height: 20%;
 	cursor: pointer;
+	display: none;
 }
 
-#shadows_icon_on_svg {
-	right: 14.5%;
-	height: 20%;
+#icon_info {
+	right: 25.5%;
+	height: 22%;
+	bottom: 25.5%;
 }
 
-#shadows_icon_off_svg {
-	right: 14.5%;
-	height: 20%;
+#icon_shadows_on {
+	right: 19%;
+	visibility: visible;
+}
+
+#icon_shadows_off {
+	right: 19%;
 	visibility: hidden;
 }
 
-#camera_icon_svg {
-	right: 7%;
-	height: 19%;
+#icon_camera {
+	right: 12.5%;
 }
 
-#restart_icon_svg {
-	right: 0;
-	height: 20%;
+#icon_pause {
+	right: 6%;
+	visibility: visible;
 }
+
+#icon_play {
+	right: 6%;
+	visibility: hidden;
+}
+
+#icon_restart {
+	right: 0;
+	display: block;
+}
+
+
+/*** SCREEN ***/
 
 #canvas_container_div {
   position: absolute;
-  top: 50%;
+  top: 52%;
   left: 50%;
   transform: translate(-50%,-50%);
 }
@@ -54,10 +126,14 @@ body {
   height: 100%;
 }
 
+
+/*** FOOTER ***/
+
 #footer_div {
 	position: absolute;
   left: 50%;
   transform: translate(-50%);
+  display: none;
 }
 
 .text {
@@ -80,7 +156,7 @@ body {
 
 #pie_svg {
 	position: relative;
-	top: 42%;
+	top: 19px;
 	left: 4px;
 	height: 12px;
 	transform: rotate(-90deg);
@@ -108,7 +184,7 @@ body {
 
 #tag_svg {
 	position: absolute;
-	width: 34px;
+	width: 32px;
 }
 
 #tag_content {
@@ -127,6 +203,119 @@ body {
 	padding-left: 1px;
 	font-weight: bold;
 }
+
+
+/*** SCREEN OVERLAYS ***/
+
+
+.overlay_div {
+	visibility: hidden;
+}
+
+.overlay_bg {
+	position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%,-50%);
+	width: 100%;
+}
+
+.helper {
+	position: absolute;
+	top: 18%;
+  left: 50%;
+  transform: translate(-50%,-50%);
+  width: 13%;
+  cursor: pointer;
+}
+
+.option {
+	position: absolute;
+  left: 49.7%;
+  transform: translate(-50%,-50%);
+  width: 50%;
+  cursor: pointer;
+}
+
+#option_beginner {
+	top: 38.5%;
+}
+
+#option_intermediate {
+	top: 52.4%;
+	opacity: 0;
+}
+
+#option_expert {
+	top: 65.8%;
+	opacity: 0;
+}
+
+#option_first {
+	left: 50.15%;
+	top: 38.7%;
+}
+
+#option_second {
+	left: 50.15%;
+	top: 52.6%;
+	opacity: 0;
+}
+
+#option_third {
+	left: 50.15%;
+	top: 66%;
+	opacity: 0;
+}
+
+.button_sow {
+  position: absolute;
+  top: 85%;
+  left: 50%;
+  transform: translate(-50%,-50%);
+  width: 18%;
+  cursor: pointer;
+}
+.button_sow:hover {
+	background-color: rgba(17, 17, 17, 0.15);
+}
+
+.modal {
+	position: absolute;
+  top: 55.1%;
+  left: 50%;
+  transform: translate(-50%,-50%);
+  width: 86%;
+  visibility: hidden;
+}
+
+.icon_exit_modal {
+	position: absolute;
+  top: 28%;
+  left: 82.5%;
+  transform: translate(-50%,-50%);
+  width: 8%;
+  visibility: hidden;
+  cursor: pointer;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

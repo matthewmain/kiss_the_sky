@@ -111,10 +111,17 @@ function renderBackground() {
     case "fall": csbg = BgG.fa; psbg = BgG.su; break;
     case "winter": csbg = BgG.wi; psbg = BgG.fa; break;
   }
-  ccs1 = Tl.rgbaCs( psbg.cs1, csbg.cs1, ccs1, 300 );  // current color stop redshift 
-  ccs2 = Tl.rgbaCs( psbg.cs2, csbg.cs2, ccs2, 300 );  // current color stop greenshift
-  ccs3 = Tl.rgbaCs( psbg.cs3, csbg.cs3, ccs3, 300 );  // current color stop blueshift
-  ccs4 = Tl.rgbaCs( psbg.cs4, csbg.cs4, ccs4, 300 );  // current color stop alphashift
+  if ( gameHasBegun ) {
+    ccs1 = Tl.rgbaCs( psbg.cs1, csbg.cs1, ccs1, 200 );  // current color stop redshift 
+    ccs2 = Tl.rgbaCs( psbg.cs2, csbg.cs2, ccs2, 200 );  // current color stop greenshift
+    ccs3 = Tl.rgbaCs( psbg.cs3, csbg.cs3, ccs3, 200 );  // current color stop blueshift
+    ccs4 = Tl.rgbaCs( psbg.cs4, csbg.cs4, ccs4, 200 );  // current color stop alphashift
+  } else {
+    ccs1 = BgG.sp.cs1;  // spring color stop redshift
+    ccs2 = BgG.sp.cs2;  // spring color stop greenshift
+    ccs3 = BgG.sp.cs3;  // spring color stop blueshift
+    ccs4 = BgG.sp.cs4;  // spring color stop alphashift
+  }
   var grd=ctx.createLinearGradient( 0, 0, 0, canvas.height );
   grd.addColorStop(0,"rgba("+ccs1.r+","+ccs1.g+","+ccs1.b+","+ccs1.a+")");
   grd.addColorStop(0.4,"rgba("+ccs2.r+","+ccs2.g+","+ccs2.b+","+ccs2.a+")");
