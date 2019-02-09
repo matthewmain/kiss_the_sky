@@ -22,6 +22,8 @@ var plantsAreBeingEliminated = false;
 
 var gameDifficulty = "beginner";
 var ambientMode = false;
+var infoModalOpen = false;
+var infoModalOpenWhilePaused = false;
 
 
 
@@ -154,8 +156,8 @@ function renderHeightMarker() {
   //new highest height marker bounce animation (size expansion & contraction)
   if ( HeightMarker.baa ) {  
     HeightMarker.bat++;
-    var a = -0.3;  // corresponds to animation duration ( higher value is longer duration; 0 is infinite)
-    var b = 3;  // extent of expansion ( higher value is greater expansion )
+    var a = -0.12;  // corresponds to animation duration ( higher value is longer duration; 0 is infinite)
+    var b = 2;  // extent of expansion ( higher value is greater expansion )
     var x = HeightMarker.bat; 
     var y = a*Math.pow(x,2) + b*x;  // current marker expansion extent (quadratic formula; y = ax^2 + bx + c)
     HeightMarker.w = canvas.width*0.025 + y;
@@ -164,23 +166,20 @@ function renderHeightMarker() {
   //new highest height line animation
   if ( HeightMarker.laa ) {  
     HeightMarker.lat++;
-    var lad = 30;  // line animation duration
-    var rl = (canvas.width/lad)*HeightMarker.lat;  // ray length
+    var lad = 40;  // line animation duration
+    var o = 1 - HeightMarker.lat/lad;  // opacity
     ctx.beginPath();
-    ctx.lineWidth = 3;
-    var lGrad = ctx.createLinearGradient( HeightMarker.chfx, HeightMarker.y, HeightMarker.chfx-rl, HeightMarker.y);
-    lGrad.addColorStop("0", "rgba( 161, 0, 0, 0.2 )");
-    lGrad.addColorStop("1.0", "rgba( 161, 0, 0, 0.8 )");
+    ctx.lineWidth = 2;
+    var lGrad = ctx.createLinearGradient( HeightMarker.chfx-canvas.width, HeightMarker.y, HeightMarker.chfx+canvas.width, HeightMarker.y );
+    lGrad.addColorStop("0", "rgba( 161, 0, 0, 0 )");
+    lGrad.addColorStop("0.4", "rgba( 161, 0, 0, " + 0.3*o + ")");
+    lGrad.addColorStop("0.5", "rgba( 161, 0, 0, " + 1*o + ")");
+    lGrad.addColorStop("0.6", "rgba( 161, 0, 0, " +0.3*o + ")");
+    lGrad.addColorStop("1", "rgba( 161, 0, 0, 0 )");
     ctx.strokeStyle = lGrad;
-    ctx.moveTo( HeightMarker.chfx, HeightMarker.y );
-    ctx.lineTo( HeightMarker.chfx-rl, HeightMarker.y );
-    ctx.stroke();
-    var rGrad = ctx.createLinearGradient( HeightMarker.chfx, HeightMarker.y, HeightMarker.chfx+rl, HeightMarker.y);
-    rGrad.addColorStop("0", "rgba( 161, 0, 0, 0.2 )");
-    rGrad.addColorStop("1.0", "rgba( 161, 0, 0, 0.8 )");
-    ctx.strokeStyle = rGrad;
-    ctx.moveTo( HeightMarker.chfx, HeightMarker.y );
-    ctx.lineTo( HeightMarker.chfx+rl, HeightMarker.y );
+    console.log(lGrad);
+    ctx.moveTo( HeightMarker.chfx-canvas.width, HeightMarker.y );
+    ctx.lineTo( HeightMarker.chfx+canvas.width, HeightMarker.y );
     ctx.stroke();
     if ( HeightMarker.lat > lad ) { HeightMarker.laa = false; HeightMarker.lat = 0; }
   }
@@ -374,7 +373,9 @@ function removeModals() {
   $("#modal_card_gameplay_screen_inner_div").css("visibility", "hidden");
   $(".modal_gameplay_screen_text").css("visibility", "hidden");
   $(".icon_exit_modal").css("visibility", "hidden");
-  resume();
+  infoModalOpen = false;
+  if ( !infoModalOpenWhilePaused ) { resume(); }
+  infoModalOpenWhilePaused = false;
 }
 
 function omitRedFlowerFooterContent() {
@@ -498,13 +499,19 @@ $(".button_sow").click(function(){   // XXXXX {{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{}
   gameHasBegun = true;
 });
 
-///info icon (displays info modal)
+///info icon (toggles info modal)
 $("#icon_info").click(function() {
-  $("#modal_card_gameplay_screen").css("visibility", "visible");
-  $("#modal_card_gameplay_screen_inner_div").scrollTop(0).css("visibility", "visible");
-  $(".modal_gameplay_screen_text").css("visibility", "visible");
-  $("#icon_exit_modal_gameplay_info").css("visibility", "visible");
-  pause();
+  if ( !infoModalOpen ) {
+    $("#modal_card_gameplay_screen").css("visibility", "visible");
+    $("#modal_card_gameplay_screen_inner_div").scrollTop(0).css("visibility", "visible");
+    $(".modal_gameplay_screen_text").css("visibility", "visible");
+    $("#icon_exit_modal_gameplay_info").css("visibility", "visible");
+    infoModalOpen = true;
+    if ( gamePaused ) { infoModalOpenWhilePaused = true; }
+    pause();
+  } else {
+    removeModals();
+  }
 });
 
 ///shadows icon (toggles shadows)
@@ -533,7 +540,7 @@ $("#save").click(function(){
 
 ///pause/resume icons
 $(".icon_game_run").click(function(){
-  if ( gamePaused === false ) { 
+  if ( !gamePaused ) { 
     pause(); 
     $("#modal_play").css("visibility", "visible");
   } else { 
