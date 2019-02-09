@@ -41,7 +41,7 @@ Improvements & Fixes
 - [ ] give stalks & leaves variable fills (gradient, if possible) instead of stroke outlines (should look better and may improve rendering performance)
 - [ ] seeds plant firmly without swinging, even at worldspeed 1
 - [ ] change season background gradients so seasons are more distinct and changes are more dramatic
-- [ ] fix safari issues (color value floats, etc.)
+- [ ] fix cross-browser issues (safari color value floats, etc.)
 
 <br>
 
