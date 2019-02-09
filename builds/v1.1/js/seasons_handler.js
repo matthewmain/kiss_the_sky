@@ -59,17 +59,17 @@ var ccs4 = psbg.cs4;  // current color stop 4
 function trackSeasons() {
   yearTime++;
   if ( yearTime < spL ) { 
-    currentSeason = "spring"; photosynthesisRatio = 1; livEnExp = 0.75;  
+    currentSeason = "Spring"; photosynthesisRatio = 1; livEnExp = 0.75;  
     // adjusts summer length to plant size (300 minimum)
     if ( yearTime === spL-1 ) { 
       suL = 85*currentGreatestMaxSegment() > 300 ? 85*currentGreatestMaxSegment() : 300; 
     }  
   } else if ( yearTime < spL+suL ) {
-    currentSeason = "summer"; photosynthesisRatio = 1; livEnExp = 1;
+    currentSeason = "Summer"; photosynthesisRatio = 1; livEnExp = 1;
   } else if ( yearTime < spL+suL+faL ) {
-    currentSeason = "fall"; photosynthesisRatio = 0; livEnExp = 7;
+    currentSeason = "Fall"; photosynthesisRatio = 0; livEnExp = 7;
   } else if ( yearTime < spL+suL+faL+wiL ) {
-    currentSeason = "winter"; photosynthesisRatio = 0; livEnExp = 10;
+    currentSeason = "Winter"; photosynthesisRatio = 0; livEnExp = 10;
   } else {
     currentYear++;
     yearTime = 0;
@@ -92,10 +92,10 @@ function currentGreatestMaxSegment() {
 function updateSeasonPieChart() {
   var dateDeg;  // degree corresponding to time of year on meter
   switch( currentSeason ) {  // marker position, calibrated different season lengths to uniform season arcs on meter
-    case "spring": dateDeg = yearTime*360 / spL; break;
-    case "summer": dateDeg = (yearTime-spL) * 360 / suL; break;
-    case "fall": dateDeg = (yearTime-spL-suL) * 360 / faL; break;
-    case "winter": dateDeg = (yearTime-spL-suL-faL) * 360 / wiL;
+    case "Spring": dateDeg = yearTime*360 / spL; break;
+    case "Summer": dateDeg = (yearTime-spL) * 360 / suL; break;
+    case "Fall": dateDeg = (yearTime-spL-suL) * 360 / faL; break;
+    case "Winter": dateDeg = (yearTime-spL-suL-faL) * 360 / wiL;
   }
   var pieValueAsDegree = dateDeg;
   var pieCircumference = 2*Math.PI*25;  // (svg circle radius is 25)
@@ -107,10 +107,10 @@ function updateSeasonPieChart() {
 ///renders background
 function renderBackground() {
   switch( currentSeason ) {  // updates current and previous season 
-    case "spring": csbg = BgG.sp; psbg = BgG.wi; break;
-    case "summer": csbg = BgG.su; psbg = BgG.sp; break;
-    case "fall": csbg = BgG.fa; psbg = BgG.su; break;
-    case "winter": csbg = BgG.wi; psbg = BgG.fa; break;
+    case "Spring": csbg = BgG.sp; psbg = BgG.wi; break;
+    case "Summer": csbg = BgG.su; psbg = BgG.sp; break;
+    case "Fall": csbg = BgG.fa; psbg = BgG.su; break;
+    case "Winter": csbg = BgG.wi; psbg = BgG.fa; break;
   }
   if ( gameHasBegun ) {
     ccs1 = Tl.rgbaCs( psbg.cs1, csbg.cs1, ccs1, 200 );  // current color stop redshift 

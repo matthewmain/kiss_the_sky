@@ -10,10 +10,10 @@
                 <g id="unselected-options" transform="translate(245.000000, 201.000000)">
                     <g id="unselected" transform="translate(0.000000, 58.000000)">
                         <g id="expert_unselected" transform="translate(0.000000, 201.000000)">
-                            <text id="Expert" font-family="Dosis-Light, Dosis" font-size="14" font-weight="300" fill="#111111" fill-opacity="0.402780813">
+                            <text id="Expert" font-family="Dosis-Light, Dosis" font-size="14" font-weight="300" fill="#111111" fill-opacity="0.4">
                                 <tspan x="68" y="43">Expert</tspan>
                             </text>
-                            <text id="Tiny-White-Flower" font-family="Dosis-SemiBold, Dosis" font-size="22" font-weight="500" fill="#111111" fill-opacity="0.251557037">
+                            <text id="Tiny-White-Flower" font-family="Dosis-SemiBold, Dosis" font-size="22" font-weight="500" fill="#111111" fill-opacity="0.25">
                                 <tspan x="67.5" y="23">Tiny White Flower</tspan>
                             </text>
                             <circle id="Oval" stroke-opacity="0.147699956" stroke="#111111" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" fill-rule="nonzero" cx="25" cy="26" r="25"></circle>
@@ -37,14 +37,13 @@
                             <circle id="Oval" stroke-opacity="0.15" stroke="#111111" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" fill-rule="nonzero" cx="25" cy="26" r="25"></circle>
                         </g>
                     </g>
-                    <text id="choose-difficulty" font-family="Dosis-Medium, Dosis" font-size="18" font-weight="400" fill="#111111" fill-opacity="0.653190559">
-                        <tspan x="36" y="18">Choose game difficulty.</tspan>
+                    <text id="choose-difficulty" font-family="Dosis-Light, Dosis" font-size="14" font-weight="300" fill="#111111">
+                        <tspan x="57.584" y="14">Choose game difficulty</tspan>
                     </text>
                 </g>
-                <g id="title" transform="translate(61.000000, 56.000000)" fill="#111111" font-family="AmaticSC-Bold, Amatic SC" font-size="44" font-weight="bold" letter-spacing="-0.949999988">
-                    <text id="Grow-A-Red-Flower-Hi">
-                        <tspan x="30.5929997" y="45">Grow A Red Flower High Enough To Reach The Sk</tspan>
-                        <tspan x="572.955" y="45">y</tspan>
+                <g id="title" transform="translate(96.000000, 52.000000)" fill="#111111" font-family="Dosis-SemiBold, Dosis" font-size="28" font-weight="500" letter-spacing="-0.400000006">
+                    <text id="Grow-A-Red-Flower-Ta">
+                        <tspan x="4.32800014" y="45">Grow A Red Flower Tall Enough To Reach The Sky</tspan>
                     </text>
                 </g>
             </g>

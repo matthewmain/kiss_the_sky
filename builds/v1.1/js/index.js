@@ -340,7 +340,7 @@ function germinateSeedWhenReady( seed ) {
   if ( seed.p1.cy > canvas.height-seed.p1.width/2-0.5 && !seed.planted ) {    
     plantSeed( seed );
   }
-  if ( seed.planted && currentSeason === "spring" ) {
+  if ( seed.planted && currentSeason === "Spring" ) {
     germinateSeed( seed );
   }
 }

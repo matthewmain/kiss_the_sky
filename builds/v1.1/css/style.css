@@ -1,7 +1,7 @@
 
 body {
 	background: #111111;
-	font-family: 'Amatic SC', Avenir, sans-serif;
+	font-family: "Dosis", Avenir, sans-serif;
 	margin: 0;
 	user-select: none;
 }
@@ -143,8 +143,8 @@ body {
 
 .text {
 	position: relative;
-	font-size: 0.9em;
-	font-weight: normal;
+	font-size: 9pt;
+	font-weight: 300;
 	letter-spacing: 0.4pt;
 	color: #D5D8C5;
 	margin: 0;
@@ -152,21 +152,22 @@ body {
 }
 
 .number {
-	font-size: 1.2em;
+	font-family: "Oswald", Avenir, sans-serif;
+	font-size: 11pt;
+}
+
+#year_count {
+	font-size: 10pt;
 }
 
 #time {
 	float: left;
 }
 
-#season_right {
-
-}
-
 #pie_svg_left {
 	position: relative;
-	top: 19px;
-	left: 4px;
+	top: 17.35px;
+	left: 6px;
 	height: 12px;
 	transform: rotate(-90deg);
 	background-color: rgba(213,216,197,.25);
@@ -185,15 +186,15 @@ body {
 
 #season_right {
   position: absolute;
-  right: 18px;
-  top: 15px;
+  right: 20px;
+  top: 17px;
 }
 
 #pie_svg_right {
   position: absolute;
-	top: 19px;
+	top: 17.35px;
 	right: 0;
-	height: 12px;
+	height: 13px;
 	transform: rotate(-90deg);
 	background-color: rgba(213,216,197,.25);
 	border-radius: 50%;
@@ -201,29 +202,28 @@ body {
 
 #height_text {
 	float: right;
-	margin: 3px 47px 0 0;
+	margin: 5px 52px 0 0;
 }
 
 #tag_div {
 	position: absolute;
 	top: 0;
-	right: 5px;
+	right: 10px;
 	width: 34px;
 }
 
 #tag_svg {
 	position: absolute;
-	width: 32px;
+	width: 38px;
 }
 
 #tag_content {
 	position: absolute;
   margin: 0;
-	top: 12px;
-  left: 50%;
+	top: 13px;
+  left: 55%;
   transform: translate(-45%);
   color: #D5D8C5;
-  font-weight: bold;
 }
 
 #percent {
