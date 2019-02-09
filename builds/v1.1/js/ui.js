@@ -263,166 +263,6 @@ function renderSunShades() {
 /////---INTERACTION---/////
 
 
-//// Clicks ////
-
-
-//choose game mode on landing
-$("#button_game_mode_hover").click(function(){
-  $("#landing_page_div").hide();
-  $("#overlay_game_mode_options_div").css("visibility", "visible");
-});
-
-//choose ambient mode on landing
-$("#button_ambient_mode_hover").click(function(){
-  $("#landing_page_div").hide();
-  $("#overlay_ambient_mode_options_div").css("visibility", "visible");
-});
-
-//get game info on game options overlay
-$("#helper_game_info").click(function(){
-  $("#modal_game_info").css("visibility", "visible");
-  $("#icon_exit_modal_game_info").css("visibility", "visible");
-});
-
-//get ambient mode info on ambient options overlay
-$("#helper_ambient_info").click(function(){
-  $("#modal_ambient_info").css("visibility", "visible");
-  $("#icon_exit_modal_ambient_info").css("visibility", "visible");
-});
-
-//exit game info modal
-$(".icon_exit_modal").click(function(){
-  $(".modal").css("visibility", "hidden");
-  $(".icon_exit_modal").css("visibility", "hidden");
-});
-
-//select beginner on game options overlay
-$("#option_beginner").click(function(){
-  $("#option_beginner").css("opacity", "1");
-  $("#option_intermediate").css("opacity", "0");
-  $("#option_expert").css("opacity", "0");
-  gameDifficulty = "beginner";
-});
-
-//select intermediate on game options overlay
-$("#option_intermediate").click(function(){
-  $("#option_beginner").css("opacity", "0");
-  $("#option_intermediate").css("opacity", "1");
-  $("#option_expert").css("opacity", "0");
-  gameDifficulty = "intermediate";
-});
-
-//select expert on game options overlay
-$("#option_expert").click(function(){
-  $("#option_beginner").css("opacity", "0");
-  $("#option_intermediate").css("opacity", "0");
-  $("#option_expert").css("opacity", "1");
-  gameDifficulty = "expert";
-});
-
-//select first option on ambient options overlay
-$("#option_first").click(function(){
-  $("#option_first").css("opacity", "1");
-  $("#option_second").css("opacity", "0");
-  $("#option_third").css("opacity", "0");
-  gameDifficulty = "beginner";
-});
-
-//select second option on ambient options overlay
-$("#option_second").click(function(){
-  $("#option_first").css("opacity", "0");
-  $("#option_second").css("opacity", "1");
-  $("#option_third").css("opacity", "0");
-  gameDifficulty = "intermediate";
-});
-
-//select third option on ambient options overlay
-$("#option_third").click(function(){
-  $("#option_first").css("opacity", "0");
-  $("#option_second").css("opacity", "0");
-  $("#option_third").css("opacity", "1");
-  gameDifficulty = "expert";
-});
-
-
-
-
-
-
-
-///actives game when "sow" button is clicked
-$(".button_sow").click(function(){   // XXXXX {{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}
-
-  switch( gameDifficulty ) {
-    case "beginner":
-      for ( var i=0; i<15; i++ ) { createSeed( null, generateRandomRedFlowerPlantGenotype() ); } 
-      break;
-    case "intermediate":
-      for ( var j=0; j<20; j++ ) { createSeed( null, generateRandomNewPlantGenotype() ); }
-      for ( var k=0; k<5; k++ ) { createSeed( null, generateRandomRedFlowerPlantGenotype() ); }
-      break;
-    case "expert":
-      for ( var l=0; l<1; l++ ) { createSeed( null, generateTinyWhiteFlowerPlantGenotype() ); }
-  }
-
-  for ( var m=0; m<seeds.length; m++ ) { scatterSeed( seeds[m] ); }
-
-  $("#overlay_game_mode_options_div, #overlay_ambient_mode_options_div").fadeOut(500, function(){ 
-    $(".icon").fadeIn(5000);
-    $("#footer_div").fadeIn(5000);
-  });
-
-  gameHasBegun = true;
-
-});
-
-
-
-
-///toggles shadow visibility on shadows icon click/touch
-$(".icon_shadows").click(function(){
-  if ( viewShadows === true ) {
-    document.getElementById("icon_shadows_on").style.visibility = "hidden";
-    document.getElementById("icon_shadows_off").style.visibility = "visible";
-    viewShadows = false;
-  } else {
-    document.getElementById("icon_shadows_on").style.visibility = "visible";
-    document.getElementById("icon_shadows_off").style.visibility = "hidden";
-    viewShadows = true;
-  }
-  if ( gamePaused ) { clearCanvas(); renderBackground(); renderPlants(); }
-});
-
-///downloads canvas screengrab on camera icon click/touch
-$("#save").click(function(){
-  var image = canvas.toDataURL("image/png");
-  console.log(image);
-  var download = document.getElementById("save");
-  download.href = image;
-  var seasonTitleCase = currentSeason.charAt(0).toUpperCase()+currentSeason.slice(1);
-  download.download = "Kiss the Sky - Year "+currentYear+", "+seasonTitleCase+".png";
-});
-
-///toggles game pause/resume
-$(".icon_game_run").click(function(){
-  if ( gamePaused === false ) {
-    document.getElementById("icon_pause").style.visibility = "hidden";
-    document.getElementById("icon_play").style.visibility = "visible";
-    gamePaused = true;
-  } else {
-    document.getElementById("icon_pause").style.visibility = "visible";
-    document.getElementById("icon_play").style.visibility = "hidden";
-    gamePaused = false;
-    display();
-  }
-});
-
-///reloads game on reload icon click/touch
-$("#icon_restart").click(function() {
-  location.reload();
-});
-
-
 //// Event Functions ////
 
 ///updates mouse position coordinates as percentages
@@ -509,22 +349,202 @@ function eliminatePlants( e, plant ) {
   }
 }
 
+///pause game
+function pause() {
+  document.getElementById("icon_pause").style.visibility = "hidden";
+  document.getElementById("icon_play").style.visibility = "visible";
+  gamePaused = true;
+}
+
+///resume game
+function resume() {
+  document.getElementById("icon_pause").style.visibility = "visible";
+  document.getElementById("icon_play").style.visibility = "hidden";
+  document.getElementById("modal_play").style.visibility = "hidden";
+  gamePaused = false;
+  display();
+}
+
+///remove modals
+function removeModals() {
+  $(".modal_card_options_screens").css("visibility", "hidden");
+  $(".modal_options_text").css("visibility", "hidden");
+  $("#modal_card_gameplay_screen").css("visibility", "hidden");
+  $("#modal_card_gameplay_screen_inner_div").css("visibility", "hidden");
+  $(".modal_gameplay_screen_text").css("visibility", "hidden");
+  $(".icon_exit_modal").css("visibility", "hidden");
+  resume();
+}
+
+
+//// Listeners ////
+
+//choose game mode on landing
+$("#button_game_mode_hover").click(function(){
+  $("#landing_page_div").hide();
+  $("#overlay_game_mode_options_div").css("visibility", "visible");
+});
+
+//choose ambient mode on landing
+$("#button_ambient_mode_hover").click(function(){
+  $("#landing_page_div").hide();
+  $("#overlay_ambient_mode_options_div").css("visibility", "visible");
+});
+
+//select beginner on game options overlay
+$("#option_beginner").click(function(){
+  $("#option_beginner").css("opacity", "1");
+  $("#option_intermediate").css("opacity", "0");
+  $("#option_expert").css("opacity", "0");
+  gameDifficulty = "beginner";
+});
+
+//select intermediate on game options overlay
+$("#option_intermediate").click(function(){
+  $("#option_beginner").css("opacity", "0");
+  $("#option_intermediate").css("opacity", "1");
+  $("#option_expert").css("opacity", "0");
+  gameDifficulty = "intermediate";
+});
+
+//select expert on game options overlay
+$("#option_expert").click(function(){
+  $("#option_beginner").css("opacity", "0");
+  $("#option_intermediate").css("opacity", "0");
+  $("#option_expert").css("opacity", "1");
+  gameDifficulty = "expert";
+});
+
+//select first option on ambient options overlay
+$("#option_first").click(function(){
+  $("#option_first").css("opacity", "1");
+  $("#option_second").css("opacity", "0");
+  $("#option_third").css("opacity", "0");
+  gameDifficulty = "beginner";
+});
+
+//select second option on ambient options overlay
+$("#option_second").click(function(){
+  $("#option_first").css("opacity", "0");
+  $("#option_second").css("opacity", "1");
+  $("#option_third").css("opacity", "0");
+  gameDifficulty = "intermediate";
+});
+
+//select third option on ambient options overlay
+$("#option_third").click(function(){
+  $("#option_first").css("opacity", "0");
+  $("#option_second").css("opacity", "0");
+  $("#option_third").css("opacity", "1");
+  gameDifficulty = "expert";
+});
+
+//get game info on game options screen
+$("#helper_game_info").click(function(){
+  $("#modal_card_game_screen").css("visibility", "visible");
+  $("#modal_game_text").css("visibility", "visible");
+  $("#icon_exit_modal_game_info").css("visibility", "visible");
+});
+
+//get ambient mode info on ambient options screen
+$("#helper_ambient_info").click(function(){
+  $("#modal_card_ambient_screen").css("visibility", "visible");
+  $("#modal_ambient_text").css("visibility", "visible");
+  $("#icon_exit_modal_ambient_info").css("visibility", "visible");
+});
+
+//exit modal
+$(".icon_exit_modal").click(function(){
+  removeModals();
+});
+
+$("#modal_play").click(function(){
+  resume();
+});
 
 
 
-/////---LISTENERS---/////
+///activates game when "sow" button is clicked
+$(".button_sow").click(function(){   // XXXXX {{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}
+  switch( gameDifficulty ) {
+    case "beginner":
+      for ( var i=0; i<15; i++ ) { createSeed( null, generateRandomRedFlowerPlantGenotype() ); } 
+      break;
+    case "intermediate":
+      for ( var j=0; j<20; j++ ) { createSeed( null, generateRandomNewPlantGenotype() ); }
+      for ( var k=0; k<5; k++ ) { createSeed( null, generateRandomRedFlowerPlantGenotype() ); }
+      break;
+    case "expert":
+      for ( var l=0; l<1; l++ ) { createSeed( null, generateTinyWhiteFlowerPlantGenotype() ); }
+  }
+  for ( var m=0; m<seeds.length; m++ ) { scatterSeed( seeds[m] ); }
+  $("#overlay_game_mode_options_div, #overlay_ambient_mode_options_div").fadeOut(500, function(){ 
+    $(".icon").fadeIn(5000);
+    $("#footer_div").fadeIn(5000);
+  });
+  gameHasBegun = true;
+});
 
+///info icon (displays info modal)
+$("#icon_info").click(function() {
+  $("#modal_card_gameplay_screen").css("visibility", "visible");
+  $("#modal_card_gameplay_screen_inner_div").scrollTop(0).css("visibility", "visible");
+  $(".modal_gameplay_screen_text").css("visibility", "visible");
+  $("#icon_exit_modal_gameplay_info").css("visibility", "visible");
+  pause();
+});
 
+///shadows icon (toggles shadows)
+$(".icon_shadows").click(function(){
+  if ( viewShadows === true ) {
+    document.getElementById("icon_shadows_on").style.visibility = "hidden";
+    document.getElementById("icon_shadows_off").style.visibility = "visible";
+    viewShadows = false;
+  } else {
+    document.getElementById("icon_shadows_on").style.visibility = "visible";
+    document.getElementById("icon_shadows_off").style.visibility = "hidden";
+    viewShadows = true;
+  }
+  if ( gamePaused ) { clearCanvas(); renderBackground(); renderPlants(); }
+});
+
+///camera icon (takes a screenshot)
+$("#save").click(function(){
+  var image = canvas.toDataURL("image/png");
+  console.log(image);
+  var download = document.getElementById("save");
+  download.href = image;
+  var seasonTitleCase = currentSeason.charAt(0).toUpperCase()+currentSeason.slice(1);
+  download.download = "Kiss the Sky - Year "+currentYear+", "+seasonTitleCase+".png";
+});
+
+///pause/resume icons
+$(".icon_game_run").click(function(){
+  if ( gamePaused === false ) { 
+    pause(); 
+    $("#modal_play").css("visibility", "visible");
+  } else { 
+    removeModals();  // removes any modals if visible
+    resume(); 
+  }
+});
+
+///restart icon (restarts and returns to landing screen)
+$("#icon_restart").click(function() {
+  location.reload();
+});
+
+///eliminate plants on a single click
 document.addEventListener("click", function(e) { 
   startEliminatingPlants(); 
   eliminatePlants(e); 
   stopEliminatingPlants();
 });
 
+///grabs/moves sun shade handle and eliminates plants on cursor drag
 document.addEventListener("mousedown", function(e) { grabHandle(e); startEliminatingPlants(); });
 document.addEventListener("mousemove", function(e) {  updateMouse(e); moveHandle(e); eliminatePlants(e); });
 document.addEventListener("mouseup", function() {  dropHandle(); stopEliminatingPlants(); });
-
 document.addEventListener("touchstart", function(e) { grabHandle(e); startEliminatingPlants(); });
 document.addEventListener("touchmove", function(e) {  moveHandle(e); eliminatePlants(e); });
 document.addEventListener("touchup", function() {  dropHandle(); stopEliminatingPlants(); });

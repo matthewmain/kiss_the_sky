@@ -26,7 +26,7 @@ body {
 
 #landing_logo_div {
   position: absolute;
-  width: 68%;
+  width: 67%;
   top: 31%;
   left: 50%;
   transform: translate(-50%, -50%);
@@ -112,22 +112,27 @@ body {
 }
 
 
-/*** SCREEN ***/
+/*** GAME SCREEN ***/
 
 #canvas_container_div {
   position: absolute;
   top: 52%;
   left: 50%;
   transform: translate(-50%,-50%);
+  overflow: hidden;
 }
 
 #canvas {
-  width: 100%;
-  height: 100%;
+	position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%,-50%);
+	width: 100%;
 }
 
 
 /*** FOOTER ***/
+
 
 #footer_div {
 	position: absolute;
@@ -280,13 +285,71 @@ body {
 	background-color: rgba(17, 17, 17, 0.15);
 }
 
-.modal {
+
+/*** MODALS ***/
+
+
+.modal_card_options_screens {
 	position: absolute;
   top: 55.1%;
   left: 50%;
   transform: translate(-50%,-50%);
   width: 86%;
   visibility: hidden;
+}
+
+.modal_options_text {
+	position: absolute;
+  left: 50%;
+  transform: translate(-50%,-50%);
+  width: 69%;
+  visibility: hidden;
+}
+
+#modal_game_text {
+	top: 56%;
+}
+
+#modal_ambient_text {
+	top: 51.6%;
+}
+
+#modal_card_gameplay_screen {
+	position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%,-50%);
+  width: 86%;
+  visibility: hidden;
+}
+
+#modal_card_gameplay_screen_inner_div {
+	position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%,-50%);
+  width: 80%;
+  height: 80%;
+  direction: rtl; /*(orders elements right to left so scroll bar is on left)*/
+  overflow: auto;
+  visibility: hidden;
+}
+
+.modal_gameplay_screen_text {
+	position: absolute;
+  left: 50%;
+  transform: translate(-50%,-50%);
+  width: 85%;
+  visibility: hidden;
+}
+
+#modal_ambient_text_gameplay_screen {
+	top: 38%;
+}
+
+#modal_game_text_gameplay_screen {
+  top: 113%;
+  margin-bottom: 15%;
 }
 
 .icon_exit_modal {
@@ -299,6 +362,21 @@ body {
   cursor: pointer;
 }
 
+#icon_exit_modal_gameplay_info {
+	top: 13%;
+  left: 88%;
+  width: 7%;
+}
+
+#modal_play {
+	position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%,-50%);
+  width: 20%;	
+  visibility: hidden;
+  cursor: pointer;
+}
 
 
 
