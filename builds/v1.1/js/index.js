@@ -926,6 +926,8 @@ function runLogs( frequency ) {
     // logCurrentGenePresence( "flowerSaturation" );
     // logCurrentGenePresence( "flowerLightness" );
 
+    // console.log(  );
+
   }
 }
 
@@ -964,7 +966,7 @@ function display() {
     if ( runPollinationAnimations ) { renderPollinationAnimations(); }
   }
   updateUI();
-  //runLogs( 600 );
+  runLogs( 600 );
   if ( !gamePaused ) { window.requestAnimationFrame( display ); }
 }
 

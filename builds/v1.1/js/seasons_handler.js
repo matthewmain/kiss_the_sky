@@ -100,7 +100,8 @@ function updateSeasonPieChart() {
   var pieValueAsDegree = dateDeg;
   var pieCircumference = 2*Math.PI*25;  // (svg circle radius is 25)
   var pieValue = pieCircumference*(pieValueAsDegree/360);
-  document.querySelector("circle").style.strokeDasharray = pieValue + " " + pieCircumference;
+  document.querySelector("#pie_circle_left").style.strokeDasharray = pieValue + " " + pieCircumference;
+  document.querySelector("#pie_circle_right").style.strokeDasharray = pieValue + " " + pieCircumference;
 }
 
 ///renders background

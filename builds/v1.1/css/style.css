@@ -26,7 +26,7 @@ body {
 
 #landing_logo_div {
   position: absolute;
-  width: 68%;
+  width: 67%;
   top: 31%;
   left: 50%;
   transform: translate(-50%, -50%);
@@ -112,22 +112,27 @@ body {
 }
 
 
-/*** SCREEN ***/
+/*** GAME SCREEN ***/
 
 #canvas_container_div {
   position: absolute;
   top: 52%;
   left: 50%;
   transform: translate(-50%,-50%);
+  overflow: hidden;
 }
 
 #canvas {
-  width: 100%;
-  height: 100%;
+	position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%,-50%);
+	width: 100%;
 }
 
 
 /*** FOOTER ***/
+
 
 #footer_div {
 	position: absolute;
@@ -154,7 +159,11 @@ body {
 	float: left;
 }
 
-#pie_svg {
+#season_right {
+
+}
+
+#pie_svg_left {
 	position: relative;
 	top: 19px;
 	left: 4px;
@@ -164,10 +173,30 @@ body {
 	border-radius: 50%;
 }
 
-#pie_circle {
+.pie_circle {
 	fill: none;
   stroke: #D5D8C5;
   stroke-width: 50;
+}
+
+#ambient_footer_right {
+	display: none;
+}
+
+#season_right {
+  position: absolute;
+  right: 18px;
+  top: 15px;
+}
+
+#pie_svg_right {
+  position: absolute;
+	top: 19px;
+	right: 0;
+	height: 12px;
+	transform: rotate(-90deg);
+	background-color: rgba(213,216,197,.25);
+	border-radius: 50%;
 }
 
 #height_text {
@@ -274,19 +303,78 @@ body {
   left: 50%;
   transform: translate(-50%,-50%);
   width: 18%;
+  background-color: rgba(17, 17, 17, 0.15);
   cursor: pointer;
 }
 .button_sow:hover {
-	background-color: rgba(17, 17, 17, 0.15);
+	background-color: rgba(17, 17, 17, 0.3);
 }
 
-.modal {
+
+/*** MODALS ***/
+
+
+.modal_card_options_screens {
 	position: absolute;
   top: 55.1%;
   left: 50%;
   transform: translate(-50%,-50%);
   width: 86%;
   visibility: hidden;
+}
+
+.modal_options_text {
+	position: absolute;
+  left: 50%;
+  transform: translate(-50%,-50%);
+  width: 69%;
+  visibility: hidden;
+}
+
+#modal_game_text {
+	top: 56%;
+}
+
+#modal_ambient_text {
+	top: 51.6%;
+}
+
+#modal_card_gameplay_screen {
+	position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%,-50%);
+  width: 86%;
+  visibility: hidden;
+}
+
+#modal_card_gameplay_screen_inner_div {
+	position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%,-50%);
+  width: 80%;
+  height: 80%;
+  direction: rtl; /*(orders elements right to left so scroll bar is on left)*/
+  overflow: auto;
+  visibility: hidden;
+}
+
+.modal_gameplay_screen_text {
+	position: absolute;
+  left: 50%;
+  transform: translate(-50%,-50%);
+  width: 85%;
+  visibility: hidden;
+}
+
+#modal_ambient_text_gameplay_screen {
+	top: 38%;
+}
+
+#modal_game_text_gameplay_screen {
+  top: 113%;
+  margin-bottom: 15%;
 }
 
 .icon_exit_modal {
@@ -298,6 +386,55 @@ body {
   visibility: hidden;
   cursor: pointer;
 }
+
+#icon_exit_modal_gameplay_info {
+	top: 13%;
+  left: 88%;
+  width: 7%;
+}
+
+#modal_play {
+	position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%,-50%);
+  width: 20%;	
+  visibility: hidden;
+  cursor: pointer;
+}
+
+#modal_restart_div {
+	position: absolute;
+  top: 2%;
+  left: 58%;
+  width: 40%;	
+  visibility: hidden;
+}
+
+#modal_restart {
+	width: 100%;
+}
+
+.button_restart {
+	position: absolute;
+  left: 50.05%;
+  transform: translate(-50%,-50%);
+  width: 72%;
+  opacity: 0;
+  cursor: pointer;
+}
+.button_restart:hover {
+	opacity: 1;
+}
+
+#button_restart_confirm_hover {
+	top: 45%;
+}
+
+#button_restart_cancel_hover {
+	top: 74.5%;
+}
+
 
 
 
