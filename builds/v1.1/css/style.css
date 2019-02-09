@@ -159,7 +159,11 @@ body {
 	float: left;
 }
 
-#pie_svg {
+#season_right {
+
+}
+
+#pie_svg_left {
 	position: relative;
 	top: 19px;
 	left: 4px;
@@ -169,10 +173,30 @@ body {
 	border-radius: 50%;
 }
 
-#pie_circle {
+.pie_circle {
 	fill: none;
   stroke: #D5D8C5;
   stroke-width: 50;
+}
+
+#ambient_footer_right {
+	display: none;
+}
+
+#season_right {
+  position: absolute;
+  right: 18px;
+  top: 15px;
+}
+
+#pie_svg_right {
+  position: absolute;
+	top: 19px;
+	right: 0;
+	height: 12px;
+	transform: rotate(-90deg);
+	background-color: rgba(213,216,197,.25);
+	border-radius: 50%;
 }
 
 #height_text {
@@ -279,10 +303,11 @@ body {
   left: 50%;
   transform: translate(-50%,-50%);
   width: 18%;
+  background-color: rgba(17, 17, 17, 0.15);
   cursor: pointer;
 }
 .button_sow:hover {
-	background-color: rgba(17, 17, 17, 0.15);
+	background-color: rgba(17, 17, 17, 0.3);
 }
 
 

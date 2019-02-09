@@ -21,6 +21,7 @@ var selectRadius = canvas.width*0.015; // radius from click/touch point within w
 var plantsAreBeingEliminated = false;
 
 var gameDifficulty = "beginner";
+var ambientMode = false;
 
 
 
@@ -376,6 +377,10 @@ function removeModals() {
   resume();
 }
 
+function omitRedFlowerFooterContent() {
+  $("#height_text, #tag_div, #tag_svg, #tag_content, #percent").css("visibility", "hidden");
+}
+
 
 //// Listeners ////
 
@@ -389,6 +394,11 @@ $("#button_game_mode_hover").click(function(){
 $("#button_ambient_mode_hover").click(function(){
   $("#landing_page_div").hide();
   $("#overlay_ambient_mode_options_div").css("visibility", "visible");
+  ambientMode = true;
+  viewRedFlowerIndicator = false;
+  omitRedFlowerFooterContent();
+  $("#season_left, #pie_svg_left").css("display", "none");
+  $("#ambient_footer_right").css("display", "block");
 });
 
 //select beginner on game options overlay
@@ -461,8 +471,6 @@ $(".icon_exit_modal").click(function(){
 $("#modal_play").click(function(){
   resume();
 });
-
-
 
 ///activates game when "sow" button is clicked
 $(".button_sow").click(function(){   // XXXXX {{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}
@@ -558,12 +566,15 @@ document.addEventListener("touchup", function() {  dropHandle(); stopEliminating
 function updateUI() {
   attachHeaderAndFooter();
   if ( useSunShades ) { renderSunShades(); }
-  renderHeightMarker();
-  displayEliminatePlantIconWithCursor();
   $("#year_count").text( currentYear );
-  $("#season").text( currentSeason );
+  $("#season_left").text( ", " + currentSeason );
+  $("#season_right").text( currentSeason );
   updateSeasonPieChart();
-  $("#height_number").text( Math.floor( highestRedFlowerPct ) );
+  if ( !ambientMode ) { 
+    renderHeightMarker(); 
+    displayEliminatePlantIconWithCursor();
+    $("#height_number").text( Math.floor( highestRedFlowerPct ) );
+  }
 }
 
 

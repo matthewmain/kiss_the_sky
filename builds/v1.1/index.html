@@ -45,8 +45,14 @@
 	<!-- FOOTER -->
 
 	<div id="footer_div">
-		<p id="time" class="text">Year <span id="year_count" class="number">1</span>, <span id="season">Spring</span></p>
-		<svg id="pie_svg" viewBox="0 0 100 100"><circle id="pie_circle" r="25" cx="50" cy="50"/></svg>
+		<p id="time" class="text">Year <span id="year_count" class="number">1</span><span id="season_left">, Spring</span></p>
+		<svg id="pie_svg_left" viewBox="0 0 100 100"><circle id="pie_circle_left" class="pie_circle" r="25" cx="50" cy="50"></svg>
+		<!-- ambient mode -->
+		<div id="ambient_footer_right">
+			<p id="season_right" class="text">Spring</p>
+			<svg id="pie_svg_right" viewBox="0 0 100 100"><circle id="pie_circle_right" class="pie_circle" r="25" cx="50" cy="50"></svg>
+		</div>
+		<!-- game mode -->
 		<p id="height_text" class="text">Highest Red Flower So Far</p>
 		<div id="tag_div">
 			<img id="tag_svg" src="assets/tag.svg">
