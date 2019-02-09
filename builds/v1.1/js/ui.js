@@ -384,6 +384,11 @@ function omitRedFlowerFooterContent() {
 
 //// Listeners ////
 
+//keeps UI elements scaled when window is resized (even when game is paused)
+$(window).resize(function() {
+  updateUI();
+});
+
 //choose game mode on landing
 $("#button_game_mode_hover").click(function(){
   $("#landing_page_div").hide();
@@ -505,12 +510,12 @@ $("#icon_info").click(function() {
 ///shadows icon (toggles shadows)
 $(".icon_shadows").click(function(){
   if ( viewShadows === true ) {
-    document.getElementById("icon_shadows_on").style.visibility = "hidden";
-    document.getElementById("icon_shadows_off").style.visibility = "visible";
+    $("#icon_shadows_on").css("visibility", "hidden");
+    $("#icon_shadows_off").css("visibility", "visible");
     viewShadows = false;
   } else {
-    document.getElementById("icon_shadows_on").style.visibility = "visible";
-    document.getElementById("icon_shadows_off").style.visibility = "hidden";
+    $("#icon_shadows_on").css("visibility", "visible");
+    $("#icon_shadows_off").css("visibility", "hidden");
     viewShadows = true;
   }
   if ( gamePaused ) { clearCanvas(); renderBackground(); renderPlants(); }
@@ -539,7 +544,21 @@ $(".icon_game_run").click(function(){
 
 ///restart icon (restarts and returns to landing screen)
 $("#icon_restart").click(function() {
+  if ( !gameHasBegun ) {
+    location.reload();
+  } else {
+    $("#modal_restart_div").css("visibility", "visible");
+  }
+});
+
+///restart confirmation button
+$("#button_restart_confirm_hover").click(function() {
   location.reload();
+});
+
+///restart cancel button
+$("#button_restart_cancel_hover").click(function() {
+  $("#modal_restart_div").css("visibility", "hidden");
 });
 
 ///eliminate plants on a single click

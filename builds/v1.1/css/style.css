@@ -403,6 +403,40 @@ body {
   cursor: pointer;
 }
 
+#modal_restart_div {
+	position: absolute;
+  top: 2%;
+  left: 58%;
+  width: 40%;	
+  visibility: hidden;
+}
+
+#modal_restart {
+	width: 100%;
+}
+
+.button_restart {
+	position: absolute;
+  left: 50.05%;
+  transform: translate(-50%,-50%);
+  width: 72%;
+  opacity: 0;
+  cursor: pointer;
+}
+.button_restart:hover {
+	opacity: 1;
+}
+
+#button_restart_confirm_hover {
+	top: 45%;
+}
+
+#button_restart_cancel_hover {
+	top: 74.5%;
+}
+
+
+
 
 
 
