@@ -850,11 +850,6 @@ function renderPlants() {
   if ( viewShadows ) { renderLeafShadows(); }
 }
 
-///renders all announcements
-function renderAnnouncements() {
-  renderYearAnnouncements();
-  renderSeasonAnnouncements();
-}
 
 //// Logging ////
 
@@ -969,7 +964,6 @@ function display() {
     growPlants(); 
     renderPlants();
     if ( runPollinationAnimations ) { renderPollinationAnimations(); }
-    renderAnnouncements();
   }
   updateUI();
   runLogs( 600 );
