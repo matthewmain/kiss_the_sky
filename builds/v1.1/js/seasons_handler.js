@@ -132,6 +132,39 @@ function renderBackground() {
   ctx.fillRect(0, 0, canvas.width, canvas.height);
 }
 
+///renders season/year change announcements
+function renderSeasonAnnouncements() {
+  if ( yearTime === 1 ) {
+    var fsi = 2;  // font size increase
+    var lsi = 1.5;  // letter spacing increase
+    var om = 0.4;  // opacity maximum
+    var dur = 1500;  // duration
+    $("#season_announcement").delay(500).animate({ 
+      fontSize: "+="+fsi+"pt", 
+      letterSpacing: "+="+lsi+"pt",
+      opacity: om, 
+    }, dur, "linear" ).animate({ 
+      fontSize: "+="+fsi+"pt", 
+      letterSpacing: "+="+lsi+"pt"
+    }, dur, "linear" ).animate({ 
+      fontSize: "+="+fsi+"pt", 
+      letterSpacing: "+="+lsi+"pt",
+      opacity: 0, 
+    }, dur*0.666, "linear" );
+    $("#year_announcement").delay(2000).animate({ 
+      fontSize: "+="+fsi*0.5+"pt", 
+      letterSpacing: "+="+lsi*0.333+"pt",
+      opacity: om, 
+    }, dur*0.8, "linear" ).animate({ 
+      fontSize: "+="+fsi*0.5+"pt", 
+      letterSpacing: "+="+lsi*0.333+"pt",
+    }, dur*0.8, "linear" ).animate({ 
+      fontSize: "+="+fsi*0.5+"pt", 
+      letterSpacing: "+="+lsi*0.333+"pt",
+      opacity: 0, 
+    }, dur*0.8, "linear" );
+  }
+}
 
 
 

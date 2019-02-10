@@ -2,6 +2,7 @@
 body {
 	background: #111111;
 	font-family: "Dosis", Avenir, sans-serif;
+	font-weight: 200;
 	margin: 0;
 	user-select: none;
 }
@@ -114,6 +115,7 @@ body {
 
 /*** GAME SCREEN ***/
 
+
 #canvas_container_div {
   position: absolute;
   top: 52%;
@@ -144,10 +146,9 @@ body {
 .text {
 	position: relative;
 	font-size: 9pt;
-	font-weight: 300;
 	letter-spacing: 0.4pt;
 	color: #D5D8C5;
-	margin: 0;
+	margin-top: 5px;
 	top: 12px;
 }
 
@@ -156,17 +157,13 @@ body {
 	font-size: 11pt;
 }
 
-#year_count {
-	font-size: 10pt;
-}
-
 #time {
 	float: left;
 }
 
 #pie_svg_left {
 	position: relative;
-	top: 17.35px;
+	top: 18.4px;
 	left: 6px;
 	height: 12px;
 	transform: rotate(-90deg);
@@ -187,7 +184,6 @@ body {
 #season_right {
   position: absolute;
   right: 20px;
-  top: 17px;
 }
 
 #pie_svg_right {
@@ -230,7 +226,7 @@ body {
 	position: relative;
 	top: -1px;
 	padding-left: 1px;
-	font-weight: bold;
+	font-weight: 400;
 }
 
 
@@ -436,10 +432,35 @@ body {
 }
 
 
+/*** ANNOUNCEMENTS ***/
 
 
+#season_announcement {
+	position: absolute;
+	top: 40%;
+  left: 50%;
+  transform: translate(-50%,-50%);
+  margin: 0;
+  width: 100%;
+  text-align: center;
+  font-size: 40pt;
+  letter-spacing: 2.5pt;
+  opacity: 0;
+}
 
-
+#year_announcement {
+	position: absolute;
+	top: 52%;
+  left: 50%;
+  transform: translate(-50%,-50%);
+  margin: 0;
+  width: 100%;
+  text-align: center;
+  font-size: 16pt;
+  font-weight: 400;
+  letter-spacing: 1.25pt;
+  opacity: 0;
+}
 
 
 

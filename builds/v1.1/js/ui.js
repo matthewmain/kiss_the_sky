@@ -177,7 +177,6 @@ function renderHeightMarker() {
     lGrad.addColorStop("0.6", "rgba( 161, 0, 0, " +0.3*o + ")");
     lGrad.addColorStop("1", "rgba( 161, 0, 0, 0 )");
     ctx.strokeStyle = lGrad;
-    console.log(lGrad);
     ctx.moveTo( HeightMarker.chfx-canvas.width, HeightMarker.y );
     ctx.lineTo( HeightMarker.chfx+canvas.width, HeightMarker.y );
     ctx.stroke();
