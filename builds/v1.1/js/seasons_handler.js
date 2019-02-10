@@ -133,38 +133,62 @@ function renderBackground() {
 }
 
 ///renders season/year change announcements
-function renderSeasonAnnouncements() {
+function renderYearAnnouncements() {
   if ( yearTime === 1 ) {
-    var fsi = 2;  // font size increase
+    var fsi = 1.5;  // font size increase
     var lsi = 1.5;  // letter spacing increase
-    var om = 0.4;  // opacity maximum
-    var dur = 1500;  // duration
-    $("#season_announcement").delay(500).animate({ 
-      fontSize: "+="+fsi+"pt", 
-      letterSpacing: "+="+lsi+"pt",
-      opacity: om, 
-    }, dur, "linear" ).animate({ 
-      fontSize: "+="+fsi+"pt", 
-      letterSpacing: "+="+lsi+"pt"
-    }, dur, "linear" ).animate({ 
-      fontSize: "+="+fsi+"pt", 
-      letterSpacing: "+="+lsi+"pt",
-      opacity: 0, 
-    }, dur*0.666, "linear" );
-    $("#year_announcement").delay(2000).animate({ 
-      fontSize: "+="+fsi*0.5+"pt", 
-      letterSpacing: "+="+lsi*0.333+"pt",
-      opacity: om, 
-    }, dur*0.8, "linear" ).animate({ 
-      fontSize: "+="+fsi*0.5+"pt", 
-      letterSpacing: "+="+lsi*0.333+"pt",
-    }, dur*0.8, "linear" ).animate({ 
-      fontSize: "+="+fsi*0.5+"pt", 
-      letterSpacing: "+="+lsi*0.333+"pt",
-      opacity: 0, 
-    }, dur*0.8, "linear" );
+    var om = 1;  // opacity maximum
+    var dur = 2000;  // duration
+    $("#year_announcement").delay(1000).animate({ 
+        fontSize: "+="+fsi+"pt", 
+        letterSpacing: "+="+lsi+"pt",
+        opacity: om*0.5, 
+      }, dur, "linear" ).animate({ 
+        fontSize: "+="+fsi+"pt", 
+        letterSpacing: "+="+lsi+"pt",
+        opacity: om,
+      }, dur, "linear" ).animate({ 
+        fontSize: "+="+fsi+"pt", 
+        letterSpacing: "+="+lsi+"pt",
+        opacity: 0, 
+      }, dur, "linear", function() {
+        //callback resets original values
+        $("#year_announcement").css({
+          fontSize: "35pt",
+          letterSpacing: "2.5pt"
+        });
+      }
+    );
   }
 }
+
+function renderSeasonAnnouncements() {
+  var fsi = 1.2;  // font size increase
+  var lsi = 0.5;  // letter spacing increase
+  var om = 1;  // opacity maximum
+  var dur = 1400;  // duration
+  $("#season_announcement").delay(3200).animate({ 
+      fontSize: "+="+fsi*0.8+"pt", 
+      letterSpacing: "+="+lsi*0.333+"pt",
+      opacity: om*0.8, 
+    }, dur*0.7, "linear" ).animate({ 
+      fontSize: "+="+fsi*0.8+"pt", 
+      letterSpacing: "+="+lsi*0.333+"pt",
+    }, dur*0.7, "linear" ).animate({ 
+      fontSize: "+="+fsi*0.8+"pt", 
+      letterSpacing: "+="+lsi*0.333+"pt",
+      opacity: 0, 
+    }, dur*0.7, "linear", function() {
+      //callback resets original values
+      $("#season_announcement").css({
+        fontSize: "16pt",
+        letterSpacing: "1.25pt"
+      }); 
+    }
+  );
+}
+
+
 
 
 

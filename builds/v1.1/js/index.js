@@ -852,7 +852,8 @@ function renderPlants() {
 
 ///renders all announcements
 function renderAnnouncements() {
-  renderSeasonAnnouncements()
+  renderYearAnnouncements();
+  renderSeasonAnnouncements();
 }
 
 //// Logging ////

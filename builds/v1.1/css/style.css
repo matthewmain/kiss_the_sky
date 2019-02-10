@@ -217,7 +217,7 @@ body {
 	position: absolute;
   margin: 0;
 	top: 13px;
-  left: 55%;
+  left: 56%;
   transform: translate(-45%);
   color: #D5D8C5;
 }
@@ -435,22 +435,22 @@ body {
 /*** ANNOUNCEMENTS ***/
 
 
-#season_announcement {
+#year_announcement {
 	position: absolute;
-	top: 40%;
+	top: 30%;
   left: 50%;
   transform: translate(-50%,-50%);
   margin: 0;
   width: 100%;
   text-align: center;
-  font-size: 40pt;
+  font-size: 35pt;
   letter-spacing: 2.5pt;
   opacity: 0;
 }
 
-#year_announcement {
+#season_announcement {
 	position: absolute;
-	top: 52%;
+	top: 42%;
   left: 50%;
   transform: translate(-50%,-50%);
   margin: 0;

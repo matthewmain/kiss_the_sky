@@ -5,15 +5,15 @@
     <desc>Created with Sketch.</desc>
     <defs>
         <linearGradient x1="50%" y1="100%" x2="50%" y2="0%" id="linearGradient-1">
-            <stop stop-color="#D32100" offset="0%"></stop>
-            <stop stop-color="#A10000" offset="37.4722362%"></stop>
-            <stop stop-color="#A10000" offset="92.8511714%"></stop>
-            <stop stop-color="#710000" offset="100%"></stop>
+            <stop stop-color="#9D1900" offset="0%"></stop>
+            <stop stop-color="#780000" offset="27.2376078%"></stop>
+            <stop stop-color="#780000" offset="92.8511714%"></stop>
+            <stop stop-color="#530000" offset="100%"></stop>
         </linearGradient>
     </defs>
     <g id="Symbols" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
         <g id="tag" fill="url(#linearGradient-1)" fill-rule="nonzero">
-            <polygon points="0 0 110 0 110 145 1.46549439e-13 130"></polygon>
+            <polygon points="0 0 110 0 110 145 1.46549439e-13 132"></polygon>
         </g>
     </g>
 </svg>
