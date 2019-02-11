@@ -153,8 +153,8 @@ body {
 }
 
 .number {
-	font-family: "Oswald", Avenir, sans-serif;
-	font-size: 11pt;
+	font-family: "Nunito", Avenir, sans-serif;
+	font-size: 10pt;
 }
 
 #time {
@@ -216,15 +216,15 @@ body {
 #tag_content {
 	position: absolute;
   margin: 0;
-	top: 13px;
-  left: 56%;
-  transform: translate(-45%);
+	top: 24.5px;
+  left: 58%;
+  transform: translate(-50%, -50%);
   color: #D5D8C5;
 }
 
 #percent {
 	position: relative;
-	top: -1px;
+	top: 0;
 	padding-left: 1px;
 	font-weight: 400;
 }
@@ -247,10 +247,10 @@ body {
 
 .helper {
 	position: absolute;
-	top: 18%;
+	top: 17.5%;
   left: 50%;
   transform: translate(-50%,-50%);
-  width: 13%;
+  width: 11%;
   cursor: pointer;
 }
 
@@ -459,6 +459,21 @@ body {
   font-size: 16pt;
   font-weight: 400;
   letter-spacing: 1.25pt;
+  opacity: 0;
+}
+
+#height_announcement {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%,-50%);
+  margin: 0;
+  width: 100%;
+  font-family: "Nunito", Avenir, sans-serif;
+  text-align: center;
+  font-size: 10pt;
+  font-weight: 700;
+  letter-spacing: 0;
   opacity: 0;
 }
 

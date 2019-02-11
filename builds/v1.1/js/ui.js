@@ -141,17 +141,17 @@ function displayEliminatePlantIconWithCursor(e) {
     ctx.stroke();
   }
 }
-
 ///renders markers that track the highest red flower height so far
 function renderHeightMarker() {
   var hrfy = canvas.height - yValFromPct( highestRedFlowerPct );  // highest red flower y value currently
   var chmp = 100-pctFromYVal(HeightMarker.y);  // current height marker percentage
-  if ( Math.floor(highestRedFlowerPct) > Math.floor(chmp) ) {   // initializes animations if new highest red flower
+  if ( Math.floor( highestRedFlowerPct ) > Math.floor(chmp) ) {   // initializes animations if new highest red flower
     HeightMarker.y = hrfy;  // y value
     HeightMarker.baa = true;  // bounce animation active
     HeightMarker.bat = 0;  // bounce animation time elapsed
     HeightMarker.laa = true;  // line animation active
     HeightMarker.lat = 0;  // line animation time elapsed
+    renderHeightAnnouncement();
   }
   //new highest height marker bounce animation (size expansion & contraction)
   if ( HeightMarker.baa ) {  
