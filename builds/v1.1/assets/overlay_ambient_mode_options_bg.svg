@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <svg width="738px" height="735px" viewBox="0 0 738 735" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
     <!-- Generator: Sketch 53 (72520) - https://sketchapp.com -->
-    <title>screen</title>
+    <title>overlay_ambient_mode_options_bg</title>
     <desc>Created with Sketch.</desc>
     <g id="[Screens]" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
         <g id="ambient-mode-settings" transform="translate(-358.000000, -160.000000)">
-            <g id="screen" transform="translate(358.000000, 160.000000)">
+            <g id="overlay_ambient_mode_options_bg" transform="translate(358.000000, 160.000000)">
                 <rect id="bg" fill="#FFFFFF" fill-rule="nonzero" x="0" y="0" width="738" height="735"></rect>
-                <g id="unselected-options" transform="translate(245.000000, 201.000000)">
-                    <g id="third_unselected" transform="translate(0.000000, 259.000000)">
+                <g id="unselected-options" transform="translate(245.000000, 259.000000)">
+                    <g id="third_unselected" transform="translate(0.000000, 201.000000)">
                         <text id="Begin-with-a-single" font-family="Dosis-Light, Dosis" font-size="14" font-weight="300" fill="#111111" fill-opacity="0.402780813">
                             <tspan x="68" y="43">Begin with a single tiny white flower.</tspan>
                         </text>
@@ -17,7 +17,7 @@
                         </text>
                         <circle id="Oval" stroke-opacity="0.147699956" stroke="#111111" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" fill-rule="nonzero" cx="25" cy="26" r="25"></circle>
                     </g>
-                    <g id="second_unselected" transform="translate(0.000000, 158.500000)">
+                    <g id="second_unselected" transform="translate(0.000000, 100.500000)">
                         <text id="Begin-with-a-variety" font-family="Dosis-Light, Dosis" font-size="14" font-weight="300" fill="#111111" fill-opacity="0.4">
                             <tspan x="68" y="43">Begin with a variety of flower colors.</tspan>
                         </text>
@@ -26,7 +26,7 @@
                         </text>
                         <circle id="Oval" stroke-opacity="0.15" stroke="#111111" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" fill-rule="nonzero" cx="25" cy="26" r="25"></circle>
                     </g>
-                    <g id="first_unselected" transform="translate(0.000000, 58.000000)">
+                    <g id="first_unselected">
                         <text id="Begin-with-a-variety" font-family="Dosis-Light, Dosis" font-size="14" font-weight="300" fill="#111111" fill-opacity="0.4">
                             <tspan x="68" y="43">Begin with a variety of red flowers</tspan>
                         </text>
@@ -35,11 +35,11 @@
                         </text>
                         <circle id="Oval" stroke-opacity="0.15" stroke="#111111" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" fill-rule="nonzero" cx="25" cy="26" r="25"></circle>
                     </g>
-                    <text id="choose-mode" font-family="Dosis-Light, Dosis" font-size="14" font-weight="300" fill="#111111">
-                        <tspan x="45" y="14">Choose ambient mode type</tspan>
-                    </text>
                 </g>
-                <g id="title" transform="translate(135.000000, 67.000000)" fill="#111111" font-family="Dosis-SemiBold, Dosis" font-size="28" font-weight="500" letter-spacing="-0.400000006">
+                <text id="choose-mode" font-family="Dosis-Medium, Dosis" font-size="14" font-weight="400" fill="#111111">
+                    <tspan x="295" y="215">Choose ambient mode type</tspan>
+                </text>
+                <g id="title" transform="translate(142.000000, 67.000000)" fill="#111111" font-family="Dosis-SemiBold, Dosis" font-size="28" font-weight="500" letter-spacing="-0.400000006">
                     <text id="Sit-Back-And-Watch-N">
                         <tspan x="0.252000122" y="29">Sit Back And Watch Nature Take Its Course</tspan>
                     </text>

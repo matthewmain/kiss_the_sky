@@ -2,8 +2,9 @@
 <head>
   <meta charset="UTF-8">
   <link rel="stylesheet" href="css/style.css">
-  <link href="https://fonts.googleapis.com/css?family=Dosis:300" rel="stylesheet">
-  <link href="https://fonts.googleapis.com/css?family=Oswald:300" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css?family=Megrim" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css?family=Dosis:200,300,400" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css?family=Nunito:400,600,700,800" rel="stylesheet">
 </head>
 
 <body>
@@ -44,7 +45,7 @@
 	<!-- FOOTER -->
 
 	<div id="footer_div">
-		<p id="time" class="text">Year <span id="year_count" class="number">1</span><span id="season_left">, Spring</span></p>
+		<p id="time" class="text">Year <span id="year_count">1</span><span id="season_left">, Spring</span></p>
 		<svg id="pie_svg_left" viewBox="0 0 100 100"><circle id="pie_circle_left" class="pie_circle" r="25" cx="50" cy="50"></svg>
 		<!-- ambient mode -->
 		<div id="ambient_footer_right">
@@ -70,6 +71,12 @@
 
   	<canvas id="canvas" width=1000" height="1000"></canvas> 
 
+
+  	<!-- announcements -->
+
+  	<p id="year_announcement">YEAR 1</p>
+  	<p id="season_announcement">SPRING</p>
+  	<p id="height_announcement">0%</p>
 
 		<!-- modals -->
 
@@ -125,6 +132,7 @@
   <!-- SCRIPTS -->
 
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+	<script src="js/jquery.easing.1.3.js"></script>
 	<script src="js/tools.js"></script>
 	<script src="js/verlet.js"></script>
 	<script src="js/ui.js"></script>

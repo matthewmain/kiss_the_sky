@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <svg width="738px" height="738px" viewBox="0 0 738 738" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
     <!-- Generator: Sketch 53 (72520) - https://sketchapp.com -->
-    <title>screen</title>
+    <title>overlay_game_mode_options_bg</title>
     <desc>Created with Sketch.</desc>
     <g id="[Screens]" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
         <g id="game-mode-settings" transform="translate(-358.000000, -160.000000)">
-            <g id="screen" transform="translate(358.000000, 160.000000)">
+            <g id="overlay_game_mode_options_bg" transform="translate(358.000000, 160.000000)">
                 <rect id="bg" fill="#FFFFFF" fill-rule="nonzero" x="0" y="0" width="738" height="738"></rect>
-                <g id="unselected-options" transform="translate(245.000000, 201.000000)">
-                    <g id="unselected" transform="translate(0.000000, 58.000000)">
+                <g id="unselected-options" transform="translate(245.000000, 259.000000)">
+                    <g id="unselected">
                         <g id="expert_unselected" transform="translate(0.000000, 201.000000)">
                             <text id="Expert" font-family="Dosis-Light, Dosis" font-size="14" font-weight="300" fill="#111111" fill-opacity="0.4">
                                 <tspan x="68" y="43">Expert</tspan>
@@ -37,13 +37,13 @@
                             <circle id="Oval" stroke-opacity="0.15" stroke="#111111" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" fill-rule="nonzero" cx="25" cy="26" r="25"></circle>
                         </g>
                     </g>
-                    <text id="choose-difficulty" font-family="Dosis-Light, Dosis" font-size="14" font-weight="300" fill="#111111">
-                        <tspan x="57.584" y="14">Choose game difficulty</tspan>
-                    </text>
                 </g>
-                <g id="title" transform="translate(96.000000, 52.000000)" fill="#111111" font-family="Dosis-SemiBold, Dosis" font-size="28" font-weight="500" letter-spacing="-0.400000006">
-                    <text id="Grow-A-Red-Flower-Ta">
-                        <tspan x="4.32800014" y="45">Grow A Red Flower Tall Enough To Reach The Sky</tspan>
+                <text id="choose-difficulty" font-family="Dosis-Medium, Dosis" font-size="14" font-weight="400" fill="#111111">
+                    <tspan x="307.232" y="215">Choose game difficulty</tspan>
+                </text>
+                <g id="title" transform="translate(67.000000, 68.000000)" fill="#111111" font-family="Dosis-SemiBold, Dosis" font-size="28" font-weight="500" letter-spacing="-0.400000006">
+                    <text id="Grow-A-Red-Flower-Th">
+                        <tspan x="0.218000158" y="29">Grow A Red Flower That Reaches All The Way To The Sky</tspan>
                     </text>
                 </g>
             </g>

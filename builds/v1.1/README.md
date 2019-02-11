@@ -26,7 +26,7 @@ Basic gamification: grow a red flower tall enough to reach the top of the viewbo
 - [X] allow users to choose 1) easy "red flower garden", 2) medium "random flower garden", or 3) hard "tiny white flower", along with option for observation mode
 - [X] "Sow" button that kicks off initial falling seeds.
 - [X] info, shadows, camera, play/pause, and restart UI icons with hover tips and warnings where appropriate
-- [ ] add stylized on-screen text notifications throughout game: season change announcements, new best height announcement when current record broken, periodic/annual progress updates about how far average sizes/colors have progressed, etc. (and possibly quotes from biologists, or weird mountain-like phrases in first person plural as if coming from plants)
+- [ ] add stylized on-screen text notifications throughout game: season change announcements & new best height announcement when current record broken
 - [ ] game win announcement screen with some kind of weird cool animation
 
 <br>
