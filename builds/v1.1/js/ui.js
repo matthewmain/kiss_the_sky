@@ -24,6 +24,7 @@ var gameDifficulty = "beginner";
 var ambientMode = false;
 var infoModalOpen = false;
 var infoModalOpenWhilePaused = false;
+var endOfGameAnnouncementDisplayed = false;
 
 
 
@@ -93,6 +94,22 @@ function placeSunShades( leftCount, rightCount ) {
   for ( var j=0; j<rightCount; j++ ) { createSunShade( 100, 100 ); }
 }
 
+///checks for game over (whether all plants have died) displays game over overlay and try again button
+function checkForGameOver( plants ) {
+  if ( yearTime === spL + suL + faL + wiL/2 ) {
+    var allDead = true;
+    for ( var i=0; i<plants.length; i++ ) {
+      if ( plants[i].isAlive ) { allDead = false; }
+    }
+    if ( allDead ) {
+      $("#season_announcement").finish();
+      $("#game_over_div").css( "visibility", "visible" ).animate({ opacity: 1 }, 3000, "linear" );
+      endOfGameAnnouncementDisplayed = true;
+      pause();
+    }
+  }
+}
+
 
 
 
@@ -117,7 +134,6 @@ function displayEliminatePlantIconWithCursor(e) {
         var distancePct2 = Math.sqrt( xDiffPct2*xDiffPct2 + yDiffPct2*yDiffPct2 );
         if ( distancePct1 <= selectRadiusPct*2 || distancePct2 <= selectRadiusPct*2 ) {
           displayIcon = true;
-          //canvas.style.cursor = "none";
         }
       }
     }
@@ -357,11 +373,13 @@ function pause() {
 
 ///resume game
 function resume() {
-  document.getElementById("icon_pause").style.visibility = "visible";
-  document.getElementById("icon_play").style.visibility = "hidden";
-  document.getElementById("modal_play").style.visibility = "hidden";
-  gamePaused = false;
-  display();
+  if ( !endOfGameAnnouncementDisplayed ) {
+    document.getElementById("icon_pause").style.visibility = "visible";
+    document.getElementById("icon_play").style.visibility = "hidden";
+    document.getElementById("modal_play").style.visibility = "hidden";
+    gamePaused = false;
+    display();
+  }
 }
 
 ///remove modals
@@ -473,12 +491,18 @@ $(".icon_exit_modal").click(function(){
   removeModals();
 });
 
+//on-screen play button (displayed when paused)
 $("#modal_play").click(function(){
   resume();
 });
 
+// try again button (displayed at game over)
+$("#button_try_again_hover").click(function(){
+  location.reload();
+});
+
 ///activates game when "sow" button is clicked
-$(".button_sow").click(function(){   // XXXXX {{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}
+$(".button_sow").click(function(){
   switch( gameDifficulty ) {
     case "beginner":
       for ( var i=0; i<15; i++ ) { createSeed( null, generateRandomRedFlowerPlantGenotype() ); } 
@@ -591,7 +615,7 @@ document.addEventListener("touchup", function() {  dropHandle(); stopEliminating
 function updateUI() {
   attachHeaderAndFooter();
   if ( useSunShades ) { renderSunShades(); }
-  $("#year_count").text( currentYear );
+  $("#year_count").text( currentYear.toString().replace(/0/g,"O") );  // replace gets rid of Nunito font dotted zero
   $("#season_left").text( ", " + currentSeason );
   $("#season_right").text( currentSeason );
   updateSeasonPieChart();

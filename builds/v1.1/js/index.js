@@ -711,6 +711,8 @@ function fadePlantOutAndRemove( plant ) {
 }
 
 
+
+
 //// Renderers ////
 
 ///renders seeds
@@ -926,7 +928,7 @@ function runLogs( frequency ) {
     // logCurrentGenePresence( "flowerSaturation" );
     // logCurrentGenePresence( "flowerLightness" );
 
-    // console.log(  );
+    //console.log(  );
 
   }
 }
@@ -966,6 +968,7 @@ function display() {
     if ( runPollinationAnimations ) { renderPollinationAnimations(); }
   }
   updateUI();
+  if ( !ambientMode ) ( checkForGameOver( plants ) );
   runLogs( 600 );
   if ( !gamePaused ) { window.requestAnimationFrame( display ); }
 }

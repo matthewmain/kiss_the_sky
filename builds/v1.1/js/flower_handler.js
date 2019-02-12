@@ -121,8 +121,8 @@ function PollinationAnimation( pollinatorFlower, pollinatedFlower ) {
   this.pollenPadGlowHasBegun = false;
   this.pollenPadGlowComplete = false;
   //burst lines (pollen lines that burst randomly from flower 1)
-  for ( var i=0; i<20; i++) {  // creates a burst line each iteration
-    var totalDistance = Tl.rfb( canvas.width*0.03, canvas.width*0.1 );  // total distance burst line will travel
+  for ( var i=0; i<5/*20*/; i++) {  // creates a burst line each iteration
+    var totalDistance = Tl.rfb( canvas.width*0.2/*0.03*/, canvas.width*0.1 );  // total distance burst line will travel
     var xVal = Tl.rfb( 0, totalDistance );  // base x value (random)
     var xDist = Tl.rib(1,2) == 1 ? xVal : -xVal;  // x distance burst line will travel 
     var yVal = Math.sqrt( totalDistance*totalDistance - xDist*xDist );  // base y value (based on x total distance)
@@ -142,7 +142,7 @@ function PollinationAnimation( pollinatorFlower, pollinatedFlower ) {
     });
   }
   //pollination lines (pollen lines that travel from flower 1 to flower 2)
-  for ( var k=0; k<3; k++) {  // creates a pollination line each iteration
+  for ( var k=0; k<1/*3*/; k++) {  // creates a pollination line each iteration
     var plxa = [];  // pollination line x positions array 
     var plya = [];  // pollination line y positions array
     for ( var l=0; l<3; l++ ) {  // populates pollination line x & y positions arrays

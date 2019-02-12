@@ -1,19 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <svg width="110px" height="145px" viewBox="0 0 110 145" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
     <!-- Generator: Sketch 53 (72520) - https://sketchapp.com -->
-    <title>tag</title>
+    <title>flat tag</title>
     <desc>Created with Sketch.</desc>
-    <defs>
-        <linearGradient x1="50%" y1="100%" x2="50%" y2="0%" id="linearGradient-1">
-            <stop stop-color="#9D1900" offset="0%"></stop>
-            <stop stop-color="#780000" offset="27.2376078%"></stop>
-            <stop stop-color="#780000" offset="92.8511714%"></stop>
-            <stop stop-color="#530000" offset="100%"></stop>
-        </linearGradient>
-    </defs>
     <g id="Symbols" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
-        <g id="tag" fill="url(#linearGradient-1)" fill-rule="nonzero">
-            <polygon points="0 0 110 0 110 145 1.46549439e-13 132"></polygon>
+        <g id="tag" fill-rule="nonzero">
+            <g id="flat-tag">
+                <polygon id="tag" fill="#700000" points="0 0 110 0 110 145 1.46549439e-13 132"></polygon>
+                <polygon id="tag" fill="#D32100" opacity="0.35249256" points="-2.13162821e-13 12 110 12 110 145 1.28785871e-13 132"></polygon>
+            </g>
         </g>
     </g>
 </svg>

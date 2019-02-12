@@ -26,8 +26,9 @@ Basic gamification: grow a red flower tall enough to reach the top of the viewbo
 - [X] allow users to choose 1) easy "red flower garden", 2) medium "random flower garden", or 3) hard "tiny white flower", along with option for observation mode
 - [X] "Sow" button that kicks off initial falling seeds.
 - [X] info, shadows, camera, play/pause, and restart UI icons with hover tips and warnings where appropriate
-- [ ] add stylized on-screen text notifications throughout game: season change announcements & new best height announcement when current record broken
-- [ ] game win announcement screen with some kind of weird cool animation
+- [X] add stylized on-screen text notifications throughout game: season change announcements & new best height announcement when current record broken
+- [ ] game lose announcement screen, with summary of achievements (difficuly level and number of generations before plants died oute)
+- [ ] game win announcement screen, with some kind of weird cool animation, summary of achievements (difficulty level and number of generations to reach 100% height with red flower.) and option to play game again or watch ambient mode.
 
 <br>
 
@@ -42,10 +43,11 @@ Improvements & Fixes
 - [ ] seeds plant firmly without swinging, even at worldspeed 1
 - [ ] change season background gradients so seasons are more distinct and changes are more dramatic
 - [ ] fix cross-browser issues (safari color value floats, etc.)
+- [ ] fix large-plant elimination issue when curser is too far from a point (there may be a built-in canvas way to detect hover over a shape...? Otherwise need to calibrate elimination radius based on largest plant width)
 
 <br>
 
-Performance
+Performance Enhancements
 
 - [ ] run sun rays less often with stronger intensity (will probably need to address plant color-change flashing)
 - [ ] render less frequently
