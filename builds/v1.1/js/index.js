@@ -710,69 +710,6 @@ function fadePlantOutAndRemove( plant ) {
   }
 }
 
-///checks for game over (whether all plants have died) displays game over overlay and try again button
-function checkForGameOver() {
-  if ( yearTime === spL + suL + faL + wiL/2 ) {
-    var allDead = true;
-    for ( var i=0; i<plants.length; i++ ) {
-      if ( plants[i].isAlive ) { allDead = false; }
-    }
-    if ( allDead ) {
-      $("#season_announcement").finish();
-      $("#game_over_div").css( "visibility", "visible" ).animate({ opacity: 1 }, 3000, "linear" );
-      endOfGameAnnouncementDisplayed = true;
-      pause();
-    }
-  }
-}
-
-///check for game win (whether a red flower reaches 100% screen height)  
-function checkForGameWin() {
-  if ( gameHasBegun && !endOfGameAnnouncementDisplayed && highestRedFlowerPct > 100) {
-    pause();
-    runGameWinFlowersAnimation();
-  }
-}
-
-///game win animation
-function runGameWinFlowersAnimation() {
-  $("#game_win_div").css({ visibility: "visible", opacity: "1"});
-  $("#game_win_gen_number").text( currentYear.toString().replace(/0/g,"O") );  // (replace is for dotten Nunito zero)
-  $("#game_win_mode").text( gameDifficulty.toUpperCase() );
-  endOfGameAnnouncementDisplayed = true;
-  var totalFlowers = 600;
-  (function flowerLoop( i ) {  // self-invoking function (for looping with timeouts, pretty cool)
-    $("#season_announcement").finish();
-    $("#year_announcement").finish();
-    var tint = Tl.rib(1,2) === 1 ? "light" : "dark"; 
-    var top = Tl.rib( 0, 100 );
-    var left = Tl.rib( 0, 100 );
-    var width = Tl.rfb( 12, 22 );
-    var rotation = Tl.rfb( 0, 60 );
-    var delay = i > 20 ? 400-Math.pow(totalFlowers-i,2)*3 : 400-i*20;  // starts slow, builds speeds, slows at end
-    delay = delay < 20 ? 20 : delay;  // sets minimum delay
-    setTimeout(function () {  // delays append and position of each new flower
-      $("#game_win_div").prepend( "<img id='f"+i+"' class='flower' src='assets/flower_"+tint+".svg'>" );
-      $("#f"+i).css({ 
-        position: "absolute",
-        top: top+"%", 
-        left: left+"%", 
-        width: width+"%", 
-        transform: "translate(-50%,-50%) rotate("+rotation+"deg)",
-      });
-      switch( i ) {
-        case 500: $("#game_win_YOU").fadeIn(100); break;
-        case 470: $("#game_win_KISSED").fadeIn(100); break;
-        case 440: $("#game_win_THE").fadeIn(100); break;
-        case 410: $("#game_win_SKY").fadeIn(100); break;
-        case 380: $("#game_win_gen_count_text").fadeIn(1500); break;
-        case 330: $("#game_win_mode_text").fadeIn(1500); break;
-        case 270: $(".button_game_win_play_again").fadeIn(3000);
-      }
-      if ( --i ) flowerLoop( i );  //  decrements i and recursively calls loop function if i > 0 (i.e., true)
-    }, delay);  // sets delay with current delay variable
-  })( totalFlowers );  // sets the loop's total iteration count as the argument of the self-invoking function
-}
 
 
 
@@ -916,6 +853,84 @@ function renderPlants() {
 }
 
 
+//// End Game Sequences ////
+
+///checks for game over (whether all plants have died) displays game over overlay and try again button
+function checkForGameOver() {
+  if ( yearTime === spL + suL + faL + wiL/2 ) {
+    var allDead = true;
+    for ( var i=0; i<plants.length; i++ ) {
+      if ( plants[i].isAlive ) { allDead = false; }
+    }
+    if ( allDead ) {
+      $("#season_announcement").finish();
+      $("#game_over_div").css( "visibility", "visible" ).animate({ opacity: 1 }, 3000, "linear" );
+      endOfGameAnnouncementDisplayed = true;
+      pause();
+    }
+  }
+}
+
+///check for game win (whether a red flower reaches 100% screen height)  
+function checkForGameWin() {
+  if ( gameHasBegun && !endOfGameAnnouncementDisplayed && highestRedFlowerPct === 100) {
+    pause();
+    runGameWinFlowersAnimation();
+  }
+}
+
+///game win animation
+function runGameWinFlowersAnimation() {
+  $("#game_win_div").css({ visibility: "visible", opacity: "1"});
+  $("#game_win_gen_number").text( currentYear.toString().replace(/0/g,"O") );  // (replace is for dotten Nunito zero)
+  $("#game_win_mode").text( gameDifficulty.toUpperCase() );
+  endOfGameAnnouncementDisplayed = true;
+  $("#hundred_pct_large_height_announcement")  // initial large 100% text burst
+    .animate({ 
+      fontSize: "+=10pt",
+      letterSpacing: "+=3pt",
+      opacity: 1,
+    }, 700, "linear" )
+    .animate({ 
+      fontSize: "+=10pt",
+      letterSpacing: "+=3pt",
+      opacity: 0,    
+    }, 700, "linear" );
+  var totalFlowers = 600;
+  (function flowerLoop( i ) {  // flower splatter (uses self-invoking function (for looping with timeouts)
+    $("#season_announcement").finish();
+    $("#year_announcement").finish();
+    var tint = Tl.rib(1,2) === 1 ? "light" : "dark"; 
+    var top = Tl.rib( 0, 100 );
+    var left = Tl.rib( 0, 100 );
+    var width = Tl.rfb( 12, 22 );
+    var rotation = Tl.rfb( 0, 60 );
+    var delay = i > 20 ? 400-Math.pow(totalFlowers-i,2)*3 : 400-i*20;  // starts slow, builds speeds, slows at end
+    delay = delay < 20 ? 20 : delay;  // sets minimum delay
+    setTimeout(function () {  // delays append and position of each new flower
+      $("#game_win_div").prepend( "<img id='f"+i+"' class='flower' src='assets/flower_"+tint+".svg'>" );
+      $("#f"+i).css({ 
+        position: "absolute",
+        top: top+"%", 
+        left: left+"%", 
+        width: width+"%", 
+        transform: "translate(-50%,-50%) rotate("+rotation+"deg)",
+      });
+      switch( i ) {  // text and buttons sequencial heavy slam in
+        case 500: $("#game_win_YOU").fadeIn(100); break;
+        case 470: $("#game_win_KISSED").fadeIn(100); break;
+        case 440: $("#game_win_THE").fadeIn(100); break;
+        case 410: $("#game_win_SKY").fadeIn(100); break;
+        case 380: $("#game_win_gen_count_text").fadeIn(1500); break;
+        case 330: $("#game_win_mode_text").fadeIn(1500); break;
+        case 270: $(".button_game_win_play_again").fadeIn(3000);
+      }
+      if ( --i ) flowerLoop( i );  //  decrements i and recursively calls loop function if i > 0 (i.e., true)
+    }, delay);  // sets delay with current delay variable
+  })( totalFlowers );  // sets the loop's total iteration count as the argument of the self-invoking function
+}
+
+
 //// Logging ////
 
 ///logs all gene average value changes since first generation (includes inactive plants, but not removed)
@@ -1009,16 +1024,14 @@ function runLogs( frequency ) {
 //for ( var i=0; i<5; i++ ) { createSeed( null, generateSmallPlantGenotype() ); }  
 //for ( var i=0; i<5; i++ ) { createSeed( null, generateMediumPlantGenotype() ); }
 //for ( var i=0; i<25; i++ ) { createSeed( null, generateLargePlantGenotype() ); }
-//for ( var i=0; i<5; i++ ) { createSeed( null, generateHugePlantGenotype() ); }
 //for ( var i=0; i<25; i++ ) { createSeed( null, generateTallPlantGenotype( 1 ) ); }
+//for ( var i=0; i<5; i++ ) { createSeed( null, generateHugePlantGenotype() ); }
+//for ( var i=0; i<5; i++ ) { createSeed( null, generateHugeRedPlantGenotype() ); }
 
 
 
 
 /////---DISPLAY---/////
-
-
-recordInitialGeneValueAverages();
 
 function display() {
   renderBackground();
@@ -1036,6 +1049,7 @@ function display() {
   if ( !gamePaused ) { window.requestAnimationFrame( display ); }
 }
 
+recordInitialGeneValueAverages();
 createSunRays();
 if ( useSunShades ) { placeSunShades(3,3); }
 display();

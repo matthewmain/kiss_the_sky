@@ -27,8 +27,8 @@ Basic gamification: grow a red flower tall enough to reach the top of the viewbo
 - [X] "Sow" button that kicks off initial falling seeds.
 - [X] info, shadows, camera, play/pause, and restart UI icons with hover tips and warnings where appropriate
 - [X] add stylized on-screen text notifications throughout game: season change announcements & new best height announcement when current record broken
-- [ ] game lose announcement screen, with summary of achievements (difficuly level and number of generations before plants died oute)
-- [ ] game win announcement screen, with some kind of weird cool animation, summary of achievements (difficulty level and number of generations to reach 100% height with red flower.) and option to play game again or watch ambient mode.
+- [X] game lose announcement screen
+- [X] game win announcement screen, with some kind of weird cool animation, summary of achievements (difficulty level and number of generations to reach 100% height with red flower.) and option to play game again or watch ambient mode.
 
 <br>
 
@@ -44,6 +44,7 @@ Improvements & Fixes
 - [ ] change season background gradients so seasons are more distinct and changes are more dramatic
 - [ ] fix cross-browser issues (safari color value floats, etc.)
 - [ ] fix large-plant elimination issue when curser is too far from a point (there may be a built-in canvas way to detect hover over a shape...? Otherwise need to calibrate elimination radius based on largest plant width)
+- [ ] add media queries to update size of game win announcement text, or possibly use javascript to update based on canvas width
 
 <br>
 

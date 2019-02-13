@@ -219,6 +219,7 @@ body {
 	top: 24.5px;
   left: 58%;
   transform: translate(-50%, -50%);
+  font-weight: 700;
   color: #D5D8C5;
 }
 
@@ -333,8 +334,6 @@ body {
 #button_try_again_hover:hover {
   opacity: 1;
 }
-
-
 
 .game_win_svg {
   position: absolute;
@@ -587,6 +586,22 @@ body {
   text-align: center;
   font-size: 10pt;
   font-weight: 700;
+  letter-spacing: 0;
+  opacity: 0;
+}
+
+#hundred_pct_large_height_announcement {
+  position: absolute;
+  top: 30%;
+  left: 50%;
+  transform: translate(-50%,-50%);
+  margin: 0;
+  width: 100%;
+  font-family: "Nunito", Avenir, sans-serif;
+  color: rgb( 130, 0, 0 );
+  text-align: center;
+  font-size: 100pt;
+  font-weight: 600;
   letter-spacing: 0;
   opacity: 0;
 }
