@@ -34,6 +34,7 @@ Basic gamification: grow a red flower tall enough to reach the top of the viewbo
 
 Improvements & Fixes
 
+- [ ] add brief announcement at game beginning instructing how to swipe to eliminate plants with left/right arrows or a simple animation of a hand swiping/tapping ( "Swipe or tap to eliminate plants you don't want." | "keep plants whose traits you want to pass on to the next generaton." )
 - [ ] resolve red-flower color ambiguity: set saturation to 100 and remove gene, adjust criteria for redness
 - [ ] fade out shadows when leaf angle falls to below about -80 degrees from horizontal (will avoid narrow shadows when leaves are vertical as well as shadows flashing off at plant death)
 - [ ] omit pod closure at plant death, and speed up opening to accomodate faster seasonal changes 
