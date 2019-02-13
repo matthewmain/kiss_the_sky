@@ -4,13 +4,15 @@
     <title>button_play_again_hover</title>
     <desc>Created with Sketch.</desc>
     <g id="[Screens]" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
-        <g id="game-win" transform="translate(-536.000000, -746.000000)">
+        <g id="game-win" transform="translate(-536.000000, -761.000000)">
             <g id="overlay_game_win" transform="translate(266.000000, 67.000000)">
-                <g id="button_play_again_hover" transform="translate(272.000000, 681.000000)">
-                    <rect id="Rectangle" stroke="#111111" stroke-width="3" fill="#A1A1A1" fill-rule="nonzero" stroke-linecap="round" stroke-linejoin="round" x="0" y="0" width="378.458052" height="78.9498586" rx="2"></rect>
-                    <text id="PLAY-AGAIN" font-family="Dosis-Medium, Dosis" font-size="37.5951708" font-weight="400" letter-spacing="6.89244752" fill="#111111">
-                        <tspan x="66.3394918" y="53">PLAY AGAIN</tspan>
-                    </text>
+                <g id="button" transform="translate(272.000000, 696.000000)">
+                    <g id="button_play_again_hover">
+                        <rect id="Rectangle" stroke="#111111" stroke-width="3" fill="#FFFFFF" fill-rule="nonzero" stroke-linecap="round" stroke-linejoin="round" x="0" y="0" width="378.458052" height="78.9498586" rx="2"></rect>
+                        <text id="PLAY-AGAIN" font-family="Dosis-Medium, Dosis" font-size="37.5951708" font-weight="400" letter-spacing="6.89244752" fill="#111111">
+                            <tspan x="66.3394918" y="53">PLAY AGAIN</tspan>
+                        </text>
+                    </g>
                 </g>
             </g>
         </g>

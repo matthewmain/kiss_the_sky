@@ -57,6 +57,7 @@ var HeightMarker = {
 
 
 
+
 /////---FUNCTIONS---/////
 
 
@@ -96,8 +97,130 @@ function placeSunShades( leftCount, rightCount ) {
 
 
 
+//// Event Functions ////
 
-/////---RENDERING---/////
+///updates mouse position coordinates as percentages
+function updateMouse(e) {
+  var canvasWidthOnScreen = parseFloat(canvasContainerDiv.style.width);
+  var canvasHeightOnScreen = parseFloat(canvasContainerDiv.style.height);
+  mouseCanvasXPct = (e.pageX-canvasPositionLeft)*100/canvasWidthOnScreen;  // mouse canvas x percent
+  mouseCanvasYPct = (e.pageY-canvasPositionTop)*100/canvasHeightOnScreen;  // mouse canvas y percent
+}
+
+///grabs handle
+function grabHandle(e) {
+  for ( var i=0; i<sunShadeHandles.length; i++ ) {
+    var h = sunShadeHandles[i];
+    var xDiffPct = pctFromXVal( h.x ) - mouseCanvasXPct;
+    var yDiffPct = pctFromYVal( h.y ) - mouseCanvasYPct;
+    var distancePct = Math.sqrt( xDiffPct*xDiffPct + yDiffPct*yDiffPct );
+    if ( distancePct <= sunShadeHandleRadiusPct ) {
+      grabbedHandle = h;
+    }
+  }
+}
+
+///moves handle
+function moveHandle(e) {
+  if ( grabbedHandle ) {
+    if ( mouseCanvasXPct < 0 ) {
+      grabbedHandle.x = 0;
+    } else if ( mouseCanvasXPct > 100 ) {
+      grabbedHandle.x = xValFromPct( 100 );
+    } else {
+      grabbedHandle.x = xValFromPct( mouseCanvasXPct );
+    }
+  }
+}
+
+///drops handle
+function dropHandle() {
+  grabbedHandle = null;
+}
+
+///activates plant elimination mode
+function startEliminatingPlants() {
+  plantsAreBeingEliminated = true;
+}
+
+///deactivates plant elimination mode
+function stopEliminatingPlants() {
+  plantsAreBeingEliminated = false;
+}
+
+///eliminates plants (kills them and knocks them over)
+function eliminatePlants( e, plant ) {
+  for ( var i=0; i<plants.length; i++ ) {
+    var p = plants[i];
+    if ( plantsAreBeingEliminated && ( p.isAlive || (!p.hasCollapsed && !p.hasBeenEliminatedByPlayer) ) ) {
+      for ( var j=0; j<p.segments.length; j++) {
+        var s = p.segments[j];
+        var xDiffPct1 = pctFromXVal( s.ptE1.cx ) - mouseCanvasXPct;
+        var yDiffPct1 = pctFromYVal( s.ptE1.cy ) - mouseCanvasYPct;
+        var distancePct1 = Math.sqrt( xDiffPct1*xDiffPct1 + yDiffPct1*yDiffPct1 );
+        var xDiffPct2 = pctFromXVal( s.ptE2.cx ) - mouseCanvasXPct;
+        var yDiffPct2 = pctFromYVal( s.ptE2.cy ) - mouseCanvasYPct;
+        var selectRadiusPct = selectRadius*100/canvas.width;
+        var distancePct2 = Math.sqrt( xDiffPct2*xDiffPct2 + yDiffPct2*yDiffPct2 );
+        if ( distancePct1 <= selectRadiusPct || distancePct2 <= selectRadiusPct ) {
+          s.ptE1.px += distancePct1 > distancePct2 ? 10 : -10;
+          p.energy = p.energy > energyStoreFactor*-1 ? energyStoreFactor*-1 : p.energy; 
+          killPlant(p);
+          for (var k=0; k<p.segments.length; k++) {
+            var s2 = p.segments[k];
+            s2.ptE1.mass = s2.ptE2.mass = 15;
+            if (!s2.isBaseSegment) {
+              removeSpan(s2.spCdP.id);  // downward (l to r) cross span to parent
+              removeSpan(s2.spCuP.id);  // upward (l to r) cross span to parent
+            }
+            removeSpan(s2.spCd.id);  // downward (l to r) cross span
+            removeSpan(s2.spCu.id);  // upward (l to r) cross span
+          }
+          p.hasBeenEliminatedByPlayer = true;
+        }
+      }
+    }
+  }
+}
+
+///pause game
+function pause() {
+  document.getElementById("icon_pause").style.visibility = "hidden";
+  document.getElementById("icon_play").style.visibility = "visible";
+  gamePaused = true;
+}
+
+///resume game
+function resume() {
+  if ( !endOfGameAnnouncementDisplayed ) {
+    document.getElementById("icon_pause").style.visibility = "visible";
+    document.getElementById("icon_play").style.visibility = "hidden";
+    document.getElementById("modal_play").style.visibility = "hidden";
+    gamePaused = false;
+    display();
+  }
+}
+
+///remove modals
+function removeModals() {
+  $(".modal_card_options_screens").css("visibility", "hidden");
+  $(".modal_options_text").css("visibility", "hidden");
+  $("#modal_card_gameplay_screen").css("visibility", "hidden");
+  $("#modal_card_gameplay_screen_inner_div").css("visibility", "hidden");
+  $(".modal_gameplay_screen_text").css("visibility", "hidden");
+  $(".icon_exit_modal").css("visibility", "hidden");
+  infoModalOpen = false;
+  if ( !infoModalOpenWhilePaused ) { resume(); }
+  infoModalOpenWhilePaused = false;
+}
+
+function omitRedFlowerFooterContent() {
+  $("#height_text, #tag_div, #tag_svg, #tag_content, #percent").css("visibility", "hidden");
+}
+
+
+
+//// Rendering Functions ////
 
 
 ///renders eliminate plant icon at cursor location
@@ -259,145 +382,21 @@ function renderSunShades() {
 
 
 
-/////---INTERACTION---/////
+/////--- EVENT LISTENERS ---/////
 
 
-//// Event Functions ////
-
-///updates mouse position coordinates as percentages
-function updateMouse(e) {
-  var canvasWidthOnScreen = parseFloat(canvasContainerDiv.style.width);
-  var canvasHeightOnScreen = parseFloat(canvasContainerDiv.style.height);
-  mouseCanvasXPct = (e.pageX-canvasPositionLeft)*100/canvasWidthOnScreen;  // mouse canvas x percent
-  mouseCanvasYPct = (e.pageY-canvasPositionTop)*100/canvasHeightOnScreen;  // mouse canvas y percent
-}
-
-///grabs handle
-function grabHandle(e) {
-  for ( var i=0; i<sunShadeHandles.length; i++ ) {
-    var h = sunShadeHandles[i];
-    var xDiffPct = pctFromXVal( h.x ) - mouseCanvasXPct;
-    var yDiffPct = pctFromYVal( h.y ) - mouseCanvasYPct;
-    var distancePct = Math.sqrt( xDiffPct*xDiffPct + yDiffPct*yDiffPct );
-    if ( distancePct <= sunShadeHandleRadiusPct ) {
-      grabbedHandle = h;
-    }
-  }
-}
-
-///moves handle
-function moveHandle(e) {
-  if ( grabbedHandle ) {
-    if ( mouseCanvasXPct < 0 ) {
-      grabbedHandle.x = 0;
-    } else if ( mouseCanvasXPct > 100 ) {
-      grabbedHandle.x = xValFromPct( 100 );
-    } else {
-      grabbedHandle.x = xValFromPct( mouseCanvasXPct );
-    }
-  }
-}
-
-///drops handle
-function dropHandle() {
-  grabbedHandle = null;
-}
-
-///activates plant elimination mode
-function startEliminatingPlants() {
-  plantsAreBeingEliminated = true;
-}
-
-///deactivates plant elimination mode
-function stopEliminatingPlants() {
-  plantsAreBeingEliminated = false;
-}
-
-///eliminates plants (kills them and knocks them over)
-function eliminatePlants( e, plant ) {
-  for ( var i=0; i<plants.length; i++ ) {
-    var p = plants[i];
-    if ( plantsAreBeingEliminated && ( p.isAlive || (!p.hasCollapsed && !p.hasBeenEliminatedByPlayer) ) ) {
-      for ( var j=0; j<p.segments.length; j++) {
-        var s = p.segments[j];
-        var xDiffPct1 = pctFromXVal( s.ptE1.cx ) - mouseCanvasXPct;
-        var yDiffPct1 = pctFromYVal( s.ptE1.cy ) - mouseCanvasYPct;
-        var distancePct1 = Math.sqrt( xDiffPct1*xDiffPct1 + yDiffPct1*yDiffPct1 );
-        var xDiffPct2 = pctFromXVal( s.ptE2.cx ) - mouseCanvasXPct;
-        var yDiffPct2 = pctFromYVal( s.ptE2.cy ) - mouseCanvasYPct;
-        var selectRadiusPct = selectRadius*100/canvas.width;
-        var distancePct2 = Math.sqrt( xDiffPct2*xDiffPct2 + yDiffPct2*yDiffPct2 );
-        if ( distancePct1 <= selectRadiusPct || distancePct2 <= selectRadiusPct ) {
-          s.ptE1.px += distancePct1 > distancePct2 ? 10 : -10;
-          p.energy = p.energy > energyStoreFactor*-1 ? energyStoreFactor*-1 : p.energy; 
-          killPlant(p);
-          for (var k=0; k<p.segments.length; k++) {
-            var s2 = p.segments[k];
-            s2.ptE1.mass = s2.ptE2.mass = 15;
-            if (!s2.isBaseSegment) {
-              removeSpan(s2.spCdP.id);  // downward (l to r) cross span to parent
-              removeSpan(s2.spCuP.id);  // upward (l to r) cross span to parent
-            }
-            removeSpan(s2.spCd.id);  // downward (l to r) cross span
-            removeSpan(s2.spCu.id);  // upward (l to r) cross span
-          }
-          p.hasBeenEliminatedByPlayer = true;
-        }
-      }
-    }
-  }
-}
-
-///pause game
-function pause() {
-  document.getElementById("icon_pause").style.visibility = "hidden";
-  document.getElementById("icon_play").style.visibility = "visible";
-  gamePaused = true;
-}
-
-///resume game
-function resume() {
-  if ( !endOfGameAnnouncementDisplayed ) {
-    document.getElementById("icon_pause").style.visibility = "visible";
-    document.getElementById("icon_play").style.visibility = "hidden";
-    document.getElementById("modal_play").style.visibility = "hidden";
-    gamePaused = false;
-    display();
-  }
-}
-
-///remove modals
-function removeModals() {
-  $(".modal_card_options_screens").css("visibility", "hidden");
-  $(".modal_options_text").css("visibility", "hidden");
-  $("#modal_card_gameplay_screen").css("visibility", "hidden");
-  $("#modal_card_gameplay_screen_inner_div").css("visibility", "hidden");
-  $(".modal_gameplay_screen_text").css("visibility", "hidden");
-  $(".icon_exit_modal").css("visibility", "hidden");
-  infoModalOpen = false;
-  if ( !infoModalOpenWhilePaused ) { resume(); }
-  infoModalOpenWhilePaused = false;
-}
-
-function omitRedFlowerFooterContent() {
-  $("#height_text, #tag_div, #tag_svg, #tag_content, #percent").css("visibility", "hidden");
-}
-
-
-//// Listeners ////
-
-//keeps UI elements scaled when window is resized (even when game is paused)
+///keeps UI elements scaled when window is resized (even when game is paused)
 $(window).resize(function() {
   updateUI();
 });
 
-//choose game mode on landing
+///choose game mode on landing
 $("#button_game_mode_hover").click(function(){
   $("#landing_page_div").hide();
   $("#overlay_game_mode_options_div").css("visibility", "visible");
 });
 
-//choose ambient mode on landing
+///choose ambient mode on landing
 $("#button_ambient_mode_hover").click(function(){
   $("#landing_page_div").hide();
   $("#overlay_ambient_mode_options_div").css("visibility", "visible");
@@ -408,7 +407,7 @@ $("#button_ambient_mode_hover").click(function(){
   $("#ambient_footer_right").css("display", "block");
 });
 
-//select beginner on game options overlay
+///select beginner on game options overlay
 $("#option_beginner").click(function(){
   $("#option_beginner").css("opacity", "1");
   $("#option_intermediate").css("opacity", "0");
@@ -416,7 +415,7 @@ $("#option_beginner").click(function(){
   gameDifficulty = "beginner";
 });
 
-//select intermediate on game options overlay
+///select intermediate on game options overlay
 $("#option_intermediate").click(function(){
   $("#option_beginner").css("opacity", "0");
   $("#option_intermediate").css("opacity", "1");
@@ -424,7 +423,7 @@ $("#option_intermediate").click(function(){
   gameDifficulty = "intermediate";
 });
 
-//select expert on game options overlay
+///select expert on game options overlay
 $("#option_expert").click(function(){
   $("#option_beginner").css("opacity", "0");
   $("#option_intermediate").css("opacity", "0");
@@ -432,7 +431,7 @@ $("#option_expert").click(function(){
   gameDifficulty = "expert";
 });
 
-//select first option on ambient options overlay
+///select first option on ambient options overlay
 $("#option_first").click(function(){
   $("#option_first").css("opacity", "1");
   $("#option_second").css("opacity", "0");
@@ -440,7 +439,7 @@ $("#option_first").click(function(){
   gameDifficulty = "beginner";
 });
 
-//select second option on ambient options overlay
+///select second option on ambient options overlay
 $("#option_second").click(function(){
   $("#option_first").css("opacity", "0");
   $("#option_second").css("opacity", "1");
@@ -448,7 +447,7 @@ $("#option_second").click(function(){
   gameDifficulty = "intermediate";
 });
 
-//select third option on ambient options overlay
+///select third option on ambient options overlay
 $("#option_third").click(function(){
   $("#option_first").css("opacity", "0");
   $("#option_second").css("opacity", "0");
@@ -456,33 +455,28 @@ $("#option_third").click(function(){
   gameDifficulty = "expert";
 });
 
-//get game info on game options screen
+///get game info on game options screen
 $("#helper_game_info").click(function(){
   $("#modal_card_game_screen").css("visibility", "visible");
   $("#modal_game_text").css("visibility", "visible");
   $("#icon_exit_modal_game_info").css("visibility", "visible");
 });
 
-//get ambient mode info on ambient options screen
+///get ambient mode info on ambient options screen
 $("#helper_ambient_info").click(function(){
   $("#modal_card_ambient_screen").css("visibility", "visible");
   $("#modal_ambient_text").css("visibility", "visible");
   $("#icon_exit_modal_ambient_info").css("visibility", "visible");
 });
 
-//exit modal
+///exit modal
 $(".icon_exit_modal").click(function(){
   removeModals();
 });
 
-//on-screen play button (displayed when paused)
+///on-screen play button (displayed when paused)
 $("#modal_play").click(function(){
   resume();
-});
-
-// try again button (displayed at game over)
-$("#button_try_again_hover").click(function(){
-  location.reload();
 });
 
 ///activates game when "sow" button is clicked
@@ -589,6 +583,11 @@ document.addEventListener("mouseup", function() {  dropHandle(); stopEliminating
 document.addEventListener("touchstart", function(e) { grabHandle(e); startEliminatingPlants(); });
 document.addEventListener("touchmove", function(e) {  moveHandle(e); eliminatePlants(e); });
 document.addEventListener("touchup", function() {  dropHandle(); stopEliminatingPlants(); });
+
+///game over try again button & game win play again buttons
+$("#button_try_again_hover, .button_game_win_play_again").click(function(){
+  location.reload();
+});
 
 
 

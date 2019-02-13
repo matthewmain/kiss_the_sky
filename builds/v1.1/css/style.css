@@ -336,69 +336,84 @@ body {
 
 
 
+.game_win_svg {
+  position: absolute;
+  display: none;
+}
 
 #game_win_YOU {
-  position: absolute;
-  top: 2%;
+  top: 1%;
   left: 50%;
   transform: translate(-50%);
   width: 20%;
 }
 
 #game_win_KISSED {
-  position: absolute;
-  top: 15%;
+  top: 14%;
   left: 50%;
   transform: translate(-50%); 
   width: 90%; 
 }
 
 #game_win_THE {  
-  position: absolute;
-  top: 43.5%;
+  top: 42.5%;
   left: 5%;
   height: 20%;
 }
 
 #game_win_SKY {
-  position: absolute;
-  top: 43.5%;
+  top: 42.5%;
   right: 5%;
   height: 20%;
 }
 
-#game_win_gen_count_text {
+.game_win_text {
   position: absolute;
-  top: 57.5%;
   color: #ffffff;
-  font-size: 30pt;
+  font-size: 18pt;
   font-weight: 600;
-  letter-spacing: 3px;
-  text-shadow: 0 0 4px #000000, 0 0 1px #000000;
+  letter-spacing: 1.4px;
+  text-shadow: 0 0 3px #000000, 0 0 2px #000000;
   width: 100%;
   text-align: center;
+  display: none;
+}
+
+#game_win_gen_count_text {
+  top: 60.5%;
+}
+
+#game_win_mode_text {
+  top: 68%;
 }
 
 #game_win_gen_number {
-  font-size: 36pt;
+  font-size: 24pt;
+}
+
+#game_win_mode {
+  font-size: 20pt;
 }
 
 #button_play_again {
   position: absolute;
-  top: 88%;
+  top: 89.5%;
   left: 50%;
   transform: translate(-50%,-50%);
   width: 51.4%;
+  display: none;
 }
 
 #button_play_again_hover {
   position: absolute;
-  top: 88%;
+  top: 89.5%;
   left: 50%;
   transform: translate(-50%,-50%);
   width: 51.4%;
   opacity: 0;
   cursor: pointer;
+  display: none;
+  opacity: 0;
 }
 #button_play_again_hover:hover {
   opacity: 1;

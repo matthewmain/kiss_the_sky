@@ -726,19 +726,9 @@ function checkForGameOver() {
   }
 }
 
-
-
-
-
-
-// XXXXX {{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}
-
-var flowersAnimationHasRun = false;
-var totalFlowers = 600;
-
 ///check for game win (whether a red flower reaches 100% screen height)  
 function checkForGameWin() {
-  if ( gameHasBegun && !flowersAnimationHasRun ) {
+  if ( gameHasBegun && !endOfGameAnnouncementDisplayed && highestRedFlowerPct > 100) {
     pause();
     runGameWinFlowersAnimation();
   }
@@ -747,7 +737,11 @@ function checkForGameWin() {
 ///game win animation
 function runGameWinFlowersAnimation() {
   $("#game_win_div").css({ visibility: "visible", opacity: "1"});
-  (function flowerLoop( i ) {  // self-invoking function for looping (pretty cool)
+  $("#game_win_gen_number").text( currentYear.toString().replace(/0/g,"O") );  // (replace is for dotten Nunito zero)
+  $("#game_win_mode").text( gameDifficulty.toUpperCase() );
+  endOfGameAnnouncementDisplayed = true;
+  var totalFlowers = 600;
+  (function flowerLoop( i ) {  // self-invoking function (for looping with timeouts, pretty cool)
     $("#season_announcement").finish();
     $("#year_announcement").finish();
     var tint = Tl.rib(1,2) === 1 ? "light" : "dark"; 
@@ -763,18 +757,22 @@ function runGameWinFlowersAnimation() {
         position: "absolute",
         top: top+"%", 
         left: left+"%", 
-        width: width+"%",
+        width: width+"%", 
         transform: "translate(-50%,-50%) rotate("+rotation+"deg)",
       });
+      switch( i ) {
+        case 500: $("#game_win_YOU").fadeIn(100); break;
+        case 470: $("#game_win_KISSED").fadeIn(100); break;
+        case 440: $("#game_win_THE").fadeIn(100); break;
+        case 410: $("#game_win_SKY").fadeIn(100); break;
+        case 380: $("#game_win_gen_count_text").fadeIn(1500); break;
+        case 330: $("#game_win_mode_text").fadeIn(1500); break;
+        case 270: $(".button_game_win_play_again").fadeIn(3000);
+      }
       if ( --i ) flowerLoop( i );  //  decrements i and recursively calls loop function if i > 0 (i.e., true)
     }, delay);  // sets delay with current delay variable
   })( totalFlowers );  // sets the loop's total iteration count as the argument of the self-invoking function
-  flowersAnimationHasRun = true;
 }
-
-
-
-
 
 
 

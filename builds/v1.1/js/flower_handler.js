@@ -421,9 +421,10 @@ function trackMaxFlowerHeights( flower ) {
   if ( f.bloomRatio === 1 ) {
     var heightPct = (canvas.height-f.ptPtM.cy)*100/canvas.height ;
     if ( heightPct > highestFlowerPct ) { highestFlowerPct = heightPct; }
-    if ( f.isRed && heightPct > highestRedFlowerPct ) { 
-      highestRedFlowerPct = heightPct; 
-      HeightMarker.chfx = f.ptPtM.cx;  // flower's top petal tip x value
+    if ( highestFlowerPct > 100 ) { highestFlowerPct = 100; }  // caps highest percentage at 100%
+    if ( f.isRed && highestFlowerPct > highestRedFlowerPct ) { 
+      highestRedFlowerPct = highestFlowerPct; 
+      HeightMarker.chfx = f.ptPtM.cx;  // updates flower's top petal tip x value
     }
   }
 }
