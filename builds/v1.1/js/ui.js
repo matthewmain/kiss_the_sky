@@ -140,43 +140,45 @@ function dropHandle() {
 
 ///activates plant elimination mode
 function startEliminatingPlants() {
-  plantsAreBeingEliminated = true;
+  if ( !ambientMode ) plantsAreBeingEliminated = true;
 }
 
 ///deactivates plant elimination mode
 function stopEliminatingPlants() {
-  plantsAreBeingEliminated = false;
+  if ( !ambientMode ) plantsAreBeingEliminated = false;
 }
 
 ///eliminates plants (kills them and knocks them over)
 function eliminatePlants( e, plant ) {
-  for ( var i=0; i<plants.length; i++ ) {
-    var p = plants[i];
-    if ( plantsAreBeingEliminated && ( p.isAlive || (!p.hasCollapsed && !p.hasBeenEliminatedByPlayer) ) ) {
-      for ( var j=0; j<p.segments.length; j++) {
-        var s = p.segments[j];
-        var xDiffPct1 = pctFromXVal( s.ptE1.cx ) - mouseCanvasXPct;
-        var yDiffPct1 = pctFromYVal( s.ptE1.cy ) - mouseCanvasYPct;
-        var distancePct1 = Math.sqrt( xDiffPct1*xDiffPct1 + yDiffPct1*yDiffPct1 );
-        var xDiffPct2 = pctFromXVal( s.ptE2.cx ) - mouseCanvasXPct;
-        var yDiffPct2 = pctFromYVal( s.ptE2.cy ) - mouseCanvasYPct;
-        var selectRadiusPct = selectRadius*100/canvas.width;
-        var distancePct2 = Math.sqrt( xDiffPct2*xDiffPct2 + yDiffPct2*yDiffPct2 );
-        if ( distancePct1 <= selectRadiusPct || distancePct2 <= selectRadiusPct ) {
-          s.ptE1.px += distancePct1 > distancePct2 ? 10 : -10;
-          p.energy = p.energy > energyStoreFactor*-1 ? energyStoreFactor*-1 : p.energy; 
-          killPlant(p);
-          for (var k=0; k<p.segments.length; k++) {
-            var s2 = p.segments[k];
-            s2.ptE1.mass = s2.ptE2.mass = 15;
-            if (!s2.isBaseSegment) {
-              removeSpan(s2.spCdP.id);  // downward (l to r) cross span to parent
-              removeSpan(s2.spCuP.id);  // upward (l to r) cross span to parent
+  if ( !ambientMode ) {
+    for ( var i=0; i<plants.length; i++ ) {
+      var p = plants[i];
+      if ( plantsAreBeingEliminated && ( p.isAlive || (!p.hasCollapsed && !p.hasBeenEliminatedByPlayer) ) ) {
+        for ( var j=0; j<p.segments.length; j++) {
+          var s = p.segments[j];
+          var xDiffPct1 = pctFromXVal( s.ptE1.cx ) - mouseCanvasXPct;
+          var yDiffPct1 = pctFromYVal( s.ptE1.cy ) - mouseCanvasYPct;
+          var distancePct1 = Math.sqrt( xDiffPct1*xDiffPct1 + yDiffPct1*yDiffPct1 );
+          var xDiffPct2 = pctFromXVal( s.ptE2.cx ) - mouseCanvasXPct;
+          var yDiffPct2 = pctFromYVal( s.ptE2.cy ) - mouseCanvasYPct;
+          var selectRadiusPct = selectRadius*100/canvas.width;
+          var distancePct2 = Math.sqrt( xDiffPct2*xDiffPct2 + yDiffPct2*yDiffPct2 );
+          if ( distancePct1 <= selectRadiusPct || distancePct2 <= selectRadiusPct ) {
+            s.ptE1.px += distancePct1 > distancePct2 ? 10 : -10;
+            p.energy = p.energy > energyStoreFactor*-1 ? energyStoreFactor*-1 : p.energy; 
+            killPlant(p);
+            for (var k=0; k<p.segments.length; k++) {
+              var s2 = p.segments[k];
+              s2.ptE1.mass = s2.ptE2.mass = 15;
+              if (!s2.isBaseSegment) {
+                removeSpan(s2.spCdP.id);  // downward (l to r) cross span to parent
+                removeSpan(s2.spCuP.id);  // upward (l to r) cross span to parent
+              }
+              removeSpan(s2.spCd.id);  // downward (l to r) cross span
+              removeSpan(s2.spCu.id);  // upward (l to r) cross span
             }
-            removeSpan(s2.spCd.id);  // downward (l to r) cross span
-            removeSpan(s2.spCu.id);  // upward (l to r) cross span
+            p.hasBeenEliminatedByPlayer = true;
           }
-          p.hasBeenEliminatedByPlayer = true;
         }
       }
     }
