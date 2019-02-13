@@ -121,8 +121,8 @@ function PollinationAnimation( pollinatorFlower, pollinatedFlower ) {
   this.pollenPadGlowHasBegun = false;
   this.pollenPadGlowComplete = false;
   //burst lines (pollen lines that burst randomly from flower 1)
-  for ( var i=0; i<20; i++) {  // creates a burst line each iteration
-    var totalDistance = Tl.rfb( canvas.width*0.03, canvas.width*0.1 );  // total distance burst line will travel
+  for ( var i=0; i<5/*20*/; i++) {  // creates a burst line each iteration
+    var totalDistance = Tl.rfb( canvas.width*0.2/*0.03*/, canvas.width*0.1 );  // total distance burst line will travel
     var xVal = Tl.rfb( 0, totalDistance );  // base x value (random)
     var xDist = Tl.rib(1,2) == 1 ? xVal : -xVal;  // x distance burst line will travel 
     var yVal = Math.sqrt( totalDistance*totalDistance - xDist*xDist );  // base y value (based on x total distance)
@@ -142,7 +142,7 @@ function PollinationAnimation( pollinatorFlower, pollinatedFlower ) {
     });
   }
   //pollination lines (pollen lines that travel from flower 1 to flower 2)
-  for ( var k=0; k<3; k++) {  // creates a pollination line each iteration
+  for ( var k=0; k<1/*3*/; k++) {  // creates a pollination line each iteration
     var plxa = [];  // pollination line x positions array 
     var plya = [];  // pollination line y positions array
     for ( var l=0; l<3; l++ ) {  // populates pollination line x & y positions arrays
@@ -421,9 +421,10 @@ function trackMaxFlowerHeights( flower ) {
   if ( f.bloomRatio === 1 ) {
     var heightPct = (canvas.height-f.ptPtM.cy)*100/canvas.height ;
     if ( heightPct > highestFlowerPct ) { highestFlowerPct = heightPct; }
-    if ( f.isRed && heightPct > highestRedFlowerPct ) { 
-      highestRedFlowerPct = heightPct; 
-      HeightMarker.chfx = f.ptPtM.cx;  // flower's top petal tip x value
+    if ( highestFlowerPct > 100 ) { highestFlowerPct = 100; }  // caps highest percentage at 100%
+    if ( f.isRed && highestFlowerPct > highestRedFlowerPct ) { 
+      highestRedFlowerPct = highestFlowerPct; 
+      HeightMarker.chfx = f.ptPtM.cx;  // updates flower's top petal tip x value
     }
   }
 }
@@ -697,6 +698,103 @@ function renderPollinationAnimations() {
     if ( animationComplete ) { idsForRemoval.push( pa.id ); }  // removes animation instance after complete
   }
   for ( var j=0; j<idsForRemoval.length; j++) { removePollinationAnimation( idsForRemoval[j] ); }
+}
+
+///renders new best height announcements
+function renderHeightAnnouncement() {
+  var fsi = 2.5;  // font size max increase
+  var td = 0.5;  // top decrease (per animation segment)
+  var ha = -3;  // height adjustment
+  var dur = 300;  // duration (of each animation segment)
+  var c = "rgba( 130, 0, 0, 1 )";  // color (default to dark red)
+  if ( highestRedFlowerPct >= 80) {
+    td = -0.5; 
+    ha = 15;
+    c = "rgba(17, 17, 17, 1)";
+  }
+  $("#height_announcement").finish(); // clears the previous height announcement animation if it hasn't completed yet
+  $("#height_announcement")
+    .text( Math.floor( highestRedFlowerPct ) + "%" )
+    .css({  
+      top: 100-highestRedFlowerPct+ha + "%",
+      left: pctFromXVal( HeightMarker.chfx ) + "%",
+      opacity: 1,
+      color: c,
+    })
+    .animate({ 
+      fontSize: "+="+fsi+"pt",
+      top: "-="+td+"%",
+      opacity: 1,
+    }, dur, "linear")
+    .animate({ 
+      fontSize: "-="+fsi+"pt",
+      top: "-="+td*2+"%",
+      opacity: 0,    
+    }, dur*2, "easeOutQuart", function() {  // (uses easing plugin)
+      //callback resets original values
+      $("#height_announcement").css({
+        fontSize: "10pt",
+      }); 
+    }
+  );
+}
+
+///renders markers that track the highest red flower height so far
+function renderHeightMarker() {
+  var hrfy = canvas.height - yValFromPct( highestRedFlowerPct );  // highest red flower y value currently
+  var chmp = 100-pctFromYVal(HeightMarker.y);  // current height marker percentage
+  if ( Math.floor( highestRedFlowerPct ) > Math.floor(chmp) ) {   // initializes animations if new highest red flower
+    HeightMarker.y = hrfy;  // y value
+    HeightMarker.baa = true;  // bounce animation active
+    HeightMarker.bat = 0;  // bounce animation time elapsed
+    HeightMarker.laa = true;  // line animation active
+    HeightMarker.lat = 0;  // line animation time elapsed
+    renderHeightAnnouncement();
+  }
+  //new highest height marker bounce animation (size expansion & contraction)
+  if ( HeightMarker.baa ) {  
+    HeightMarker.bat++;
+    var a = -0.12;  // corresponds to animation duration ( higher value is longer duration; 0 is infinite)
+    var b = 2;  // extent of expansion ( higher value is greater expansion )
+    var x = HeightMarker.bat; 
+    var y = a*Math.pow(x,2) + b*x;  // current marker expansion extent (quadratic formula; y = ax^2 + bx + c)
+    HeightMarker.w = canvas.width*0.025 + y;
+    if ( y <= 0 ) { HeightMarker.baa = false; HeightMarker.bat = 0; }
+  }
+  //new highest height line animation
+  if ( HeightMarker.laa ) {  
+    HeightMarker.lat++;
+    var lad = 40;  // line animation duration
+    var o = 1 - HeightMarker.lat/lad;  // opacity
+    ctx.beginPath();
+    ctx.lineWidth = 2;
+    var lGrad = ctx.createLinearGradient( HeightMarker.chfx-canvas.width, HeightMarker.y, HeightMarker.chfx+canvas.width, HeightMarker.y );
+    lGrad.addColorStop("0", "rgba( 161, 0, 0, 0 )");
+    lGrad.addColorStop("0.4", "rgba( 161, 0, 0, " + 0.3*o + ")");
+    lGrad.addColorStop("0.5", "rgba( 161, 0, 0, " + 1*o + ")");
+    lGrad.addColorStop("0.6", "rgba( 161, 0, 0, " +0.3*o + ")");
+    lGrad.addColorStop("1", "rgba( 161, 0, 0, 0 )");
+    ctx.strokeStyle = lGrad;
+    ctx.moveTo( HeightMarker.chfx-canvas.width, HeightMarker.y );
+    ctx.lineTo( HeightMarker.chfx+canvas.width, HeightMarker.y );
+    ctx.stroke();
+    if ( HeightMarker.lat > lad ) { HeightMarker.laa = false; HeightMarker.lat = 0; }
+  }
+  //draws marker
+  if ( highestRedFlowerPct > 0 ) {  
+    ctx.beginPath();  // top triangle
+    ctx.fillStyle = "#D32100";
+    ctx.moveTo( canvas.width, HeightMarker.y );  
+    ctx.lineTo( canvas.width, HeightMarker.y - HeightMarker.h/2 ); 
+    ctx.lineTo( canvas.width-HeightMarker.w, HeightMarker.y ); 
+    ctx.fill();  
+    ctx.beginPath();  // bottom triangle
+    ctx.fillStyle = "#A10000";
+    ctx.moveTo( canvas.width, HeightMarker.y );  
+    ctx.lineTo( canvas.width, HeightMarker.y + HeightMarker.h/2 ); 
+    ctx.lineTo( canvas.width-HeightMarker.w, HeightMarker.y ); 
+    ctx.fill();
+  }
 }
 
 ///renders pods

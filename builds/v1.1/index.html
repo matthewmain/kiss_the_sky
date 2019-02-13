@@ -3,7 +3,7 @@
   <meta charset="UTF-8">
   <link rel="stylesheet" href="css/style.css">
   <link href="https://fonts.googleapis.com/css?family=Megrim" rel="stylesheet">
-  <link href="https://fonts.googleapis.com/css?family=Dosis:200,300,400" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css?family=Dosis:200,300,400,500,600,700" rel="stylesheet">
   <link href="https://fonts.googleapis.com/css?family=Nunito:400,600,700,800" rel="stylesheet">
 </head>
 
@@ -77,6 +77,8 @@
   	<p id="year_announcement">YEAR 1</p>
   	<p id="season_announcement">SPRING</p>
   	<p id="height_announcement">0%</p>
+  	<p id="hundred_pct_large_height_announcement">100%</p>
+
 
 		<!-- modals -->
 
@@ -97,7 +99,7 @@
   	</div>
 
 
-	  <!-- overlays -->
+	  <!-- option screen overlays -->
 
 	  <div id="overlay_game_mode_options_div" class="overlay_div">
 		  <img id="overlay_game_mode_options_bg" class="overlay_bg" src="assets/overlay_game_mode_options_bg.svg">
@@ -123,6 +125,24 @@
 			<img id="icon_exit_modal_ambient_info" class="icon_exit_modal" src="assets/icon_exit_modal.svg">
 		</div>
 
+
+		<!-- end-of-game overlays -->
+
+		<div id="game_over_div" class="end_of_game_div">
+			<img id="overlay_game_over" src="assets/overlay_game_over.svg">
+			<img id="button_try_again_hover" src="assets/button_try_again_hover.svg">
+		</div>
+
+		<div id="game_win_div" class="end_of_game_div">
+			<img id="game_win_YOU" class="game_win_svg" src="assets/overlay_game_win_YOU.svg">
+			<img id="game_win_KISSED" class="game_win_svg" src="assets/overlay_game_win_KISSED.svg">
+			<img id="game_win_THE" class="game_win_svg" src="assets/overlay_game_win_THE.svg">
+			<img id="game_win_SKY" class="game_win_svg" src="assets/overlay_game_win_SKY.svg">
+			<p id="game_win_gen_count_text" class="game_win_text">AFTER <span id="game_win_gen_number"></span> GENERATIONS</p>
+			<p id="game_win_mode_text" class="game_win_text">IN <span id="game_win_mode"></span> MODE</p>
+			<img id="button_play_again" class="button_game_win_play_again" src="assets/button_play_again.svg">
+			<img id="button_play_again_hover" class="button_game_win_play_again" src="assets/button_play_again_hover.svg">
+		</div>
 
 	</div>
 

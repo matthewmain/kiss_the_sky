@@ -24,6 +24,7 @@ var gameDifficulty = "beginner";
 var ambientMode = false;
 var infoModalOpen = false;
 var infoModalOpenWhilePaused = false;
+var endOfGameAnnouncementDisplayed = false;
 
 
 
@@ -53,6 +54,7 @@ var HeightMarker = {
   laa: false,  // line animation active
   lat: 0,  // line animation time
 };
+
 
 
 
@@ -93,173 +95,6 @@ function placeSunShades( leftCount, rightCount ) {
   for ( var j=0; j<rightCount; j++ ) { createSunShade( 100, 100 ); }
 }
 
-
-
-
-/////---RENDERING---/////
-
-
-///renders eliminate plant icon at cursor location
-function displayEliminatePlantIconWithCursor(e) {
-  var displayIcon = false;
-  //canvas.style.cursor = "default";
-  for ( var i=0; i<plants.length; i++ ) {
-    var p = plants[i];
-    if ( p.isAlive || (!p.hasCollapsed && !p.hasBeenEliminatedByPlayer) ) {
-      for ( var j=0; j<p.segments.length; j++) {
-        var s = p.segments[j];
-        var xDiffPct1 = pctFromXVal( s.ptE1.cx ) - mouseCanvasXPct;
-        var yDiffPct1 = pctFromYVal( s.ptE1.cy ) - mouseCanvasYPct;
-        var distancePct1 = Math.sqrt( xDiffPct1*xDiffPct1 + yDiffPct1*yDiffPct1 );
-        var xDiffPct2 = pctFromXVal( s.ptE2.cx ) - mouseCanvasXPct;
-        var yDiffPct2 = pctFromYVal( s.ptE2.cy ) - mouseCanvasYPct;
-        var selectRadiusPct = selectRadius*100/canvas.width;
-        var distancePct2 = Math.sqrt( xDiffPct2*xDiffPct2 + yDiffPct2*yDiffPct2 );
-        if ( distancePct1 <= selectRadiusPct*2 || distancePct2 <= selectRadiusPct*2 ) {
-          displayIcon = true;
-          //canvas.style.cursor = "none";
-        }
-      }
-    }
-  }
-  if ( displayIcon ) {
-    ctx.fillStyle = "rgba(232,73,0,0.5)";
-    ctx.strokeStyle = "rgba(232,73,0,1)";
-    //circle
-    ctx.beginPath();
-    ctx.lineWidth = 1;
-    ctx.arc( xValFromPct(mouseCanvasXPct), yValFromPct(mouseCanvasYPct-0.5), selectRadius*1.3, 0, 2*Math.PI );
-    ctx.fill();
-    ctx.stroke();
-    //bar
-    ctx.beginPath();
-    ctx.lineWidth = 6;
-    ctx.lineCap = "butt";
-    ctx.moveTo( xValFromPct(mouseCanvasXPct-1.1), yValFromPct(mouseCanvasYPct-0.5) );
-    ctx.lineTo( xValFromPct(mouseCanvasXPct+1.1), yValFromPct(mouseCanvasYPct-0.5) );
-    ctx.fill();
-    ctx.stroke();
-  }
-}
-///renders markers that track the highest red flower height so far
-function renderHeightMarker() {
-  var hrfy = canvas.height - yValFromPct( highestRedFlowerPct );  // highest red flower y value currently
-  var chmp = 100-pctFromYVal(HeightMarker.y);  // current height marker percentage
-  if ( Math.floor( highestRedFlowerPct ) > Math.floor(chmp) ) {   // initializes animations if new highest red flower
-    HeightMarker.y = hrfy;  // y value
-    HeightMarker.baa = true;  // bounce animation active
-    HeightMarker.bat = 0;  // bounce animation time elapsed
-    HeightMarker.laa = true;  // line animation active
-    HeightMarker.lat = 0;  // line animation time elapsed
-    renderHeightAnnouncement();
-  }
-  //new highest height marker bounce animation (size expansion & contraction)
-  if ( HeightMarker.baa ) {  
-    HeightMarker.bat++;
-    var a = -0.12;  // corresponds to animation duration ( higher value is longer duration; 0 is infinite)
-    var b = 2;  // extent of expansion ( higher value is greater expansion )
-    var x = HeightMarker.bat; 
-    var y = a*Math.pow(x,2) + b*x;  // current marker expansion extent (quadratic formula; y = ax^2 + bx + c)
-    HeightMarker.w = canvas.width*0.025 + y;
-    if ( y <= 0 ) { HeightMarker.baa = false; HeightMarker.bat = 0; }
-  }
-  //new highest height line animation
-  if ( HeightMarker.laa ) {  
-    HeightMarker.lat++;
-    var lad = 40;  // line animation duration
-    var o = 1 - HeightMarker.lat/lad;  // opacity
-    ctx.beginPath();
-    ctx.lineWidth = 2;
-    var lGrad = ctx.createLinearGradient( HeightMarker.chfx-canvas.width, HeightMarker.y, HeightMarker.chfx+canvas.width, HeightMarker.y );
-    lGrad.addColorStop("0", "rgba( 161, 0, 0, 0 )");
-    lGrad.addColorStop("0.4", "rgba( 161, 0, 0, " + 0.3*o + ")");
-    lGrad.addColorStop("0.5", "rgba( 161, 0, 0, " + 1*o + ")");
-    lGrad.addColorStop("0.6", "rgba( 161, 0, 0, " +0.3*o + ")");
-    lGrad.addColorStop("1", "rgba( 161, 0, 0, 0 )");
-    ctx.strokeStyle = lGrad;
-    ctx.moveTo( HeightMarker.chfx-canvas.width, HeightMarker.y );
-    ctx.lineTo( HeightMarker.chfx+canvas.width, HeightMarker.y );
-    ctx.stroke();
-    if ( HeightMarker.lat > lad ) { HeightMarker.laa = false; HeightMarker.lat = 0; }
-  }
-  //draws marker
-  if ( highestRedFlowerPct > 0 ) {  
-    ctx.beginPath();  // top triangle
-    ctx.fillStyle = "#D32100";
-    ctx.moveTo( canvas.width, HeightMarker.y );  
-    ctx.lineTo( canvas.width, HeightMarker.y - HeightMarker.h/2 ); 
-    ctx.lineTo( canvas.width-HeightMarker.w, HeightMarker.y ); 
-    ctx.fill();  
-    ctx.beginPath();  // bottom triangle
-    ctx.fillStyle = "#A10000";
-    ctx.moveTo( canvas.width, HeightMarker.y );  
-    ctx.lineTo( canvas.width, HeightMarker.y + HeightMarker.h/2 ); 
-    ctx.lineTo( canvas.width-HeightMarker.w, HeightMarker.y ); 
-    ctx.fill();
-  }
-}
-
-///renders sun shades
-function renderSunShades() {
-  var y = sunShadeY;  // sun shade y value
-  var r = xValFromPct( sunShadeHandleRadiusPct );  // handle radius
-  var c = "#111111";  // color
-  for ( var i=0; i<sunShades.length; i++ ) {
-    var s = sunShades[i];
-    //shadow
-    if ( viewShadows ) {
-      ctx.fillStyle = "rgba( 0, 0, 0, 0.333 )";
-      ctx.beginPath();
-      ctx.moveTo( s.h1.x, y );
-      ctx.lineTo( s.h2.x, y ); 
-      ctx.lineTo( s.h2.x, yValFromPct(100) );
-      ctx.lineTo( s.h1.x, yValFromPct(100) );
-      ctx.fill();  
-    }
-    //line
-    ctx.beginPath();
-    ctx.lineWidth = xValFromPct( sunShadeHandleRadiusPct*0.75 );
-    ctx.strokeStyle = c;
-    ctx.moveTo(s.h1.x,y);
-    ctx.lineTo(s.h2.x,y);
-    ctx.stroke();
-    //handles
-    for ( var j=1; j<=2; j++) {
-      var hx = s["h"+j].x;
-      if ( hx === 0 || hx === canvas.width ) {
-        //tab (outer circle)
-        ctx.beginPath();
-        ctx.fillStyle = c;
-        ctx.arc( hx, y, r*1.1, 0, 2*Math.PI );
-        ctx.fill();
-        ctx.beginPath();
-        //arrow (diamond)
-        ctx.fillStyle = "rgba( 213, 215, 197, 0.5 )";
-        ctx.moveTo( hx, y-r*0.5 );
-        ctx.lineTo( hx+r*0.7, y );
-        ctx.lineTo( hx, y+r*0.5 );
-        ctx.lineTo( hx-r*0.7, y );
-        ctx.fill();
-      } else {
-        //outer circle
-        ctx.beginPath();
-        ctx.fillStyle = c;
-        ctx.arc( hx, y, r, 0, 2*Math.PI );
-        ctx.fill();
-        ctx.beginPath();
-        //inner circle
-        ctx.fillStyle = "rgba( 213, 215, 197, 0.15 )";
-        ctx.arc( hx, y, r*0.666, 0, 2*Math.PI );
-        ctx.fill();
-      }
-    }
-  }
-}
-
-
-
-
-/////---INTERACTION---/////
 
 
 //// Event Functions ////
@@ -357,11 +192,13 @@ function pause() {
 
 ///resume game
 function resume() {
-  document.getElementById("icon_pause").style.visibility = "visible";
-  document.getElementById("icon_play").style.visibility = "hidden";
-  document.getElementById("modal_play").style.visibility = "hidden";
-  gamePaused = false;
-  display();
+  if ( !endOfGameAnnouncementDisplayed ) {
+    document.getElementById("icon_pause").style.visibility = "visible";
+    document.getElementById("icon_play").style.visibility = "hidden";
+    document.getElementById("modal_play").style.visibility = "hidden";
+    gamePaused = false;
+    display();
+  }
 }
 
 ///remove modals
@@ -382,20 +219,127 @@ function omitRedFlowerFooterContent() {
 }
 
 
-//// Listeners ////
 
-//keeps UI elements scaled when window is resized (even when game is paused)
+//// Rendering Functions ////
+
+
+///renders eliminate plant icon at cursor location
+function displayEliminatePlantIconWithCursor(e) {
+  var displayIcon = false;
+  //canvas.style.cursor = "default";
+  for ( var i=0; i<plants.length; i++ ) {
+    var p = plants[i];
+    if ( p.isAlive || (!p.hasCollapsed && !p.hasBeenEliminatedByPlayer) ) {
+      for ( var j=0; j<p.segments.length; j++) {
+        var s = p.segments[j];
+        var xDiffPct1 = pctFromXVal( s.ptE1.cx ) - mouseCanvasXPct;
+        var yDiffPct1 = pctFromYVal( s.ptE1.cy ) - mouseCanvasYPct;
+        var distancePct1 = Math.sqrt( xDiffPct1*xDiffPct1 + yDiffPct1*yDiffPct1 );
+        var xDiffPct2 = pctFromXVal( s.ptE2.cx ) - mouseCanvasXPct;
+        var yDiffPct2 = pctFromYVal( s.ptE2.cy ) - mouseCanvasYPct;
+        var selectRadiusPct = selectRadius*100/canvas.width;
+        var distancePct2 = Math.sqrt( xDiffPct2*xDiffPct2 + yDiffPct2*yDiffPct2 );
+        if ( distancePct1 <= selectRadiusPct*2 || distancePct2 <= selectRadiusPct*2 ) {
+          displayIcon = true;
+        }
+      }
+    }
+  }
+  if ( displayIcon ) {
+    ctx.fillStyle = "rgba(232,73,0,0.5)";
+    ctx.strokeStyle = "rgba(232,73,0,1)";
+    //circle
+    ctx.beginPath();
+    ctx.lineWidth = 1;
+    ctx.arc( xValFromPct(mouseCanvasXPct), yValFromPct(mouseCanvasYPct-0.5), selectRadius*1.3, 0, 2*Math.PI );
+    ctx.fill();
+    ctx.stroke();
+    //bar
+    ctx.beginPath();
+    ctx.lineWidth = 6;
+    ctx.lineCap = "butt";
+    ctx.moveTo( xValFromPct(mouseCanvasXPct-1.1), yValFromPct(mouseCanvasYPct-0.5) );
+    ctx.lineTo( xValFromPct(mouseCanvasXPct+1.1), yValFromPct(mouseCanvasYPct-0.5) );
+    ctx.fill();
+    ctx.stroke();
+  }
+}
+
+///renders sun shades
+function renderSunShades() {
+  var y = sunShadeY;  // sun shade y value
+  var r = xValFromPct( sunShadeHandleRadiusPct );  // handle radius
+  var c = "#111111";  // color
+  for ( var i=0; i<sunShades.length; i++ ) {
+    var s = sunShades[i];
+    //shadow
+    if ( viewShadows ) {
+      ctx.fillStyle = "rgba( 0, 0, 0, 0.333 )";
+      ctx.beginPath();
+      ctx.moveTo( s.h1.x, y );
+      ctx.lineTo( s.h2.x, y ); 
+      ctx.lineTo( s.h2.x, yValFromPct(100) );
+      ctx.lineTo( s.h1.x, yValFromPct(100) );
+      ctx.fill();  
+    }
+    //line
+    ctx.beginPath();
+    ctx.lineWidth = xValFromPct( sunShadeHandleRadiusPct*0.75 );
+    ctx.strokeStyle = c;
+    ctx.moveTo(s.h1.x,y);
+    ctx.lineTo(s.h2.x,y);
+    ctx.stroke();
+    //handles
+    for ( var j=1; j<=2; j++) {
+      var hx = s["h"+j].x;
+      if ( hx === 0 || hx === canvas.width ) {
+        //tab (outer circle)
+        ctx.beginPath();
+        ctx.fillStyle = c;
+        ctx.arc( hx, y, r*1.1, 0, 2*Math.PI );
+        ctx.fill();
+        ctx.beginPath();
+        //arrow (diamond)
+        ctx.fillStyle = "rgba( 213, 215, 197, 0.5 )";
+        ctx.moveTo( hx, y-r*0.5 );
+        ctx.lineTo( hx+r*0.7, y );
+        ctx.lineTo( hx, y+r*0.5 );
+        ctx.lineTo( hx-r*0.7, y );
+        ctx.fill();
+      } else {
+        //outer circle
+        ctx.beginPath();
+        ctx.fillStyle = c;
+        ctx.arc( hx, y, r, 0, 2*Math.PI );
+        ctx.fill();
+        ctx.beginPath();
+        //inner circle
+        ctx.fillStyle = "rgba( 213, 215, 197, 0.15 )";
+        ctx.arc( hx, y, r*0.666, 0, 2*Math.PI );
+        ctx.fill();
+      }
+    }
+  }
+}
+
+
+
+
+/////--- EVENT LISTENERS ---/////
+
+
+///keeps UI elements scaled when window is resized (even when game is paused)
 $(window).resize(function() {
   updateUI();
 });
 
-//choose game mode on landing
+///choose game mode on landing
 $("#button_game_mode_hover").click(function(){
   $("#landing_page_div").hide();
   $("#overlay_game_mode_options_div").css("visibility", "visible");
 });
 
-//choose ambient mode on landing
+///choose ambient mode on landing
 $("#button_ambient_mode_hover").click(function(){
   $("#landing_page_div").hide();
   $("#overlay_ambient_mode_options_div").css("visibility", "visible");
@@ -406,7 +350,7 @@ $("#button_ambient_mode_hover").click(function(){
   $("#ambient_footer_right").css("display", "block");
 });
 
-//select beginner on game options overlay
+///select beginner on game options overlay
 $("#option_beginner").click(function(){
   $("#option_beginner").css("opacity", "1");
   $("#option_intermediate").css("opacity", "0");
@@ -414,7 +358,7 @@ $("#option_beginner").click(function(){
   gameDifficulty = "beginner";
 });
 
-//select intermediate on game options overlay
+///select intermediate on game options overlay
 $("#option_intermediate").click(function(){
   $("#option_beginner").css("opacity", "0");
   $("#option_intermediate").css("opacity", "1");
@@ -422,7 +366,7 @@ $("#option_intermediate").click(function(){
   gameDifficulty = "intermediate";
 });
 
-//select expert on game options overlay
+///select expert on game options overlay
 $("#option_expert").click(function(){
   $("#option_beginner").css("opacity", "0");
   $("#option_intermediate").css("opacity", "0");
@@ -430,7 +374,7 @@ $("#option_expert").click(function(){
   gameDifficulty = "expert";
 });
 
-//select first option on ambient options overlay
+///select first option on ambient options overlay
 $("#option_first").click(function(){
   $("#option_first").css("opacity", "1");
   $("#option_second").css("opacity", "0");
@@ -438,7 +382,7 @@ $("#option_first").click(function(){
   gameDifficulty = "beginner";
 });
 
-//select second option on ambient options overlay
+///select second option on ambient options overlay
 $("#option_second").click(function(){
   $("#option_first").css("opacity", "0");
   $("#option_second").css("opacity", "1");
@@ -446,7 +390,7 @@ $("#option_second").click(function(){
   gameDifficulty = "intermediate";
 });
 
-//select third option on ambient options overlay
+///select third option on ambient options overlay
 $("#option_third").click(function(){
   $("#option_first").css("opacity", "0");
   $("#option_second").css("opacity", "0");
@@ -454,31 +398,32 @@ $("#option_third").click(function(){
   gameDifficulty = "expert";
 });
 
-//get game info on game options screen
+///get game info on game options screen
 $("#helper_game_info").click(function(){
   $("#modal_card_game_screen").css("visibility", "visible");
   $("#modal_game_text").css("visibility", "visible");
   $("#icon_exit_modal_game_info").css("visibility", "visible");
 });
 
-//get ambient mode info on ambient options screen
+///get ambient mode info on ambient options screen
 $("#helper_ambient_info").click(function(){
   $("#modal_card_ambient_screen").css("visibility", "visible");
   $("#modal_ambient_text").css("visibility", "visible");
   $("#icon_exit_modal_ambient_info").css("visibility", "visible");
 });
 
-//exit modal
+///exit modal
 $(".icon_exit_modal").click(function(){
   removeModals();
 });
 
+///on-screen play button (displayed when paused)
 $("#modal_play").click(function(){
   resume();
 });
 
 ///activates game when "sow" button is clicked
-$(".button_sow").click(function(){   // XXXXX {{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}
+$(".button_sow").click(function(){
   switch( gameDifficulty ) {
     case "beginner":
       for ( var i=0; i<15; i++ ) { createSeed( null, generateRandomRedFlowerPlantGenotype() ); } 
@@ -582,6 +527,11 @@ document.addEventListener("touchstart", function(e) { grabHandle(e); startElimin
 document.addEventListener("touchmove", function(e) {  moveHandle(e); eliminatePlants(e); });
 document.addEventListener("touchup", function() {  dropHandle(); stopEliminatingPlants(); });
 
+///game over try again button & game win play again buttons
+$("#button_try_again_hover, .button_game_win_play_again").click(function(){
+  location.reload();
+});
+
 
 
 
@@ -591,7 +541,7 @@ document.addEventListener("touchup", function() {  dropHandle(); stopEliminating
 function updateUI() {
   attachHeaderAndFooter();
   if ( useSunShades ) { renderSunShades(); }
-  $("#year_count").text( currentYear );
+  $("#year_count").text( currentYear.toString().replace(/0/g,"O") );  // replace gets rid of Nunito font dotted zero
   $("#season_left").text( ", " + currentSeason );
   $("#season_right").text( currentSeason );
   updateSeasonPieChart();

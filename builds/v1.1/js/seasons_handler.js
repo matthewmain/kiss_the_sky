@@ -143,7 +143,7 @@ function renderYearAnnouncement() {
   var del = 0;  // delay  
   if ( currentYear === 1 ) { del = 1000; }
   $("#year_announcement")
-    .text("YEAR "+currentYear)
+    .text("YEAR "+currentYear.toString().replace(/0/g,"O") )  // replace gets rid of Nunito font dotted zero
     .delay(del)
     .animate({ 
       fontSize: "+="+fsi+"pt", 
@@ -174,12 +174,12 @@ function renderSeasonAnnouncement() {
   var fsi = 1.2;  // font size increase
   var lsi = 0.5;  // letter spacing increase
   var om = 1;  // opacity maximum
-  var dur = 1500;  // duration (of each animation segment)
+  var dur = 1200;  // duration (of each animation segment)
   var del = 0;  // delay
   if ( currentYear === 1 && yearTime === 1 ) { 
-    del = 2500; 
+    del = 5000; 
   } else if ( yearTime === 1 ) {
-    del = 1500; 
+    del = 4000; 
   }
   $("#season_announcement").finish(); // clears the previous season announcement animation if it hasn't completed yet
   $("#season_announcement")
@@ -203,45 +203,6 @@ function renderSeasonAnnouncement() {
       $("#season_announcement").css({
         fontSize: "16pt",
         letterSpacing: "1.25pt"
-      }); 
-    }
-  );
-}
-
-///renders new best height announcements
-function renderHeightAnnouncement() {
-  var fsi = 2.5;  // font size max increase
-  var td = 0.5;  // top decrease (per animation segment)
-  var ha = -3;  // height adjustment
-  var dur = 350;  // duration (of each animation segment)
-  var c = "rgba( 130, 0, 0, 1 )";  // color (default to dark red)
-  if ( highestRedFlowerPct >= 80) {
-    td = -0.5; 
-    ha = 15;
-    c = "rgba(17, 17, 17, 1)";
-  }
-  $("#height_announcement").finish(); // clears the previous height announcement animation if it hasn't completed yet
-  $("#height_announcement")
-    .text( Math.floor( highestRedFlowerPct ) + "%" )
-    .css({  
-      top: 100-highestRedFlowerPct+ha + "%",
-      left: pctFromXVal( HeightMarker.chfx ) + "%",
-      opacity: 1,
-      color: c,
-    })
-    .animate({ 
-      fontSize: "+="+fsi+"pt",
-      top: "-="+td+"%",
-      opacity: 1,
-    }, dur, "linear")
-    .animate({ 
-      fontSize: "-="+fsi+"pt",
-      top: "-="+td*2+"%",
-      opacity: 0,    
-    }, dur*2, "easeOutQuart", function() {  // (uses easing plugin)
-      //callback resets original values
-      $("#height_announcement").css({
-        fontSize: "10pt",
       }); 
     }
   );

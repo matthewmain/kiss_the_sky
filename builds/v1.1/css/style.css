@@ -1,6 +1,6 @@
 
 body {
-	background: #111111;
+	background: #202020;
 	font-family: "Dosis", Avenir, sans-serif;
 	font-weight: 200;
 	margin: 0;
@@ -121,7 +121,7 @@ body {
   top: 52%;
   left: 50%;
   transform: translate(-50%,-50%);
-  overflow: hidden;
+  box-shadow: 0 0 5px 0 rgba(0,0,0,1);
 }
 
 #canvas {
@@ -219,6 +219,7 @@ body {
 	top: 24.5px;
   left: 58%;
   transform: translate(-50%, -50%);
+  font-weight: 700;
   color: #D5D8C5;
 }
 
@@ -305,6 +306,118 @@ body {
 .button_sow:hover {
 	background-color: rgba(17, 17, 17, 0.3);
 }
+
+.end_of_game_div {
+  width: 100%;
+  height: 100%;
+  visibility: hidden;
+  opacity: 0;
+}
+
+#overlay_game_over {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translate(-50%,0);
+  width: 100%;
+}
+
+#button_try_again_hover {
+  position: absolute;
+  top: 83.8%;
+  left: 50%;
+  transform: translate(-50%,-50%);
+  width: 51.4%;
+  opacity: 0;
+  cursor: pointer;
+}
+#button_try_again_hover:hover {
+  opacity: 1;
+}
+
+.game_win_svg {
+  position: absolute;
+  display: none;
+}
+
+#game_win_YOU {
+  top: 1%;
+  left: 50%;
+  transform: translate(-50%);
+  width: 20%;
+}
+
+#game_win_KISSED {
+  top: 14%;
+  left: 50%;
+  transform: translate(-50%); 
+  width: 90%; 
+}
+
+#game_win_THE {  
+  top: 42.5%;
+  left: 5%;
+  height: 20%;
+}
+
+#game_win_SKY {
+  top: 42.5%;
+  right: 5%;
+  height: 20%;
+}
+
+.game_win_text {
+  position: absolute;
+  color: #ffffff;
+  font-size: 18pt;
+  font-weight: 600;
+  letter-spacing: 1.4px;
+  text-shadow: 0 0 3px #000000, 0 0 2px #000000;
+  width: 100%;
+  text-align: center;
+  display: none;
+}
+
+#game_win_gen_count_text {
+  top: 60.5%;
+}
+
+#game_win_mode_text {
+  top: 68%;
+}
+
+#game_win_gen_number {
+  font-size: 24pt;
+}
+
+#game_win_mode {
+  font-size: 20pt;
+}
+
+#button_play_again {
+  position: absolute;
+  top: 89.5%;
+  left: 50%;
+  transform: translate(-50%,-50%);
+  width: 51.4%;
+  display: none;
+}
+
+#button_play_again_hover {
+  position: absolute;
+  top: 89.5%;
+  left: 50%;
+  transform: translate(-50%,-50%);
+  width: 51.4%;
+  opacity: 0;
+  cursor: pointer;
+  display: none;
+  opacity: 0;
+}
+#button_play_again_hover:hover {
+  opacity: 1;
+}
+
 
 
 /*** MODALS ***/
@@ -473,6 +586,22 @@ body {
   text-align: center;
   font-size: 10pt;
   font-weight: 700;
+  letter-spacing: 0;
+  opacity: 0;
+}
+
+#hundred_pct_large_height_announcement {
+  position: absolute;
+  top: 30%;
+  left: 50%;
+  transform: translate(-50%,-50%);
+  margin: 0;
+  width: 100%;
+  font-family: "Nunito", Avenir, sans-serif;
+  color: rgb( 130, 0, 0 );
+  text-align: center;
+  font-size: 100pt;
+  font-weight: 600;
   letter-spacing: 0;
   opacity: 0;
 }
