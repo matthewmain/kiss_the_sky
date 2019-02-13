@@ -734,7 +734,7 @@ function checkForGameOver() {
 // XXXXX {{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}
 
 var flowersAnimationHasRun = false;
-var totalFlowers = 700;
+var totalFlowers = 600;
 
 ///check for game win (whether a red flower reaches 100% screen height)  
 function checkForGameWin() {
@@ -753,11 +753,12 @@ function runGameWinFlowersAnimation() {
     var tint = Tl.rib(1,2) === 1 ? "light" : "dark"; 
     var top = Tl.rib( 0, 100 );
     var left = Tl.rib( 0, 100 );
-    var width = Tl.rfb( 10, 12 );
+    var width = Tl.rfb( 12, 22 );
     var rotation = Tl.rfb( 0, 60 );
-    var delay = i > 20 ? 100-totalFlowers+i : 100-i*5;
-    setTimeout(function () {  // delays each append and position of each new flower
-      $("#game_win_div").append( "<img id='f"+i+"' class='flower' src='assets/flower_"+tint+".svg'>" );
+    var delay = i > 20 ? 400-Math.pow(totalFlowers-i,2)*3 : 400-i*20;  // starts slow, builds speeds, slows at end
+    delay = delay < 20 ? 20 : delay;  // sets minimum delay
+    setTimeout(function () {  // delays append and position of each new flower
+      $("#game_win_div").prepend( "<img id='f"+i+"' class='flower' src='assets/flower_"+tint+".svg'>" );
       $("#f"+i).css({ 
         position: "absolute",
         top: top+"%", 

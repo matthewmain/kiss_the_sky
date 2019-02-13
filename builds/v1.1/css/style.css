@@ -315,7 +315,7 @@ body {
 
 #overlay_game_over {
   position: absolute;
-  top: 0%;
+  top: 0;
   left: 50%;
   transform: translate(-50%,0);
   width: 100%;
@@ -333,6 +333,77 @@ body {
 #button_try_again_hover:hover {
   opacity: 1;
 }
+
+
+
+
+#game_win_YOU {
+  position: absolute;
+  top: 2%;
+  left: 50%;
+  transform: translate(-50%);
+  width: 20%;
+}
+
+#game_win_KISSED {
+  position: absolute;
+  top: 15%;
+  left: 50%;
+  transform: translate(-50%); 
+  width: 90%; 
+}
+
+#game_win_THE {  
+  position: absolute;
+  top: 43.5%;
+  left: 5%;
+  height: 20%;
+}
+
+#game_win_SKY {
+  position: absolute;
+  top: 43.5%;
+  right: 5%;
+  height: 20%;
+}
+
+#game_win_gen_count_text {
+  position: absolute;
+  top: 57.5%;
+  color: #ffffff;
+  font-size: 30pt;
+  font-weight: 600;
+  letter-spacing: 3px;
+  text-shadow: 0 0 4px #000000, 0 0 1px #000000;
+  width: 100%;
+  text-align: center;
+}
+
+#game_win_gen_number {
+  font-size: 36pt;
+}
+
+#button_play_again {
+  position: absolute;
+  top: 88%;
+  left: 50%;
+  transform: translate(-50%,-50%);
+  width: 51.4%;
+}
+
+#button_play_again_hover {
+  position: absolute;
+  top: 88%;
+  left: 50%;
+  transform: translate(-50%,-50%);
+  width: 51.4%;
+  opacity: 0;
+  cursor: pointer;
+}
+#button_play_again_hover:hover {
+  opacity: 1;
+}
+
 
 
 /*** MODALS ***/
