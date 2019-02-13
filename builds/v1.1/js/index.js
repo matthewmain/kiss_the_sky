@@ -710,6 +710,70 @@ function fadePlantOutAndRemove( plant ) {
   }
 }
 
+///checks for game over (whether all plants have died) displays game over overlay and try again button
+function checkForGameOver() {
+  if ( yearTime === spL + suL + faL + wiL/2 ) {
+    var allDead = true;
+    for ( var i=0; i<plants.length; i++ ) {
+      if ( plants[i].isAlive ) { allDead = false; }
+    }
+    if ( allDead ) {
+      $("#season_announcement").finish();
+      $("#game_over_div").css( "visibility", "visible" ).animate({ opacity: 1 }, 3000, "linear" );
+      endOfGameAnnouncementDisplayed = true;
+      pause();
+    }
+  }
+}
+
+
+
+
+
+
+// XXXXX {{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}
+
+var flowersAnimationHasRun = false;
+var totalFlowers = 700;
+
+///check for game win (whether a red flower reaches 100% screen height)  
+function checkForGameWin() {
+  if ( gameHasBegun && !flowersAnimationHasRun ) {
+    pause();
+    runGameWinFlowersAnimation();
+  }
+}
+
+///game win animation
+function runGameWinFlowersAnimation() {
+  $("#game_win_div").css({ visibility: "visible", opacity: "1"});
+  (function flowerLoop( i ) {  // self-invoking function for looping (pretty cool)
+    $("#season_announcement").finish();
+    $("#year_announcement").finish();
+    var tint = Tl.rib(1,2) === 1 ? "light" : "dark"; 
+    var top = Tl.rib( 0, 100 );
+    var left = Tl.rib( 0, 100 );
+    var width = Tl.rfb( 10, 12 );
+    var rotation = Tl.rfb( 0, 60 );
+    var delay = i > 20 ? 100-totalFlowers+i : 100-i*5;
+    setTimeout(function () {  // delays each append and position of each new flower
+      $("#game_win_div").append( "<img id='f"+i+"' class='flower' src='assets/flower_"+tint+".svg'>" );
+      $("#f"+i).css({ 
+        position: "absolute",
+        top: top+"%", 
+        left: left+"%", 
+        width: width+"%",
+        transform: "translate(-50%,-50%) rotate("+rotation+"deg)",
+      });
+      if ( --i ) flowerLoop( i );  //  decrements i and recursively calls loop function if i > 0 (i.e., true)
+    }, delay);  // sets delay with current delay variable
+  })( totalFlowers );  // sets the loop's total iteration count as the argument of the self-invoking function
+  flowersAnimationHasRun = true;
+}
+
+
+
+
 
 
 
@@ -968,7 +1032,7 @@ function display() {
     if ( runPollinationAnimations ) { renderPollinationAnimations(); }
   }
   updateUI();
-  if ( !ambientMode ) ( checkForGameOver( plants ) );
+  if ( !ambientMode ) { checkForGameOver(); checkForGameWin(); }
   runLogs( 600 );
   if ( !gamePaused ) { window.requestAnimationFrame( display ); }
 }

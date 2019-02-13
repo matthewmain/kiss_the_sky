@@ -121,7 +121,6 @@ body {
   top: 52%;
   left: 50%;
   transform: translate(-50%,-50%);
-  overflow: hidden;
   box-shadow: 0 0 5px 0 rgba(0,0,0,1);
 }
 
@@ -307,8 +306,9 @@ body {
 	background-color: rgba(17, 17, 17, 0.3);
 }
 
-#game_over_div {
+.end_of_game_div {
   width: 100%;
+  height: 100%;
   visibility: hidden;
   opacity: 0;
 }

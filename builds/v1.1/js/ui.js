@@ -94,22 +94,6 @@ function placeSunShades( leftCount, rightCount ) {
   for ( var j=0; j<rightCount; j++ ) { createSunShade( 100, 100 ); }
 }
 
-///checks for game over (whether all plants have died) displays game over overlay and try again button
-function checkForGameOver( plants ) {
-  if ( yearTime === spL + suL + faL + wiL/2 ) {
-    var allDead = true;
-    for ( var i=0; i<plants.length; i++ ) {
-      if ( plants[i].isAlive ) { allDead = false; }
-    }
-    if ( allDead ) {
-      $("#season_announcement").finish();
-      $("#game_over_div").css( "visibility", "visible" ).animate({ opacity: 1 }, 3000, "linear" );
-      endOfGameAnnouncementDisplayed = true;
-      pause();
-    }
-  }
-}
-
 
 
 
