@@ -44,18 +44,6 @@ function SunShade( handle1, handle2 ) {
   this.h2 = handle2; 
 }
 
-var HeightMarker = {
-  w: canvas.width*0.025,  // marker width 
-  h: canvas.width*0.025,  // marker height
-  y: canvas.height,  // marker position y value (at point)
-  chfx: null,  // current highest flower x value
-  baa: false,  // bounce animation active
-  bat: 0,  // bounce animation time
-  laa: false,  // line animation active
-  lat: 0,  // line animation time
-};
-
-
 
 
 /////---FUNCTIONS---/////
@@ -402,16 +390,24 @@ $("#option_third").click(function(){
 
 ///get game info on game options screen
 $("#helper_game_info").click(function(){
-  $("#modal_card_game_screen").css("visibility", "visible");
-  $("#modal_game_text").css("visibility", "visible");
-  $("#icon_exit_modal_game_info").css("visibility", "visible");
+  if ( $("#modal_card_game_screen").css("visibility") === "hidden" ) {
+    $("#modal_card_game_screen").css("visibility", "visible");
+    $("#modal_game_text").css("visibility", "visible");
+    $("#icon_exit_modal_game_info").css("visibility", "visible");
+  } else {
+    removeModals();
+  }
 });
 
 ///get ambient mode info on ambient options screen
 $("#helper_ambient_info").click(function(){
-  $("#modal_card_ambient_screen").css("visibility", "visible");
-  $("#modal_ambient_text").css("visibility", "visible");
-  $("#icon_exit_modal_ambient_info").css("visibility", "visible");
+  if ( $("#modal_card_ambient_screen").css("visibility") === "hidden" ) {
+    $("#modal_card_ambient_screen").css("visibility", "visible");
+    $("#modal_ambient_text").css("visibility", "visible");
+    $("#icon_exit_modal_ambient_info").css("visibility", "visible");
+  } else {
+    removeModals();
+  }
 });
 
 ///exit modal
@@ -547,11 +543,7 @@ function updateUI() {
   $("#season_left").text( ", " + currentSeason );
   $("#season_right").text( currentSeason );
   updateSeasonPieChart();
-  if ( !ambientMode ) { 
-    renderHeightMarker(); 
-    displayEliminatePlantIconWithCursor();
-    $("#height_number").text( Math.floor( highestRedFlowerPct ) );
-  }
+  if ( !ambientMode ) { displayEliminatePlantIconWithCursor(); }
 }
 
 

@@ -35,7 +35,7 @@ Basic gamification: grow a red flower tall enough to reach the top of the viewbo
 Improvements & Fixes
 
 - [ ] add brief notification at game beginning instructing how to swipe to eliminate plants with left/right arrows or a simple animation of a hand swiping/tapping ( "Swipe or tap to eliminate plants you don't want." | "keep plants whose traits you want to pass on to the next generaton." )
-- [ ] add a few in-game announcements to mark milestones: congratulations on being half way there at 50%,...maybe updates on number of red-flower alleles in the current genome and advice on waiting for/envouraging matutation for red flower when there's none? and announcement that red alelles are present but not expressed in favor of more dominant colors?
+- [ ] add a few in-game announcements to mark milestones: congratulations on first red plant, on being third way there at 34%, half way there at 50%, etc. (...maybe updates on number of red-flower alleles in the current genome and advice on waiting for/envouraging matutation for red flower when there's none, and announcement that red alelles are present but not expressed in favor of more dominant colors.)
 - [ ] resolve red-flower color ambiguity: set saturation to 100 and remove gene, adjust criteria for redness
 - [ ] fade out shadows when leaf angle falls to below about -80 degrees from horizontal (will avoid narrow shadows when leaves are vertical as well as shadows flashing off at plant death)
 - [ ] omit pod closure at plant death, and speed up opening to accomodate faster seasonal changes 

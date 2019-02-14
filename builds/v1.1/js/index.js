@@ -1044,7 +1044,11 @@ function display() {
     if ( runPollinationAnimations ) { renderPollinationAnimations(); }
   }
   updateUI();
-  if ( !ambientMode ) { checkForGameOver(); checkForGameWin(); }
+  if ( !ambientMode ) { 
+    checkForGameOver(); 
+    checkForGameWin(); 
+    renderHeightMarker(); 
+  }
   runLogs( 600 );
   if ( !gamePaused ) { window.requestAnimationFrame( display ); }
 }
