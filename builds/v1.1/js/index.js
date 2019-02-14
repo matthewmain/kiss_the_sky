@@ -57,7 +57,6 @@ var sunShadeHandles = [], sunShadeHandleCount = 0;
 var sunShades = [], sunShadeCount = 0;
 var shadows = [], shadowCount = 0;
 var initialGeneValueAverages = {};
-var highestFlowerPct = 0; 
 var highestRedFlowerPct = 0;
 
 
