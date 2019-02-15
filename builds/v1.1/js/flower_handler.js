@@ -104,7 +104,7 @@ function Flower( plant, parentSegment, basePoint1, basePoint2 ) {
   this.ptPodTipR = addPt( pctFromXVal(this.ptBudTip.cx), pctFromYVal(this.ptBudTip.cy) );  // pod tip right point
   this.ptPodTipL.mass = this.ptPodTipR.mass = this.mass;
   //colors
-  this.clP = plant.flowerColor; // petal color (hsl)
+  this.clP = plant.flowerColor; // petal color (hue & lightness)
   this.clH = plant.pollenPadColor;  // hex (pollen pad) color
   this.clOv = C.hdf;  // ovule color (dark green when healthy)
   this.clO = C.hol;  // outline color (very dark brown when healthy)
@@ -203,11 +203,10 @@ function readyForFlower( plant, segment ) {
 }
 
 ///checks whether a flower's petals are red
-function checkForRedPetals( color ) {  // color as hsl object: { h: <value>, s: <value>, l: <value> }
-  var hq = color.h <= 8 || color.h >= 352;  // hue qualifies
-  var sq = color.s >= 75;  // saturation qualifies
-  var lq = color.l >= 35 && color.l <= 60;  // lightness qualifies
-  return hq && sq && lq;
+function checkForRedPetals( color ) {  // color as hue & lightness object: { h: <value>, l: <value> }
+  var hq = color.h <= 15 || color.h >= 345;  // hue qualifies
+  var lq = color.l >= 30 && color.l <= 50;  // lightness qualifies
+  return hq && lq;
 }
 
 ///expands flower bud
@@ -525,7 +524,7 @@ function renderFlowers( plant ) {
         }
         //top petals
         ctx.lineWidth = 1;
-        ctx.fillStyle = "hsla("+f.clP.h+","+f.clP.s+"%,"+f.clP.l+"%,"+p.opacity+")"; 
+        ctx.fillStyle = "hsla("+f.clP.h+",100%,"+f.clP.l+"%,"+p.opacity+")"; 
         ctx.strokeStyle = "rgba("+f.clO.r+","+f.clO.g+","+f.clO.b+","+p.opacity+")";
         ctx.beginPath();  // top middle petal
         ctx.moveTo( f.ptHtL.cx, f.ptHtL.cy ); 
@@ -574,7 +573,7 @@ function renderFlowers( plant ) {
         ctx.lineTo(f.ptHoL.cx, f.ptHoL.cy);
         ctx.stroke();
         //bottom petals
-        ctx.fillStyle = "hsla("+f.clP.h+","+f.clP.s+"%,"+f.clP.l+"%,"+p.opacity+")";  
+        ctx.fillStyle = "hsla("+f.clP.h+",100%,"+f.clP.l+"%,"+p.opacity+")";  
         ctx.strokeStyle = "rgba("+f.clO.r+","+f.clO.g+","+f.clO.b+","+p.opacity+")";
         ctx.beginPath();  // bottom left petal
         ctx.moveTo( f.ptHoL.cx, f.ptHoL.cy );

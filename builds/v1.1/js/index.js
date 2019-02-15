@@ -160,10 +160,9 @@ function Plant( sourceSeed ) {
   this.leafFrequency = ph.leafFrequencyValue;  // (number of segments until next leaf set)
   this.maxLeafLength = this.maxSegmentWidth * ph.maxLeafLengthValue;  // maximum leaf length at maturity
   this.fh = ph.flowerHueValue; if ( this.fh > 65 ) { this.fh += 100; }  // flower hue (omits greens)
-  this.fs = ph.flowerSaturationValue;  // flower saturation
   this.fl = ph.flowerLightnessValue; if ( this.fl > 70 ) { this.fl += 25; }  // flower lightness
   //gene combinations
-  this.flowerColor = { h: this.fh, s: this.fs, l: this.fl };  // flower color
+  this.flowerColor = { h: this.fh, l: this.fl };  // flower color ( hue, lightness)
   //non-gene qualities
   this.forwardGrowthRate = gravity * this.maxSegmentWidth*2;  // (rate of cross span increase per frame)
   this.outwardGrowthRate = this.forwardGrowthRate * Tl.rfb(0.18,0.22);  // (rate forward span widens / frame)
@@ -597,7 +596,7 @@ function applyHealthColoration( plant, segment ) {
       //(petals)
       var ffel = p.maxEnergyLevel * flowerFadeEnergyLevelRatio;  
       if ( cel <= ffel && cel > sel ) {  // flower fading energy levels
-        f.clP = hslaPlantColorShift( p, fc, {h:fc.h,s:50,l:100}, ffel, sel );  // fade color
+        f.clP = hslaPlantColorShift( p, {h:fc.h,s:100,l:100}, {h:fc.h,s:50,l:100}, ffel, sel );  // fade color
       } else if ( cel <= sel && cel > del ) {  // sick energy levels
         f.clP = hslaPlantColorShift( p, {h:50,s:50,l:100}, {h:45,s:100,l:15}, sel, del );  // darken color
       }      
@@ -1018,7 +1017,6 @@ function runLogs( frequency ) {
     // logGeneChange( "leafFrequency" );
     // logGeneChange( "maxLeafLength" );
     // logGeneChange( "flowerHue" );
-    // logGeneChange( "flowerSaturation" );
     // logGeneChange( "flowerLightness" );
 
     // logCurrentGenePresence( "maxTotalSegments" );
@@ -1028,7 +1026,6 @@ function runLogs( frequency ) {
     // logCurrentGenePresence( "leafFrequency" );
     // logCurrentGenePresence( "maxLeafLength" );
     // logCurrentGenePresence( "flowerHue" );
-    // logCurrentGenePresence( "flowerSaturation" );
     // logCurrentGenePresence( "flowerLightness" );
 
     //console.log(  );
