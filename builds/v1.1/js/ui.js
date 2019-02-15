@@ -44,18 +44,6 @@ function SunShade( handle1, handle2 ) {
   this.h2 = handle2; 
 }
 
-var HeightMarker = {
-  w: canvas.width*0.025,  // marker width 
-  h: canvas.width*0.025,  // marker height
-  y: canvas.height,  // marker position y value (at point)
-  chfx: null,  // current highest flower x value
-  baa: false,  // bounce animation active
-  bat: 0,  // bounce animation time
-  laa: false,  // line animation active
-  lat: 0,  // line animation time
-};
-
-
 
 
 /////---FUNCTIONS---/////
@@ -140,43 +128,45 @@ function dropHandle() {
 
 ///activates plant elimination mode
 function startEliminatingPlants() {
-  plantsAreBeingEliminated = true;
+  if ( !ambientMode ) plantsAreBeingEliminated = true;
 }
 
 ///deactivates plant elimination mode
 function stopEliminatingPlants() {
-  plantsAreBeingEliminated = false;
+  if ( !ambientMode ) plantsAreBeingEliminated = false;
 }
 
 ///eliminates plants (kills them and knocks them over)
 function eliminatePlants( e, plant ) {
-  for ( var i=0; i<plants.length; i++ ) {
-    var p = plants[i];
-    if ( plantsAreBeingEliminated && ( p.isAlive || (!p.hasCollapsed && !p.hasBeenEliminatedByPlayer) ) ) {
-      for ( var j=0; j<p.segments.length; j++) {
-        var s = p.segments[j];
-        var xDiffPct1 = pctFromXVal( s.ptE1.cx ) - mouseCanvasXPct;
-        var yDiffPct1 = pctFromYVal( s.ptE1.cy ) - mouseCanvasYPct;
-        var distancePct1 = Math.sqrt( xDiffPct1*xDiffPct1 + yDiffPct1*yDiffPct1 );
-        var xDiffPct2 = pctFromXVal( s.ptE2.cx ) - mouseCanvasXPct;
-        var yDiffPct2 = pctFromYVal( s.ptE2.cy ) - mouseCanvasYPct;
-        var selectRadiusPct = selectRadius*100/canvas.width;
-        var distancePct2 = Math.sqrt( xDiffPct2*xDiffPct2 + yDiffPct2*yDiffPct2 );
-        if ( distancePct1 <= selectRadiusPct || distancePct2 <= selectRadiusPct ) {
-          s.ptE1.px += distancePct1 > distancePct2 ? 10 : -10;
-          p.energy = p.energy > energyStoreFactor*-1 ? energyStoreFactor*-1 : p.energy; 
-          killPlant(p);
-          for (var k=0; k<p.segments.length; k++) {
-            var s2 = p.segments[k];
-            s2.ptE1.mass = s2.ptE2.mass = 15;
-            if (!s2.isBaseSegment) {
-              removeSpan(s2.spCdP.id);  // downward (l to r) cross span to parent
-              removeSpan(s2.spCuP.id);  // upward (l to r) cross span to parent
+  if ( !ambientMode ) {
+    for ( var i=0; i<plants.length; i++ ) {
+      var p = plants[i];
+      if ( plantsAreBeingEliminated && ( p.isAlive || (!p.hasCollapsed && !p.hasBeenEliminatedByPlayer) ) ) {
+        for ( var j=0; j<p.segments.length; j++) {
+          var s = p.segments[j];
+          var xDiffPct1 = pctFromXVal( s.ptE1.cx ) - mouseCanvasXPct;
+          var yDiffPct1 = pctFromYVal( s.ptE1.cy ) - mouseCanvasYPct;
+          var distancePct1 = Math.sqrt( xDiffPct1*xDiffPct1 + yDiffPct1*yDiffPct1 );
+          var xDiffPct2 = pctFromXVal( s.ptE2.cx ) - mouseCanvasXPct;
+          var yDiffPct2 = pctFromYVal( s.ptE2.cy ) - mouseCanvasYPct;
+          var selectRadiusPct = selectRadius*100/canvas.width;
+          var distancePct2 = Math.sqrt( xDiffPct2*xDiffPct2 + yDiffPct2*yDiffPct2 );
+          if ( distancePct1 <= selectRadiusPct || distancePct2 <= selectRadiusPct ) {
+            s.ptE1.px += distancePct1 > distancePct2 ? 10 : -10;
+            p.energy = p.energy > energyStoreFactor*-1 ? energyStoreFactor*-1 : p.energy; 
+            killPlant(p);
+            for (var k=0; k<p.segments.length; k++) {
+              var s2 = p.segments[k];
+              s2.ptE1.mass = s2.ptE2.mass = 15;
+              if (!s2.isBaseSegment) {
+                removeSpan(s2.spCdP.id);  // downward (l to r) cross span to parent
+                removeSpan(s2.spCuP.id);  // upward (l to r) cross span to parent
+              }
+              removeSpan(s2.spCd.id);  // downward (l to r) cross span
+              removeSpan(s2.spCu.id);  // upward (l to r) cross span
             }
-            removeSpan(s2.spCd.id);  // downward (l to r) cross span
-            removeSpan(s2.spCu.id);  // upward (l to r) cross span
+            p.hasBeenEliminatedByPlayer = true;
           }
-          p.hasBeenEliminatedByPlayer = true;
         }
       }
     }
@@ -400,16 +390,24 @@ $("#option_third").click(function(){
 
 ///get game info on game options screen
 $("#helper_game_info").click(function(){
-  $("#modal_card_game_screen").css("visibility", "visible");
-  $("#modal_game_text").css("visibility", "visible");
-  $("#icon_exit_modal_game_info").css("visibility", "visible");
+  if ( $("#modal_card_game_screen").css("visibility") === "hidden" ) {
+    $("#modal_card_game_screen").css("visibility", "visible");
+    $("#modal_game_text").css("visibility", "visible");
+    $("#icon_exit_modal_game_info").css("visibility", "visible");
+  } else {
+    removeModals();
+  }
 });
 
 ///get ambient mode info on ambient options screen
 $("#helper_ambient_info").click(function(){
-  $("#modal_card_ambient_screen").css("visibility", "visible");
-  $("#modal_ambient_text").css("visibility", "visible");
-  $("#icon_exit_modal_ambient_info").css("visibility", "visible");
+  if ( $("#modal_card_ambient_screen").css("visibility") === "hidden" ) {
+    $("#modal_card_ambient_screen").css("visibility", "visible");
+    $("#modal_ambient_text").css("visibility", "visible");
+    $("#icon_exit_modal_ambient_info").css("visibility", "visible");
+  } else {
+    removeModals();
+  }
 });
 
 ///exit modal
@@ -545,11 +543,7 @@ function updateUI() {
   $("#season_left").text( ", " + currentSeason );
   $("#season_right").text( currentSeason );
   updateSeasonPieChart();
-  if ( !ambientMode ) { 
-    renderHeightMarker(); 
-    displayEliminatePlantIconWithCursor();
-    $("#height_number").text( Math.floor( highestRedFlowerPct ) );
-  }
+  if ( !ambientMode ) { displayEliminatePlantIconWithCursor(); }
 }
 
 

@@ -156,6 +156,16 @@ function PollinationAnimation( pollinatorFlower, pollinatedFlower ) {
   }
 }
 
+var HeightMarker = {
+  w: canvas.width*0.025,  // marker width 
+  h: canvas.width*0.025,  // marker height
+  y: canvas.height,  // marker position y value (at point)
+  chrfx: null,  // current highest red flower x value
+  baa: false,  // bounce animation active
+  bat: 0,  // bounce animation time
+  laa: false,  // line animation active
+  lat: 0,  // line animation time
+};
 
 
 
@@ -416,15 +426,14 @@ function developFlower( plant, flower ) {
 }
 
 ///track highest flower heights
-function trackMaxFlowerHeights( flower ) {
+function trackMaxRedFlowerHeights( flower ) {
   var f = flower;
-  if ( f.bloomRatio === 1 ) {
+  if ( f.isRed && f.bloomRatio === 1 ) {
     var heightPct = (canvas.height-f.ptPtM.cy)*100/canvas.height ;
-    if ( heightPct > highestFlowerPct ) { highestFlowerPct = heightPct; }
-    if ( highestFlowerPct > 100 ) { highestFlowerPct = 100; }  // caps highest percentage at 100%
-    if ( f.isRed && highestFlowerPct > highestRedFlowerPct ) { 
-      highestRedFlowerPct = highestFlowerPct; 
-      HeightMarker.chfx = f.ptPtM.cx;  // updates flower's top petal tip x value
+    if ( heightPct > highestRedFlowerPct ) { 
+      highestRedFlowerPct = heightPct; 
+      if ( highestRedFlowerPct > 100 ) { highestRedFlowerPct = 100; }  // caps highest red flower percentage at 100%
+      HeightMarker.chrfx = f.ptPtM.cx;  // updates flower's top petal tip x value
     }
   }
 }
@@ -577,7 +586,7 @@ function renderFlowers( plant ) {
         ctx.fill(); ctx.stroke();
       }
       if ( viewPods ) { renderPods( f ); }
-      trackMaxFlowerHeights(f);
+      trackMaxRedFlowerHeights(f);
     }
   }
 }
@@ -717,7 +726,7 @@ function renderHeightAnnouncement() {
     .text( Math.floor( highestRedFlowerPct ) + "%" )
     .css({  
       top: 100-highestRedFlowerPct+ha + "%",
-      left: pctFromXVal( HeightMarker.chfx ) + "%",
+      left: pctFromXVal( HeightMarker.chrfx ) + "%",
       opacity: 1,
       color: c,
     })
@@ -749,6 +758,7 @@ function renderHeightMarker() {
     HeightMarker.bat = 0;  // bounce animation time elapsed
     HeightMarker.laa = true;  // line animation active
     HeightMarker.lat = 0;  // line animation time elapsed
+    $("#height_number").text( Math.floor( highestRedFlowerPct ) );
     renderHeightAnnouncement();
   }
   //new highest height marker bounce animation (size expansion & contraction)
@@ -768,15 +778,15 @@ function renderHeightMarker() {
     var o = 1 - HeightMarker.lat/lad;  // opacity
     ctx.beginPath();
     ctx.lineWidth = 2;
-    var lGrad = ctx.createLinearGradient( HeightMarker.chfx-canvas.width, HeightMarker.y, HeightMarker.chfx+canvas.width, HeightMarker.y );
+    var lGrad = ctx.createLinearGradient( HeightMarker.chrfx-canvas.width, HeightMarker.y, HeightMarker.chrfx+canvas.width, HeightMarker.y );
     lGrad.addColorStop("0", "rgba( 161, 0, 0, 0 )");
     lGrad.addColorStop("0.4", "rgba( 161, 0, 0, " + 0.3*o + ")");
     lGrad.addColorStop("0.5", "rgba( 161, 0, 0, " + 1*o + ")");
     lGrad.addColorStop("0.6", "rgba( 161, 0, 0, " +0.3*o + ")");
     lGrad.addColorStop("1", "rgba( 161, 0, 0, 0 )");
     ctx.strokeStyle = lGrad;
-    ctx.moveTo( HeightMarker.chfx-canvas.width, HeightMarker.y );
-    ctx.lineTo( HeightMarker.chfx+canvas.width, HeightMarker.y );
+    ctx.moveTo( HeightMarker.chrfx-canvas.width, HeightMarker.y );
+    ctx.lineTo( HeightMarker.chrfx+canvas.width, HeightMarker.y );
     ctx.stroke();
     if ( HeightMarker.lat > lad ) { HeightMarker.laa = false; HeightMarker.lat = 0; }
   }

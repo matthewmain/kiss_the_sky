@@ -57,7 +57,6 @@ var sunShadeHandles = [], sunShadeHandleCount = 0;
 var sunShades = [], sunShadeCount = 0;
 var shadows = [], shadowCount = 0;
 var initialGeneValueAverages = {};
-var highestFlowerPct = 0; 
 var highestRedFlowerPct = 0;
 
 
@@ -852,6 +851,26 @@ function renderPlants() {
   if ( viewShadows ) { renderLeafShadows(); }
 }
 
+///renders instructional demos at game opening (called as callback for season announcements in flower_handler.js)
+function renderDemosInFirstYear() {
+  if ( !ambientMode && !eliminationDemoHasRun && currentSeason === "Spring" ) {
+    eliminationDemoHasRun = true;
+    $("#demo_elimination_div")
+      .css( "visibility", "visible" )
+      .animate({ opacity: 1 }, 2000, "linear" )
+      .delay(4000)
+      .animate({ opacity: 0 }, 2000, "linear" );
+  }
+  if ( !ambientMode && !changeDemoHasRun && currentSeason === "Summer" ) {
+    changeDemoHasRun = true;
+    $("#demo_change_div")
+      .css( "visibility", "visible" )
+      .animate({ opacity: 1 }, 2000, "linear" )
+      .delay(4000)
+      .animate({ opacity: 0 }, 2000, "linear" );
+  }
+}
+
 
 //// End Game Sequences ////
 
@@ -1044,7 +1063,11 @@ function display() {
     if ( runPollinationAnimations ) { renderPollinationAnimations(); }
   }
   updateUI();
-  if ( !ambientMode ) { checkForGameOver(); checkForGameWin(); }
+  if ( !ambientMode ) { 
+    checkForGameOver(); 
+    checkForGameWin(); 
+    renderHeightMarker(); 
+  }
   runLogs( 600 );
   if ( !gamePaused ) { window.requestAnimationFrame( display ); }
 }

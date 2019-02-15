@@ -34,17 +34,19 @@ Basic gamification: grow a red flower tall enough to reach the top of the viewbo
 
 Improvements & Fixes
 
+- [ ] add brief notification at game beginning instructing how to swipe to eliminate plants with left/right arrows or a simple animation of a hand swiping/tapping ( "Swipe or tap to eliminate plants you don't want." | "keep plants whose traits you want to pass on to the next generaton." )
+- [ ] add a few in-game announcements to mark milestones: congratulations on first red plant, on being third way there at 34%, half way there at 50%, etc. (...maybe updates on number of red-flower alleles in the current genome and advice on waiting for/envouraging matutation for red flower when there's none, and announcement that red alelles are present but not expressed in favor of more dominant colors.)
 - [ ] resolve red-flower color ambiguity: set saturation to 100 and remove gene, adjust criteria for redness
 - [ ] fade out shadows when leaf angle falls to below about -80 degrees from horizontal (will avoid narrow shadows when leaves are vertical as well as shadows flashing off at plant death)
 - [ ] omit pod closure at plant death, and speed up opening to accomodate faster seasonal changes 
 - [ ] add shadow to gap between leaves
 - [ ] fix all forward growth based on y-values by replacing with trig formula to ensure new growth is forward regardless of stalk angle
-- [ ] give stalks & leaves variable fills (gradient, if possible) instead of stroke outlines (should look better and may improve rendering performance)
 - [ ] seeds plant firmly without swinging, even at worldspeed 1
-- [ ] change season background gradients so seasons are more distinct and changes are more dramatic
-- [ ] fix cross-browser issues (safari color value floats, etc.)
+- [ ] change season background gradients so seasons are more distinct and changes are more dramatic (don't overdo it though)
 - [ ] fix large-plant elimination issue when curser is too far from a point (there may be a built-in canvas way to detect hover over a shape...? Otherwise need to calibrate elimination radius based on largest plant width)
-- [ ] add media queries to update size of game win announcement text, or possibly use javascript to update based on canvas width
+- [ ] add media queries to update size of game win announcement text & footer text, or possibly use javascript to update based on canvas width
+- [ ] give stalks & leaves variable fills (gradient, if possible) instead of stroke outlines (should look better and may improve rendering performance)
+- [ ] fix cross-browser issues (safari color value floats, etc.)
 
 <br>
 
