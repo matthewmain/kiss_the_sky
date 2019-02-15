@@ -851,6 +851,26 @@ function renderPlants() {
   if ( viewShadows ) { renderLeafShadows(); }
 }
 
+///renders instructional demos at game opening (called as callback for season announcements in flower_handler.js)
+function renderDemosInFirstYear() {
+  if ( !ambientMode && !eliminationDemoHasRun && currentSeason === "Spring" ) {
+    eliminationDemoHasRun = true;
+    $("#demo_elimination_div")
+      .css( "visibility", "visible" )
+      .animate({ opacity: 1 }, 2000, "linear" )
+      .delay(4000)
+      .animate({ opacity: 0 }, 2000, "linear" );
+  }
+  if ( !ambientMode && !changeDemoHasRun && currentSeason === "Summer" ) {
+    changeDemoHasRun = true;
+    $("#demo_change_div")
+      .css( "visibility", "visible" )
+      .animate({ opacity: 1 }, 2000, "linear" )
+      .delay(4000)
+      .animate({ opacity: 0 }, 2000, "linear" );
+  }
+}
+
 
 //// End Game Sequences ////
 

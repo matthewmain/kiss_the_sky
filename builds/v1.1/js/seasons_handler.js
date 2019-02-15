@@ -9,6 +9,8 @@ var currentYear = 1;
 var yearTime = 0;
 var currentSeason;
 var currentGreatestMaxSegment;
+var eliminationDemoHasRun = false;
+var changeDemoHasRun = false;
 
 ///season lengths
 var spL = 1000;  // spring length
@@ -63,8 +65,12 @@ function trackSeasons() {
     renderYearAnnouncement(); renderSeasonAnnouncement(); 
   } else if ( yearTime === spL+1 ) {
     currentSeason = "Summer"; photosynthesisRatio = 1; livEnExp = 1;
+    if ( currentYear === 1 ) {  // sets first year summer length to ensure enough time for demo animation
+      suL = 800;
+    } else { // adjusts summer length based on tallest plant's height
+      suL = 85*currentGreatestMaxSegment() > 300 ? 85*currentGreatestMaxSegment() : 300; 
+    }
     renderSeasonAnnouncement();
-    suL = 85*currentGreatestMaxSegment() > 300 ? 85*currentGreatestMaxSegment() : 300; // adjusts summer length
   } else if ( yearTime === spL+suL+1 ) {
     currentSeason = "Fall"; photosynthesisRatio = 0; livEnExp = 7;
     renderSeasonAnnouncement();
@@ -176,11 +182,7 @@ function renderSeasonAnnouncement() {
   var om = 1;  // opacity maximum
   var dur = 1200;  // duration (of each animation segment)
   var del = 0;  // delay
-  if ( currentYear === 1 && yearTime === 1 ) { 
-    del = 5000; 
-  } else if ( yearTime === 1 ) {
-    del = 4000; 
-  }
+  if ( currentYear === 1 && yearTime === 1 ) { del = 5000; } else if ( yearTime === 1 ) { del = 4000; }
   $("#season_announcement").finish(); // clears the previous season announcement animation if it hasn't completed yet
   $("#season_announcement")
     .text(currentSeason.toUpperCase())
@@ -199,13 +201,12 @@ function renderSeasonAnnouncement() {
       letterSpacing: "+="+lsi+"pt",
       opacity: 0, 
     }, dur, "linear", function() {
-      //callback resets original values
-      $("#season_announcement").css({
+      $("#season_announcement").css({  // resets original values
         fontSize: "16pt",
         letterSpacing: "1.25pt"
       }); 
-    }
-  );
+      renderDemosInFirstYear();  // runs instructional demos during first spring and summer
+    });
 }
 
 
