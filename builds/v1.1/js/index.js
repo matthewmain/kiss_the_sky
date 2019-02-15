@@ -15,6 +15,11 @@
 ///settings
 var worldSpeed = 1;//5;  // (as frames per iteration: higher is slower) (does not affect physics iterations)
 var gameHasBegun = false;  // (whether user has initiated game play)
+var readyForEliminationDemo = false;  // (whether first year and spring announcement has completed)
+var readyForChangeDemo = false;  // (whether first year and summer announcement has completed)
+var eliminationDemoHasBegun = false;  // (whether instructional elimination demo has begun running)
+var changeDemoHasBegun = false;  // (whether instructional mutation/recessive trait demo has begun running)
+var allDemosHaveRun = false;
 var gamePaused = false;  // (whether game is paused)
 var viewShadows = true;  // (shadow visibility)
 var viewStalks = true;  // (stalk visibility) 
@@ -853,21 +858,23 @@ function renderPlants() {
 
 ///renders instructional demos at game opening (called as callback for season announcements in flower_handler.js)
 function renderDemosInFirstYear() {
-  if ( !ambientMode && !eliminationDemoHasRun && currentSeason === "Spring" ) {
-    eliminationDemoHasRun = true;
+  if ( readyForEliminationDemo && !eliminationDemoHasBegun && currentSeason === "Spring" ) {
+    eliminationDemoHasBegun = true;
     $("#demo_elimination_div")
       .css( "visibility", "visible" )
       .animate({ opacity: 1 }, 2000, "linear" )
       .delay(4000)
       .animate({ opacity: 0 }, 2000, "linear" );
   }
-  if ( !ambientMode && !changeDemoHasRun && currentSeason === "Summer" ) {
-    changeDemoHasRun = true;
+  if ( readyForChangeDemo && !changeDemoHasBegun && currentSeason === "Summer" ) {
+    changeDemoHasBegun = true;
     $("#demo_change_div")
       .css( "visibility", "visible" )
       .animate({ opacity: 1 }, 2000, "linear" )
       .delay(4000)
-      .animate({ opacity: 0 }, 2000, "linear" );
+      .animate({ opacity: 0 }, 2000, "linear", function() { 
+        allDemosHaveRun = true;
+      });
   }
 }
 
@@ -917,8 +924,7 @@ function runGameWinFlowersAnimation() {
     }, 700, "linear" );
   var totalFlowers = 600;
   (function flowerLoop( i ) {  // flower splatter (uses self-invoking function (for looping with timeouts)
-    $("#season_announcement").finish();
-    $("#year_announcement").finish();
+    $(".announcement").finish();
     var tint = Tl.rib(1,2) === 1 ? "light" : "dark"; 
     var top = Tl.rib( 0, 100 );
     var left = Tl.rib( 0, 100 );
@@ -1064,9 +1070,11 @@ function display() {
   }
   updateUI();
   if ( !ambientMode ) { 
+    renderDemosInFirstYear();
+    renderMilestones();
+    renderHeightMarker(); 
     checkForGameOver(); 
     checkForGameWin(); 
-    renderHeightMarker(); 
   }
   runLogs( 600 );
   if ( !gamePaused ) { window.requestAnimationFrame( display ); }

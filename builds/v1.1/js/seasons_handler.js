@@ -9,8 +9,6 @@ var currentYear = 1;
 var yearTime = 0;
 var currentSeason;
 var currentGreatestMaxSegment;
-var eliminationDemoHasRun = false;
-var changeDemoHasRun = false;
 
 ///season lengths
 var spL = 1000;  // spring length
@@ -205,7 +203,8 @@ function renderSeasonAnnouncement() {
         fontSize: "16pt",
         letterSpacing: "1.25pt"
       }); 
-      renderDemosInFirstYear();  // runs instructional demos during first spring and summer
+      if ( currentSeason === "Spring" && currentYear === 1 ) readyForEliminationDemo = true;
+      if ( currentSeason === "Summer" && currentYear === 1 ) readyForChangeDemo = true;
     });
 }
 

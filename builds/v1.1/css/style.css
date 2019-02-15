@@ -15,6 +15,12 @@ body {
 }
 
 
+
+
+
+
+
+
 /*** LANDING ***/
 
 #landing_page_div {
@@ -54,6 +60,10 @@ body {
   transform: translate(-50%, -50%);
   cursor: pointer;
 }
+
+
+
+
 
 
 
@@ -113,6 +123,11 @@ body {
 }
 
 
+
+
+
+
+
 /*** GAME SCREEN ***/
 
 
@@ -131,6 +146,10 @@ body {
   transform: translate(-50%,-50%);
 	width: 100%;
 }
+
+
+
+
 
 
 /*** FOOTER ***/
@@ -229,6 +248,10 @@ body {
 	padding-left: 1px;
 	font-weight: 400;
 }
+
+
+
+
 
 
 /*** SCREEN OVERLAYS ***/
@@ -420,6 +443,9 @@ body {
 
 
 
+
+
+
 /*** MODALS ***/
 
 
@@ -545,6 +571,11 @@ body {
 }
 
 
+
+
+
+
+
 /*** ANNOUNCEMENTS ***/
 
 
@@ -605,7 +636,6 @@ body {
   letter-spacing: 0;
   opacity: 0;
 }
-
 
 
 
@@ -710,6 +740,45 @@ body {
   animation-iteration-count: infinite;
   animation-duration: 2s;
 }
+
+
+
+
+.milestone {
+  position: absolute;
+  top: 19%;
+  left: 50%;
+  transform: translate(-50%);
+  display: none;
+  opacity: 0;
+}
+
+#milestone_first_red_flower {
+  width: 50%;
+}
+
+#milestone_third {
+  width: 77%;
+}
+
+#milestone_half {
+  width: 62%;
+}
+
+#milestone_two_thirds {
+  width: 76%;
+}
+
+#milestone_90 {
+  width: 45%; 
+}
+
+
+
+
+
+
+
 
 
 /*** ANIMATIONS ***/

@@ -11,6 +11,13 @@
 
 var pollinationAnimations = []; pollinationAnimationCount = 0;
 
+var readyForNextMilestoneAnnouncement = true;
+var milestoneFirstRedHasBeenRun = false;
+var milestoneThirdHasBeenRun = false;
+var milestoneHalfHasBeenRun = false;
+var milestoneTwoThirdsHasBeenRun = false;
+var milestone90HasBeenRun = false;
+
 
 
 
@@ -746,6 +753,40 @@ function renderHeightAnnouncement() {
       }); 
     }
   );
+}
+
+///fades out milestone announcements in and out
+function fadeMilestoneInOut( idString ) {
+  readyForNextMilestoneAnnouncement = false;
+  $(idString)
+    .css( "display", "block" )
+    .animate({ opacity: 1 }, 2000)
+    .animate({ opacity: 1 }, 5000)
+    .animate({ opacity: 0 }, 1000, function(){
+      readyForNextMilestoneAnnouncement = true;
+    });
+}
+
+///renders milestone announcements 
+function renderMilestones() {
+  if ( allDemosHaveRun && readyForNextMilestoneAnnouncement ) {
+    if ( !milestoneFirstRedHasBeenRun && highestRedFlowerPct > 0 ) {
+      fadeMilestoneInOut("#milestone_first_red_flower");
+      milestoneFirstRedHasBeenRun = true;
+    } else if ( !milestoneThirdHasBeenRun && highestRedFlowerPct >= 34 ) {
+      fadeMilestoneInOut("#milestone_third");
+      milestoneThirdHasBeenRun = true;          
+    } else if ( !milestoneHalfHasBeenRun && highestRedFlowerPct >= 50 ) {
+      fadeMilestoneInOut("#milestone_half");
+      milestoneHalfHasBeenRun = true;          
+    } else if ( !milestoneTwoThirdsHasBeenRun && highestRedFlowerPct >= 67 ) {
+      fadeMilestoneInOut("#milestone_two_thirds");
+      milestoneTwoThirdsHasBeenRun = true;          
+    } else if ( !milestone90HasBeenRun && highestRedFlowerPct >= 90 ) {
+      fadeMilestoneInOut("#milestone_90");
+      milestone90HasBeenRun = true;          
+    } 
+  }
 }
 
 ///renders markers that track the highest red flower height so far
