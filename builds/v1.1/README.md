@@ -36,7 +36,7 @@ Improvements & Fixes
 
 - [X] brief instructional notification during first spring about how to swipe to eliminate plants with a simple animation of a hand swiping and eliminating plants 
 - [X] brief instructional notification during first summer about how recessive traits and mutations work with a simple animated diagram pointing from trait to seed to new trait
-- [ ] a few in-game announcements to mark milestones: congratulations on first red plant, on being 1/3 way there, half way there, two thirds way there, and 90% way there
+- [X] a few in-game announcements to mark milestones: congratulations on first red plant, on being 1/3 way there, half way there, two thirds way there, and 90% way there
 - [ ] resolve red-flower color ambiguity: set saturation to 100 and remove gene, adjust criteria for redness
 - [ ] fade out shadows when leaf angle falls to below about -80 degrees from horizontal (will avoid narrow shadows when leaves are vertical as well as shadows flashing off at plant death)
 - [ ] omit pod closure at plant death, and speed up opening to accomodate faster seasonal changes 
