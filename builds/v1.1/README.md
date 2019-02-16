@@ -40,9 +40,10 @@ Improvements & Fixes
 - [X] resolve red-flower color ambiguity: set saturation to 100 and remove gene, adjust criteria for redness
 
 - [X] fix flower petal not fading but just flashing to white
-- [ ] seeds plant firmly without swinging
+- [X] seeds plant firmly without swinging
 
 - [ ] add media queries to update size of game win announcement text & footer text, or possibly use javascript to update based on canvas width
+- [ ] decide whether to replace megrim font on landing & "sow" buttons
 
 - [ ] fade out shadows when leaf angle falls to below about -80 degrees from horizontal (will avoid narrow shadows when leaves are vertical as well as shadows flashing off at plant death)
 - [ ] add shadow to gap between leaves
