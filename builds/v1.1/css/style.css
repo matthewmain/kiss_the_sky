@@ -642,9 +642,10 @@ body {
 
 
 #demo_elimination_div {
+  position: absolute;
   width: 100%;
   height: 100%;
-  display: none;
+  visibility: hidden;
   opacity: 0;
 }
 
@@ -702,9 +703,10 @@ body {
 }
 
 #demo_change_div {
+  position: absolute;
   width: 100%;
   height: 100%;
-  display: none;
+  visibility: hidden;
   opacity: 0;
 }
 
@@ -750,7 +752,7 @@ body {
   top: 19%;
   left: 50%;
   transform: translate(-50%);
-  display: none;
+  visibility: hidden;
   opacity: 0;
 }
 

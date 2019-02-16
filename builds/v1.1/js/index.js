@@ -13,7 +13,6 @@
 
 
 ///settings
-var worldSpeed = 1;//5;  // (as frames per iteration: higher is slower) (does not affect physics iterations)
 var gameHasBegun = false;  // (whether user has initiated game play)
 var readyForEliminationDemo = false;  // (whether first year and spring announcement has completed)
 var readyForChangeDemo = false;  // (whether first year and summer announcement has completed)

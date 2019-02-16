@@ -758,7 +758,7 @@ function renderHeightAnnouncement() {
 function fadeMilestoneInOut( idString ) {
   readyForNextMilestoneAnnouncement = false;
   $(idString)
-    .css( "display", "block" )
+    .css( "visibility", "visible" )
     .animate({ opacity: 1 }, 2000)
     .animate({ opacity: 1 }, 5000)
     .animate({ opacity: 0 }, 1000, function(){
