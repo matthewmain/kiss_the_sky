@@ -595,7 +595,7 @@ function applyHealthColoration( plant, segment ) {
       //(petals)
       var ffel = p.maxEnergyLevel * flowerFadeEnergyLevelRatio;  
       if ( cel <= ffel && cel > sel ) {  // flower fading energy levels
-        f.clP = hslaPlantColorShift( p, {h:fc.h,s:100,l:100}, {h:fc.h,s:50,l:100}, ffel, sel );  // fade color
+        f.clP = hslaPlantColorShift( p, {h:fc.h,s:100,l:fc.l}, {h:fc.h,s:50,l:100}, ffel, sel );  // fade color
       } else if ( cel <= sel && cel > del ) {  // sick energy levels
         f.clP = hslaPlantColorShift( p, {h:50,s:50,l:100}, {h:45,s:100,l:15}, sel, del );  // darken color
       }      
@@ -897,7 +897,7 @@ function checkForGameOver() {
 
 ///check for game win (whether a red flower reaches 100% screen height)  
 function checkForGameWin() {
-  if ( gameHasBegun && !endOfGameAnnouncementDisplayed && highestRedFlowerPct > 25) {
+  if ( gameHasBegun && !endOfGameAnnouncementDisplayed && highestRedFlowerPct === 100) {
     pause();
     runGameWinFlowersAnimation();
   }
