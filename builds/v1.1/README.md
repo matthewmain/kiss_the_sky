@@ -38,15 +38,22 @@ Improvements & Fixes
 - [X] brief instructional notification during first summer about how recessive traits and mutations work with a simple animated diagram pointing from trait to seed to new trait
 - [X] a few in-game announcements to mark milestones: congratulations on first red plant, on being 1/3 way there, half way there, two thirds way there, and 90% way there
 - [X] resolve red-flower color ambiguity: set saturation to 100 and remove gene, adjust criteria for redness
-- [ ] fade out shadows when leaf angle falls to below about -80 degrees from horizontal (will avoid narrow shadows when leaves are vertical as well as shadows flashing off at plant death)
-- [ ] omit pod closure at plant death, and speed up opening to accomodate faster seasonal changes 
-- [ ] add shadow to gap between leaves
-- [ ] fix all forward growth based on y-values by replacing with trig formula to ensure new growth is forward regardless of stalk angle
-- [ ] seeds plant firmly without swinging, even at worldspeed 1
-- [ ] change season background gradients so seasons are more distinct and changes are more dramatic (don't overdo it though)
-- [ ] fix large-plant elimination issue when curser is too far from a point (there may be a built-in canvas way to detect hover over a shape...? Otherwise need to calibrate elimination radius based on largest plant width)
+
+- [ ] fix flower petal not fading but just flashing to white
+- [ ] seeds plant firmly without swinging
+
 - [ ] add media queries to update size of game win announcement text & footer text, or possibly use javascript to update based on canvas width
+
+- [ ] fade out shadows when leaf angle falls to below about -80 degrees from horizontal (will avoid narrow shadows when leaves are vertical as well as shadows flashing off at plant death)
+- [ ] add shadow to gap between leaves
+
+- [ ] omit pod closure at plant death, and speed up opening to accomodate faster seasonal changes 
+- [ ] fix large-plant elimination issue when curser is too far from a point (there may be a built-in canvas way to detect hover over a shape...? Otherwise need to calibrate elimination radius based on largest plant width)
+- [ ] fix all forward growth based on y-values by replacing with trig formula to ensure new growth is forward regardless of stalk angle
+
+- [ ] change season background gradients so seasons are more distinct and changes are more dramatic (don't overdo it though)
 - [ ] give stalks & leaves variable fills (gradient, if possible) instead of stroke outlines (should look better and may improve rendering performance)
+
 - [ ] fix cross-browser issues (safari color value floats, etc.)
 
 <br>
