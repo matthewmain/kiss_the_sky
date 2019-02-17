@@ -39,10 +39,11 @@ Improvements & Fixes
 - [X] a few in-game announcements to mark milestones: congratulations on first red plant, on being 1/3 way there, half way there, two thirds way there, and 90% way there
 - [X] resolve red-flower color ambiguity: set saturation to 100 and remove gene, adjust criteria for redness
 
-- [ ] fix flower petal not fading but just flashing to white
-- [ ] seeds plant firmly without swinging
+- [X] fix flower petal not fading but just flashing to white
+- [X] seeds plant firmly without swinging
 
-- [ ] add media queries to update size of game win announcement text & footer text, or possibly use javascript to update based on canvas width
+- [X] replace megrim font with Dosis on landing & "sow" buttons
+- [X] add media queries to update size of game win announcement text & footer text, or possibly use javascript to update based on canvas width
 
 - [ ] fade out shadows when leaf angle falls to below about -80 degrees from horizontal (will avoid narrow shadows when leaves are vertical as well as shadows flashing off at plant death)
 - [ ] add shadow to gap between leaves

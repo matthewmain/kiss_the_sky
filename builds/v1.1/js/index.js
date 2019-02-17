@@ -110,8 +110,7 @@ function Seed( parentFlower, zygoteGenotype ) {
   this.phenotype = new Phenotype( this.genotype );
   this.p1.width = this.sw*1; 
   this.p1.mass = 5;
-  this.p2.width = this.sw*0.35; this.p2.mass = 5; 
-  this.p2.materiality = "immaterial";
+  this.p2.width = this.sw*0.35; this.p2.mass = 5;
   this.sp = addSp( this.p1.id, this.p2.id );  // seed span
   this.sp.strength = 2;
   this.opacity = 1;
@@ -323,12 +322,12 @@ function plantSeed( seed ) {
   seed.p1.fixed = true;
   seed.p1.materiality = "immaterial"; 
   if ( seed.p1.cy < canvas.height-1 ) {
-    seed.p1.cy += 1.5;
-    seed.p2.cy += 1.5; 
+    seed.p1.cy += 1;
+    seed.p2.cy += 1; 
   } else {
     p1Positioned = true;
   }
-  if ( seed.p2.cy > seed.p2.py ) {
+  if ( seed.p2.cy > seed.p2.py ) {  // halts swinging when pointing down
     seed.p2.cy = seed.p2.py;
     p2Positioned = true;
   }
@@ -339,7 +338,10 @@ function plantSeed( seed ) {
 
 ///germinates seeds when ready (after it has been planted and spring has arrived)
 function germinateSeedWhenReady( seed ) {
-  if ( seed.p1.cy > canvas.height-seed.p1.width/2-0.5 && !seed.planted ) {    
+  p1Stable = (canvas.height-seed.p1.width/2) - seed.p1.cy < 0.05;
+  p2Stable = (canvas.height-seed.p2.width/2) - seed.p2.cy < 0.05;
+  if ( !seed.planted && p1Stable && p2Stable ) {
+    seed.p2.materiality = "immaterial";
     plantSeed( seed );
   }
   if ( seed.planted && currentSeason === "Spring" ) {
@@ -595,7 +597,7 @@ function applyHealthColoration( plant, segment ) {
       //(petals)
       var ffel = p.maxEnergyLevel * flowerFadeEnergyLevelRatio;  
       if ( cel <= ffel && cel > sel ) {  // flower fading energy levels
-        f.clP = hslaPlantColorShift( p, {h:fc.h,s:100,l:100}, {h:fc.h,s:50,l:100}, ffel, sel );  // fade color
+        f.clP = hslaPlantColorShift( p, {h:fc.h,s:100,l:fc.l}, {h:fc.h,s:50,l:100}, ffel, sel );  // fade color
       } else if ( cel <= sel && cel > del ) {  // sick energy levels
         f.clP = hslaPlantColorShift( p, {h:50,s:50,l:100}, {h:45,s:100,l:15}, sel, del );  // darken color
       }      
@@ -897,7 +899,7 @@ function checkForGameOver() {
 
 ///check for game win (whether a red flower reaches 100% screen height)  
 function checkForGameWin() {
-  if ( gameHasBegun && !endOfGameAnnouncementDisplayed && highestRedFlowerPct > 25) {
+  if ( gameHasBegun && !endOfGameAnnouncementDisplayed && highestRedFlowerPct === 100) {
     pause();
     runGameWinFlowersAnimation();
   }
@@ -913,7 +915,6 @@ function runGameWinFlowersAnimation() {
   $("#hundred_pct_large_height_announcement")  // initial large 100% text burst
     .animate({ 
       fontSize: "+=10pt",
-      letterSpacing: "+=3pt",
       opacity: 1,
     }, 500, "linear" )
     .animate({ 

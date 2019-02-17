@@ -9,6 +9,7 @@
 
 var headerDiv = document.getElementById("header_div");
 var footerDiv = document.getElementById("footer_div");
+var landingSvgRatio = $('#landing_svg_bg')[0].naturalHeight / $('#landing_svg_bg')[0].naturalWidth;
 
 var mouseCanvasXPct;
 var mouseCanvasYPct;
@@ -49,6 +50,19 @@ function SunShade( handle1, handle2 ) {
 /////---FUNCTIONS---/////
 
 
+///scales landing to window
+function scaleLanding() {
+  $("#landing_content_div").css({ height: "80%", width: "80%" });
+  $("#landing_svg_bg").css({ height: "100%", width: "100%" });
+  if ( $("#landing_content_div").height() > $("#landing_content_div").width()*landingSvgRatio ) {
+    $("#landing_svg_bg").height( $("#landing_content_div").width()*landingSvgRatio );
+    $("#landing_content_div").height( $("#landing_svg_bg").height() );
+  } else {
+    $("#landing_svg_bg").width( $("#landing_content_div").height()/landingSvgRatio );
+    $("#landing_content_div").width( $("#landing_svg_bg").width() );
+  }
+}
+
 ///attaches header and footer to canvas (after canvas has been resized to window dimensions in verlet.js)
 function attachHeaderAndFooter() {
   var canvasHeight = parseFloat(canvasContainerDiv.style.height);
@@ -59,6 +73,48 @@ function attachHeaderAndFooter() {
   footerDiv.style.width = canvasContainerDiv.style.width;
   footerDiv.style.height = canvasHeight*0.075+"px";
   footerDiv.style.top = canvasTop+canvasHeight+"px";
+  scaleFooterContent();
+}
+
+///scales text content down for smaller window sizes
+function scaleFooterContent() {
+  if ( $("#canvas_container_div").width() < 230 ) {
+    $(".text").css({ fontSize: "4pt", top: "1px" });
+    $("#pie_svg_left").css({ top: "7.4px" });
+    $("#tag_content").css({ fontSize: "5pt", top: "12px" });
+    $("#pie_svg_right").css({ top: "6.35px" });
+    $("#hundred_pct_large_height_announcement").css({ fontSize: "15pt"});
+    $(".game_win_text").css({ fontSize: "8pt"});
+    $("#game_win_gen_number").css({ fontSize: "12pt"});
+    $("#game_win_mode").css({ fontSize: "10pt"});
+  } else if ( $("#canvas_container_div").width() < 300 ) {
+    $(".text").css({ fontSize: "7pt", top: "3px" });
+    $("#pie_svg_left").css({ top: "7.4px" });
+    $("#tag_content").css({ fontSize: "7pt", top: "15.5px" });
+    $("#pie_svg_right").css({ top: "8.35px" });
+    $("#hundred_pct_large_height_announcement").css({ fontSize: "20pt"});
+    $(".game_win_text").css({ fontSize: "10pt"});
+    $("#game_win_gen_number").css({ fontSize: "14pt"});
+    $("#game_win_mode").css({ fontSize: "12pt"});
+  } else if ( $("#canvas_container_div").width() < 400 ){ 
+    $(".text").css({ fontSize: "9pt", top: "7px" });
+    $("#pie_svg_left").css({ top: "13.4px" });
+    $("#tag_content").css({ fontSize: "8pt", top: "19.5px" });
+    $("#pie_svg_right").css({ top: "12.35px" });
+    $("#hundred_pct_large_height_announcement").css({ fontSize: "50pt"});
+    $(".game_win_text").css({ fontSize: "12pt"});
+    $("#game_win_gen_number").css({ fontSize: "16pt"});
+    $("#game_win_mode").css({ fontSize: "15pt"});
+  } else {  // > 400
+    $(".text").css({ fontSize: "9pt", top: "12px" });
+    $("#pie_svg_left").css({ top: "18.4px" });
+    $("#tag_content").css({ fontSize: "10pt", top: "24.5px" });
+    $("#pie_svg_right").css({ top: "17.35px" });
+    $("#hundred_pct_large_height_announcement").css({ fontSize: "80pt"});
+    $(".game_win_text").css({ fontSize: "17pt"});
+    $("#game_win_gen_number").css({ fontSize: "23pt"});
+    $("#game_win_mode").css({ fontSize: "19pt"});
+  }
 }
 
 ///creates a new sun shade handle
@@ -321,6 +377,7 @@ function renderSunShades() {
 
 ///keeps UI elements scaled when window is resized (even when game is paused)
 $(window).resize(function() {
+  scaleLanding();
   updateUI();
 });
 
@@ -518,6 +575,14 @@ document.addEventListener("click", function(e) {
   stopEliminatingPlants();
 });
 
+///game over try again button & game win play again buttons
+$("#button_try_again_hover, .button_game_win_play_again").click(function(){
+  location.reload();
+});
+
+///copyright
+$("#this_year").text(new Date().getFullYear());
+
 ///grabs/moves sun shade handle and eliminates plants on cursor drag
 document.addEventListener("mousedown", function(e) { grabHandle(e); startEliminatingPlants(); });
 document.addEventListener("mousemove", function(e) {  updateMouse(e); moveHandle(e); eliminatePlants(e); });
@@ -526,15 +591,12 @@ document.addEventListener("touchstart", function(e) { grabHandle(e); startElimin
 document.addEventListener("touchmove", function(e) {  moveHandle(e); eliminatePlants(e); });
 document.addEventListener("touchup", function() {  dropHandle(); stopEliminatingPlants(); });
 
-///game over try again button & game win play again buttons
-$("#button_try_again_hover, .button_game_win_play_again").click(function(){
-  location.reload();
-});
-
 
 
 
 /////---UPDATE---/////
+
+scaleLanding();
 
 ///updates UI (runs every iteration)
 function updateUI() {
@@ -546,8 +608,5 @@ function updateUI() {
   updateSeasonPieChart();
   if ( !ambientMode ) { displayEliminatePlantIconWithCursor(); }
 }
-
-
-
 
 
