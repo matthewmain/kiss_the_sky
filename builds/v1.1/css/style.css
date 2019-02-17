@@ -400,7 +400,7 @@ body {
 .game_win_text {
   position: absolute;
   color: #ffffff;
-  font-size: 18pt;
+  font-size: 17pt;
   font-weight: 600;
   letter-spacing: 1.4px;
   text-shadow: 0 0 3px #000000, 0 0 2px #000000;
@@ -418,11 +418,11 @@ body {
 }
 
 #game_win_gen_number {
-  font-size: 24pt;
+  font-size: 23pt;
 }
 
 #game_win_mode {
-  font-size: 20pt;
+  font-size: 19pt;
 }
 
 #button_play_again {

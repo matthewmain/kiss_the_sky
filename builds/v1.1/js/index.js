@@ -915,7 +915,6 @@ function runGameWinFlowersAnimation() {
   $("#hundred_pct_large_height_announcement")  // initial large 100% text burst
     .animate({ 
       fontSize: "+=10pt",
-      letterSpacing: "+=3pt",
       opacity: 1,
     }, 500, "linear" )
     .animate({ 
