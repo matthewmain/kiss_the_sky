@@ -73,6 +73,35 @@ function attachHeaderAndFooter() {
   footerDiv.style.width = canvasContainerDiv.style.width;
   footerDiv.style.height = canvasHeight*0.075+"px";
   footerDiv.style.top = canvasTop+canvasHeight+"px";
+  scaleFooterContent();
+
+  console.log($("#canvas_container_div").width());
+
+}
+
+///scales footer content down for smaller window sizes
+function scaleFooterContent() {
+  if ( $("#canvas_container_div").width() < 230 ) {
+    $(".text").css({ fontSize: "4pt", top: "1px" });
+    $("#pie_svg_left").css({ top: "7.4px" });
+    $("#tag_content").css({ fontSize: "5pt", top: "12px" });
+    $("#pie_svg_right").css({ top: "6.35px" });
+  } else if ( $("#canvas_container_div").width() < 300 ) {
+    $(".text").css({ fontSize: "7pt", top: "3px" });
+    $("#pie_svg_left").css({ top: "7.4px" });
+    $("#tag_content").css({ fontSize: "7pt", top: "15.5px" });
+    $("#pie_svg_right").css({ top: "8.35px" });
+  } else if ( $("#canvas_container_div").width() < 400 ){ 
+    $(".text").css({ fontSize: "9pt", top: "7px" });
+    $("#pie_svg_left").css({ top: "13.4px" });
+    $("#tag_content").css({ fontSize: "8pt", top: "19.5px" });
+    $("#pie_svg_right").css({ top: "12.35px" });
+  } else {  // > 400
+    $(".text").css({ fontSize: "9pt", top: "12px" });
+    $("#pie_svg_left").css({ top: "18.4px" });
+    $("#tag_content").css({ fontSize: "10pt", top: "24.5px" });
+    $("#pie_svg_right").css({ top: "17.35px" });
+  }
 }
 
 ///creates a new sun shade handle

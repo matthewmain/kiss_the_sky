@@ -42,8 +42,8 @@ Improvements & Fixes
 - [X] fix flower petal not fading but just flashing to white
 - [X] seeds plant firmly without swinging
 
+- [X] replace megrim font with Dosis on landing & "sow" buttons
 - [ ] add media queries to update size of game win announcement text & footer text, or possibly use javascript to update based on canvas width
-- [ ] replace megrim font with Dosis on landing & "sow" buttons
 
 - [ ] fade out shadows when leaf angle falls to below about -80 degrees from horizontal (will avoid narrow shadows when leaves are vertical as well as shadows flashing off at plant death)
 - [ ] add shadow to gap between leaves

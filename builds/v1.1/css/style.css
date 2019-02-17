@@ -183,11 +183,6 @@ body {
 	top: 12px;
 }
 
-.number {
-	font-family: "Nunito", Avenir, sans-serif;
-	font-size: 10pt;
-}
-
 #time {
 	float: left;
 }
@@ -229,35 +224,35 @@ body {
 
 #height_text {
 	float: right;
-	margin: 5px 52px 0 0;
+	margin: 5px 13% 0 0;
 }
 
 #tag_div {
 	position: absolute;
 	top: 0;
-	right: 10px;
-	width: 34px;
+	right: 1%;
+  width: 10%;
 }
 
 #tag_svg {
 	position: absolute;
-	width: 38px;
+	width: 100%;
 }
 
 #tag_content {
-	position: absolute;
+  font-family: "Nunito", Avenir, sans-serif;
+  position: absolute;
   margin: 0;
-	top: 24.5px;
-  left: 58%;
+  top: 24.5px;
+  left: 50%;
   transform: translate(-50%, -50%);
   font-weight: 700;
+  font-size: 10pt;
   color: #D5D8C5;
 }
 
 #percent {
 	position: relative;
-	top: 0;
-	padding-left: 1px;
 	font-weight: 400;
 }
 
