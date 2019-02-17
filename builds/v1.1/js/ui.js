@@ -9,6 +9,7 @@
 
 var headerDiv = document.getElementById("header_div");
 var footerDiv = document.getElementById("footer_div");
+var landingSvgRatio = $('#landing_svg_bg')[0].naturalHeight / $('#landing_svg_bg')[0].naturalWidth;
 
 var mouseCanvasXPct;
 var mouseCanvasYPct;
@@ -48,6 +49,19 @@ function SunShade( handle1, handle2 ) {
 
 /////---FUNCTIONS---/////
 
+
+///scales landing to window
+function scaleLanding() {
+  $("#landing_content_div").css({ height: "80%", width: "80%" });
+  $("#landing_svg_bg").css({ height: "100%", width: "100%" });
+  if ( $("#landing_content_div").height() > $("#landing_content_div").width()*landingSvgRatio ) {
+    $("#landing_svg_bg").height( $("#landing_content_div").width()*landingSvgRatio );
+    $("#landing_content_div").height( $("#landing_svg_bg").height() );
+  } else {
+    $("#landing_svg_bg").width( $("#landing_content_div").height()/landingSvgRatio );
+    $("#landing_content_div").width( $("#landing_svg_bg").width() );
+  }
+}
 
 ///attaches header and footer to canvas (after canvas has been resized to window dimensions in verlet.js)
 function attachHeaderAndFooter() {
@@ -321,6 +335,7 @@ function renderSunShades() {
 
 ///keeps UI elements scaled when window is resized (even when game is paused)
 $(window).resize(function() {
+  scaleLanding();
   updateUI();
 });
 
@@ -539,6 +554,8 @@ document.addEventListener("touchup", function() {  dropHandle(); stopEliminating
 
 /////---UPDATE---/////
 
+scaleLanding();
+
 ///updates UI (runs every iteration)
 function updateUI() {
   attachHeaderAndFooter();
@@ -549,8 +566,5 @@ function updateUI() {
   updateSeasonPieChart();
   if ( !ambientMode ) { displayEliminatePlantIconWithCursor(); }
 }
-
-
-
 
 
