@@ -518,6 +518,14 @@ document.addEventListener("click", function(e) {
   stopEliminatingPlants();
 });
 
+///game over try again button & game win play again buttons
+$("#button_try_again_hover, .button_game_win_play_again").click(function(){
+  location.reload();
+});
+
+///copyright
+$("#this_year").text(new Date().getFullYear());
+
 ///grabs/moves sun shade handle and eliminates plants on cursor drag
 document.addEventListener("mousedown", function(e) { grabHandle(e); startEliminatingPlants(); });
 document.addEventListener("mousemove", function(e) {  updateMouse(e); moveHandle(e); eliminatePlants(e); });
@@ -525,11 +533,6 @@ document.addEventListener("mouseup", function() {  dropHandle(); stopEliminating
 document.addEventListener("touchstart", function(e) { grabHandle(e); startEliminatingPlants(); });
 document.addEventListener("touchmove", function(e) {  moveHandle(e); eliminatePlants(e); });
 document.addEventListener("touchup", function() {  dropHandle(); stopEliminatingPlants(); });
-
-///game over try again button & game win play again buttons
-$("#button_try_again_hover, .button_game_win_play_again").click(function(){
-  location.reload();
-});
 
 
 
