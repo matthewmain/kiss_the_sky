@@ -45,8 +45,8 @@ Improvements & Fixes
 - [X] replace megrim font with Dosis on landing & "sow" buttons
 - [X] add media queries to update size of game win announcement text & footer text, or possibly use javascript to update based on canvas width
 
-- [ ] fade out shadows when leaf angle falls to below about -80 degrees from horizontal (will avoid narrow shadows when leaves are vertical as well as shadows flashing off at plant death)
-- [ ] add shadow to gap between leaves
+- [X] add shadow to gap between leaves
+- [X] fade out shadows as plant dies
 
 - [ ] omit pod closure at plant death, and speed up opening to accomodate faster seasonal changes 
 - [ ] fix large-plant elimination issue when curser is too far from a point (there may be a built-in canvas way to detect hover over a shape...? Otherwise need to calibrate elimination radius based on largest plant width)

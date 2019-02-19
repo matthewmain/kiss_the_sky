@@ -233,7 +233,6 @@ function eliminatePlants( e, plant ) {
 function pause() {
   document.getElementById("icon_pause").style.visibility = "hidden";
   document.getElementById("icon_play").style.visibility = "visible";
-  $(".announcement").finish();  // stops & removes any present announcements
   gamePaused = true;
 }
 

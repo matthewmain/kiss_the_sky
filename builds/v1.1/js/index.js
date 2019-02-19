@@ -83,6 +83,10 @@ var C = {
   hil: { r: 0, g: 112, b: 0, a: 1 },  // healthy inner line color (slightly darker green than leaf fill)
   yil: { r: 107, g: 90, b: 31, a: 1 },  // yellowed inner line color (slightly darker sickly yellow than leaf fill) 
   dil: { r: 56, g: 47, b: 12, a: 1 },  // dead inner line color (slightly darker brown than leaf fill)
+  //leaf shadows
+  hls: { r: 0, g: 0, b: 0, a: 0.1 },  // healthy leaf shadow color
+  yls: { r: 0, g: 0, b: 0, a: 0.05 },  // yellowed leaf shadow color
+  dls: { r: 0, g: 0, b: 0, a: 0 },  // dead leaf shadow color
   //pollen pad
   pp: { r: 255, g: 217, b: 102, a: 1 },  // pollen pad color
   pl: { r: 255, g: 159, b: 41, a: 1 },  // pollination line color
@@ -224,9 +228,10 @@ function Segment( plant, parentSegment, basePoint1, basePoint2 ) {
   this.spLf2 = null;  // leaf 2 Span
   //colors
   this.clS = C.hdf;  // stalk color (dark green when healthy)
-  this.clL = C.hlf;  // leaf color (green when healthy)
   this.clO = C.hol;  // outline color (very dark brown when healthy)
   this.clI = C.hil;  // inner line color (slightly darker green than leaf fill when healthy) 
+  this.clL = C.hlf;  // leaf color (green when healthy)
+  this.clLS = C.hls;  // leaf shadow color (barely opaque black when healthy) 
 }
 
 
@@ -556,7 +561,8 @@ function rgbaPlantColorShift( plant, startColor, endColor, startEnergy, endEnerg
   var r = endColor.r - ( (curEn-endEnergy) * (endColor.r-startColor.r) / (startEnergy-endEnergy) );  // redshift
   var g = endColor.g - ( (curEn-endEnergy) * (endColor.g-startColor.g) / (startEnergy-endEnergy) );  // greenshift
   var b = endColor.b - ( (curEn-endEnergy) * (endColor.b-startColor.b) / (startEnergy-endEnergy) );  // blueshift
-  return { r: r, g: g, b: b, a: 1 };
+  var a = endColor.a - ( (curEn-endEnergy) * (endColor.a-startColor.a) / (startEnergy-endEnergy) );  // blueshift
+  return { r: r, g: g, b: b, a: a };
 }
 
 ///shifts an hsl color between start and end colors scaled proportionally to start and end plant energy levels
@@ -582,11 +588,13 @@ function applyHealthColoration( plant, segment ) {
     s.clL = rgbaPlantColorShift( p, C.hlf, C.yf, uel, sel );  // leaves (light fills)
     s.clO = rgbaPlantColorShift( p, C.hol, C.yol, uel, sel );  // outlines
     s.clI = rgbaPlantColorShift( p, C.hil, C.yil, uel, sel );  // inner lines
+    s.clLS = rgbaPlantColorShift( p, C.hls, C.yls, uel, sel );  // leaf shadows
   } else if ( cel <= sel && cel > del ) {  // sick energy levels (darkening)
     s.clS = rgbaPlantColorShift( p, C.yf, C.df, sel, del );  // stalks 
     s.clL = rgbaPlantColorShift( p, C.yf, C.df, sel, del );  // leaves
     s.clO = rgbaPlantColorShift( p, C.yol, C.dol, sel, del );  // outlines
     s.clI = rgbaPlantColorShift( p, C.yil, C.dil, sel, del );  // inner lines
+    s.clLS = rgbaPlantColorShift( p, C.yls, C.dls, sel, del );  // leaf shadows
   }
   if ( p.hasFlowers && s.id === 1 ) {
     for ( var i=0; i<p.flowers.length; i++ ) {
@@ -802,7 +810,7 @@ function renderLeaves( plant, segment ) {
   if ( segment.hasLeaves ) {
     renderLeaf( plant, segment, segment.spLf1 );
     renderLeaf( plant, segment, segment.spLf2 );
-    if ( viewShadows && plant.isAlive ) { markLeafShadowPositions( segment ); }
+    if ( viewShadows && plant.isAlive ) { addLeafShadows( segment ); }
   }
 }
 
@@ -1047,7 +1055,7 @@ function runLogs( frequency ) {
 //for ( var i=0; i<5; i++ ) { createSeed( null, generateSmallPlantGenotype() ); }  
 //for ( var i=0; i<5; i++ ) { createSeed( null, generateMediumPlantGenotype() ); }
 //for ( var i=0; i<25; i++ ) { createSeed( null, generateLargePlantGenotype() ); }
-//for ( var i=0; i<25; i++ ) { createSeed( null, generateTallPlantGenotype( 1 ) ); }
+//for ( var i=0; i<1; i++ ) { createSeed( null, generateTallPlantGenotype( 1 ) ); }
 //for ( var i=0; i<5; i++ ) { createSeed( null, generateHugePlantGenotype() ); }
 //for ( var i=0; i<5; i++ ) { createSeed( null, generateHugeRedPlantGenotype() ); }
 
