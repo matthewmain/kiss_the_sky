@@ -224,14 +224,14 @@ body {
 
 #height_text {
 	float: right;
-	margin: 5px 13% 0 0;
+	margin: 5px 12% 0 0;
 }
 
 #tag_div {
 	position: absolute;
 	top: 0;
 	right: 1%;
-  width: 10%;
+  width: 9%;
 }
 
 #tag_svg {
