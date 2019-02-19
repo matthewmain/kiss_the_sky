@@ -18,11 +18,16 @@ function SunRay() {
 }
 
 ///shadow constructor
-function Shadow( leafSpan ) {
-  this.p1 = leafSpan.p1;
-  this.p2 = leafSpan.p2;
-  this.p3 = { cx: this.p2.cx, cy: yValFromPct( 100 ) };
-  this.p4 = { cx: this.p1.cx, cy: yValFromPct( 100 ) };
+function Shadow( segment ) {
+  this.s = segment;
+  this.p1t = segment.spLf1.p2;
+  this.p2t = segment.spLf1.p1;
+  this.p3t = segment.spLf2.p1;
+  this.p4t = segment.spLf2.p2;
+  this.p1b = { cx: this.p1t.cx, cy: yValFromPct( 100 ) };
+  this.p2b = { cx: this.p2t.cx, cy: yValFromPct( 100 ) };
+  this.p3b = { cx: this.p3t.cx, cy: yValFromPct( 100 ) };
+  this.p4b = { cx: this.p4t.cx, cy: yValFromPct( 100 ) };
 }
 
 
@@ -104,24 +109,36 @@ function photosynthesize() {
 }
 
 ///marks shadow positions (based on position of leaf spans)
-function markLeafShadowPositions( segment ) {
-  shadows.push( new Shadow( segment.spLf1 ) );
-  shadows.push( new Shadow( segment.spLf2 ) );
+function addLeafShadows( segment ) {
+  shadows.push( new Shadow( segment ) );
 }
 
 ///renders shadows (from highest to lowest elevation)
 function renderLeafShadows() {
-  shadows.sort( function( a, b ) { return a.p2.cy - b.p2.cy; } );
+  shadows.sort( function( a, b ) { return a.p1t.cy - b.p1t.cy; } );
   for ( var i=0; i<shadows.length; i++ ) {
     var sh = shadows[i];
-    ctx.beginPath();
-    ctx.moveTo( sh.p1.cx, sh.p1.cy );
-    ctx.lineTo( sh.p2.cx, sh.p2.cy ); 
-    ctx.lineTo( sh.p3.cx, sh.p3.cy );
-    ctx.lineTo( sh.p4.cx, sh.p4.cy );
-    ctx.lineTo( sh.p1.cx, sh.p1.cy );
-    ctx.fillStyle = "rgba( 0, 0, 0, 0.1 )";
-    ctx.fill();  
+    ctx.fillStyle = "rgba("+sh.s.clLS.r+","+sh.s.clLS.g+","+sh.s.clLS.b+","+sh.s.clLS.a+")";
+    ctx.beginPath();  // left leaf
+    ctx.moveTo( sh.p1b.cx, sh.p1b.cy );
+    ctx.lineTo( sh.p1t.cx, sh.p1t.cy );
+    ctx.lineTo( sh.p2t.cx, sh.p2t.cy );
+    ctx.lineTo( sh.p2b.cx, sh.p2b.cy );
+    ctx.fill();
+    ctx.beginPath();  // between leaves
+    ctx.fillStyle = "rgba("+sh.s.clLS.r+","+sh.s.clLS.g+","+sh.s.clLS.b+","+sh.s.clLS.a+")";
+    ctx.moveTo( sh.p2b.cx, sh.p2b.cy );
+    ctx.lineTo( sh.p2t.cx, sh.p2t.cy );
+    ctx.lineTo( sh.p3t.cx, sh.p3t.cy );
+    ctx.lineTo( sh.p3b.cx, sh.p3b.cy );
+    ctx.fill();
+    ctx.beginPath();  // right leaf
+    ctx.fillStyle = "rgba("+sh.s.clLS.r+","+sh.s.clLS.g+","+sh.s.clLS.b+","+sh.s.clLS.a+")";
+    ctx.moveTo( sh.p3b.cx, sh.p3b.cy );
+    ctx.lineTo( sh.p3t.cx, sh.p3t.cy );
+    ctx.lineTo( sh.p4t.cx, sh.p4t.cy );
+    ctx.lineTo( sh.p4b.cx, sh.p4b.cy );
+    ctx.fill();
   }
   //resets shadows
   shadows = []; shadowCount = 0;
