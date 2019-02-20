@@ -58,9 +58,11 @@ var ccs4 = psbg.cs4;  // current color stop 4
 ///tracks seasons
 function trackSeasons() {
   yearTime++;
+  //spring
   if ( yearTime === 1 ) { 
     currentSeason = "Spring"; photosynthesisRatio = 1; livEnExp = 0.75;
     renderYearAnnouncement(); renderSeasonAnnouncement(); 
+  //summer
   } else if ( yearTime === spL+1 ) {
     currentSeason = "Summer"; photosynthesisRatio = 1; livEnExp = 1;
     if ( currentYear === 1 ) {  // sets first year summer length to ensure enough time for demo animation
@@ -69,11 +71,13 @@ function trackSeasons() {
       suL = 85*currentGreatestMaxSegment() > 300 ? 85*currentGreatestMaxSegment() : 300; 
     }
     renderSeasonAnnouncement();
+  //fall
   } else if ( yearTime === spL+suL+1 ) {
-    currentSeason = "Fall"; photosynthesisRatio = 0; livEnExp = 7;
+    currentSeason = "Fall"; photosynthesisRatio = 0; livEnExp = 10;
     renderSeasonAnnouncement();
+  //winter
   } else if ( yearTime === spL+suL+faL+1 ) {
-    currentSeason = "Winter"; photosynthesisRatio = 0; livEnExp = 10;
+    currentSeason = "Winter"; photosynthesisRatio = 0; livEnExp = 20;
     renderSeasonAnnouncement();
   }
   if ( yearTime === spL+suL+faL+wiL) {

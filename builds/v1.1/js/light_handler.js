@@ -115,7 +115,6 @@ function addLeafShadows( segment ) {
 
 ///renders shadows (from highest to lowest elevation)
 function renderLeafShadows() {
-  shadows.sort( function( a, b ) { return a.p1t.cy - b.p1t.cy; } );
   for ( var i=0; i<shadows.length; i++ ) {
     var sh = shadows[i];
     ctx.fillStyle = "rgba("+sh.s.clLS.r+","+sh.s.clLS.g+","+sh.s.clLS.b+","+sh.s.clLS.a+")";
