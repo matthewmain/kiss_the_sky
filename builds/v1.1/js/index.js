@@ -322,21 +322,9 @@ function dropSeed( seed ) {
 
 ///plants seed (secures its position to ground)
 function plantSeed( seed ) {
-  var p1Positioned = false;
-  var p2Positioned = false;
-  seed.p1.fixed = true;
-  seed.p1.materiality = "immaterial"; 
-  if ( seed.p1.cy < canvas.height-1 ) {
-    seed.p1.cy += 1;
-    seed.p2.cy += 1; 
-  } else {
-    p1Positioned = true;
-  }
-  if ( seed.p2.cy > seed.p2.py ) {  // halts swinging when pointing down
-    seed.p2.cy = seed.p2.py;
-    p2Positioned = true;
-  }
-  if ( p1Positioned && p2Positioned ) { 
+  seed.p1.fixed = true; 
+  seed.p2.materiality = "immaterial";
+  if ( Math.round( seed.p2.cx ) === Math.round( seed.p1.cx )  ) {
     seed.planted = true;
   }
 }
@@ -346,7 +334,6 @@ function germinateSeedWhenReady( seed ) {
   p1Stable = (canvas.height-seed.p1.width/2) - seed.p1.cy < 0.05;
   p2Stable = (canvas.height-seed.p2.width/2) - seed.p2.cy < 0.05;
   if ( !seed.planted && p1Stable && p2Stable ) {
-    seed.p2.materiality = "immaterial";
     plantSeed( seed );
   }
   if ( seed.planted && currentSeason === "Spring" ) {
@@ -1036,7 +1023,7 @@ function runLogs( frequency ) {
     // logCurrentGenePresence( "flowerHue" );
     // logCurrentGenePresence( "flowerLightness" );
 
-    //console.log(  );
+    //console.log( );
 
   }
 }
@@ -1054,7 +1041,7 @@ function runLogs( frequency ) {
 //for ( var i=0; i<5; i++ ) { createSeed( null, generateSmallPlantGenotype() ); }  
 //for ( var i=0; i<5; i++ ) { createSeed( null, generateMediumPlantGenotype() ); }
 //for ( var i=0; i<10; i++ ) { createSeed( null, generateLargePlantGenotype() ); }
-//for ( var i=0; i<1; i++ ) { createSeed( null, generateTallPlantGenotype( 1 ) ); }
+//for ( var i=0; i<10; i++ ) { createSeed( null, generateTallPlantGenotype( 1 ) ); }
 //for ( var i=0; i<5; i++ ) { createSeed( null, generateHugePlantGenotype() ); }
 //for ( var i=0; i<5; i++ ) { createSeed( null, generateHugeRedPlantGenotype() ); }
 
@@ -1081,7 +1068,7 @@ function display() {
     checkForGameOver(); 
     checkForGameWin(); 
   }
-  runLogs( 600 );
+  runLogs( 60 );
   if ( !gamePaused ) { window.requestAnimationFrame( display ); }
 }
 

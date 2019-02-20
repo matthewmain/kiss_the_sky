@@ -46,8 +46,7 @@ Improvements & Fixes
 - [X] fade out shadows as plant dies
 - [X] speed up pod opening & seed drop to accomodate faster seasonal changes 
 - [X] omit pod closure at plant death
-
-- [ ] fix large-plant elimination issue when curser is too far from a point (there may be a built-in canvas way to detect hover over a shape...? Otherwise need to calibrate elimination radius based on largest plant width)
+- [X] fix large-plant elimination issue when curser is too far from a point by calibrating elimination radius based on largest plant width)
 
 - [ ] fix all forward growth based on y-values by replacing with trig formula to ensure new growth is forward regardless of stalk angle
 

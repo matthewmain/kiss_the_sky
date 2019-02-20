@@ -41,6 +41,7 @@ body {
 
 /*** LANDING ***/
 
+
 #landing_page_div {
   position: fixed;
   width: 100%;
@@ -594,6 +595,10 @@ body {
 
 /*** ANNOUNCEMENTS ***/
 
+
+.announcement {
+  pointer-events: none;
+}
 
 #year_announcement {
 	position: absolute;

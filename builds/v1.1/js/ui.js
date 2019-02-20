@@ -18,7 +18,7 @@ var sunShadeY = yValFromPct(8);  // sun shade elevation as canvas Y value
 var sunShadeHandleRadiusPct = 1.75;  // sun shade handle radius as percentage of canvas width
 var grabbedHandle = null;  // grabbed handle object (assigned when handle is clicked/touched)
 
-var selectRadius = canvas.width*0.015; // radius from click/touch point within which an item is selected
+var selectRadius = canvas.width*0.015;  // radius from cursor where point is detected (updated every summer)
 var plantsAreBeingEliminated = false;
 
 var gameDifficulty = "beginner";
@@ -139,6 +139,20 @@ function placeSunShades( leftCount, rightCount ) {
   for ( var j=0; j<rightCount; j++ ) { createSunShade( 100, 100 ); }
 }
 
+///scales elimination cursor based on average plant width
+function scaleEliminationCursor() {
+  var baseWidthsSum = 0;
+  var activePlantCount = 0;
+  for ( var i=0; i<plants.length; i++ ) { 
+    if ( plants[i].sourceSeed.hasGerminated && plants[i].isAlive ) { 
+      baseWidthsSum += plants[i].spB.l; 
+      activePlantCount++;
+    } 
+  }
+  baseWidthAvg = baseWidthsSum/activePlantCount;
+  selectRadius = baseWidthAvg*1.5 > canvas.width*0.015 ? baseWidthAvg*1.5 : canvas.width*0.015 ;
+}
+
 
 
 //// Event Functions ////
@@ -202,18 +216,18 @@ function eliminatePlants( e, plant ) {
           var s = p.segments[j];
           var xDiffPct1 = pctFromXVal( s.ptE1.cx ) - mouseCanvasXPct;
           var yDiffPct1 = pctFromYVal( s.ptE1.cy ) - mouseCanvasYPct;
-          var distancePct1 = Math.sqrt( xDiffPct1*xDiffPct1 + yDiffPct1*yDiffPct1 );
+          var distancePct1 = Math.sqrt( xDiffPct1*xDiffPct1 + yDiffPct1*yDiffPct1 );  // distance from seg ext pt 1
           var xDiffPct2 = pctFromXVal( s.ptE2.cx ) - mouseCanvasXPct;
           var yDiffPct2 = pctFromYVal( s.ptE2.cy ) - mouseCanvasYPct;
+          var distancePct2 = Math.sqrt( xDiffPct2*xDiffPct2 + yDiffPct2*yDiffPct2 );  // distance from seg ext pt 2
           var selectRadiusPct = selectRadius*100/canvas.width;
-          var distancePct2 = Math.sqrt( xDiffPct2*xDiffPct2 + yDiffPct2*yDiffPct2 );
           if ( distancePct1 <= selectRadiusPct || distancePct2 <= selectRadiusPct ) {
-            s.ptE1.px += distancePct1 > distancePct2 ? 10 : -10;
-            p.energy = p.energy > energyStoreFactor*-1 ? energyStoreFactor*-1 : p.energy; 
+            s.ptE1.px += distancePct1 > distancePct2 ? 10 : -10;  // impact burst effect
+            p.energy = p.energy > energyStoreFactor*-1 ? energyStoreFactor*-1 : p.energy;  // drops plant energy
             killPlant(p);
             for (var k=0; k<p.segments.length; k++) {
               var s2 = p.segments[k];
-              s2.ptE1.mass = s2.ptE2.mass = 15;
+              s2.ptE1.mass = s2.ptE2.mass = 15;  // increases plant mass for faster collapse
               if (!s2.isBaseSegment) {
                 removeSpan(s2.spCdP.id);  // downward (l to r) cross span to parent
                 removeSpan(s2.spCuP.id);  // upward (l to r) cross span to parent
@@ -272,7 +286,6 @@ function omitRedFlowerFooterContent() {
 ///renders eliminate plant icon at cursor location
 function displayEliminatePlantIconWithCursor(e) {
   var displayIcon = false;
-  //canvas.style.cursor = "default";
   for ( var i=0; i<plants.length; i++ ) {
     var p = plants[i];
     if ( p.isAlive || (!p.hasCollapsed && !p.hasBeenEliminatedByPlayer) ) {
@@ -283,8 +296,8 @@ function displayEliminatePlantIconWithCursor(e) {
         var distancePct1 = Math.sqrt( xDiffPct1*xDiffPct1 + yDiffPct1*yDiffPct1 );
         var xDiffPct2 = pctFromXVal( s.ptE2.cx ) - mouseCanvasXPct;
         var yDiffPct2 = pctFromYVal( s.ptE2.cy ) - mouseCanvasYPct;
-        var selectRadiusPct = selectRadius*100/canvas.width;
         var distancePct2 = Math.sqrt( xDiffPct2*xDiffPct2 + yDiffPct2*yDiffPct2 );
+        var selectRadiusPct = selectRadius*100/canvas.width;
         if ( distancePct1 <= selectRadiusPct*2 || distancePct2 <= selectRadiusPct*2 ) {
           displayIcon = true;
         }
@@ -292,20 +305,22 @@ function displayEliminatePlantIconWithCursor(e) {
     }
   }
   if ( displayIcon ) {
+    var xo = selectRadius*0.06;  // x offset
+    var yo = selectRadius*0.1;  // y offset
     ctx.fillStyle = "rgba(232,73,0,0.5)";
     ctx.strokeStyle = "rgba(232,73,0,1)";
     //circle
     ctx.beginPath();
     ctx.lineWidth = 1;
-    ctx.arc( xValFromPct(mouseCanvasXPct), yValFromPct(mouseCanvasYPct-0.5), selectRadius*1.3, 0, 2*Math.PI );
+    ctx.arc( xValFromPct(mouseCanvasXPct), yValFromPct(mouseCanvasYPct-yo), selectRadius, 0, 2*Math.PI );
     ctx.fill();
     ctx.stroke();
     //bar
     ctx.beginPath();
-    ctx.lineWidth = 6;
+    ctx.lineWidth = selectRadius*0.3;
     ctx.lineCap = "butt";
-    ctx.moveTo( xValFromPct(mouseCanvasXPct-1.1), yValFromPct(mouseCanvasYPct-0.5) );
-    ctx.lineTo( xValFromPct(mouseCanvasXPct+1.1), yValFromPct(mouseCanvasYPct-0.5) );
+    ctx.moveTo( xValFromPct(mouseCanvasXPct-xo), yValFromPct(mouseCanvasYPct-yo) );
+    ctx.lineTo( xValFromPct(mouseCanvasXPct+xo), yValFromPct(mouseCanvasYPct-yo) );
     ctx.fill();
     ctx.stroke();
   }
