@@ -5,7 +5,7 @@
 <br>
 
 - [X] choose game name and design title logo (Kiss the Sky)
-- [X] add "year _number_, _season_" to season meter, using attractive font
+- [X] add "year _number_, _season_" to season meter
 - [X] add highest flower tracker
 - [X] add restart button
 - [X] add shadow visibility toggle
@@ -46,12 +46,12 @@ Improvements & Fixes
 - [X] fade out shadows as plant dies
 - [X] speed up pod opening & seed drop to accomodate faster seasonal changes 
 - [X] omit pod closure at plant death
-
-- [ ] fix large-plant elimination issue when curser is too far from a point (there may be a built-in canvas way to detect hover over a shape...? Otherwise need to calibrate elimination radius based on largest plant width)
+- [X] fix large-plant elimination issue when curser is too far from a point by calibrating elimination radius based on largest plant width)
 
 - [ ] fix all forward growth based on y-values by replacing with trig formula to ensure new growth is forward regardless of stalk angle
 
 - [ ] change season background gradients so seasons are more distinct and changes are more dramatic (don't overdo it though)
+
 - [ ] give stalks & leaves variable fills (gradient, if possible) instead of stroke outlines (should look better and may improve rendering performance)
 
 - [ ] fix cross-browser issues (safari color value floats, etc.)

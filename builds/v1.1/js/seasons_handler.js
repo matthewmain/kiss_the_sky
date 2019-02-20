@@ -68,8 +68,9 @@ function trackSeasons() {
     if ( currentYear === 1 ) {  // sets first year summer length to ensure enough time for demo animation
       suL = 800;
     } else { // adjusts summer length based on tallest plant's height
-      suL = 85*currentGreatestMaxSegment() > 300 ? 85*currentGreatestMaxSegment() : 300; 
+      suL = 85*currentGreatestMaxSegment() > 300 ? 85*currentGreatestMaxSegment() : 300;
     }
+    scaleEliminationCursor();  // scales elimination cursor based on avg plant base width; 
     renderSeasonAnnouncement();
   //fall
   } else if ( yearTime === spL+suL+1 ) {
@@ -80,7 +81,7 @@ function trackSeasons() {
     currentSeason = "Winter"; photosynthesisRatio = 0; livEnExp = 20;
     renderSeasonAnnouncement();
   }
-  if ( yearTime === spL+suL+faL+wiL) {
+  if ( yearTime === spL+suL+faL+wiL ) {
     currentYear++;
     yearTime = 0;
   }
