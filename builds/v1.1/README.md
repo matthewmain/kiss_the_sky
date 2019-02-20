@@ -38,18 +38,17 @@ Improvements & Fixes
 - [X] brief instructional notification during first summer about how recessive traits and mutations work with a simple animated diagram pointing from trait to seed to new trait
 - [X] a few in-game announcements to mark milestones: congratulations on first red plant, on being 1/3 way there, half way there, two thirds way there, and 90% way there
 - [X] resolve red-flower color ambiguity: set saturation to 100 and remove gene, adjust criteria for redness
-
 - [X] fix flower petal not fading but just flashing to white
 - [X] seeds plant firmly without swinging
-
 - [X] replace megrim font with Dosis on landing & "sow" buttons
 - [X] add media queries to update size of game win announcement text & footer text, or possibly use javascript to update based on canvas width
-
 - [X] add shadow to gap between leaves
 - [X] fade out shadows as plant dies
+- [X] speed up pod opening & seed drop to accomodate faster seasonal changes 
+- [X] omit pod closure at plant death
 
-- [ ] omit pod closure at plant death, and speed up opening to accomodate faster seasonal changes 
 - [ ] fix large-plant elimination issue when curser is too far from a point (there may be a built-in canvas way to detect hover over a shape...? Otherwise need to calibrate elimination radius based on largest plant width)
+
 - [ ] fix all forward growth based on y-values by replacing with trig formula to ensure new growth is forward regardless of stalk angle
 
 - [ ] change season background gradients so seasons are more distinct and changes are more dramatic (don't overdo it though)

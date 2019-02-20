@@ -49,7 +49,7 @@ var minPollEnLevRatio = 0;  // min energy level ratio for flower to pollinate or
 var flowerFadeEnergyLevelRatio = -0.025;  // ratio of maximum energy when flower begins to fade
 var polinatorPadFadeEnergyLevelRatio = -0.075;  // ratio of maximum energy when polinator pad begins to fade
 var sickEnergyLevelRatio = -0.2;  // ratio of maximum energy when plant becomes sick (starts darkening)
-var podOpenEnergyLevelRatio = -0.5;  // ratio of maximum energy when seed pod disperses seeds
+var podOpenEnergyLevelRatio = -0.3;  // ratio of maximum energy when seed pod disperses seeds
 var deathEnergyLevelRatio = -1;  // ratio of maximum energy when plant dies (fully darkened)
 var collapseEnergyLevelRatio = -2;  // ratio of maximum energy when plant collapses
 
@@ -494,9 +494,9 @@ function growPlants() {
     if ( p.isActive ) {
       p.age++;
       if ( !p.sourceSeed.hasGerminated ) { 
-        germinateSeedWhenReady( p.sourceSeed );  // germinates seed
+        germinateSeedWhenReady( p.sourceSeed );  
       } else if ( !p.sourceSeedHasBeenRemoved ) {
-        hideAndRemoveSeed( p.sourceSeed );  // removes seed after germination
+        hideAndRemoveSeed( p.sourceSeed ); 
       }
       if ( p.energy > p.segmentCount*energyStoreFactor && p.energy>p.seedEnergy ) {
         p.energy = p.segmentCount*energyStoreFactor;  // caps plant max energy level based on segment count
@@ -661,7 +661,6 @@ function collapsePlant( plant ) {
   if ( p.hasFlowers ) {
     for (var j=0; j<p.flowers.length; j++ ) {
       var f = p.flowers[j];
-      f.podOpenRatio = 0;
       removeSpan(f.spCuP.id);
       removeSpan(f.spCdP.id);
       removeSpan(f.spCu.id);
@@ -1054,7 +1053,7 @@ function runLogs( frequency ) {
 //for ( var i=0; i<1; i++ ) { createSeed( null, generateTinyWhiteFlowerPlantGenotype() ); }
 //for ( var i=0; i<5; i++ ) { createSeed( null, generateSmallPlantGenotype() ); }  
 //for ( var i=0; i<5; i++ ) { createSeed( null, generateMediumPlantGenotype() ); }
-//for ( var i=0; i<25; i++ ) { createSeed( null, generateLargePlantGenotype() ); }
+//for ( var i=0; i<10; i++ ) { createSeed( null, generateLargePlantGenotype() ); }
 //for ( var i=0; i<1; i++ ) { createSeed( null, generateTallPlantGenotype( 1 ) ); }
 //for ( var i=0; i<5; i++ ) { createSeed( null, generateHugePlantGenotype() ); }
 //for ( var i=0; i<5; i++ ) { createSeed( null, generateHugeRedPlantGenotype() ); }

@@ -402,24 +402,24 @@ function developFlower( plant, flower ) {
     } else { 
       f.bloomRatio = 1;
       f.hasFullyBloomed = true; }
-  //otherwise, if fully bloomed and summer, flower accepts pollination until zygote count reaches max seed count
+  //otherwise, if fully bloomed, flower accepts pollination until zygote count reaches max seed count
   } else if ( f.hasFullyBloomed && p.energy > p.maxEnergyLevel*minPollEnLevRatio && !f.hasReachedMaxSeeds ) {    
     acceptPollination( f );
-  //otherwise, if flower is pollinated, has not fully closed, and has reached a "sick" energy level, it closes
-  } else if ( f.isPollinated && !f.hasFullyClosed /*&& p.energy < p.maxEnergyLevel*sickEnergyLevelRatio*/ ) { 
-    if ( f.bloomRatio > 0 ) { f.bloomRatio -= 0.01; } else { f.hasFullyClosed = true; } // closes petals
+  //otherwise, if flower is pollinated and has not fully closed, it closes
+  } else if ( f.isPollinated && !f.hasFullyClosed ) { 
+    if ( f.bloomRatio > 0 ) { f.bloomRatio -= 0.03; } else { f.hasFullyClosed = true; } // closes petals
   //otherise, if flower has fully closed, it develops into a seed pod
   } else if ( f.hasFullyClosed && !f.seedPodIsMature ) {
     placeSeedsInPod( f );
     keepSeedsInPod( f );
-    f.podOpacity = f.podOpacity < 1 ? f.podOpacity + 0.005 : 1;
+    f.podOpacity = f.podOpacity < 1 ? f.podOpacity + 0.1 : 1;
     if ( f.podOpacity === 1 ) { f.visible = false; f.seedPodIsMature = true; }
   //otherwise, if seed pod is mature but not ready to release seeds, the seeds stay in the pod
-  } else if ( f.seedPodIsMature && !podReadyToOpen(p) ) {
+  } else if ( f.seedPodIsMature && !podReadyToOpen( p ) ) {
     keepSeedsInPod( f );
   //otherwise, if the seed pod hasn't released seeds and pod is ready to open, it opens
-  } else if ( !f.podHasOpened && podReadyToOpen(p) ) {
-    if ( f.podOpenRatio < 1 ) { f.podOpenRatio += 0.01; } else { f.podHasOpened = true; } // opens pod 
+  } else if ( !f.podHasOpened && podReadyToOpen( p ) ) {
+    if ( f.podOpenRatio < 1 ) { f.podOpenRatio += 0.1; } else { f.podHasOpened = true; } // opens pod 
     keepSeedsInPod( f );
   //otherwise, if the plant is still alive, hold seeds in the opened pod
   } else if ( p.isAlive ) {
