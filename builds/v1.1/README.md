@@ -5,7 +5,7 @@
 <br>
 
 - [X] choose game name and design title logo (Kiss the Sky)
-- [X] add "year _number_, _season_" to season meter, using attractive font
+- [X] add "year _number_, _season_" to season meter
 - [X] add highest flower tracker
 - [X] add restart button
 - [X] add shadow visibility toggle
@@ -52,6 +52,7 @@ Improvements & Fixes
 - [ ] fix all forward growth based on y-values by replacing with trig formula to ensure new growth is forward regardless of stalk angle
 
 - [ ] change season background gradients so seasons are more distinct and changes are more dramatic (don't overdo it though)
+
 - [ ] give stalks & leaves variable fills (gradient, if possible) instead of stroke outlines (should look better and may improve rendering performance)
 
 - [ ] fix cross-browser issues (safari color value floats, etc.)

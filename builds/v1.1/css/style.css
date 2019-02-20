@@ -7,11 +7,13 @@ body {
 	user-select: none;
 }
 
-.hover {
-	opacity: 0;
-}
-.hover:hover { 
+#loader_div {
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  background: #202020;
   opacity: 1;
+  z-index: 3;
 }
 
 #copyright {
@@ -26,6 +28,12 @@ body {
   z-index: 2;
 }
 
+.hover {
+  opacity: 0;
+}
+.hover:hover { 
+  opacity: 1;
+}
 
 
 
