@@ -47,10 +47,7 @@ Improvements & Fixes
 - [X] speed up pod opening & seed drop to accomodate faster seasonal changes 
 - [X] omit pod closure at plant death
 - [X] fix large-plant elimination issue when curser is too far from a point by calibrating elimination radius based on largest plant width)
-
-- [ ] fix all forward growth based on y-values by replacing with trig formula to ensure new growth is forward regardless of stalk angle
-
-- [ ] change season background gradients so seasons are more distinct and changes are more dramatic (don't overdo it though)
+- [X] change season background gradients so seasons are more distinct and changes are more dramatic (don't overdo it though)
 
 - [ ] give stalks & leaves variable fills (gradient, if possible) instead of stroke outlines (should look better and may improve rendering performance)
 
@@ -66,6 +63,13 @@ Performance Enhancements
 - [ ] consolidate redundant loops
 - [ ] use Chrome performance tools to track down any other other performance issues
 
+
+<br>
+<br>
+
+... 
+
+- [ ] fix inverted flower issue by replacing flowers with non-verlet points and a trig formula to ensure new growth is forward regardless of stalk angle. (Can add 3 invisible segments to give flower effective physicality, so it will not pass through walls, etc.)
 
 
 
