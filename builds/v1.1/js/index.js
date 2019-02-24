@@ -545,10 +545,10 @@ function growPlants() {
 function rgbaPlantColorShift( plant, startColor, endColor, startEnergy, endEnergy ) {
   var p = plant;
   var curEn = p.energy;  // current energy level
-  var r = endColor.r - ( (curEn-endEnergy) * (endColor.r-startColor.r) / (startEnergy-endEnergy) );  // redshift
-  var g = endColor.g - ( (curEn-endEnergy) * (endColor.g-startColor.g) / (startEnergy-endEnergy) );  // greenshift
-  var b = endColor.b - ( (curEn-endEnergy) * (endColor.b-startColor.b) / (startEnergy-endEnergy) );  // blueshift
-  var a = endColor.a - ( (curEn-endEnergy) * (endColor.a-startColor.a) / (startEnergy-endEnergy) );  // blueshift
+  var r = Math.round(endColor.r-((curEn-endEnergy)*(endColor.r-startColor.r)/(startEnergy-endEnergy))); // redshift
+  var g = Math.round(endColor.g-((curEn-endEnergy)*(endColor.g-startColor.g)/(startEnergy-endEnergy))); // greenshift
+  var b = Math.round(endColor.b-((curEn-endEnergy)*(endColor.b-startColor.b)/(startEnergy-endEnergy))); // blueshift
+  var a = endColor.a-((curEn-endEnergy)*(endColor.a-startColor.a)/(startEnergy-endEnergy)); // alphashift
   return { r: r, g: g, b: b, a: a };
 }
 
@@ -556,10 +556,11 @@ function rgbaPlantColorShift( plant, startColor, endColor, startEnergy, endEnerg
 function hslaPlantColorShift( plant, startColor, endColor, startEnergy, endEnergy ) {
   var p = plant;
   var curEn = p.energy;  // current energy level
-  var h = endColor.h - ( (curEn-endEnergy) * (endColor.h-startColor.h) / (startEnergy-endEnergy) );  // redshift
-  var s = endColor.s - ( (curEn-endEnergy) * (endColor.s-startColor.s) / (startEnergy-endEnergy) );  // greenshift
-  var l = endColor.l - ( (curEn-endEnergy) * (endColor.l-startColor.l) / (startEnergy-endEnergy) );  // blueshift
-  return { h: h, s: s, l: l, a: 1 };
+  var h = Math.round(endColor.h-((curEn-endEnergy)*(endColor.h-startColor.h)/(startEnergy-endEnergy))); // redshift
+  var s = Math.round(endColor.s-((curEn-endEnergy)*(endColor.s-startColor.s)/(startEnergy-endEnergy))); // greenshift
+  var l = Math.round(endColor.l-((curEn-endEnergy)*(endColor.l-startColor.l)/(startEnergy-endEnergy))); // blueshift
+  var a = endColor.a-((curEn-endEnergy)*(endColor.a-startColor.a)/(startEnergy-endEnergy)); // blueshift
+  return { h: h, s: s, l: l, a: a };
 }
 
 ///changes plant colors based on plant health

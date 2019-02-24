@@ -553,7 +553,10 @@ function renderFlowers( plant ) {
         ctx.stroke();     
         //hex (polinator pad)
         ctx.beginPath();
-        ctx.fillStyle = "rgba("+f.clH.r+","+f.clH.g+","+f.clH.b+","+p.opacity+")"; 
+        ctx.fillStyle = "rgba("+ Math.round(f.clH.r)+","+
+                                 Math.round(f.clH.g)+","+
+                                 Math.round(f.clH.b)+","+
+                                 p.opacity+")"; 
         ctx.moveTo(f.ptHtR.cx, f.ptHtR.cy);
         ctx.lineTo(f.ptHoR.cx, f.ptHoR.cy);
         ctx.lineTo(f.ptHbR.cx, f.ptHbR.cy);

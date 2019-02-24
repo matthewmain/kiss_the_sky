@@ -135,10 +135,26 @@ function renderBackground() {
     ccs4 = BgG.sp.cs4;  // spring color stop alphashift
   }
   var grd=ctx.createLinearGradient( 0, 0, 0, canvas.height );
-  grd.addColorStop(0,"rgba("+ccs1.r+","+ccs1.g+","+ccs1.b+","+ccs1.a+")");
-  grd.addColorStop(0.4,"rgba("+ccs2.r+","+ccs2.g+","+ccs2.b+","+ccs2.a+")");
-  grd.addColorStop(0.6,"rgba("+ccs3.r+","+ccs3.g+","+ccs3.b+","+ccs3.a+")");
-  grd.addColorStop(1,"rgba("+ccs4.r+","+ccs4.g+","+ccs4.b+","+ccs4.a+")");
+  grd.addColorStop(0,
+    "rgba("+ Math.round(ccs1.r)+","+
+             Math.round(ccs1.g)+","+
+             Math.round(ccs1.b)+","+
+             Math.round(ccs1.a)+")");
+  grd.addColorStop(0.4,
+    "rgba("+ Math.round(ccs2.r)+","+
+             Math.round(ccs2.g)+","+
+             Math.round(ccs2.b)+","+
+             Math.round(ccs2.a)+")");
+  grd.addColorStop(0.6,
+    "rgba("+ Math.round(ccs3.r)+","+
+             Math.round(ccs3.g)+","+
+             Math.round(ccs3.b)+","+
+             Math.round(ccs3.a)+")");
+  grd.addColorStop(1,
+    "rgba("+ Math.round(ccs4.r)+","+
+             Math.round(ccs4.g)+","+
+             Math.round(ccs4.b)+","+
+             Math.round(ccs4.a)+")");
   ctx.fillStyle=grd;
   ctx.fillRect(0, 0, canvas.width, canvas.height);
 }
