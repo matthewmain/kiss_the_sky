@@ -48,7 +48,7 @@ Improvements & Fixes
 - [X] omit pod closure at plant death
 - [X] fix large-plant elimination issue when curser is too far from a point by calibrating elimination radius based on largest plant width)
 - [X] change season background gradients so seasons are more distinct and changes are more dramatic (don't overdo it though)
-- [ ] fix cross-browser issues (safari color value floats, etc.)
+- [X] fix cross-browser issues (safari color value floats, etc.)
 
 <br>
 
