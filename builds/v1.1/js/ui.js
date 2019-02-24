@@ -595,7 +595,7 @@ $("#button_try_again_hover, .button_game_win_play_again").click(function(){
 });
 
 ///copyright
-$("#this_year").text(new Date().getFullYear());
+$("#this_year").text( new Date().getFullYear().toString().replace(/0/g,"O") );
 
 ///grabs/moves sun shade handle and eliminates plants on cursor drag
 document.addEventListener("mousedown", function(e) { grabHandle(e); startEliminatingPlants(); });
