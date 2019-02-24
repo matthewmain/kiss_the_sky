@@ -782,13 +782,6 @@ function renderLeaf( plant, segment, leafSpan ) {
   ctx.quadraticCurveTo(ccpx,ccpy,p2x,p2y);
   ctx.stroke();
   ctx.fill();
-  //leaf center
-  ctx.beginPath();
-  ctx.lineWidth = 1;
-  ctx.strokeStyle = "rgba("+s.clI.r+","+s.clI.g+","+s.clI.b+","+p.opacity+")";
-  ctx.moveTo(p1x,p1y);
-  ctx.lineTo(p2x,p2y);
-  ctx.stroke();
 }
 
 ///renders leaves
