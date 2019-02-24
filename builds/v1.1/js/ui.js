@@ -25,6 +25,7 @@ var gameDifficulty = "beginner";
 var ambientMode = false;
 var infoModalOpen = false;
 var infoModalOpenWhilePaused = false;
+var restartModalOpen = false;
 var endOfGameAnnouncementDisplayed = false;
 
 
@@ -568,7 +569,13 @@ $("#icon_restart").click(function() {
   if ( !gameHasBegun ) {
     location.reload();
   } else {
-    $("#modal_restart_div").css("visibility", "visible");
+    if ( !restartModalOpen ) {
+      $("#modal_restart_div").css("visibility", "visible");
+      restartModalOpen = true;
+    } else {
+      $("#modal_restart_div").css("visibility", "hidden");
+      restartModalOpen = false;
+    }
   }
 });
 
@@ -580,6 +587,7 @@ $("#button_restart_confirm_hover").click(function() {
 ///restart cancel button
 $("#button_restart_cancel_hover").click(function() {
   $("#modal_restart_div").css("visibility", "hidden");
+  restartModalOpen = false;
 });
 
 ///eliminate plants on a single click
@@ -595,7 +603,7 @@ $("#button_try_again_hover, .button_game_win_play_again").click(function(){
 });
 
 ///copyright
-$("#this_year").text(new Date().getFullYear());
+$("#this_year").text( new Date().getFullYear().toString().replace(/0/g,"O") );
 
 ///grabs/moves sun shade handle and eliminates plants on cursor drag
 document.addEventListener("mousedown", function(e) { grabHandle(e); startEliminatingPlants(); });

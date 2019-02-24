@@ -241,6 +241,7 @@ body {
 	top: 0;
 	right: 1%;
   width: 9%;
+  max-width: 45px;
 }
 
 #tag_svg {
@@ -263,6 +264,7 @@ body {
 #percent {
 	position: relative;
 	font-weight: 400;
+  padding-left: 1px;
 }
 
 
@@ -367,7 +369,7 @@ body {
   top: 83.8%;
   left: 50%;
   transform: translate(-50%,-50%);
-  width: 51.4%;
+  width: 52%;
   opacity: 0;
   cursor: pointer;
 }
