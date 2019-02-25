@@ -49,13 +49,13 @@ Improvements & Fixes
 - [X] fix large-plant elimination issue when curser is too far from a point by calibrating elimination radius based on largest plant width)
 - [X] change season background gradients so seasons are more distinct and changes are more dramatic (don't overdo it though)
 - [X] fix cross-browser issues (safari color value floats, etc.)
+- [X] improve performance by rendering less frequently
 - [X] fix flashing cursor
 - [X] fix flashing new best height line marker
 - [X] fix announcement position overlapping
 - [X] fix background color changes
 
 
-<br>
 <br>
 
 ... 
