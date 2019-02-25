@@ -51,8 +51,8 @@ Improvements & Fixes
 - [X] fix cross-browser issues (safari color value floats, etc.)
 - [X] fix flashing cursor
 - [X] fix flashing new best height line marker
-- [ ] fix announcement position overlapping
-- [ ] fix background color changes
+- [X] fix announcement position overlapping
+- [X] fix background color changes
 
 
 <br>

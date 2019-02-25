@@ -13,6 +13,7 @@
 
 
 ///settings
+var renderFactor = 3;  // factor of verlet iterations (worldTime) when scenes are rendered (less is more frequent)
 var gameHasBegun = false;  // (whether user has initiated game play)
 var readyForEliminationDemo = false;  // (whether first year and spring announcement has completed)
 var readyForChangeDemo = false;  // (whether first year and summer announcement has completed)
@@ -324,15 +325,24 @@ function dropSeed( seed ) {
 function plantSeed( seed ) {
   seed.p1.fixed = true; 
   seed.p2.materiality = "immaterial";
-  if ( Math.round( seed.p2.cx ) === Math.round( seed.p1.cx )  ) {
-    seed.planted = true;
+  var seedUpright = seed.p2.cx > seed.p1.cx-canvas.width*0.005 && seed.p2.cx < seed.p1.cx+canvas.width*0.005;
+  var seedSunk = seed.p1.cy >= canvas.height;
+  if ( seedUpright ) {
+    seed.p2.fixed = true;
+    seed.p1.materiality = "immaterial";
+    if ( !seedSunk ) {
+      seed.p1.cy += canvas.height*0.0005;
+      seed.p2.cy += canvas.height*0.0005;
+    } else {
+      seed.planted = true;
+    }
   }
 }
 
 ///germinates seeds when ready (after it has been planted and spring has arrived)
 function germinateSeedWhenReady( seed ) {
-  p1Stable = (canvas.height-seed.p1.width/2) - seed.p1.cy < 0.05;
-  p2Stable = (canvas.height-seed.p2.width/2) - seed.p2.cy < 0.05;
+  var p1Stable = (canvas.height-seed.p1.width/2) - seed.p1.cy < 0.05;
+  var p2Stable = (canvas.height-seed.p2.width/2) - seed.p2.cy < 0.05;
   if ( !seed.planted && p1Stable && p2Stable ) {
     plantSeed( seed );
   }
@@ -1050,7 +1060,7 @@ function display() {
   if ( gameHasBegun ) {
     if ( currentYear === 1 && currentSeason === "Spring" ) {  // starts with high frame rate for smooth seed scatter
       renderBackground(); renderPlants(); displayEliminatePlantIconWithCursor();
-    } else if ( worldTime % 3 === 0 ) {  // renders less frequently than physics engine runs to improve performance
+    } else if ( worldTime % renderFactor === 0 ) {  // improves performance to render less often than verlet runs
       renderBackground(); renderPlants(); displayEliminatePlantIconWithCursor();
     }
     trackSeasons();
