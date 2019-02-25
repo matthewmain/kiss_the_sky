@@ -31,7 +31,7 @@ to add/ideas:
    
 <br>
 
- - update flower structure so that all points are non-verlet; instead, use simple x/y points placed relationally to uppermost segment using trig (will fix inverted flower bug)
+ - update flower structure so that all points are non-verlet; instead, use simple x/y points placed relationally to uppermost segment using trig. Will fix inverted flower bug. (Can add 3 invisible segments to give flower effective physicality, so it will not pass through walls, etc.)
  - add complexity to flowers by adding radial symmetry, variable petal counts, petal layers, petal lengths, petal shapes, petal gradients/stripes, etc.
  - ability to isolate flowers in different sections so that only flowers in same section polinate one another
  - image capture & record every mid summer
