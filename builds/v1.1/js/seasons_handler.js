@@ -46,7 +46,7 @@ var BgG = {
 
 ///current and previous season background color stop collection objects
 var csbg = BgG.sp;  // current season background
-var psbg = BgG.wi;  // previous season background
+var psbg = BgG.sp;  // previous season background
 
 ///current color stop rgba objects
 var ccs1 = psbg.cs1;  // current color stop 1
@@ -123,34 +123,32 @@ function renderBackground() {
     case "Fall": csbg = BgG.fa; psbg = BgG.su; break;
     case "Winter": csbg = BgG.wi; psbg = BgG.fa; break;
   }
-  if ( gameHasBegun ) {
-    ccs1 = Tl.rgbaCs( psbg.cs1, csbg.cs1, ccs1, 200 );  // current color stop redshift 
-    ccs2 = Tl.rgbaCs( psbg.cs2, csbg.cs2, ccs2, 200 );  // current color stop greenshift
-    ccs3 = Tl.rgbaCs( psbg.cs3, csbg.cs3, ccs3, 200 );  // current color stop blueshift
-    ccs4 = Tl.rgbaCs( psbg.cs4, csbg.cs4, ccs4, 200 );  // current color stop alphashift
-  } else {
-    ccs1 = BgG.sp.cs1;  // spring color stop redshift
-    ccs2 = BgG.sp.cs2;  // spring color stop greenshift
-    ccs3 = BgG.sp.cs3;  // spring color stop blueshift
-    ccs4 = BgG.sp.cs4;  // spring color stop alphashift
+  if ( currentYear === 1 && currentSeason === "Spring") {
+    csbg = BgG.sp; psbg = BgG.sp;  // starts game off with full spring background, not in mid-transition from winter
   }
+  if ( gameHasBegun ) {
+    ccs1 = Tl.rgbaCs( psbg.cs1, csbg.cs1, ccs1, 200/renderFactor );  // current color stop redshift 
+    ccs2 = Tl.rgbaCs( psbg.cs2, csbg.cs2, ccs2, 200/renderFactor );  // current color stop greenshift
+    ccs3 = Tl.rgbaCs( psbg.cs3, csbg.cs3, ccs3, 200/renderFactor );  // current color stop blueshift
+    ccs4 = Tl.rgbaCs( psbg.cs4, csbg.cs4, ccs4, 200/renderFactor );  // current color stop alphashift
+  } 
   var grd=ctx.createLinearGradient( 0, 0, 0, canvas.height );
-  grd.addColorStop(0,
+  grd.addColorStop( 0,
     "rgba("+ Math.round(ccs1.r)+","+
              Math.round(ccs1.g)+","+
              Math.round(ccs1.b)+","+
              Math.round(ccs1.a)+")");
-  grd.addColorStop(0.4,
+  grd.addColorStop( 0.4,
     "rgba("+ Math.round(ccs2.r)+","+
              Math.round(ccs2.g)+","+
              Math.round(ccs2.b)+","+
              Math.round(ccs2.a)+")");
-  grd.addColorStop(0.6,
+  grd.addColorStop( 0.6,
     "rgba("+ Math.round(ccs3.r)+","+
              Math.round(ccs3.g)+","+
              Math.round(ccs3.b)+","+
              Math.round(ccs3.a)+")");
-  grd.addColorStop(1,
+  grd.addColorStop( 1,
     "rgba("+ Math.round(ccs4.r)+","+
              Math.round(ccs4.g)+","+
              Math.round(ccs4.b)+","+

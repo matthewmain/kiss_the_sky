@@ -49,16 +49,10 @@ Improvements & Fixes
 - [X] fix large-plant elimination issue when curser is too far from a point by calibrating elimination radius based on largest plant width)
 - [X] change season background gradients so seasons are more distinct and changes are more dramatic (don't overdo it though)
 - [X] fix cross-browser issues (safari color value floats, etc.)
-
-<br>
-
-Performance Enhancements
-
-- [ ] run sun rays less often with stronger intensity (will probably need to address plant color-change flashing)
-- [ ] render less frequently
-- [ ] run verlet less frequently
-- [ ] consolidate redundant loops
-- [ ] use Chrome performance tools to track down any other other performance issues
+- [X] fix flashing cursor
+- [X] fix flashing new best height line marker
+- [X] fix announcement position overlapping
+- [X] fix background color changes
 
 
 <br>
@@ -66,7 +60,7 @@ Performance Enhancements
 
 ... 
 
-- [ ] fix inverted flower issue by replacing flowers with non-verlet points and a trig formula to ensure new growth is forward regardless of stalk angle. (Can add 3 invisible segments to give flower effective physicality, so it will not pass through walls, etc.)
+- [ ] fix inverted flower issue by replacing flowers with non-verlet points and trig formulas to ensure new growth is forward regardless of stalk angle. (Can add 3 invisible segments to give flower effective physicality, so it will not pass through walls, etc.)
 
 
 

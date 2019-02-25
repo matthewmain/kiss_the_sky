@@ -490,7 +490,7 @@ body {
 }
 
 #modal_ambient_text {
-	top: 51.6%;
+	top: 53.5%;
 }
 
 #modal_card_gameplay_screen {
@@ -771,7 +771,7 @@ body {
 
 .milestone {
   position: absolute;
-  top: 19%;
+  top: 14%;
   left: 50%;
   transform: translate(-50%);
   visibility: hidden;
