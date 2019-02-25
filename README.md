@@ -13,7 +13,7 @@ Browser
 <br>
 
 - [X] [Version 1.0](https://github.com/matthewmain/plant_evolution_app/tree/master/builds/v1.0) - _Genes, Alleles, Mutations, & Randomized Sexual Reproduction with Mendelian Genetics_
-- [ ] [Version 1.1](https://github.com/matthewmain/plant_evolution_app/tree/master/builds/v1.1) - _Basic Artificial Selection Gamification & UI_
+- [X] [Version 1.1](https://github.com/matthewmain/plant_evolution_app/tree/master/builds/v1.1) - _Basic Artificial Selection Gamification & UI_
 
 <br>
 iOS
@@ -31,7 +31,8 @@ to add/ideas:
    
 <br>
 
- - update flower structure so that all points are non-verlet, built relationally around the uppermost segment; add complexity to flowers by adding radial symmetry, variable petal counts, petal layers, petal lengths, petal shapes, petal gradients/stripes, etc.
+ - update flower structure so that all points are non-verlet; instead, use simple x/y points placed relationally to uppermost segment using trig (will fix inverted flower bug)
+ - add complexity to flowers by adding radial symmetry, variable petal counts, petal layers, petal lengths, petal shapes, petal gradients/stripes, etc.
  - ability to isolate flowers in different sections so that only flowers in same section polinate one another
  - image capture & record every mid summer
  - ability to view first generation garden snapshot & compare to current
