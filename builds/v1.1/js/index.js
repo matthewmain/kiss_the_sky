@@ -189,7 +189,7 @@ function Segment( plant, parentSegment, basePoint1, basePoint2 ) {
   this.hasLeaves = false;
   this.hasLeafScaffolding = false;
   //settings
-  this.forwardGrowthRateVariation = Tl.rfb(0.95,1.05);  // for left & right span length variation
+  this.forwardGrowthRateVariation = Tl.rfb(0.97,1.03);  // for left & right span length variation
   this.mass = 1;  // mass of the segment stalk portion ( divided between the two extension points)
   //base points
   this.ptB1 = basePoint1;  // base point 1
@@ -1044,14 +1044,18 @@ function runLogs( frequency ) {
 
 /////---DISPLAY---/////
 
+
 function display() {
-  renderBackground();
   runVerlet();
   if ( gameHasBegun ) {
+    if ( currentYear === 1 && currentSeason === "Spring" ) {  // starts with high frame rate for smooth seed scatter
+      renderBackground(); renderPlants(); displayEliminatePlantIconWithCursor();
+    } else if ( worldTime % 3 === 0 ) {  // renders less frequently than physics engine runs to improve performance
+      renderBackground(); renderPlants(); displayEliminatePlantIconWithCursor();
+    }
     trackSeasons();
     shedSunlight();
-    growPlants(); 
-    renderPlants();
+    growPlants();  
     if ( runPollinationAnimations ) { renderPollinationAnimations(); }
   }
   updateUI();
@@ -1062,7 +1066,7 @@ function display() {
     checkForGameOver(); 
     checkForGameWin(); 
   }
-  runLogs( 60 );
+  //runLogs( 600 );
   if ( !gamePaused ) { window.requestAnimationFrame( display ); }
 }
 

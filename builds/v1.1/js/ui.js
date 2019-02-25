@@ -286,44 +286,46 @@ function omitRedFlowerFooterContent() {
 
 ///renders eliminate plant icon at cursor location
 function displayEliminatePlantIconWithCursor(e) {
-  var displayIcon = false;
-  for ( var i=0; i<plants.length; i++ ) {
-    var p = plants[i];
-    if ( p.isAlive || (!p.hasCollapsed && !p.hasBeenEliminatedByPlayer) ) {
-      for ( var j=0; j<p.segments.length; j++) {
-        var s = p.segments[j];
-        var xDiffPct1 = pctFromXVal( s.ptE1.cx ) - mouseCanvasXPct;
-        var yDiffPct1 = pctFromYVal( s.ptE1.cy ) - mouseCanvasYPct;
-        var distancePct1 = Math.sqrt( xDiffPct1*xDiffPct1 + yDiffPct1*yDiffPct1 );
-        var xDiffPct2 = pctFromXVal( s.ptE2.cx ) - mouseCanvasXPct;
-        var yDiffPct2 = pctFromYVal( s.ptE2.cy ) - mouseCanvasYPct;
-        var distancePct2 = Math.sqrt( xDiffPct2*xDiffPct2 + yDiffPct2*yDiffPct2 );
-        var selectRadiusPct = selectRadius*100/canvas.width;
-        if ( distancePct1 <= selectRadiusPct*2 || distancePct2 <= selectRadiusPct*2 ) {
-          displayIcon = true;
+  if ( !ambientMode ) { 
+    var displayIcon = false;
+    for ( var i=0; i<plants.length; i++ ) {
+      var p = plants[i];
+      if ( p.isAlive || (!p.hasCollapsed && !p.hasBeenEliminatedByPlayer) ) {
+        for ( var j=0; j<p.segments.length; j++) {
+          var s = p.segments[j];
+          var xDiffPct1 = pctFromXVal( s.ptE1.cx ) - mouseCanvasXPct;
+          var yDiffPct1 = pctFromYVal( s.ptE1.cy ) - mouseCanvasYPct;
+          var distancePct1 = Math.sqrt( xDiffPct1*xDiffPct1 + yDiffPct1*yDiffPct1 );
+          var xDiffPct2 = pctFromXVal( s.ptE2.cx ) - mouseCanvasXPct;
+          var yDiffPct2 = pctFromYVal( s.ptE2.cy ) - mouseCanvasYPct;
+          var distancePct2 = Math.sqrt( xDiffPct2*xDiffPct2 + yDiffPct2*yDiffPct2 );
+          var selectRadiusPct = selectRadius*100/canvas.width;
+          if ( distancePct1 <= selectRadiusPct*2 || distancePct2 <= selectRadiusPct*2 ) {
+            displayIcon = true;
+          }
         }
       }
     }
-  }
-  if ( displayIcon ) {
-    var xo = selectRadius*0.06;  // x offset
-    var yo = selectRadius*0.1;  // y offset
-    ctx.fillStyle = "rgba(232,73,0,0.5)";
-    ctx.strokeStyle = "rgba(232,73,0,1)";
-    //circle
-    ctx.beginPath();
-    ctx.lineWidth = 1;
-    ctx.arc( xValFromPct(mouseCanvasXPct), yValFromPct(mouseCanvasYPct-yo), selectRadius, 0, 2*Math.PI );
-    ctx.fill();
-    ctx.stroke();
-    //bar
-    ctx.beginPath();
-    ctx.lineWidth = selectRadius*0.3;
-    ctx.lineCap = "butt";
-    ctx.moveTo( xValFromPct(mouseCanvasXPct-xo), yValFromPct(mouseCanvasYPct-yo) );
-    ctx.lineTo( xValFromPct(mouseCanvasXPct+xo), yValFromPct(mouseCanvasYPct-yo) );
-    ctx.fill();
-    ctx.stroke();
+    if ( displayIcon ) {
+      var xo = selectRadius*0.06;  // x offset
+      var yo = selectRadius*0.1;  // y offset
+      ctx.fillStyle = "rgba(232,73,0,0.5)";
+      ctx.strokeStyle = "rgba(232,73,0,1)";
+      //circle
+      ctx.beginPath();
+      ctx.lineWidth = 1;
+      ctx.arc( xValFromPct(mouseCanvasXPct), yValFromPct(mouseCanvasYPct-yo), selectRadius, 0, 2*Math.PI );
+      ctx.fill();
+      ctx.stroke();
+      //bar
+      ctx.beginPath();
+      ctx.lineWidth = selectRadius*0.3;
+      ctx.lineCap = "butt";
+      ctx.moveTo( xValFromPct(mouseCanvasXPct-xo), yValFromPct(mouseCanvasYPct-yo) );
+      ctx.lineTo( xValFromPct(mouseCanvasXPct+xo), yValFromPct(mouseCanvasYPct-yo) );
+      ctx.fill();
+      ctx.stroke();
+    }
   }
 }
 
@@ -628,7 +630,6 @@ function updateUI() {
   $("#season_left").text( ", " + currentSeason );
   $("#season_right").text( currentSeason );
   updateSeasonPieChart();
-  if ( !ambientMode ) { displayEliminatePlantIconWithCursor(); }
 }
 
 
