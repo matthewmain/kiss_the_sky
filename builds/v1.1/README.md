@@ -55,12 +55,3 @@ Improvements & Fixes
 - [X] fix announcement position overlapping
 - [X] fix background color changes
 
-
-<br>
-
-... 
-
-- [ ] fix inverted flower issue by replacing flowers with non-verlet points and trig formulas to ensure new growth is forward regardless of stalk angle. (Can add 3 invisible segments to give flower effective physicality, so it will not pass through walls, etc.)
-
-
-
