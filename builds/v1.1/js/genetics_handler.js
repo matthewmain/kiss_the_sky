@@ -1,6 +1,6 @@
 
 
-///////// GENES HANDLER /////////
+///////// GENETICS HANDLER /////////
 
 
 

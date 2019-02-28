@@ -547,12 +547,7 @@ $(".icon_shadows").click(function(){
 
 ///camera icon (takes a screenshot)
 $("#save").click(function(){
-  var image = canvas.toDataURL("image/png");
-  console.log(image);
-  var download = document.getElementById("save");
-  download.href = image;
-  var seasonTitleCase = currentSeason.charAt(0).toUpperCase()+currentSeason.slice(1);
-  download.download = "Kiss the Sky - Year "+currentYear+", "+seasonTitleCase+".png";
+  downloadScreenshot();
 });
 
 ///pause/resume icons

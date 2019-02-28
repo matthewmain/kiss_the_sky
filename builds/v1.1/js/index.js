@@ -14,13 +14,7 @@
 
 ///settings
 var renderFactor = 3;  // factor of verlet iterations (worldTime) when scenes are rendered (less is more frequent)
-var gameHasBegun = false;  // (whether user has initiated game play)
-var readyForEliminationDemo = false;  // (whether first year and spring announcement has completed)
-var readyForChangeDemo = false;  // (whether first year and summer announcement has completed)
-var eliminationDemoHasBegun = false;  // (whether instructional elimination demo has begun running)
-var changeDemoHasBegun = false;  // (whether instructional mutation/recessive trait demo has begun running)
-var allDemosHaveRun = false;
-var gamePaused = false;  // (whether game is paused)
+var useSunShades = false;  // (whether to place extendable sun shades)
 var viewShadows = true;  // (shadow visibility)
 var viewStalks = true;  // (stalk visibility) 
 var viewLeaves = true;  // (leaf visibility)
@@ -31,7 +25,6 @@ var viewPollenBursts = true;  // (pollen burst visibility)
 var viewPollinatorLines = true;  // (pollination line visibility; i.e., pollen particals travelling between flowers)
 var viewPollinationGlow = true;  // (pollination glow visibility)
 var runPollinationAnimations = true;  // (whether to run pollination animations; overrides pollination views)
-var useSunShades = false;  // (whether to place extendable sun shades)
 var allowSelfPollination = true;  // allows flowers to pollinate themselves
 var pollinationFrequency = 5;  // (as average number of pollination events per open flower per length of summer)
 var maxSeedsPerFlowerRatio = 0.334;  // max seeds per flower (as ratio of plant's max total segments)
@@ -63,6 +56,13 @@ var sunShades = [], sunShadeCount = 0;
 var shadows = [], shadowCount = 0;
 var initialGeneValueAverages = {};
 var highestRedFlowerPct = 0;
+var gameHasBegun = false;  // (whether user has initiated game play)
+var readyForEliminationDemo = false;  // (whether first year and spring announcement has completed)
+var readyForChangeDemo = false;  // (whether first year and summer announcement has completed)
+var eliminationDemoHasBegun = false;  // (whether instructional elimination demo has begun running)
+var changeDemoHasBegun = false;  // (whether instructional mutation/recessive trait demo has begun running)
+var allDemosHaveRun = false;
+var gamePaused = false;  // (whether game is paused)
 
 
 
@@ -852,6 +852,14 @@ function renderPlants() {
     renderSeed( plant );
   }
   if ( viewShadows ) { renderLeafShadows(); }
+}
+
+function downloadScreenshot() {
+  var image = canvas.toDataURL("image/png");
+  var download = document.getElementById("save");
+  download.href = image;
+  var seasonTitleCase = currentSeason.charAt(0).toUpperCase()+currentSeason.slice(1);
+  download.download = "Kiss the Sky - Year "+currentYear+", "+seasonTitleCase+".png";
 }
 
 ///renders instructional demos at game opening (called as callback for season announcements in flower_handler.js)
