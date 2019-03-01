@@ -399,13 +399,13 @@ $(window).resize(function() {
 });
 
 ///choose game mode on landing
-$("#button_game_mode_hover").click(function(){
+$("#button_game_mode").click(function(){
   $("#landing_page_div").hide();
   $("#overlay_game_mode_options_div").css("visibility", "visible");
 });
 
 ///choose ambient mode on landing
-$("#button_ambient_mode_hover").click(function(){
+$("#button_ambient_mode").click(function(){
   $("#landing_page_div").hide();
   $("#overlay_ambient_mode_options_div").css("visibility", "visible");
   ambientMode = true;

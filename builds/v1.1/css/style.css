@@ -66,21 +66,20 @@ body {
   /*(height and width handled by scaleLanding() in ui.js)*/
 }
 
-.button_hover_landing {
+.button_landing {
   position: absolute;
   width: 30.4%;
-  top: 72.3%;
-  opacity: 0;
+  top: 70.5%;
   cursor: pointer;
 }
-.button_hover_landing:hover {
-  opacity: 1;
+.button_landing:hover {
+  background: #333333;
 }
-#button_game_mode_hover {
-  left: 10.4%;
+#button_game_mode {
+  left: 11%;
 }
-#button_ambient_mode_hover {
-  left: 59.3%;
+#button_ambient_mode {
+  left: 60.1%;
 }
 
 
