@@ -95,7 +95,7 @@ body {
   transform: translate(-50%);
 }
 
-#title_header_svg {
+.title_header_svg {
 	height: 86%;
 }
 
@@ -108,9 +108,13 @@ body {
 }
 
 #icon_info {
-	right: 25.5%;
-	height: 22%;
+	right: 32%;
+	height: 21.5%;
 	bottom: 25.5%;
+}
+
+#icon_dark_toggle {
+  right: 25.75%;
 }
 
 #icon_shadows_on {
@@ -156,7 +160,7 @@ body {
   top: 52%;
   left: 50%;
   transform: translate(-50%,-50%);
-  box-shadow: 0 0 5px 1px rgba(0,0,0,0.5);
+  box-shadow: 0 0 3px 0 rgba(0,0,0,0.4);
 }
 
 #canvas {
@@ -182,7 +186,7 @@ body {
   display: none;
 }
 
-.text {
+.footer_text {
 	position: relative;
 	font-size: 9pt;
 	letter-spacing: 0.4pt;
@@ -195,20 +199,24 @@ body {
 	float: left;
 }
 
-#pie_svg_left {
-	position: relative;
-	top: 18.4px;
-	left: 6px;
-	height: 12px;
-	transform: rotate(-90deg);
-	background-color: rgba(213,216,197,.25);
-	border-radius: 50%;
-}
-
 .pie_circle {
 	fill: none;
   stroke: #D5D8C5;
   stroke-width: 50;
+}
+
+.pie_svg {
+  position: absolute;
+  transform: rotate(-90deg);
+  background-color: rgba(213,216,197,.25);
+  border-radius: 50%;
+}
+
+#pie_svg_left {
+  position: relative;
+  top: 18.4px;
+  left: 6px;
+  height: 12px;
 }
 
 #ambient_footer_right {
@@ -221,13 +229,9 @@ body {
 }
 
 #pie_svg_right {
-  position: absolute;
 	top: 17.35px;
 	right: 0;
 	height: 13px;
-	transform: rotate(-90deg);
-	background-color: rgba(213,216,197,.25);
-	border-radius: 50%;
 }
 
 #height_text {
@@ -257,7 +261,7 @@ body {
   transform: translate(-50%, -50%);
   font-weight: 700;
   font-size: 10pt;
-  color: #D5D8C5;
+  color: #FFFFFF;
 }
 
 #percent {

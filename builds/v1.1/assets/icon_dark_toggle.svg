@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="100px" height="100px" viewBox="0 0 100 100" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 53.2 (72643) - https://sketchapp.com -->
+    <title>icon_dark_toggle</title>
+    <desc>Created with Sketch.</desc>
+    <g id="icon_dark_toggle" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <rect id="Rectangle" stroke="#74756F" stroke-width="6" fill-rule="nonzero" x="3" y="3" width="94" height="94" rx="8.89221557"></rect>
+        <path d="M50,3 L50,97 L91.1077844,97 C94.3619652,97 97,94.3619652 97,91.1077844 L97,8.89221557 C97,5.63803477 94.3619652,3 91.1077844,3 L50,3 Z" id="Rectangle" stroke="#74756F" stroke-width="6" fill-opacity="0.5" fill="#74756F" fill-rule="nonzero"></path>
+    </g>
+</svg>

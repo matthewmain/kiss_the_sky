@@ -29,8 +29,9 @@
 	<!-- 	HEADER -->
 
 	<div id="header_div">
-		<img id="title_header_svg" src="assets/title_header.svg">
+		<img class="title_header_svg" src="assets/title_header_dark.svg">
 		<img id="icon_info" class="header_svg icon" title="learn more about the game" src="assets/icon_info.svg">
+		<img id="icon_dark_toggle" class="header_svg icon" title="toggle dark mode" src="assets/icon_dark_toggle.svg">
 		<img id="icon_shadows_on" class="header_svg icon_shadows icon" title="toggle leaf shadow visibility" src="assets/icon_shadows_on.svg">
 		<img id="icon_shadows_off" class="header_svg icon_shadows icon" title="toggle leaf shadow visibility" src="assets/icon_shadows_off.svg">
 		<a id="save" title="take a screenshot">
@@ -46,15 +47,15 @@
 	<!-- FOOTER -->
 
 	<div id="footer_div">
-		<p id="time" class="text">Year <span id="year_count">1</span><span id="season_left">, Spring</span></p>
-		<svg id="pie_svg_left" viewBox="0 0 100 100"><circle id="pie_circle_left" class="pie_circle" r="25" cx="50" cy="50"></svg>
+		<p id="time" class="footer_text">Year <span id="year_count">1</span><span id="season_left">, Spring</span></p>
+		<svg id="pie_svg_left" class="pie_svg" viewBox="0 0 100 100"><circle id="pie_circle_left" class="pie_circle" r="25" cx="50" cy="50"></svg>
 		<!-- ambient mode -->
 		<div id="ambient_footer_right">
-			<p id="season_right" class="text">Spring</p>
-			<svg id="pie_svg_right" viewBox="0 0 100 100"><circle id="pie_circle_right" class="pie_circle" r="25" cx="50" cy="50"></svg>
+			<p id="season_right" class="footer_text">Spring</p>
+			<svg id="pie_svg_right" class="pie_svg" viewBox="0 0 100 100"><circle id="pie_circle_right" class="pie_circle" r="25" cx="50" cy="50"></svg>
 		</div>
 		<!-- game mode -->
-		<p id="height_text" class="text">Highest Red Flower So Far</p>
+		<p id="height_text" class="footer_text">Highest Red Flower So Far</p>
 		<div id="tag_div">
 			<img id="tag_svg" src="assets/tag.svg">
 			<p id="tag_content"><span id="height_number">0</span><span id="percent">%</span></p>
