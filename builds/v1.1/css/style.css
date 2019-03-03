@@ -160,7 +160,6 @@ body {
   top: 52%;
   left: 50%;
   transform: translate(-50%,-50%);
-  box-shadow: 0 0 3px 0 rgba(0,0,0,0.4);
 }
 
 #canvas {
@@ -169,6 +168,7 @@ body {
   left: 50%;
   transform: translate(-50%,-50%);
 	width: 100%;
+  box-shadow: 0 0 3px 0 rgba(0,0,0,0.4);
 }
 
 
@@ -241,7 +241,7 @@ body {
 
 #tag_div {
 	position: absolute;
-	top: 0;
+	top: -1px;
 	right: 1%;
   width: 9%;
   max-width: 45px;
