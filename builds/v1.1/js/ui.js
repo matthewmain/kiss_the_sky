@@ -542,14 +542,12 @@ $("#icon_dark_toggle").click(function() {
     $(".pie_svg").css("background-color","rgba(213,216,197,1");
     darkMode = false;
   } else {
-
     $("body").css("background","#202020");
     $(".title_header_svg").attr("src","assets/title_header_dark.svg");
     $("#icon_dark_toggle").css("transform","rotate(0deg)");
     $(".footer_text, .pie_circle").css("color","#D5D8C5");
     $(".pie_circle").css("stroke","#D5D8C5");
     $(".pie_svg").css("background-color","rgba(213,216,197,.25");
-
     darkMode = true;
   }
 });
