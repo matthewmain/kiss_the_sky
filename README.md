@@ -1,4 +1,4 @@
-# KISS THE SKY
+## KISS THE SKY
 # A Plant Evolution Game
 
 <br>
