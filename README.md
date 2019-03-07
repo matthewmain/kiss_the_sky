@@ -16,12 +16,19 @@ Browser
 - [X] [Version 1.1](https://github.com/matthewmain/plant_evolution_app/tree/master/builds/v1.1) - _Basic Artificial Selection Gamification & UI_
 
 <br>
+DB
+<br>
+<br>
+
+- [ ] Version 2.0 - _Authentication, Basic Server Side Functionality, & Independent Hosting_
+
+<br>
 iOS
 <br>
 <br>
 
-- [ ] Version 2.0 - _Advanced Stylization & Game Design_ 
-- [ ] Version 2.1 - _Advanced Gamification_
+- [ ] Version 3.0 - _Advanced Stylization & Game Design_ 
+- [ ] Version 3.1 - _Advanced Gamification_
 
 <br>
 <br>
