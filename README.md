@@ -1,4 +1,5 @@
-# KISS THE SKY (Plant Evolution App)
+# KISS THE SKY
+# A Plant Evolution Game
 
 <br>
 <br>
