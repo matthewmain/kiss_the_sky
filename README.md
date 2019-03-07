@@ -13,7 +13,7 @@ Browser
 <br>
 
 - [X] [Version 1.0](https://github.com/matthewmain/plant_evolution_app/tree/master/builds/v1.0) - _Genes, Alleles, Mutations, & Randomized Sexual Reproduction with Mendelian Genetics_
-- [X] [Version 1.1](https://github.com/matthewmain/plant_evolution_app/tree/master/builds/v1.1) - _Basic Artificial Selection Gamification
+- [X] [Version 1.1](https://github.com/matthewmain/plant_evolution_app/tree/master/builds/v1.1) - _Basic Artificial Selection Gamification_
 
 <br>
 
