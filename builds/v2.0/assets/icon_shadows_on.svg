@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="100px" height="100px" viewBox="0 0 100 100" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 53.2 (72643) - https://sketchapp.com -->
+    <title>icon_shadows_on</title>
+    <desc>Created with Sketch.</desc>
+    <g id="icon_shadows_on" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <path d="M77,10 C92.3333333,70 100,100 100,100 L0,100 L11,19 C34.3333333,29.6666667 56.3333333,26.6666667 77,10 Z" id="Path" fill-opacity="0.5" fill="#74756F" fill-rule="nonzero"></path>
+        <path d="M6.86988898,94 L92.2738393,94 L71.1868233,11.4855896 C71.1293357,11.2606383 71.0853881,11.035406 71.0544697,10.8107541 L77,10 L100,100 L0,100 L11,19 L16.9464863,18.1891155 C17.017755,18.7139592 17.0201694,19.2570259 16.9454268,19.8074036 L6.86988898,94 Z" id="Path" fill="#74756F" fill-rule="nonzero"></path>
+        <path d="M72.2954978,10.6742169 C50.749221,-1.64395863 32.3644499,0.851390253 15.6460826,18.3594222 C36.6728206,30.8118487 55.2833368,28.2884356 72.2954978,10.6742169 Z" id="Path" stroke="#74756F" stroke-width="6" fill-rule="nonzero"></path>
+        <path d="M18.230304,15.0017779 L68.4509199,8.15542866 C72.4142608,7.61512433 73.2247173,13.5601357 69.2613764,14.10044 L19.0407605,20.9467892 C15.0774196,21.4870936 14.2669631,15.5420822 18.230304,15.0017779 Z" id="Path" fill="#74756F" fill-rule="nonzero"></path>
+    </g>
+</svg>

@@ -1,0 +1,194 @@
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="stylesheet" href="css/style.css">
+  <link href="https://fonts.googleapis.com/css?family=Megrim" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css?family=Dosis:200,300,400,500,600,700" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css?family=Nunito:400,600,700,800" rel="stylesheet">
+</head>
+
+<body>
+
+
+
+	<!-- 	LANDING -->
+
+	<div id="loader_div"></div>  <!-- brief blank loader screen; fades out on document ready -->
+	<script> document.addEventListener("DOMContentLoaded", function() { $("#loader_div").fadeOut(1500); }); </script>
+
+	<div id="landing_page_div">
+		<div id="landing_content_div">
+			<img id="landing_svg_bg" src="assets/title_landing.svg">
+			<img id="button_game_mode" class="button_landing" src="assets/button_game_mode.svg">
+			<img id="button_ambient_mode" class="button_landing" src="assets/button_ambient_mode.svg">
+		</div>
+	</div>
+
+
+
+	<!-- 	HEADER -->
+
+	<div id="header_div">
+		<img class="title_header_svg" src="assets/title_header_dark.svg">
+		<img id="icon_info" class="header_svg icon" title="learn more about the game" src="assets/icon_info.svg">
+		<img id="icon_dark_toggle" class="header_svg icon" title="toggle dark mode" src="assets/icon_dark_toggle.svg">
+		<img id="icon_shadows_on" class="header_svg icon_shadows icon" title="toggle leaf shadow visibility" src="assets/icon_shadows_on.svg">
+		<img id="icon_shadows_off" class="header_svg icon_shadows icon" title="toggle leaf shadow visibility" src="assets/icon_shadows_off.svg">
+		<a id="save" title="take a screenshot">
+			<img id="icon_camera" class="header_svg icon" src="assets/icon_camera.svg">
+		</a>
+		<img id="icon_pause" class="header_svg icon_game_run icon" title="pause the game" src="assets/icon_pause.svg">
+		<img id="icon_play" class="header_svg icon_game_run icon" title="resume the game" src="assets/icon_play.svg">
+		<img id="icon_restart" class="header_svg icon" title="restart" src="assets/icon_restart.svg">
+	</div>
+
+
+
+	<!-- FOOTER -->
+
+	<div id="footer_div">
+		<p id="time" class="footer_text">Year <span id="year_count">1</span><span id="season_left">, Spring</span></p>
+		<svg id="pie_svg_left" class="pie_svg" viewBox="0 0 100 100"><circle id="pie_circle_left" class="pie_circle" r="25" cx="50" cy="50"></svg>
+		<!-- ambient mode -->
+		<div id="ambient_footer_right">
+			<p id="season_right" class="footer_text">Spring</p>
+			<svg id="pie_svg_right" class="pie_svg" viewBox="0 0 100 100"><circle id="pie_circle_right" class="pie_circle" r="25" cx="50" cy="50"></svg>
+		</div>
+		<!-- game mode -->
+		<p id="height_text" class="footer_text">Highest Red Flower So Far</p>
+		<div id="tag_div">
+			<img id="tag_svg" src="assets/tag.svg">
+			<p id="tag_content"><span id="height_number">0</span><span id="percent">%</span></p>
+		</div>
+	</div>
+
+
+
+	<!-- SCREEN -->
+
+  <div id="canvas_container_div">
+
+
+  	<!-- canvas (large width/height for higher resolution) -->
+
+  	<canvas id="canvas" width=1000" height="1000"></canvas> 
+
+
+  	<!-- announcements -->
+
+  	<p id="year_announcement" class="announcement">YEAR 1</p>
+  	<p id="season_announcement" class="announcement">SPRING</p>
+
+  	<p id="height_announcement" class="announcement">0%</p>
+  	<p id="hundred_pct_large_height_announcement" class="announcement">100%</p>
+
+  	<div id="demo_elimination_div" class="announcement">
+	  	<img id="demo_elimination_bg" src="assets/demo_elimination_bg.svg">
+	    <div id="mask">
+	      <img id="demo_plant_small_1" src="assets/demo_plant_small.svg">
+	      <img id="demo_plant_small_2" src="assets/demo_plant_small.svg">
+	    </div>
+	    <img id="demo_hand" src="assets/demo_hand.svg">
+	  </div>
+
+		<div id="demo_change_div" class="announcement">
+			<img id="demo_change_bg" src="assets/demo_change_bg.svg">
+			<img id="demo_flower_red" src="assets/demo_flower_red.svg">
+			<img id="demo_leaf" src="assets/demo_leaf.svg">
+		</div>
+
+    <img id="milestone_first_red_flower" class="milestone announcement" src="assets/milestone_first_red_flower.svg">
+    <img id="milestone_third" class="milestone announcement" src="assets/milestone_third.svg">
+    <img id="milestone_half" class="milestone announcement" src="assets/milestone_half.svg">
+    <img id="milestone_two_thirds" class="milestone announcement" src="assets/milestone_two_thirds.svg">
+    <img id="milestone_90" class="milestone announcement" src="assets/milestone_90.svg">
+
+
+		<!-- modals -->
+
+  	<img id="modal_play" src="assets/modal_play.svg">
+
+  	<img id="modal_card_gameplay_screen" src="assets/modal_card_gameplay_screen.svg">
+  	<div id="modal_card_gameplay_screen_inner_div">
+	  	<img id="modal_ambient_text_gameplay_screen" class="modal_gameplay_screen_text" src="assets/modal_ambient_text.svg">
+	  	<img id="modal_game_text_gameplay_screen" class="modal_gameplay_screen_text" src="assets/modal_game_text.svg">
+	  </div>
+
+  	<img id="icon_exit_modal_gameplay_info" class="icon_exit_modal" src="assets/icon_exit_modal.svg">
+
+  	<div id="modal_restart_div">
+  		<img id="modal_restart" src="assets/modal_restart.svg">
+  		<img id="button_restart_confirm_hover" class="button_restart" src="assets/button_restart_confirm_hover.svg">
+  		<img id="button_restart_cancel_hover" class="button_restart" src="assets/button_restart_cancel_hover.svg">
+  	</div>
+
+
+	  <!-- options screen overlays -->
+
+	  <div id="overlay_game_mode_options_div" class="overlay_div">
+		  <img id="overlay_game_mode_options_bg" class="overlay_bg" src="assets/overlay_game_mode_options_bg.svg">
+		  <img id="helper_game_info" class="helper" src="assets/helper.svg">
+		  <img id="option_beginner" class="option" src="assets/option_beginner.svg">
+		  <img id="option_intermediate" class="option" src="assets/option_intermediate.svg">
+		  <img id="option_expert" class="option" src="assets/option_expert.svg">
+			<img class="button_sow" src="assets/button_sow.svg">
+			<img id="modal_card_game_screen" class="modal_card_options_screens" src="assets/modal_card_options_screens.svg">
+			<img id="modal_game_text" class="modal_options_text" src="assets/modal_game_text.svg">
+			<img id="icon_exit_modal_game_info" class="icon_exit_modal" src="assets/icon_exit_modal.svg">
+		</div>
+
+		<div id="overlay_ambient_mode_options_div" class="overlay_div">
+		  <img id="overlay_ambient_mode_options_bg" class="overlay_bg" src="assets/overlay_ambient_mode_options_bg.svg">
+			<img id="helper_ambient_info" class="helper" src="assets/helper.svg">
+		  <img id="option_first" class="option" src="assets/option_first.svg">
+		  <img id="option_second" class="option" src="assets/option_second.svg">
+		  <img id="option_third" class="option" src="assets/option_third.svg">
+			<img class="button_sow" src="assets/button_sow.svg">
+			<img id="modal_card_ambient_screen" class="modal_card_options_screens" src="assets/modal_card_options_screens.svg">
+			<img id="modal_ambient_text" class="modal_options_text" src="assets/modal_ambient_text.svg">
+			<img id="icon_exit_modal_ambient_info" class="icon_exit_modal" src="assets/icon_exit_modal.svg">
+		</div>
+
+
+		<!-- end-of-game overlays -->
+
+		<div id="game_over_div" class="end_of_game_div">
+			<img id="overlay_game_over" src="assets/overlay_game_over.svg">
+			<img id="button_try_again_hover" src="assets/button_try_again_hover.svg">
+		</div>
+
+		<div id="game_win_div" class="end_of_game_div">
+			<img id="game_win_YOU" class="game_win_svg" src="assets/overlay_game_win_YOU.svg">
+			<img id="game_win_KISSED" class="game_win_svg" src="assets/overlay_game_win_KISSED.svg">
+			<img id="game_win_THE" class="game_win_svg" src="assets/overlay_game_win_THE.svg">
+			<img id="game_win_SKY" class="game_win_svg" src="assets/overlay_game_win_SKY.svg">
+			<p id="game_win_gen_count_text" class="game_win_text">AFTER <span id="game_win_gen_number"></span> GENERATIONS</p>
+			<p id="game_win_mode_text" class="game_win_text">IN <span id="game_win_mode"></span> MODE</p>
+			<img id="button_play_again" class="button_game_win_play_again" src="assets/button_play_again.svg">
+			<img id="button_play_again_hover" class="button_game_win_play_again" src="assets/button_play_again_hover.svg">
+		</div>
+
+	</div>
+
+	<a href="https://matthewma.in/" id="copyright">© Matthew Main <span id="this_year"></span></a>
+
+
+
+
+  <!-- SCRIPTS -->
+
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+	<script src="js/jquery.easing.1.3.js"></script>
+	<script src="js/tools.js"></script>
+	<script src="js/verlet.js"></script>
+	<script src="js/ui.js"></script>
+	<script src="js/light_handler.js"></script>
+	<script src="js/flower_handler.js"></script>
+	<script src="js/seasons_handler.js"></script>
+	<script src="js/genetics_handler.js"></script>
+	<script src="js/index.js"></script>
+
+
+</body>
+
+</html>
