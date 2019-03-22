@@ -23,7 +23,7 @@ var Genome = {
                         mutationParameter: { range: 3, min: 4, max: null}, expressionType: "partial" },
   flowerHue:          { initialValue: function(){ return Tl.rib(0,260); },  // (corrected for greens in Plant())
                         mutationParameter: { range: 50, min: 0, max: 260 }, expressionType: "complete" },
-  flowerLightness:    { initialValue: function(){ return Tl.rib(30,75); },  // (corrected for offwhites in Plant())   
+  flowerLightness:    { initialValue: function(){ return Tl.rib(30,75); },  // (corrected for off whites in Plant())   
                         mutationParameter: { range: 30, min: 30, max: 75 }, expressionType: "complete" }
 };
 
