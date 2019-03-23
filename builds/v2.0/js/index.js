@@ -1084,7 +1084,7 @@ function display() {
     checkForGameOver(); 
     checkForGameWin(); 
   }
-  runLogs( 600 );
+  //runLogs( 600 );
   if ( !gamePaused ) { window.requestAnimationFrame( display ); }
 }
 
