@@ -47,13 +47,13 @@ function assignRandomFlowerColor( genotype ) {
 
 
 function generateRandomPlantGenotype() {
-  var newGenotype = EV.newRandomizedFirstGenGenotype( EV.species.skyPlant );
+  var newGenotype = EV.newRandomizedFirstGenGenotype( skyPlantGenome );
   assignRandomFlowerColor( newGenotype );
   return newGenotype;
 }
 
 function generateRandomRedFlowerPlantGenotype() {
-  var newGenotype = EV.newRandomizedFirstGenGenotype( EV.species.skyPlant );
+  var newGenotype = EV.newRandomizedFirstGenGenotype( skyPlantGenome );
   newGenotype.genes.flowerHue.allele1.value = Tl.rib(1,2) === 1 ? Tl.rib(0,5) : Tl.rib(255, 260);
   newGenotype.genes.flowerHue.allele2.value = Tl.rib(1,2) === 1 ? Tl.rib(0,5) : Tl.rib(255, 260);
   newGenotype.genes.flowerLightness.allele1.value = Tl.rib(30,40);
@@ -62,7 +62,7 @@ function generateRandomRedFlowerPlantGenotype() {
 }
 
 function generateTinyWhiteFlowerPlantGenotype() {
-  var newGenotype = EV.newRandomizedFirstGenGenotype( EV.species.skyPlant );
+  var newGenotype = EV.newRandomizedFirstGenGenotype( skyPlantGenome );
   newGenotype.genes.maxTotalSegments.allele1.value = newGenotype.genes.maxTotalSegments.allele2.value = 2;
   newGenotype.genes.maxSegmentWidth.allele1.value = newGenotype.genes.maxSegmentWidth.allele2.value = 8;
   newGenotype.genes.firstLeafSegment.allele1.value = newGenotype.genes.firstLeafSegment.allele2.value = 2;
@@ -75,7 +75,7 @@ function generateTinyWhiteFlowerPlantGenotype() {
 }
 
 function generateSmallPlantGenotype() {
-  var newGenotype = EV.newRandomizedFirstGenGenotype( EV.species.skyPlant );
+  var newGenotype = EV.newRandomizedFirstGenGenotype( skyPlantGenome );
   newGenotype.genes.maxTotalSegments.allele1.value = newGenotype.genes.maxTotalSegments.allele2.value = 2;
   newGenotype.genes.maxSegmentWidth.allele1.value = newGenotype.genes.maxSegmentWidth.allele2.value = 8;
   newGenotype.genes.firstLeafSegment.allele1.value = newGenotype.genes.firstLeafSegment.allele2.value = 2;
@@ -86,7 +86,7 @@ function generateSmallPlantGenotype() {
 }
 
 function generateMediumPlantGenotype() {
-  var newGenotype = EV.newRandomizedFirstGenGenotype( EV.species.skyPlant );
+  var newGenotype = EV.newRandomizedFirstGenGenotype( skyPlantGenome );
   newGenotype.genes.maxTotalSegments.allele1.value = newGenotype.genes.maxTotalSegments.allele2.value = 7;
   newGenotype.genes.maxSegmentWidth.allele1.value = newGenotype.genes.maxSegmentWidth.allele2.value = 10;
   newGenotype.genes.maxLeafLength.allele1.value = newGenotype.genes.maxLeafLength.allele2.value = 5.5;
@@ -95,7 +95,7 @@ function generateMediumPlantGenotype() {
 }
 
 function generateLargePlantGenotype() {
-  var newGenotype = EV.newRandomizedFirstGenGenotype( EV.species.skyPlant );
+  var newGenotype = EV.newRandomizedFirstGenGenotype( skyPlantGenome );
   newGenotype.genes.maxTotalSegments.allele1.value = newGenotype.genes.maxTotalSegments.allele2.value = 12;
   newGenotype.genes.maxSegmentWidth.allele1.value = newGenotype.genes.maxSegmentWidth.allele2.value = 12;
   newGenotype.genes.maxLeafLength.allele1.value = newGenotype.genes.maxLeafLength.allele2.value = 7;
@@ -104,7 +104,7 @@ function generateLargePlantGenotype() {
 }
 
 function generateTallPlantGenotype() {
-  var newGenotype = EV.newRandomizedFirstGenGenotype( EV.species.skyPlant );
+  var newGenotype = EV.newRandomizedFirstGenGenotype( skyPlantGenome );
   newGenotype.genes.maxTotalSegments.allele1.value = newGenotype.genes.maxTotalSegments.allele2.value = 25;
   newGenotype.genes.maxSegmentWidth.allele1.value = newGenotype.genes.maxSegmentWidth.allele2.value = 10;
   newGenotype.genes.stalkStrength.allele1.value = newGenotype.genes.stalkStrength.allele2.value = 1;
@@ -114,7 +114,7 @@ function generateTallPlantGenotype() {
 }
 
 function generateHugePlantGenotype() {
-  var newGenotype = EV.newRandomizedFirstGenGenotype( EV.species.skyPlant );
+  var newGenotype = EV.newRandomizedFirstGenGenotype( skyPlantGenome );
   newGenotype.genes.maxTotalSegments.allele1.value = newGenotype.genes.maxTotalSegments.allele2.value = 25;
   newGenotype.genes.maxSegmentWidth.allele1.value = newGenotype.genes.maxSegmentWidth.allele2.value = 30;
   newGenotype.genes.maxLeafLength.allele1.value = newGenotype.genes.maxLeafLength.allele2.value = 9;
@@ -123,7 +123,7 @@ function generateHugePlantGenotype() {
 }
 
 function generateHugeRedPlantGenotype() {
-  var newGenotype = EV.newRandomizedFirstGenGenotype( EV.species.skyPlant );
+  var newGenotype = EV.newRandomizedFirstGenGenotype( skyPlantGenome );
   newGenotype.genes.maxTotalSegments.allele1.value = newGenotype.genes.maxTotalSegments.allele2.value = 11;
   newGenotype.genes.maxSegmentWidth.allele1.value = newGenotype.genes.maxSegmentWidth.allele2.value = 30;
   newGenotype.genes.maxLeafLength.allele1.value = newGenotype.genes.maxLeafLength.allele2.value = 9;
