@@ -502,12 +502,13 @@ $(".button_sow").click(function(){
       for ( var i=0; i<15; i++ ) { createSeed( null, generateRandomRedFlowerPlantGenotype() ); } 
       break;
     case "intermediate":
-      for ( var j=0; j<20; j++ ) { createSeed( null, generateRandomNewPlantGenotype() ); }
+      for ( var j=0; j<20; j++ ) { createSeed( null, generateRandomPlantGenotype() ); }
       for ( var k=0; k<5; k++ ) { createSeed( null, generateRandomRedFlowerPlantGenotype() ); }
       break;
     case "expert":
       for ( var l=0; l<1; l++ ) { createSeed( null, generateTinyWhiteFlowerPlantGenotype() ); }
   }
+  recordInitialGeneValueAverages();
   for ( var m=0; m<seeds.length; m++ ) { scatterSeed( seeds[m] ); }
   $("#overlay_game_mode_options_div, #overlay_ambient_mode_options_div").fadeOut(500, function(){ 
     $(".icon").fadeIn(5000);

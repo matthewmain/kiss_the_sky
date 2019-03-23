@@ -29,10 +29,9 @@ var runPollinationAnimations = true;  // (whether to run pollination animations;
 var allowSelfPollination = true;  // allows flowers to pollinate themselves
 var pollinationFrequency = 5;  // (as average number of pollination events per open flower per length of summer)
 var maxSeedsPerFlowerRatio = 0.334;  // max seeds per flower (as ratio of plant's max total segments)
-var mutationRate = 5;  // (as meiosis events per mutation; higher is less frequent)
 var restrictGrowthByEnergy = true;  // restricts plant growth by energy level (if false, plants grow freely)
 var sunRayIntensity = 3;  // total energy units per sun ray per iteration
-var photosynthesisRatio = 1;  // ratio of available sun energy stored by leaf when ray contacts it (varies by season)
+var photosynthesisRatio = 1;  // ratio of available sun energy stored by leaf at ray contact (varies by season)
 var groEnExp = 0.2;  // growth energy expenditure rate (rate energy is expended for growth)
 var livEnExp = 0.1;  // living energy expenditure rate (rate energy is expended for living)
 var energyStoreFactor = 1000;  // (a plant's maximum storable energy units per segment)
@@ -113,7 +112,7 @@ function Seed( parentFlower, zygoteGenotype ) {
     this.generation = this.parentFlower.generation + 1;
   }
   this.genotype = zygoteGenotype;  
-  this.phenotype = new Phenotype( this.genotype );
+  this.phenotype = EV.generatePhenotype( this.genotype );
   this.p1.width = this.sw*1; 
   this.p1.mass = 5;
   this.p2.width = this.sw*0.35; this.p2.mass = 5;
@@ -242,7 +241,7 @@ function Segment( plant, parentSegment, basePoint1, basePoint2 ) {
 /////---FUNCTIONS---/////
 
 
-///// Instance Creators /////
+//// Instance Creators ////
 
 ///creates a new seed
 function createSeed( parentFlower, zygoteGenotype ) {
@@ -299,12 +298,12 @@ function removePlant( plantId ) {
 
 ///records initial gene value averages
 function recordInitialGeneValueAverages() {
-  for ( var gene in Genome ) {
+  for ( var gene in EV.species.skyPlant.genes ) {
     var alleleAvg = 0;
     for ( i=0; i<plants.length; i++ ) {
       var p = plants[i];
-      alleleAvg += p.genotype[gene].allele1.value;
-      alleleAvg += p.genotype[gene].allele2.value;      
+      alleleAvg += p.genotype.genes[gene].allele1.value;
+      alleleAvg += p.genotype.genes[gene].allele2.value;      
     }
     alleleAvg = alleleAvg/(plants.length*2);
     initialGeneValueAverages[gene] = alleleAvg;
@@ -967,7 +966,7 @@ function runGameWinFlowersAnimation() {
 
 ///logs all gene average value changes since first generation (includes inactive plants, but not removed)
 function logAllGeneChanges() {
-  for ( var geneName in Genome ) {
+  for ( var geneName in EV.species.skyPlant.genome ) {
     var currentAlleleAvg = 0;
     for ( i=0; i<plants.length; i++ ) {
       var p = plants[i];
@@ -986,8 +985,8 @@ function logGeneChange( geneName ) {  // (enter name as string)
   var currentAlleleAvg = 0;
   for ( i=0; i<plants.length; i++ ) {
     var p = plants[i];
-    currentAlleleAvg += p.genotype[geneName].allele1.value;
-    currentAlleleAvg += p.genotype[geneName].allele2.value;      
+    currentAlleleAvg += p.genotype.genes[geneName].allele1.value;
+    currentAlleleAvg += p.genotype.genes[geneName].allele2.value;      
   }
   currentAlleleAvg = currentAlleleAvg/(plants.length*2);
   var change = currentAlleleAvg - initialGeneValueAverages[geneName];
@@ -999,7 +998,7 @@ function logGeneChange( geneName ) {  // (enter name as string)
 function logCurrentGenePresence( geneName ) {  // (enter name as string)
   var genArr = [];
   for (i=0;i<plants.length;i++) {
-    var g = plants[i].genotype[geneName];  // gene
+    var g = plants[i].genotype.genes[geneName];  // gene
     genArr.push( g.allele1.dominanceIndex.toString().slice(0,4)+" ["+g.allele1.value.toString().slice(0,4)+"]" );
     genArr.push( g.allele2.dominanceIndex.toString().slice(0,4)+" ["+g.allele2.value.toString().slice(0,4)+"]" );
   }
@@ -1048,15 +1047,15 @@ function runLogs( frequency ) {
 
 
 ///scenarios
-//for ( var i=0; i<20; i++ ) { createSeed( null, generateRandomNewPlantGenotype() ); }
-//for ( var i=0; i<5; i++ ) { createSeed( null, generateRandomRedFlowerPlantGenotype() ); }
-//for ( var i=0; i<1; i++ ) { createSeed( null, generateTinyWhiteFlowerPlantGenotype() ); }
-//for ( var i=0; i<5; i++ ) { createSeed( null, generateSmallPlantGenotype() ); }  
-//for ( var i=0; i<5; i++ ) { createSeed( null, generateMediumPlantGenotype() ); }
+//for ( var i=0; i<10; i++ ) { createSeed( null, generateRandomPlantGenotype() ); }
+//for ( var i=0; i<10; i++ ) { createSeed( null, generateRandomRedFlowerPlantGenotype() ); }
+//for ( var i=0; i<10; i++ ) { createSeed( null, generateTinyWhiteFlowerPlantGenotype() ); }
+//for ( var i=0; i<10; i++ ) { createSeed( null, generateSmallPlantGenotype() ); }  
+//for ( var i=0; i<10; i++ ) { createSeed( null, generateMediumPlantGenotype() ); }
 //for ( var i=0; i<10; i++ ) { createSeed( null, generateLargePlantGenotype() ); }
-//for ( var i=0; i<10; i++ ) { createSeed( null, generateTallPlantGenotype( 1 ) ); }
-//for ( var i=0; i<5; i++ ) { createSeed( null, generateHugePlantGenotype() ); }
-//for ( var i=0; i<5; i++ ) { createSeed( null, generateHugeRedPlantGenotype() ); }
+//for ( var i=0; i<10; i++ ) { createSeed( null, generateTallPlantGenotype() ); }
+//for ( var i=0; i<10; i++ ) { createSeed( null, generateHugePlantGenotype() ); }
+//for ( var i=0; i<10; i++ ) { createSeed( null, generateHugeRedPlantGenotype() ); }
 
 
 
@@ -1089,7 +1088,6 @@ function display() {
   if ( !gamePaused ) { window.requestAnimationFrame( display ); }
 }
 
-recordInitialGeneValueAverages();
 createSunRays();
 if ( useSunShades ) { placeSunShades(3,3); }
 display();

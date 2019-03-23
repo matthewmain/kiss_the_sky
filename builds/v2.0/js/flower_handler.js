@@ -128,14 +128,14 @@ function PollinationAnimation( pollinatorFlower, pollinatedFlower ) {
   this.pollenPadGlowHasBegun = false;
   this.pollenPadGlowComplete = false;
   //burst lines (pollen lines that burst randomly from flower 1)
-  for ( var i=0; i<5; i++) {  // creates a burst line each iteration
-    var totalDistance = Tl.rfb( canvas.width*0.2, canvas.width*0.1 );  // total distance burst line will travel
+  for ( var i=0; i<3; i++) {  // creates a burst line each iteration
+    var totalDistance = Tl.rfb( canvas.width*0.1, canvas.width*0.2 );  // total distance burst line will travel
     var xVal = Tl.rfb( 0, totalDistance );  // base x value (random)
     var xDist = Tl.rib(1,2) == 1 ? xVal : -xVal;  // x distance burst line will travel 
     var yVal = Math.sqrt( totalDistance*totalDistance - xDist*xDist );  // base y value (based on x total distance)
     var yDist = Tl.rib(1,2) == 1 ? yVal : -yVal;  // y distance burst line will travel
     var blxa = [];  // burst line x positions array 
-    var blya = [];  // burst line y positions array
+    var blya = [];  // burst line y positions array 
     for ( var j=0; j<8; j++ ) {  // populates burst line x & y positions arrays
       blxa.push( this.burstOrigin.x ); 
       blya.push( this.burstOrigin.y ); 
@@ -152,7 +152,7 @@ function PollinationAnimation( pollinatorFlower, pollinatedFlower ) {
   for ( var k=0; k<1; k++) {  // creates a pollination line each iteration
     var plxa = [];  // pollination line x positions array 
     var plya = [];  // pollination line y positions array
-    for ( var l=0; l<1; l++ ) {  // populates pollination line x & y positions arrays
+    for ( var l=0; l<3; l++ ) {  // populates pollination line x & y positions arrays
       plxa.push( this.burstOrigin.x ); 
       plya.push( this.burstOrigin.y ); 
     }
@@ -331,7 +331,10 @@ function acceptPollination( pollinatedFlower ) {
 ///pollinates flower
 function pollinateFlower( pollinatedFlower, pollinatorFlower ) {
   if ( runPollinationAnimations ) { createPollinationAnimation( pollinatorFlower, pollinatedFlower ); }
-  var zygoteGenotype = meiosis( pollinatedFlower.parentPlant.genotype, pollinatorFlower.parentPlant.genotype );
+  var species = EV.species.skyPlant;
+  var parentGenotype1 = pollinatedFlower.parentPlant.genotype;
+  var parentGenotype2 = pollinatorFlower.parentPlant.genotype;
+  var zygoteGenotype = EV.meiosis( species, parentGenotype1, parentGenotype2 );
   pollinatedFlower.zygoteGenotypes.push( zygoteGenotype );
   pollinatedFlower.isPollinated = true;
 }
@@ -705,7 +708,7 @@ function renderPollinationAnimations() {
     if ( viewPollenBursts ) { renderPollenBurst( pa ); } else { pa.pollenBurstComplete = true; }  
     // pollination lines 
     if ( viewPollinatorLines ) { renderPollinatorLines( pa ); } else { pa.pollinatorLinesHaveArrived = true; } 
-    // pollination glow (if pollinator lines haven been turned off; otherwise handled in renderPollinatorLines)
+    // pollination glow (if pollinator lines haven't been turned off; otherwise handled in renderPollinatorLines)
     if ( !viewPollinatorLines && viewPollinationGlow  ) {
       renderPollinationGlow( pa );
     } else if ( !viewPollinationGlow ) {
