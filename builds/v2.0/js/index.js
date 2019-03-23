@@ -29,10 +29,9 @@ var runPollinationAnimations = true;  // (whether to run pollination animations;
 var allowSelfPollination = true;  // allows flowers to pollinate themselves
 var pollinationFrequency = 5;  // (as average number of pollination events per open flower per length of summer)
 var maxSeedsPerFlowerRatio = 0.334;  // max seeds per flower (as ratio of plant's max total segments)
-var mutationRate = 5;  // (as meiosis events per mutation; higher is less frequent)
 var restrictGrowthByEnergy = true;  // restricts plant growth by energy level (if false, plants grow freely)
 var sunRayIntensity = 3;  // total energy units per sun ray per iteration
-var photosynthesisRatio = 1;  // ratio of available sun energy stored by leaf when ray contacts it (varies by season)
+var photosynthesisRatio = 1;  // ratio of available sun energy stored by leaf at ray contact (varies by season)
 var groEnExp = 0.2;  // growth energy expenditure rate (rate energy is expended for growth)
 var livEnExp = 0.1;  // living energy expenditure rate (rate energy is expended for living)
 var energyStoreFactor = 1000;  // (a plant's maximum storable energy units per segment)
@@ -113,7 +112,7 @@ function Seed( parentFlower, zygoteGenotype ) {
     this.generation = this.parentFlower.generation + 1;
   }
   this.genotype = zygoteGenotype;  
-  this.phenotype = new Phenotype( this.genotype );
+  this.phenotype = EV.generatePhenotype( this.genotype );
   this.p1.width = this.sw*1; 
   this.p1.mass = 5;
   this.p2.width = this.sw*0.35; this.p2.mass = 5;
@@ -242,7 +241,7 @@ function Segment( plant, parentSegment, basePoint1, basePoint2 ) {
 /////---FUNCTIONS---/////
 
 
-///// Instance Creators /////
+//// Instance Creators ////
 
 ///creates a new seed
 function createSeed( parentFlower, zygoteGenotype ) {
@@ -299,12 +298,12 @@ function removePlant( plantId ) {
 
 ///records initial gene value averages
 function recordInitialGeneValueAverages() {
-  for ( var gene in Genome ) {
+  for ( var gene in EV.species.skyPlant.genes ) {
     var alleleAvg = 0;
     for ( i=0; i<plants.length; i++ ) {
       var p = plants[i];
-      alleleAvg += p.genotype[gene].allele1.value;
-      alleleAvg += p.genotype[gene].allele2.value;      
+      alleleAvg += p.genotype.genes[gene].allele1.value;
+      alleleAvg += p.genotype.genes[gene].allele2.value;      
     }
     alleleAvg = alleleAvg/(plants.length*2);
     initialGeneValueAverages[gene] = alleleAvg;
@@ -556,10 +555,10 @@ function growPlants() {
 function rgbaPlantColorShift( plant, startColor, endColor, startEnergy, endEnergy ) {
   var p = plant;
   var curEn = p.energy;  // current energy level
-  var r = Math.round(endColor.r-((curEn-endEnergy)*(endColor.r-startColor.r)/(startEnergy-endEnergy))); // redshift
-  var g = Math.round(endColor.g-((curEn-endEnergy)*(endColor.g-startColor.g)/(startEnergy-endEnergy))); // greenshift
-  var b = Math.round(endColor.b-((curEn-endEnergy)*(endColor.b-startColor.b)/(startEnergy-endEnergy))); // blueshift
-  var a = endColor.a-((curEn-endEnergy)*(endColor.a-startColor.a)/(startEnergy-endEnergy)); // alphashift
+  var r = Math.round(endColor.r-((curEn-endEnergy)*(endColor.r-startColor.r)/(startEnergy-endEnergy))); //redshift
+  var g = Math.round(endColor.g-((curEn-endEnergy)*(endColor.g-startColor.g)/(startEnergy-endEnergy))); //greenshift
+  var b = Math.round(endColor.b-((curEn-endEnergy)*(endColor.b-startColor.b)/(startEnergy-endEnergy))); //blueshift
+  var a = endColor.a-((curEn-endEnergy)*(endColor.a-startColor.a)/(startEnergy-endEnergy)); //alphashift
   return { r: r, g: g, b: b, a: a };
 }
 
@@ -567,10 +566,10 @@ function rgbaPlantColorShift( plant, startColor, endColor, startEnergy, endEnerg
 function hslaPlantColorShift( plant, startColor, endColor, startEnergy, endEnergy ) {
   var p = plant;
   var curEn = p.energy;  // current energy level
-  var h = Math.round(endColor.h-((curEn-endEnergy)*(endColor.h-startColor.h)/(startEnergy-endEnergy))); // redshift
-  var s = Math.round(endColor.s-((curEn-endEnergy)*(endColor.s-startColor.s)/(startEnergy-endEnergy))); // greenshift
-  var l = Math.round(endColor.l-((curEn-endEnergy)*(endColor.l-startColor.l)/(startEnergy-endEnergy))); // blueshift
-  var a = endColor.a-((curEn-endEnergy)*(endColor.a-startColor.a)/(startEnergy-endEnergy)); // blueshift
+  var h = Math.round(endColor.h-((curEn-endEnergy)*(endColor.h-startColor.h)/(startEnergy-endEnergy))); //redshift
+  var s = Math.round(endColor.s-((curEn-endEnergy)*(endColor.s-startColor.s)/(startEnergy-endEnergy))); //greenshift
+  var l = Math.round(endColor.l-((curEn-endEnergy)*(endColor.l-startColor.l)/(startEnergy-endEnergy))); //blueshift
+  var a = endColor.a-((curEn-endEnergy)*(endColor.a-startColor.a)/(startEnergy-endEnergy)); //blueshift
   return { h: h, s: s, l: l, a: a };
 }
 
@@ -601,14 +600,14 @@ function applyHealthColoration( plant, segment ) {
       f.clOv = s.clS;  // flower ovule color (matches stalk color)
       f.clO = s.clO;  // outline color (matches plant dark outline color)
       var fc = plant.flowerColor;
-      //(petals)
+      //petals
       var ffel = p.maxEnergyLevel * flowerFadeEnergyLevelRatio;  
       if ( cel <= ffel && cel > sel ) {  // flower fading energy levels
         f.clP = hslaPlantColorShift( p, {h:fc.h,s:100,l:fc.l}, {h:fc.h,s:50,l:100}, ffel, sel );  // fade color
       } else if ( cel <= sel && cel > del ) {  // sick energy levels
         f.clP = hslaPlantColorShift( p, {h:50,s:50,l:100}, {h:45,s:100,l:15}, sel, del );  // darken color
       }      
-      //(polinator pad)
+      //polinator pad
       var ppfel = p.maxEnergyLevel * polinatorPadFadeEnergyLevelRatio;
       if ( cel <= ppfel && cel > sel ) {  // polinator pad fading energy levels
         f.clH = rgbaPlantColorShift( p, p.pollenPadColor, {r:77,g:57,b:0,a:1}, ppfel, sel );  // fade color
@@ -965,14 +964,14 @@ function runGameWinFlowersAnimation() {
 
 //// Logging ////
 
-///logs all gene average value changes since first generation (includes inactive plants, but not removed)
+///logs all gene average value changes since first generation (includes inactive plants, but not removed plants)
 function logAllGeneChanges() {
-  for ( var geneName in Genome ) {
+  for ( var geneName in EV.species.skyPlant.genes ) {
     var currentAlleleAvg = 0;
     for ( i=0; i<plants.length; i++ ) {
       var p = plants[i];
-      currentAlleleAvg += p.genotype[geneName].allele1.value;
-      currentAlleleAvg += p.genotype[geneName].allele2.value;      
+      currentAlleleAvg += p.genotype.genes[geneName].allele1.value;
+      currentAlleleAvg += p.genotype.genes[geneName].allele2.value;      
     }
     currentAlleleAvg = currentAlleleAvg/(plants.length*2);
     var change = currentAlleleAvg - initialGeneValueAverages[geneName];
@@ -986,8 +985,8 @@ function logGeneChange( geneName ) {  // (enter name as string)
   var currentAlleleAvg = 0;
   for ( i=0; i<plants.length; i++ ) {
     var p = plants[i];
-    currentAlleleAvg += p.genotype[geneName].allele1.value;
-    currentAlleleAvg += p.genotype[geneName].allele2.value;      
+    currentAlleleAvg += p.genotype.genes[geneName].allele1.value;
+    currentAlleleAvg += p.genotype.genes[geneName].allele2.value;      
   }
   currentAlleleAvg = currentAlleleAvg/(plants.length*2);
   var change = currentAlleleAvg - initialGeneValueAverages[geneName];
@@ -999,7 +998,7 @@ function logGeneChange( geneName ) {  // (enter name as string)
 function logCurrentGenePresence( geneName ) {  // (enter name as string)
   var genArr = [];
   for (i=0;i<plants.length;i++) {
-    var g = plants[i].genotype[geneName];  // gene
+    var g = plants[i].genotype.genes[geneName];  // gene
     genArr.push( g.allele1.dominanceIndex.toString().slice(0,4)+" ["+g.allele1.value.toString().slice(0,4)+"]" );
     genArr.push( g.allele2.dominanceIndex.toString().slice(0,4)+" ["+g.allele2.value.toString().slice(0,4)+"]" );
   }
@@ -1015,9 +1014,9 @@ function logCurrentGenePresence( geneName ) {  // (enter name as string)
 function runLogs( frequency ) {
   if ( worldTime % frequency === 0 ) { 
 
-    // console.log("\n");
+    console.log("\n");
 
-    // logAllGeneChanges();
+    logAllGeneChanges();
     // logGeneChange( "maxTotalSegments" );
     // logGeneChange( "maxSegmentWidth" );
     // logGeneChange( "stalkStrength" );
@@ -1048,15 +1047,15 @@ function runLogs( frequency ) {
 
 
 ///scenarios
-//for ( var i=0; i<20; i++ ) { createSeed( null, generateRandomNewPlantGenotype() ); }
-//for ( var i=0; i<5; i++ ) { createSeed( null, generateRandomRedFlowerPlantGenotype() ); }
-//for ( var i=0; i<1; i++ ) { createSeed( null, generateTinyWhiteFlowerPlantGenotype() ); }
-//for ( var i=0; i<5; i++ ) { createSeed( null, generateSmallPlantGenotype() ); }  
-//for ( var i=0; i<5; i++ ) { createSeed( null, generateMediumPlantGenotype() ); }
+//for ( var i=0; i<10; i++ ) { createSeed( null, generateRandomPlantGenotype() ); }
+//for ( var i=0; i<10; i++ ) { createSeed( null, generateRandomRedFlowerPlantGenotype() ); }
+//for ( var i=0; i<10; i++ ) { createSeed( null, generateTinyWhiteFlowerPlantGenotype() ); }
+//for ( var i=0; i<10; i++ ) { createSeed( null, generateSmallPlantGenotype() ); }  
+//for ( var i=0; i<10; i++ ) { createSeed( null, generateMediumPlantGenotype() ); }
 //for ( var i=0; i<10; i++ ) { createSeed( null, generateLargePlantGenotype() ); }
-//for ( var i=0; i<10; i++ ) { createSeed( null, generateTallPlantGenotype( 1 ) ); }
-//for ( var i=0; i<5; i++ ) { createSeed( null, generateHugePlantGenotype() ); }
-//for ( var i=0; i<5; i++ ) { createSeed( null, generateHugeRedPlantGenotype() ); }
+//for ( var i=0; i<10; i++ ) { createSeed( null, generateTallPlantGenotype() ); }
+//for ( var i=0; i<10; i++ ) { createSeed( null, generateHugePlantGenotype() ); }
+//for ( var i=0; i<10; i++ ) { createSeed( null, generateHugeRedPlantGenotype() ); }
 
 
 
@@ -1085,11 +1084,10 @@ function display() {
     checkForGameOver(); 
     checkForGameWin(); 
   }
-  //runLogs( 600 );
+  runLogs( 600 );
   if ( !gamePaused ) { window.requestAnimationFrame( display ); }
 }
 
-recordInitialGeneValueAverages();
 createSunRays();
 if ( useSunShades ) { placeSunShades(3,3); }
 display();
