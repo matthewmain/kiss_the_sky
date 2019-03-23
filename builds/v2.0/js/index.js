@@ -555,10 +555,10 @@ function growPlants() {
 function rgbaPlantColorShift( plant, startColor, endColor, startEnergy, endEnergy ) {
   var p = plant;
   var curEn = p.energy;  // current energy level
-  var r = Math.round(endColor.r-((curEn-endEnergy)*(endColor.r-startColor.r)/(startEnergy-endEnergy))); // redshift
-  var g = Math.round(endColor.g-((curEn-endEnergy)*(endColor.g-startColor.g)/(startEnergy-endEnergy))); // greenshift
-  var b = Math.round(endColor.b-((curEn-endEnergy)*(endColor.b-startColor.b)/(startEnergy-endEnergy))); // blueshift
-  var a = endColor.a-((curEn-endEnergy)*(endColor.a-startColor.a)/(startEnergy-endEnergy)); // alphashift
+  var r = Math.round(endColor.r-((curEn-endEnergy)*(endColor.r-startColor.r)/(startEnergy-endEnergy))); //redshift
+  var g = Math.round(endColor.g-((curEn-endEnergy)*(endColor.g-startColor.g)/(startEnergy-endEnergy))); //greenshift
+  var b = Math.round(endColor.b-((curEn-endEnergy)*(endColor.b-startColor.b)/(startEnergy-endEnergy))); //blueshift
+  var a = endColor.a-((curEn-endEnergy)*(endColor.a-startColor.a)/(startEnergy-endEnergy)); //alphashift
   return { r: r, g: g, b: b, a: a };
 }
 
@@ -566,10 +566,10 @@ function rgbaPlantColorShift( plant, startColor, endColor, startEnergy, endEnerg
 function hslaPlantColorShift( plant, startColor, endColor, startEnergy, endEnergy ) {
   var p = plant;
   var curEn = p.energy;  // current energy level
-  var h = Math.round(endColor.h-((curEn-endEnergy)*(endColor.h-startColor.h)/(startEnergy-endEnergy))); // redshift
-  var s = Math.round(endColor.s-((curEn-endEnergy)*(endColor.s-startColor.s)/(startEnergy-endEnergy))); // greenshift
-  var l = Math.round(endColor.l-((curEn-endEnergy)*(endColor.l-startColor.l)/(startEnergy-endEnergy))); // blueshift
-  var a = endColor.a-((curEn-endEnergy)*(endColor.a-startColor.a)/(startEnergy-endEnergy)); // blueshift
+  var h = Math.round(endColor.h-((curEn-endEnergy)*(endColor.h-startColor.h)/(startEnergy-endEnergy))); //redshift
+  var s = Math.round(endColor.s-((curEn-endEnergy)*(endColor.s-startColor.s)/(startEnergy-endEnergy))); //greenshift
+  var l = Math.round(endColor.l-((curEn-endEnergy)*(endColor.l-startColor.l)/(startEnergy-endEnergy))); //blueshift
+  var a = endColor.a-((curEn-endEnergy)*(endColor.a-startColor.a)/(startEnergy-endEnergy)); //blueshift
   return { h: h, s: s, l: l, a: a };
 }
 
@@ -600,14 +600,14 @@ function applyHealthColoration( plant, segment ) {
       f.clOv = s.clS;  // flower ovule color (matches stalk color)
       f.clO = s.clO;  // outline color (matches plant dark outline color)
       var fc = plant.flowerColor;
-      //(petals)
+      //petals
       var ffel = p.maxEnergyLevel * flowerFadeEnergyLevelRatio;  
       if ( cel <= ffel && cel > sel ) {  // flower fading energy levels
         f.clP = hslaPlantColorShift( p, {h:fc.h,s:100,l:fc.l}, {h:fc.h,s:50,l:100}, ffel, sel );  // fade color
       } else if ( cel <= sel && cel > del ) {  // sick energy levels
         f.clP = hslaPlantColorShift( p, {h:50,s:50,l:100}, {h:45,s:100,l:15}, sel, del );  // darken color
       }      
-      //(polinator pad)
+      //polinator pad
       var ppfel = p.maxEnergyLevel * polinatorPadFadeEnergyLevelRatio;
       if ( cel <= ppfel && cel > sel ) {  // polinator pad fading energy levels
         f.clH = rgbaPlantColorShift( p, p.pollenPadColor, {r:77,g:57,b:0,a:1}, ppfel, sel );  // fade color
@@ -964,14 +964,14 @@ function runGameWinFlowersAnimation() {
 
 //// Logging ////
 
-///logs all gene average value changes since first generation (includes inactive plants, but not removed)
+///logs all gene average value changes since first generation (includes inactive plants, but not removed plants)
 function logAllGeneChanges() {
-  for ( var geneName in EV.species.skyPlant.genome ) {
+  for ( var geneName in EV.species.skyPlant.genes ) {
     var currentAlleleAvg = 0;
     for ( i=0; i<plants.length; i++ ) {
       var p = plants[i];
-      currentAlleleAvg += p.genotype[geneName].allele1.value;
-      currentAlleleAvg += p.genotype[geneName].allele2.value;      
+      currentAlleleAvg += p.genotype.genes[geneName].allele1.value;
+      currentAlleleAvg += p.genotype.genes[geneName].allele2.value;      
     }
     currentAlleleAvg = currentAlleleAvg/(plants.length*2);
     var change = currentAlleleAvg - initialGeneValueAverages[geneName];
@@ -1014,9 +1014,9 @@ function logCurrentGenePresence( geneName ) {  // (enter name as string)
 function runLogs( frequency ) {
   if ( worldTime % frequency === 0 ) { 
 
-    // console.log("\n");
+    console.log("\n");
 
-    // logAllGeneChanges();
+    logAllGeneChanges();
     // logGeneChange( "maxTotalSegments" );
     // logGeneChange( "maxSegmentWidth" );
     // logGeneChange( "stalkStrength" );
@@ -1084,7 +1084,7 @@ function display() {
     checkForGameOver(); 
     checkForGameWin(); 
   }
-  //runLogs( 600 );
+  runLogs( 600 );
   if ( !gamePaused ) { window.requestAnimationFrame( display ); }
 }
 
