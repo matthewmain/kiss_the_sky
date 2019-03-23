@@ -18,7 +18,7 @@ Browser
 
 <br>
 
-- [ ] [Version 2.0](https://github.com/matthewmain/plant_evolution_app/tree/master/builds/v2.0) - _Authentication, Basic Server Side Functionality, & Independent Hosting_
+- [ ] [Version 2.0](https://github.com/matthewmain/plant_evolution_app/tree/master/builds/v2.0) - _EvolveJS, Authentication, Basic Server Side Functionality, & Independent Hosting_
 
 <br>
 iOS
