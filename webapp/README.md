@@ -1,48 +1,51 @@
-# Development Notes
+# Development Setup Notes
 
-Download Robo 3T for localhost mongoDB viewing/editing
-- https://robomongo.org/download
+### Overview
+This is a MERN (Mongodb, Express, React, Node) Application, and here are the required installations...
+- Node JS: https://nodejs.org/en/download/
+- MongoDb:
+  - Download: https://treehouse.github.io/installation-guides/mac/mongo-mac.html
+  - Info: https://www.mongodb.com/
+  - Recommended software for visualizing database (not required)
+    - Robo 3T: https://robomongo.org/download
+  - Recommended software for testing API requests
+    - postman: https://www.getpostman.com/
 
-For help installing Mongodb on a Mac
-- https://treehouse.github.io/installation-guides/mac/mongo-mac.html
+### Getting Started
+Once you have all the required software install.
+- Run $`mongod` (don't forget the `d`) in your bash.
+  - This will create a mongodb deamon running in your OS background.
+  - The first time you do this, the output will likely hang.
+- In a new window, run $`mongo` (NO `d` this time) to test that it's running
+  - If setup correctly, your command line will now show the `>` symbol
+  - From here, you can run mongodb commands.
+  - NOTE, running `mongo` is a way to test your mongodb deamon, you likely wont do any work directly in this command line, and can close it while developing
 
-Starting development environment
-- $`mongod`
-  - Not requred: $`mongo` will test the deamon is running which should put you in the mongodb cli `>`.
+### Seed your database
+The application may behave oddly if you haven't seeded any data.
+- From the within the `webapp` folder, run $`npm run seed all`
 
-# Getting Started
+Finally, start your local development environment
+- Do this within the `/webapp` folder (NOT inside the `/client`)
+- Run $`npm start`
 
-To seed your database when you first get your development environment setup.
-- $`npm run seed all` > after completion, you may need to [Control+c] to breakout of the process if hangs.
+Your Front End should now be serving to `http://localhost:3003`
 
-Start Localhost (from `/webapp` folder)
-- $`npm start`
+Test API Get requests at `http://localhost:3004`
+- Example: `http://localhost:3004/api/manifest`
 
-# Next Steps
+### Potential issues
 
-- Thoroughly document development Process (This Readme)
-- Actually, the next step is to figure out what the next steps are...
-- Build Site Map
-  - React Components
-  - Routes
-  - Database MVC
-
-### Unordered Steps
-
-- Chat With Matt.
-- Drop KTS Game Enviroment into place
-- Test Launch On Heroku
-- Back End Login code base
-- Front end login Code Base
-- Style Front End login flow.
-
-### Notes / Questions For matt
-- Font Style?
-- & Widths and margins
-  - For instance the Game Mode / Ambient mode buttons say 300px.
+Port in use error.
+- To kill a port that is stuck in use
+  - Run $`lsof -i :3003` (Or whatever port you need).
+- This will show a list of services using that port.
+- Find the `PID` number associated with the port you want to kill
+  - Run $`kill -QUIT PID`
+  - Example: $`kill -QUIT 23451` (NOTE: number character length may vary.)
 
 ----
-# General Notes Notes
+# Deployment Notes
 
 Deploy to Heroku as sub-folder
 - First create the branch on Heroku

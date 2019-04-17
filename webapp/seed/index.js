@@ -9,8 +9,8 @@ console.log(seed, '🌰...Seeding...💦...💦...🌱')
 
 switch (seed) {
   case "manifest": Manifest.resetManifestDb(logSeed); break;
-  case "all":
-    Admin.resetManifestDb(logSeed, true)
+  case "all": // Users.seeduserDb(logSeed, true)
+    Manifest.resetManifestDb(logSeed) // 🚨 👆 Make sure only the LAST seed deosn't have exit === false
     break
   default: {
     console.log('\n🤔please enter a seed argument... i.e. `npm run seed manifest`\n')

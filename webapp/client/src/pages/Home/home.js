@@ -7,15 +7,16 @@ class Home extends Component {
   render() {
     return (
       <div className="home">
-        Raw Develoment "Home" Page ::
+        Raw Develoment "Home" Page
+        &nbsp; ::  &nbsp;
         <span>
           <Link to="/">
             <button> Landing Page </button>
           </Link>
-          ::
+           &nbsp; :: &nbsp;
           <button> Game Mode </button>
           <button> Ambient Mode </button>
-          ::
+           &nbsp; :: &nbsp;
           <button> Sign In </button>
           <button> Sign Up </button>
         </span>

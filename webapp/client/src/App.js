@@ -22,7 +22,7 @@ class App extends Component {
     console.log("🧮 requesting manifest from API" )
     API.getManifest()
       .then( resp => {
-        console.log(" - resp :", resp)
+        console.log(" - manifest :", resp.data)
         this.setState({manifest: resp.data})
       }) // 🔥 collapse ?
       .catch( err => console.log(err))

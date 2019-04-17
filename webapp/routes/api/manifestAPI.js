@@ -3,6 +3,7 @@ const adminController = require("../../controllers/manifestController")
 
 // 🧮 "/api/manifest" +
 router.route("/")
+  .get(adminController.getManifest)
   .put(adminController.incrementPage)
 
 module.exports = router
