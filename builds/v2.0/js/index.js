@@ -1064,7 +1064,6 @@ function runLogs( frequency ) {
 
 
 function display() {
-  runVerlet();
   if ( gameHasBegun ) {
     if ( currentYear === 1 && currentSeason === "Spring" ) {  // starts with high frame rate for smooth seed scatter
       renderBackground(); renderPlants(); displayEliminatePlantIconWithCursor();
@@ -1077,6 +1076,7 @@ function display() {
     if ( runPollinationAnimations ) { renderPollinationAnimations(); }
   }
   updateUI();
+  runVerlet();
   if ( !ambientMode ) { 
     renderDemosInFirstYear();
     renderMilestones();
