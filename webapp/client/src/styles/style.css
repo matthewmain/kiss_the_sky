@@ -1,3 +1,4 @@
+@import url('https://fonts.googleapis.com/css?family=Dosis');
 
 body {
 	background: #202020;
@@ -5,6 +6,10 @@ body {
 	font-weight: 200;
 	margin: 0;
 	user-select: none;
+}
+
+#game {
+  display: none;
 }
 
 #loader_div {
@@ -34,6 +39,7 @@ body {
 .hover:hover {
   opacity: 1;
 }
+
 
 
 

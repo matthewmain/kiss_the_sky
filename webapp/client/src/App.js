@@ -4,6 +4,7 @@ import API from "./utils/API"
 
 import Home from "./pages/Home/home.js"
 import Landing from "./pages/Landing/landing.js"
+import Game from "./pages/Game/game.js"
 
 class App extends Component {
 
@@ -39,6 +40,9 @@ class App extends Component {
             />
             <Route exact path="/home"
               render={() => <Home manifest={this.state.manifest} />}
+            />
+            <Route exact path="/game"
+              render={() => <Game />}
             />
           </Switch>
         </BrowserRouter>

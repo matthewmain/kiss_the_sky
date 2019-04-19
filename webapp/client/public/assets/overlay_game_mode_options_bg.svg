@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="738px" height="738px" viewBox="0 0 738 738" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 53.1 (72631) - https://sketchapp.com -->
+    <title>overlay_game_mode_options_bg</title>
+    <desc>Created with Sketch.</desc>
+    <g id="[Screens]" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="game-mode-settings" transform="translate(-358.000000, -160.000000)">
+            <g id="overlay_game_mode_options_bg" transform="translate(358.000000, 160.000000)">
+                <rect id="bg" fill="#FFFFFF" fill-rule="nonzero" x="0" y="0" width="738" height="738"></rect>
+                <g id="unselected-options" transform="translate(245.000000, 259.000000)">
+                    <g id="unselected">
+                        <g id="expert_unselected" transform="translate(0.000000, 201.000000)">
+                            <text id="Expert" font-family="Dosis-Light, Dosis" font-size="14" font-weight="300" fill="#111111" fill-opacity="0.4">
+                                <tspan x="68" y="43">Expert</tspan>
+                            </text>
+                            <text id="Tiny-White-Flower" font-family="Dosis-SemiBold, Dosis" font-size="22" font-weight="500" fill="#111111" fill-opacity="0.25">
+                                <tspan x="67.5" y="23">Tiny White Flower</tspan>
+                            </text>
+                            <circle id="Oval" stroke-opacity="0.147699956" stroke="#111111" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" fill-rule="nonzero" cx="25" cy="26" r="25"></circle>
+                        </g>
+                        <g id="intermediate_unselected" transform="translate(0.000000, 100.500000)">
+                            <text id="Intermediate" font-family="Dosis-Light, Dosis" font-size="14" font-weight="300" fill="#111111" fill-opacity="0.4">
+                                <tspan x="68" y="43">Intermediate</tspan>
+                            </text>
+                            <text id="Colorful-Garden" font-family="Dosis-SemiBold, Dosis" font-size="22" font-weight="500" fill="#111111" fill-opacity="0.25">
+                                <tspan x="67.5" y="23">Colorful Garden</tspan>
+                            </text>
+                            <circle id="Oval" stroke-opacity="0.15" stroke="#111111" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" fill-rule="nonzero" cx="25" cy="26" r="25"></circle>
+                        </g>
+                        <g id="beginner_unselected">
+                            <text id="Beginner" font-family="Dosis-Light, Dosis" font-size="14" font-weight="300" fill="#111111" fill-opacity="0.4">
+                                <tspan x="68" y="43">Beginner</tspan>
+                            </text>
+                            <text id="Red-Flower-Garden" font-family="Dosis-SemiBold, Dosis" font-size="22" font-weight="500" fill="#111111" fill-opacity="0.25">
+                                <tspan x="67.5" y="23">Red Flower Garden</tspan>
+                            </text>
+                            <circle id="Oval" stroke-opacity="0.15" stroke="#111111" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" fill-rule="nonzero" cx="25" cy="26" r="25"></circle>
+                        </g>
+                    </g>
+                </g>
+                <text id="choose-difficulty" font-family="Dosis-Medium, Dosis" font-size="14" font-weight="400" fill="#111111">
+                    <tspan x="307.232" y="215">Choose game difficulty</tspan>
+                </text>
+                <g id="title" transform="translate(67.000000, 68.000000)" fill="#111111" font-family="Dosis-SemiBold, Dosis" font-size="28" font-weight="500" letter-spacing="-0.400000006">
+                    <text id="Grow-A-Red-Flower-Th">
+                        <tspan x="0.218000158" y="29">Grow A Red Flower That Reaches All The Way To The Sky</tspan>
+                    </text>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>

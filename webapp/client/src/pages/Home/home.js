@@ -14,8 +14,9 @@ class Home extends Component {
             <button> Landing Page </button>
           </Link>
            &nbsp; :: &nbsp;
-          <button> Game Mode </button>
-          <button> Ambient Mode </button>
+          <Link to="/game">
+            <button> Game </button>
+          </Link>
            &nbsp; :: &nbsp;
           <button> Sign In </button>
           <button> Sign Up </button>
