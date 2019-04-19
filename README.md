@@ -18,15 +18,7 @@ Browser
 
 <br>
 
-- [ ] [Version 2.0](https://github.com/matthewmain/plant_evolution_app/tree/master/builds/v2.0) - _EvolveJS, Authentication, Basic Server Side Functionality, & Independent Hosting_
-
-<br>
-iOS
-<br>
-<br>
-
-- [ ] Version 3.0 - _Advanced Stylization & Game Design_ 
-- [ ] Version 3.1 - _Advanced Gamification_
+- [X] [Version 2.0](https://github.com/matthewmain/plant_evolution_app/tree/master/builds/v2.0) - _EvolveJS_
 
 <br>
 <br>
