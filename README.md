@@ -19,7 +19,7 @@ Browser
 
 <br>
 
-- [X] [Web App](https://github.com/matthewmain/plant_evolution_app/tree/master/webapp) - _EvolveJS_
+- [ ] [Web App](https://github.com/matthewmain/plant_evolution_app/tree/master/webapp) - _Authentication, Basic Server Side Functionality, High Score Tracking, & Independent Hosting_
 
 <br>
 <br>
