@@ -1,0 +1,32 @@
+{
+  "name": "kiss_the_sky",
+  "version": "1.0.0",
+  "description": "A unique evolution video game. At its heart is a programmatic replica of Mendelian genetics, and the gameplay is based on real-time Darwinian selection. You can either compete to breed a flower that reaches the sky, or let ambient mode play out for hours or days or weeks.",
+  "main": "server.js",
+  "scripts": {
+    "start": "if-env NODE_ENV=production && npm run start:prod || npm run start:dev",
+    "start:prod": "node server.js",
+    "start:dev": "concurrently \"nodemon --ignore 'client/*'\" \"npm run client\"",
+    "client": "cd client && npm run start",
+    "seed": "node seed/index.js $ARG",
+    "install": "cd client && npm install",
+    "build": "cd client && npm run build",
+    "heroku-postbuild": "npm run build"
+  },
+  "author": "Matthew Main & Bob Main",
+  "license": "ISC",
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "connect-mongo": "^2.0.3",
+    "express": "^4.16.4",
+    "express-session": "^1.16.1",
+    "if-env": "^1.0.4",
+    "mongoose": "^5.5.2",
+    "passport": "^0.4.0",
+    "passport-local": "^1.0.0"
+  },
+  "devDependencies": {
+    "concurrently": "^4.1.0",
+    "nodemon": "^1.18.11"
+  }
+}
