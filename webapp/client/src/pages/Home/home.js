@@ -6,7 +6,6 @@ import "./home.sass"
 import SignUp from "../../components/SignUp/signUp.js"
 import LogIn from "../../components/LogIn/logIn.js"
 
-
 class Home extends Component {
 
   state = {
@@ -57,11 +56,6 @@ class Home extends Component {
       <div className="home">
 
         Raw Develoment "Home" Page
-
-        &nbsp; ::  &nbsp;
-        <Link to="/">
-          <button> Landing Page </button>
-        </Link>
 
         &nbsp; :: &nbsp;
         <Link to="/game">
