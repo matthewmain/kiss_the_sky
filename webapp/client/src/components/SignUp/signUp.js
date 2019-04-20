@@ -4,10 +4,10 @@ import "./signUp.sass"
 class SignUp extends Component {
 
   state = {
-    username: "Jordan",
-    email: "Jordan@coder.com",
-    password: "123456",
-    confirm: "123456"
+    username: "",
+    email: "",
+    password: "",
+    confirm: ""
   }
 
   handleInput = (events) => {

@@ -4,8 +4,8 @@ import "./logIn.sass"
 class LogIn extends Component {
 
   state = {
-    username: "Jordan",
-    password: "123456"
+    username: "",
+    password: ""
   }
 
   handleInput = (events) => {
@@ -23,7 +23,6 @@ class LogIn extends Component {
         <input
           name="username"
           value={this.state.username}
-          placeholder="...or email"
           onChange={this.handleInput}
         /><br /><br />
 
