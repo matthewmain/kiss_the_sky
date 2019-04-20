@@ -1,9 +1,9 @@
 const router = require("express").Router()
-const adminController = require("../../controllers/manifestController")
+const manifestController = require("../../controllers/manifestController")
 
 // 🧮 "/api/manifest" +
 router.route("/")
-  .get(adminController.getManifest)
-  .put(adminController.incrementPage)
+  .get(manifestController.getManifest)
+  .put(manifestController.incrementPage)
 
 module.exports = router

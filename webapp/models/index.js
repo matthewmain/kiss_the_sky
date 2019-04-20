@@ -1,3 +1,4 @@
 module.exports = {
-  Manifest: require('./manifestModel')
+  Manifest: require('./manifestModel'),
+  User: require('./userModel')
 }
