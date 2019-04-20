@@ -2,9 +2,9 @@ import React, { Component } from 'react'
 import { BrowserRouter, Route, Switch } from "react-router-dom"
 import API from "./utils/API"
 
-import Home from "./pages/Home/home.js"
-import Landing from "./pages/Landing/landing.js"
+import Menu from "./pages/Menu/menu.js"
 import Game from "./pages/Game/game.js"
+import Home from "./pages/Home/home.js"
 
 class App extends Component {
 
@@ -54,8 +54,11 @@ class App extends Component {
 
         <BrowserRouter>
           <Switch>
-            <Route path="/(|landing)/"
-              render={() => <Landing />}
+            <Route path="/(|landing|game)/"
+              render={() => <>
+                <Menu appState={this.state}/>
+                <Game />
+              </>}
             />
             <Route exact path="/home"
               render={() => <Home
@@ -63,9 +66,7 @@ class App extends Component {
                 updateUser={this.updateUser}
               />}
             />
-            <Route exact path="/game"
-              render={() => <Game />}
-            />
+
           </Switch>
         </BrowserRouter>
 
