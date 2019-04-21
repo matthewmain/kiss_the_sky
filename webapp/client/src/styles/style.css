@@ -8,9 +8,9 @@ body {
 	user-select: none;
 }
 
-#game {
+/* #game {
   display: none;
-}
+} */
 
 #loader_div {
   position: fixed;
