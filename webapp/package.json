@@ -13,7 +13,6 @@
     "build": "cd client && npm run build",
     "heroku-postbuild": "npm run build",
     "//": "NOTE: Make sure to && npm run seed manifest to heroku-postbuild to set/reset seed data"
-
   },
   "author": "Matthew Main & Bob Main",
   "license": "ISC",
