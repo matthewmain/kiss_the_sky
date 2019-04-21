@@ -5,7 +5,7 @@ class Home extends Component {
 
   componentDidMount(){
     const game = document.getElementById("game")
-    // game.style.display = "block"
+    game.style.display = "block"
     game.style.opacity = 1
   }
 
