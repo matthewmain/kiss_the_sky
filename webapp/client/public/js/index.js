@@ -97,19 +97,19 @@ var C = {
 ///seed constructor
 function Seed( parentFlower, zygoteGenotype ) {
   this.id = seedCount;
-  this.parentFlower = parentFlower;
+  this.parentFlowerId = parentFlower === null ? null : parentFlower.id;
   if ( parentFlower === null ) {
     this.sw = 14;  // seed width 
     this.p1 = addPt( Tl.rib(33,66), Tl.rib(5,25) );  // seed point 1 (placed in air for scattering at initiation)
     this.p2 = addPt( pctFromXVal( this.p1.cx + this.sw*1.6 ), pctFromYVal( this.p1.cy ) );  // seed point 2
     this.generation = 1;
   } else {
-    this.sw = this.parentFlower.spHcH.l/2;  // seed width
-    var p1 = spanMidPoint( this.parentFlower.spHbM );  // positions seed p1 at bottom of parent flower's hex
+    this.sw = Tl.obById( flowers, this.parentFlowerId ).spHcH.l/2;  // seed width
+    var p1 = spanMidPoint( Tl.obById( flowers, this.parentFlowerId ).spHbM );  // positions seed p1 at bottom of parent flower's hex
     this.p1 = addPt( pctFromXVal(p1.x), pctFromYVal(p1.y) );  // seed point 1
-    var p2 = spanMidPoint( this.parentFlower.spHtM );  // positions seed p2 at top of parent flower's hex
+    var p2 = spanMidPoint( Tl.obById( flowers, this.parentFlowerId ).spHtM );  // positions seed p2 at top of parent flower's hex
     this.p2 = addPt( pctFromXVal(p2.x), pctFromYVal(p2.y) );  // seed point 2
-    this.generation = this.parentFlower.generation + 1;
+    this.generation = Tl.obById( flowers, this.parentFlowerId ).generation + 1;
   }
   this.genotype = zygoteGenotype;  
   this.phenotype = EV.generatePhenotype( this.genotype );
@@ -254,12 +254,12 @@ function createSeed( parentFlower, zygoteGenotype ) {
 ///creates a new plant (while maintaining render ordering)
 function createPlant( sourceSeed ) {
   plantCount++;
-  if ( sourceSeed.parentFlower === null ) {  // if seed is initiating seed, adds new plant to end of the plants array
+  if ( sourceSeed.parentFlowerId === null ) {  // if seed is initiating seed, adds new plant to end of the plants array
     plants.push( new Plant( sourceSeed ) ); 
     return plants[plants.length-1]; 
   } else {
     for ( var i=0; i<plants.length; i++) {  // if not initiating seed, adds new plant before parent in plants array
-      if ( sourceSeed.parentFlower.plantId === plants[i].id ) { 
+      if ( Tl.obById( flowers, sourceSeed.parentFlowerId ).plantId === plants[i].id ) { 
         plants.splice( i, 0, new Plant( sourceSeed ) ); 
         return plants[i];  
       }
