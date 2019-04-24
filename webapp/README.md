@@ -48,10 +48,7 @@ Port in use error.
 # Deployment Notes
 
 Deploy to Heroku as sub-folder
-- First create the branch on Heroku
-  - `git subtree push --prefix webapp heroku testdeploy`
-- Then push that branch against Heroku's master
-  -`git push heroku webapp:master`
+- `git subtree push --prefix webapp heroku master`
 
 # Resources
 
