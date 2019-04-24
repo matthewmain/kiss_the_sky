@@ -183,7 +183,6 @@ function Plant( sourceSeed ) {
 function Segment( plant, parentSegment, basePoint1, basePoint2 ) {
   this.plantId = plant.id;
   this.id = plant.segmentCount;
-  //this.child = null;
   this.hasChild = false;
   this.parentSegmentId = parentSegment === null ? null : parentSegment.id;
   this.isBaseSegment = false; if (parentSegment === null) { this.isBaseSegment = true; }
