@@ -184,7 +184,7 @@ function createFlower( plant, parentSegment, basePoint1, basePoint2 ) {
   plant.flowerCount++;
   plant.flowers.push( new Flower( plant, parentSegment, basePoint1, basePoint2 ) );
   plant.hasFlowers = true;
-  parentSegment.child = plant.flowers[plant.flowers.length-1];
+  //parentSegment.child = plant.flowers[plant.flowers.length-1];
   parentSegment.hasChild = true;
 }
 

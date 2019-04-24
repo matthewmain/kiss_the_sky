@@ -182,12 +182,11 @@ function Plant( sourceSeed ) {
 ///plant stalk segment constructor
 function Segment( plant, parentSegment, basePoint1, basePoint2 ) {
   this.plantId = plant.id;
-  this.parentPlant = plant;
   this.id = plant.segmentCount;
-  this.child = null;
+  //this.child = null;
   this.hasChild = false;
-  this.parentSegment = parentSegment;
-  this.isBaseSegment = false; if (this.parentSegment === null) { this.isBaseSegment = true; }
+  this.parentSegmentId = parentSegment === null ? null : parentSegment.id;
+  this.isBaseSegment = false; if (parentSegment === null) { this.isBaseSegment = true; }
   this.hasLeaves = false;
   this.hasLeafScaffolding = false;
   //settings
@@ -210,8 +209,8 @@ function Segment( plant, parentSegment, basePoint1, basePoint2 ) {
   this.spCd = addSp( this.ptE1.id, this.ptB2.id );  // downward (l to r) cross span
   this.spCu = addSp( this.ptB1.id, this.ptE2.id );  // upward (l to r) cross span
   if (!this.isBaseSegment) {
-    this.spCdP = addSp( this.ptE1.id, this.parentSegment.ptB2.id ); // downward (l to r) cross span to parent
-    this.spCuP = addSp( this.parentSegment.ptB1.id, this.ptE2.id ); // upward (l to r) cross span to parent
+    this.spCdP = addSp( this.ptE1.id, parentSegment.ptB2.id ); // downward (l to r) cross span to parent
+    this.spCuP = addSp( parentSegment.ptB1.id, this.ptE2.id ); // upward (l to r) cross span to parent
     this.spCdP.strength = plant.stalkStrength;
     this.spCuP.strength = plant.stalkStrength;
   }
@@ -274,7 +273,7 @@ function createSegment( plant, parentSegment, basePoint1, basePoint2 ) {
   plant.maxEnergyLevel = plant.segmentCount * energyStoreFactor;
   plant.segments.unshift( new Segment( plant, parentSegment, basePoint1, basePoint2 ) );
   if (parentSegment !== null) {
-    parentSegment.child = plant.segments[0];
+    //parentSegment.child = plant.segments[0];
     parentSegment.hasChild = true;
   }
 }
@@ -387,7 +386,7 @@ function lengthenSegmentSpans( plant, segment ) {
     segment.spCd.l = distance( segment.ptE1, segment.ptB2 ) + plant.forwardGrowthRate / 3;
     segment.spCu.l = segment.spCd.l;
   } else {
-    segment.spCdP.l = distance( segment.ptE1, segment.parentSegment.ptB2 ) + plant.forwardGrowthRate;
+    segment.spCdP.l = distance( segment.ptE1, Tl.obById( plant.segments, segment.parentSegmentId ).ptB2 ) + plant.forwardGrowthRate;
     segment.spCuP.l = segment.spCdP.l * segment.forwardGrowthRateVariation;
     segment.spCd.l = distance( segment.ptE1, segment.ptB2 );
     segment.spCu.l = distance( segment.ptB1, segment.ptE2 );
@@ -420,7 +419,7 @@ function generateLeavesWhenReady( plant, segment ) {
   var s = segment;
   if ( plantReadyForLeaves( plant, segment ) ) {
     var fsmp = spanMidPoint( s.spF );  // forward span mid point
-    var pbsmp = midPoint( s.parentSegment.ptB1, s.parentSegment.ptB2 );  // parent base span mid point
+    var pbsmp = midPoint( Tl.obById( p.segments, s.parentSegmentId ).ptB1, Tl.obById( p.segments, s.parentSegmentId ).ptB2 );  // parent base span mid point
     var xTip = fsmp.x + ( fsmp.x - pbsmp.x ) * 0.25;  // new leaf tip x location
     var yTip = fsmp.y + ( fsmp.y - pbsmp.y ) * 0.25;  // new leaf tip y location
     s.ptLf1 = addPt( pctFromXVal( xTip ), pctFromYVal( yTip ) );  // leaf 1 tip point (left)
