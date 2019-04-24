@@ -9,7 +9,6 @@
 /////---TRACKERS---/////
 
 
-var flowers = [], flowerCount = 0;
 var pollinationAnimations = []; pollinationAnimationCount = 0;
 
 var readyForNextMilestoneAnnouncement = true;
@@ -27,7 +26,7 @@ var milestone90HasBeenRun = false;
 
 ///flower constructor 
 function Flower( plant, parentSegment, basePoint1, basePoint2 ) {
-  this.id = flowerCount;
+  this.id = plant.flowerCount;
   this.plantId = plant.id;
   this.parentPlant = plant;
   this.generation = this.parentPlant.generation;
@@ -182,10 +181,8 @@ var HeightMarker = {
 
 ///creates a new flower
 function createFlower( plant, parentSegment, basePoint1, basePoint2 ) {
-  flowerCount++;
-  flowers.push( new Flower( plant, parentSegment, basePoint1, basePoint2 ) );
   plant.flowerCount++;
-  plant.flowers.push( flowers[flowers.length-1] );
+  plant.flowers.push( new Flower( plant, parentSegment, basePoint1, basePoint2 ) );
   plant.hasFlowers = true;
   parentSegment.child = plant.flowers[plant.flowers.length-1];
   parentSegment.hasChild = true;
