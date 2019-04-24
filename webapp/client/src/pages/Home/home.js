@@ -3,8 +3,8 @@ import { Link } from "react-router-dom"
 import API from "../../utils/API.js"
 import "./home.sass"
 
-import SignUp from "../../components/SignUp/signUp.js"
-import LogIn from "../../components/LogIn/logIn.js"
+import SignUp from "../../pages/SignUp/signUp.js"
+import LogIn from "../../pages/LogIn/logIn.js"
 
 class Home extends Component {
 

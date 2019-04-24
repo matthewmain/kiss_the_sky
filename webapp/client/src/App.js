@@ -2,7 +2,8 @@ import React, { Component } from 'react'
 import { BrowserRouter, Route, Switch } from "react-router-dom"
 import API from "./utils/API"
 
-import Menu from "./pages/Menu/menu.js"
+import E404 from "./components/E404/e404.js"
+import Menu from "./components/Menu/menu.js"
 import Game from "./pages/Game/game.js"
 import Home from "./pages/Home/home.js"
 
@@ -54,7 +55,7 @@ class App extends Component {
 
         <BrowserRouter>
           <Switch>
-            <Route path="/(|landing|game)/"
+            <Route exact path="/(|landing|game)/"
               render={() => <>
                 <Menu appState={this.state}/>
                 <Game />
@@ -66,7 +67,7 @@ class App extends Component {
                 updateUser={this.updateUser}
               />}
             />
-
+            <Route path="*" render={() => <E404 appState={this.state}/> }/>
           </Switch>
         </BrowserRouter>
 
