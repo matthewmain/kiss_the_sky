@@ -121,7 +121,7 @@ function Seed( parentFlower, zygoteGenotype ) {
   this.opacity = 1;
   this.planted = false;
   this.hasGerminated = false;
-  this.resultingPlant = createPlant( this );
+  this.resultingPlantId = createPlant( this ).id;
 }
 
 ///plant constructor
@@ -353,7 +353,7 @@ function germinateSeedWhenReady( seed ) {
 
 ///germinates seed and establishes plant's base segment, setting growth in motion
 function germinateSeed( seed ) {
-  var plant = seed.resultingPlant;
+  var plant = Tl.obById( plants, seed.resultingPlantId );
   plant.xLocation = pctFromXVal( seed.p1.cx );
   plant.ptB1 = addPt( plant.xLocation - 0.1, 100 );  // base point 1
   plant.ptB2 = addPt( plant.xLocation + 0.1, 100 );  // base point 2
@@ -373,7 +373,7 @@ function hideAndRemoveSeed( seed ) {
     removePoint( seed.p2.id );
     removeSpan( seed.sp.id );
     removeSeed( seed.id );
-    seed.resultingPlant.sourceSeedHasBeenRemoved = true;
+    Tl.obById( plants, seed.resultingPlantId ).sourceSeedHasBeenRemoved = true;
   } 
 }
 

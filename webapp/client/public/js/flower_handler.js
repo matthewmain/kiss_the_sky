@@ -27,7 +27,7 @@ var milestone90HasBeenRun = false;
 
 ///flower constructor 
 function Flower( plant, parentSegment, basePoint1, basePoint2 ) {
-  this.id = plant.flowerCount;
+  this.id = flowerCount;
   this.plantId = plant.id;
   this.parentPlant = plant;
   this.generation = this.parentPlant.generation;
