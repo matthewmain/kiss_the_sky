@@ -3,18 +3,24 @@ import { Link } from "react-router-dom"
 import Icon_menu from './../../images/icon_menu.svg'
 import Icon_menu_close from './../../images/icon_menu_close.svg'
 import Flower_avatar from './../../images/flower_avatar.svg'
+// import Title_header_dark from './../../images/title_header_dark.svg'
 
 import "./menu.sass"
 
 class Landing extends Component {
 
   state = {
-    open: false,
-    icon: Icon_menu
+    icon: Icon_menu,
+    active: "", // "savedSessions" "myHighScores" "settings"
+    pointerEvents: "none",
+    opacity: 0
   }
 
   toggleMenu = ()=>{
-    this.setState({ open: !this.state.open})
+    this.setState({
+      pointerEvents: this.state.pointerEvents === "none" ? "" : "none",
+      opacity: this.state.opacity > 0.5 ? 0 : 1
+    })
   }
 
   save(){
@@ -29,7 +35,7 @@ class Landing extends Component {
         <div id="menu_icon_container" onClick={this.toggleMenu}>
           <img
             id="menu_icon"
-            src={this.state.open ? Icon_menu_close : Icon_menu }
+            src={this.state.pointerEvents === "none" ? Icon_menu : Icon_menu_close  }
             alt="icon menu"/>
           {this.props.appState.username &&
             <img
@@ -40,27 +46,80 @@ class Landing extends Component {
           }
         </div>
 
-        {this.state.open &&
-          <div className="menu_container">
+        <div
+          className="menu_container"
+          style={{
+            opacity: `${this.state.opacity}`,
+            pointerEvents: `${this.state.pointerEvents}`
+          }}>
 
-            {this.props.appState.username &&
-              <div className="btn username">
-                {this.props.appState.username}
-              </div>
-            }
+          {this.props.appState.username && <>
 
-            <Link to="/home" className="link" >
+            <div className="username">
+              {this.props.appState.username}
+            </div>
+
+            <div className={"btn "+(this.state.active === "savedSessions" ? "active" : "")}>
+
+              saved sessions
+
+            </div>
+            <div className={"btn "+(this.state.active === "myHighScores" ? "active" : "")}>
+
+              my high scores
+
+            </div>
+            <div className={"btn "+(this.state.active === "settings" ? "active" : "")}>
+
+              settings
+
+            </div>
+
+          </>}
+
+          <div className="btn leaderboard">
+
+            leaderboard
+
+          </div>
+
+          {!this.props.appState.username && <>
+
+            <Link to="/signup" className="link" >
               <div className="btn">
-                Development Home
+
+                sign up
+
               </div>
             </Link>
 
-            <div className="btn" onClick={this.save}>
-              Save
+            <Link to="/login" className="link" >
+              <div className="btn">
+
+                log in
+
+              </div>
+            </Link>
+
+          </>}
+
+          {this.props.appState.username &&
+            <div className="btn" onClick={()=>{this.props.logOut()}}>
+
+              log out
+
             </div>
+          }
+
+          <hr/>
+
+          <div className="btn" onClick={this.save}>
+
+            Save
 
           </div>
-        }
+
+        </div>
 
       </div>
     )
