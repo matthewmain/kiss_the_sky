@@ -13,3 +13,9 @@
 
 * `/leaderboard`
 * `/dashboard`
+
+### API
+
+`api/manifest`
+* GET > Returns complete manifest data. 
+* local Example: http://localhost:3004/api/manifest
