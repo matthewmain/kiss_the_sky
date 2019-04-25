@@ -64,6 +64,11 @@ var Tl = {
 	  var b = Math.abs(ec.b-cc.b) < Math.abs(bsi) ? ec.b : cc.b + bsi;  // blueshift
 	  var a = Math.abs(ec.a-cc.a) < Math.abs(asi) ? ec.a : cc.a + asi;  // alphashift
 	  return { r: r, g: g, b: b, a: a };
+	},
+
+	///returns an object from an array by object id (requires the object have an "id" key with a unique numerical value)
+	obById: function( array, id ) {
+		return array.find( x => x.id === id );
 	}
 
 

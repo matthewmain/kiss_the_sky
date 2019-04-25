@@ -28,9 +28,8 @@ var milestone90HasBeenRun = false;
 function Flower( plant, parentSegment, basePoint1, basePoint2 ) {
   this.id = plant.flowerCount;
   this.plantId = plant.id;
-  this.parentPlant = plant;
-  this.generation = this.parentPlant.generation;
-  this.parentSegment = parentSegment;
+  this.generation = Tl.obById( plants, this.plantId ).generation;
+  this.parentSegmentId = parentSegment.id;
   this.zygoteGenotypes = [];
   this.seeds = [];
   this.mass = 0;
@@ -52,8 +51,8 @@ function Flower( plant, parentSegment, basePoint1, basePoint2 ) {
   this.ptBL = basePoint1;  // base point left
   this.ptBR = basePoint2;  // base point right
   //hex (polinator pad) points
-  var pfsmp = spanMidPoint( this.parentSegment.spF );  // parent forward span mid point
-  var pbsmp = midPoint( this.parentSegment.ptB1, this.parentSegment.ptB2 );  // parent base span mid point
+  var pfsmp = spanMidPoint( Tl.obById( plant.segments, this.parentSegmentId ).spF );  // parent forward span mid point
+  var pbsmp = midPoint( Tl.obById( plant.segments, this.parentSegmentId ).ptB1, Tl.obById( plant.segments, this.parentSegmentId ).ptB2 );  // parent base span mid point
   var hexOriginX = pfsmp.x + ( pfsmp.x - pbsmp.x ) * 0.25;  // hex's origin x position ahead of growth
   var hexOriginY = pfsmp.y + ( pfsmp.y - pbsmp.y ) * 0.25;  // hex's origin y position ahead of growth
   this.ptHbL = addPt( pctFromXVal( hexOriginX ), pctFromYVal( hexOriginY ) );  // hex bottom left point
@@ -70,8 +69,8 @@ function Flower( plant, parentSegment, basePoint1, basePoint2 ) {
   this.spOiR = addSp( this.ptBR.id, this.ptHbR.id );  // ovule inner right span
   this.spCd = addSp( this.ptHbL.id, this.ptBR.id );  // downward (l to r) cross span
   this.spCu = addSp( this.ptBL.id, this.ptHbR.id );  // upward (l to r) cross span
-  this.spCdP = addSp( this.ptHbL.id, this.parentSegment.ptB2.id );  // downward (l to r) cross span to parent
-  this.spCuP = addSp( this.parentSegment.ptB1.id, this.ptHbR.id );  // upward (l to r) cross span to parent
+  this.spCdP = addSp( this.ptHbL.id, Tl.obById( plant.segments, this.parentSegmentId ).ptB2.id );  // downward (l to r) cross span to parent
+  this.spCuP = addSp( Tl.obById( plant.segments, this.parentSegmentId ).ptB1.id, this.ptHbR.id );  // upward (l to r) cross span to parent
   this.spOoL = addSp( this.ptBL.id, this.ptHoL.id );  // ovule outer left span 
   this.spOoR = addSp( this.ptBR.id, this.ptHoR.id );  // ovule outer right span 
   //hex (polinator pad) spans
@@ -184,7 +183,6 @@ function createFlower( plant, parentSegment, basePoint1, basePoint2 ) {
   plant.flowerCount++;
   plant.flowers.push( new Flower( plant, parentSegment, basePoint1, basePoint2 ) );
   plant.hasFlowers = true;
-  parentSegment.child = plant.flowers[plant.flowers.length-1];
   parentSegment.hasChild = true;
 }
 
@@ -227,7 +225,7 @@ function expandFlowerBud( plant, flower) {
   f.spOiR.l = f.spOiL.l;  // ovule inner right span
   f.spCd.l = distance( f.ptHbL, f.ptBR );  // downward cross span
   f.spCu.l = f.spCd.l;  // upward cross span
-  f.spCdP.l = distance( f.ptHbL, f.parentSegment.ptB2 ) + pfgr;  // downward cross span to parent
+  f.spCdP.l = distance( f.ptHbL, Tl.obById( plant.segments, f.parentSegmentId ).ptB2 ) + pfgr;  // downward cross span to parent
   f.spCuP.l = f.spCdP.l;  // upward cross span to parent
   f.spOoL.l = distance( f.ptBL, f.ptHoL );  // ovule outer left span 
   f.spOoR.l = f.spOoL.l;  // ovule outer right span  
@@ -323,7 +321,7 @@ function acceptPollination( pollinatedFlower ) {
     var pollinatorFlower = Tl.refa( availablePollinatorFlowers );
     pollinateFlower( pollinatedFlower, pollinatorFlower );
   }
-  var maxSeeds = Math.floor( pollinatedFlower.parentPlant.maxTotalSegments * maxSeedsPerFlowerRatio ); 
+  var maxSeeds = Math.floor( Tl.obById( plants, pollinatedFlower.plantId).maxTotalSegments * maxSeedsPerFlowerRatio ); 
   maxSeeds = maxSeeds < 3 ? 3 : maxSeeds > 7 ? 7 : maxSeeds;
   if ( pollinatedFlower.zygoteGenotypes.length === maxSeeds ) { pollinatedFlower.hasReachedMaxSeeds = true; }
 }
@@ -332,8 +330,8 @@ function acceptPollination( pollinatedFlower ) {
 function pollinateFlower( pollinatedFlower, pollinatorFlower ) {
   if ( runPollinationAnimations ) { createPollinationAnimation( pollinatorFlower, pollinatedFlower ); }
   var species = EV.species.skyPlant;
-  var parentGenotype1 = pollinatedFlower.parentPlant.genotype;
-  var parentGenotype2 = pollinatorFlower.parentPlant.genotype;
+  var parentGenotype1 = Tl.obById( plants, pollinatedFlower.plantId).genotype;
+  var parentGenotype2 = Tl.obById( plants, pollinatorFlower.plantId).genotype;
   var zygoteGenotype = EV.meiosis( species, parentGenotype1, parentGenotype2 );
   pollinatedFlower.zygoteGenotypes.push( zygoteGenotype );
   pollinatedFlower.isPollinated = true;
@@ -872,7 +870,8 @@ function renderHeightMarker() {
 ///renders pods
 function renderPods( flower ) {
   var f = flower;
-  var opacity = f.podOpacity <= f.parentPlant.opacity ? f.podOpacity : f.parentPlant.opacity; 
+  var plantOpacity = Tl.obById( plants, f.plantId ).opacity;
+  var opacity = f.podOpacity <= plantOpacity ? f.podOpacity : plantOpacity; 
   ctx.lineJoin = "round";
   ctx.lineCap = "round";
   ctx.lineWidth = 2.5;
