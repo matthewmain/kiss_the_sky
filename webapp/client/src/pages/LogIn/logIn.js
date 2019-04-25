@@ -1,11 +1,16 @@
 import React, { Component } from 'react'
+import { Link } from "react-router-dom"
 import "./logIn.sass"
 
 class LogIn extends Component {
 
-  state = {
-    username: "",
-    password: ""
+  constructor(props){
+    super(props)
+    this.state = {
+      username: "",
+      password: "",
+      history: this.props.history
+    }
   }
 
   handleInput = (events) => {
@@ -19,6 +24,15 @@ class LogIn extends Component {
   render(){
     return (
       <div className="login">
+
+        {"🔹"} Login
+
+        <Link to="/" style={{textDecoration: "none", paddingLeft: 50}}>
+          {"❌"}
+        </Link>
+
+        <br /><br />
+
         Username: <br />
         <input
           name="username"
@@ -41,6 +55,12 @@ class LogIn extends Component {
         >
           Log In
         </button>
+
+        <hr />
+        <Link to="/signup" >
+          sign up
+        </Link>
+
       </div>
     )
   }

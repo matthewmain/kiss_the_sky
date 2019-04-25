@@ -1,13 +1,18 @@
 import React, { Component } from 'react'
+import { Link } from "react-router-dom"
 import "./signUp.sass"
 
 class SignUp extends Component {
 
-  state = {
-    username: "",
-    email: "",
-    password: "",
-    confirm: ""
+  constructor(props){
+    super(props)
+    this.state = {
+      username: "",
+      email: "",
+      password: "",
+      confirm: "",
+      history: this.props.history
+    }
   }
 
   handleInput = (events) => {
@@ -16,9 +21,9 @@ class SignUp extends Component {
 
   submit = () => {
     if (this.state.password === this.state.confirm) {
-      const obj = {...this.state}
-      delete(obj.confirm)
-      this.props.signUp(obj)
+      const newUser = {...this.state}
+      delete(newUser.confirm)
+      this.props.signUp(newUser)
     } else {
       alert("your PASSWORD does NOT match your CONFIRM password")
     }
@@ -27,6 +32,14 @@ class SignUp extends Component {
   render(){
     return (
       <div className="signup">
+
+        {"🔺"} Sign Up
+
+        <Link to="/" style={{textDecoration: "none", paddingLeft: 50}}>
+          {"❌"}
+        </Link>
+
+        <br /><br />
 
         Username: <br />
         <input
@@ -64,6 +77,11 @@ class SignUp extends Component {
         >
           Sign Up
         </button>
+
+        <hr />
+        <Link to="/login" >
+          login
+        </Link>
 
       </div>
     )
