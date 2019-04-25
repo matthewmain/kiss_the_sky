@@ -9,5 +9,7 @@
 
 * `/signup`
 * `/signin`
-* Default: `*`
-  * 'pages/'
+* Default: `*` > 404 page
+
+* `/leaderboard`
+* `/dashboard`
