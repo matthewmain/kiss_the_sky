@@ -3,7 +3,7 @@ import { Link } from "react-router-dom"
 import Icon_menu from './../../images/icon_menu.svg'
 import Icon_menu_close from './../../images/icon_menu_close.svg'
 import Flower_avatar from './../../images/flower_avatar.svg'
-// import Title_header_dark from './../../images/title_header_dark.svg'
+import Title_header_dark from './../../images/title_header_dark.svg'
 
 import "./menu.sass"
 
@@ -11,16 +11,43 @@ class Landing extends Component {
 
   state = {
     icon: Icon_menu,
-    active: "", // "savedSessions" "myHighScores" "settings"
+    open: false,
     pointerEvents: "none",
     opacity: 0
   }
 
+  componentDidMount(){
+    this.addClickToCloseEvent()
+  }
+
+  componentWillReceiveProps(){
+    if (this.props.appState.openMenu && !this.state.open) {
+      this.toggleMenu()
+      this.setState({open: true})
+    }
+  }
+
   toggleMenu = ()=>{
+    this.props.appState.changeAppState("openMenu", !this.state.open)
     this.setState({
       pointerEvents: this.state.pointerEvents === "none" ? "" : "none",
-      opacity: this.state.opacity > 0.5 ? 0 : 1
+      opacity: this.state.opacity > 0.5 ? 0 : 1,
+      open: !this.state.open
     })
+  }
+
+  addClickToCloseEvent = ()=>{
+    if (!document.body.hasOnClick) {
+      document.body.hasOnClick = true
+      document.body.addEventListener("click", (event)=>{
+        if (
+          event.path.filter(e=>e.classList && e.classList.contains("noListen")).length === 0
+          && this.state.open
+        ) {
+          this.toggleMenu()
+        }
+      })
+    }
   }
 
   save(){
@@ -29,10 +56,29 @@ class Landing extends Component {
   }
 
   render() {
+
+    const routeArr = this.props.history.location.pathname.split("/")
+    let route = routeArr[1] === 'leaderboard' ? 'leaderboard' : routeArr[2]
+    if (!route) route = "myhighscores"
+    if (this.props.appState.showGame) route = ""
+
     return (
       <div className="menu">
 
-        <div id="menu_icon_container" onClick={this.toggleMenu}>
+        {!this.props.appState.showGame &&
+          <Link to="/">
+            <img
+              id="title_header_dark"
+              src={Title_header_dark}
+              alt="title header dark"
+            />
+          </Link>
+        }
+
+        {/* ⚠️ Warning: Changing 👇 this className name will effect event listener to toggle menu view/unview */}
+        <div id="menu_icon_container"
+          className="noListen"
+          onClick={this.toggleMenu}>
           <img
             id="menu_icon"
             src={this.state.pointerEvents === "none" ? Icon_menu : Icon_menu_close  }
@@ -46,46 +92,69 @@ class Landing extends Component {
           }
         </div>
 
-        <div
-          className="menu_container"
+        {/* ⚠️ Warning: Changing 👇 this className name will effect event listener to toggle menu view/unview */}
+        <div id="menu_dropdown_container"
+          className="noListen"
           style={{
             opacity: `${this.state.opacity}`,
             pointerEvents: `${this.state.pointerEvents}`
-          }}>
+          }}
+        >
 
           {this.props.appState.username && <>
-
             <div className="username">
               {this.props.appState.username}
             </div>
+            <Link to="/dashboard/savedsessions" className="link" onClick={this.toggleMenu}>
+              <div className={"btn "+(route === "savedsessions" ? "active" : "")}>
 
-            <div className={"btn "+(this.state.active === "savedSessions" ? "active" : "")}>
+                saved sessions
 
-              saved sessions
+              </div>
+            </Link>
+            <Link to="/dashboard/myhighscores" className="link" onClick={this.toggleMenu}>
+              <div className={"btn "+(route === "myhighscores" ? "active" : "")}>
 
-            </div>
-            <div className={"btn "+(this.state.active === "myHighScores" ? "active" : "")}>
+                my high scores
 
-              my high scores
+              </div>
+            </Link>
+            <Link to="/dashboard/settings" className="link" onClick={this.toggleMenu}>
+              <div className={"btn "+(route === "settings" ? "active" : "")}>
 
-            </div>
-            <div className={"btn "+(this.state.active === "settings" ? "active" : "")}>
+                settings
 
-              settings
-
-            </div>
-
+              </div>
+            </Link>
           </>}
 
-          <div className="btn leaderboard">
+          <Link to="/leaderboard"
+            className="link"
+            onClick={this.toggleMenu}>
+            <div className={"btn leaderboard-btn "+(route === "leaderboard" ? "active" : "")}>
 
-            leaderboard
+                leaderboard
 
-          </div>
+            </div>
+          </Link>
+
+          {!this.props.appState.showGame &&
+            <Link to="/game"
+              className="link"
+              onClick={this.toggleMenu}>
+              <div className="btn gamemode-btn">
+
+                  game mode
+
+              </div>
+            </Link>
+          }
 
           {!this.props.appState.username && <>
 
-            <Link to="/signup" className="link" >
+            <Link to="/signup"
+              className="link"
+              onClick={this.toggleMenu}>
               <div className="btn">
 
                 sign up
@@ -93,7 +162,9 @@ class Landing extends Component {
               </div>
             </Link>
 
-            <Link to="/login" className="link" >
+            <Link to="/login"
+              className="link"
+              onClick={this.toggleMenu}>
               <div className="btn">
 
                 log in
@@ -110,17 +181,13 @@ class Landing extends Component {
 
             </div>
           }
-
           <hr/>
-
           <div className="btn" onClick={this.save}>
 
             Save
 
           </div>
-
         </div>
-
       </div>
     )
   }
