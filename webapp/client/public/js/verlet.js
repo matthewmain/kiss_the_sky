@@ -210,7 +210,7 @@ function updatePoints() {
 }
 
 ///applies constrains
-function applyConstraints( currentIteration ) {
+function applyConstraints() {
   for (var i=0; i<points.length; i++) {
     var p = points[i];
     var pr = p.width/2;  // point radius
@@ -275,7 +275,7 @@ function refinePositions() {
   }
   for (var j=0; j<requiredIterations; j++) {
     updateSpans(j);
-    applyConstraints(i);
+    applyConstraints();
   }
 }
 
