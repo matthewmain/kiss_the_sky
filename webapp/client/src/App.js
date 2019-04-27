@@ -5,8 +5,7 @@ import "./styles/app.sass"
 
 import E404 from "./pages/E404/e404.js"
 import Game from "./pages/Game/game.js"
-import SignUp from "./pages/SignUp/signUp.js"
-import LogIn from "./pages/LogIn/logIn.js"
+import SignUp_logIn from "./pages/SignUp_logIn/signUp_logIn.js"
 import Dashboard from "./pages/Dashboard/dashboard.js"
 import Leaderboard from "./pages/Leaderboard/leaderboard.js"
 
@@ -122,20 +121,21 @@ class App extends Component {
             <Route exact path="/(|landing|game|home)/"
               render={() => <Home /> }
             />
-            <Route exact path="/signup"
-              render={route => <SignUp {...route}
+            <Route exact path="/(signup|login)/"
+              render={route => <SignUp_logIn {...route}
                 appState={this.state}
                 signUp={this.signUp}
+                logIn={this.logIn}
                 updateUser={this.updateUser}
               />}
             />
-            <Route exact path="/login"
+            {/* <Route exact path="/login"
               render={route => <LogIn {...route}
                 appState={this.state}
                 logIn={this.logIn}
                 updateUser={this.updateUser}
               />}
-            />
+            /> */}
             <Route exact path={"/dashboard("
               +"|/savedsessions"
               +"|/myhighscores"
