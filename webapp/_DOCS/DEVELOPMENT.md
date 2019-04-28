@@ -32,6 +32,11 @@ OR, for deployment on sub-folder of master branch
 
 - Example: `git subtree push --prefix webapp heroku master`🧨
 
-That's it! Should be at live at address they give you as output after (loooong) build process. 
+That's it! Should be at live at address they give you as output after (loooong) build process.
 
 Note: modification
+
+### targeting
+
+From within `/webapp`
+`npm install --prefix ./client some-npm-package`

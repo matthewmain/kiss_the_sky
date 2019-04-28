@@ -1,15 +1,19 @@
 import React, { Component } from 'react'
 import { BrowserRouter, Route, Switch } from "react-router-dom"
+// import { CSSTransition } from "react-transition-group";
+// https://o7planning.org/en/12159/react-transition-group-csstransition-example
+// http://reactcommunity.org/react-transition-group/css-transition
+// https://medium.com/@khwsc1/step-by-step-guide-of-simple-routing-transition-effect-for-react-with-react-router-v4-and-9152db1566a0
+
+
 import API from "./utils/API"
 import "./styles/app.sass"
 
 import E404 from "./pages/E404/e404.js"
 import Game from "./pages/Game/game.js"
-import SignUp_logIn from "./pages/SignUp_logIn/signUp_logIn.js"
+import SignUpLogIn from "./pages/SignUp_logIn/signUp_logIn.js"
 import Dashboard from "./pages/Dashboard/dashboard.js"
 import Leaderboard from "./pages/Leaderboard/leaderboard.js"
-
-
 import Menu from "./components/Menu/menu.js"
 
 class App extends Component {
@@ -121,21 +125,25 @@ class App extends Component {
             <Route exact path="/(|landing|game|home)/"
               render={() => <Home /> }
             />
-            <Route exact path="/(signup|login)/"
-              render={route => <SignUp_logIn {...route}
-                appState={this.state}
-                signUp={this.signUp}
-                logIn={this.logIn}
-                updateUser={this.updateUser}
-              />}
-            />
-            {/* <Route exact path="/login"
-              render={route => <LogIn {...route}
-                appState={this.state}
-                logIn={this.logIn}
-                updateUser={this.updateUser}
-              />}
-            /> */}
+{/*
+            <CSSTransition
+              // in={this.state.showGame}
+              timeout={400}
+              classNames='my-node'
+              appear
+            > */}
+
+              <Route exact path="/(signup|login)/"
+                render={route => <SignUpLogIn {...route}
+                  appState={this.state}
+                  signUp={this.signUp}
+                  logIn={this.logIn}
+                  updateUser={this.updateUser}
+                />}
+              />
+
+            {/* </CSSTransition> */}
+
             <Route exact path={"/dashboard("
               +"|/savedsessions"
               +"|/myhighscores"
@@ -154,6 +162,7 @@ class App extends Component {
             />
             <Route path="*" render={() => <E404 appState={this.state}/> }/>
           </Switch>
+
         </BrowserRouter>
 
       </div>

@@ -181,12 +181,12 @@ class Landing extends Component {
 
             </div>
           }
-          <hr/>
+          {/* <hr/>
           <div className="btn" onClick={this.save}>
 
             Save
 
-          </div>
+          </div> */}
         </div>
       </div>
     )

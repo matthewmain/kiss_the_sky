@@ -25,6 +25,3 @@ Font Colors
 Colors
 * Green
   * `#108415`
-
-On hover
-* `opacity: 0.7`

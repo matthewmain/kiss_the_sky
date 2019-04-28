@@ -11,6 +11,7 @@ class SignUp extends Component {
     newpassword: "",
     password: "",
     confirm: "",
+    history: this.props.history,
     signup: {
       title: "Your garden is evolving! Nice.",
       subTitle: "Sign up to save progress and track high scores.",
@@ -45,6 +46,17 @@ class SignUp extends Component {
     this.setState({[events.target.name]: events.target.value})
   }
 
+  componentDidMount(){ this.togglePauseResume() }
+
+  componentWillUnmount(){ this.togglePauseResume() }
+
+  togglePauseResume(){
+    if (window.gameHasBegun) {
+      const togglePause = document.querySelector(".icon_game_run")
+      togglePause.click()
+    }
+  }
+
   componentWillReceiveProps(){
     this.setState({ username: "", email: "", password: "", confirm: "",})
   }
@@ -71,7 +83,9 @@ class SignUp extends Component {
     return (
       <div className="signup-login">
 
-        <div className="signup-login-container">
+        <div className="signup-login-container" style={{
+          opacity: `${this.state.opacity}`
+        }}>
 
           <Link to="/">
             <img
