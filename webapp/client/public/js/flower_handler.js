@@ -26,6 +26,7 @@ var milestone90HasBeenRun = false;
 
 ///flower constructor 
 function Flower( plant, parentSegment, basePoint1, basePoint2 ) {
+  this.class = "flower";
   this.id = plant.flowerCount;
   this.plantId = plant.id;
   this.generation = Tl.obById( plants, this.plantId ).generation;
@@ -112,6 +113,7 @@ function Flower( plant, parentSegment, basePoint1, basePoint2 ) {
 
 ///pollination animation object constructor
 function PollinationAnimation( pollinatorFlower, pollinatedFlower ) {
+  this.class = "pollinationAnimation";
   this.id = pollinationAnimationCount;
   this.f1 = pollinatorFlower;  // flower 1 (pollinator)
   this.f2 = pollinatedFlower;  // flower 2 (pollinated)

@@ -96,6 +96,7 @@ var C = {
 
 ///seed constructor
 function Seed( parentFlower, zygoteGenotype ) {
+  this.class = "seed";
   this.id = seedCount;
   this.parentFlowerId = parentFlower === null ? null : parentFlower.id;
   this.parentPlantId = parentFlower === null ? null : parentFlower.plantId;
@@ -127,6 +128,7 @@ function Seed( parentFlower, zygoteGenotype ) {
 
 ///plant constructor
 function Plant( sourceSeed ) {
+  this.class = "plant";
   this.sourceSeed = sourceSeed;
   this.sourceSeedHasBeenRemoved = false;
   this.id = plantCount;
@@ -181,6 +183,7 @@ function Plant( sourceSeed ) {
 
 ///plant stalk segment constructor
 function Segment( plant, parentSegment, basePoint1, basePoint2 ) {
+  this.class = "segment";
   this.plantId = plant.id;
   this.id = plant.segmentCount;
   this.hasChild = false;

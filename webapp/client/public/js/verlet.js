@@ -43,6 +43,7 @@ var breeze = 0.4;  // breeziness level (applied as brief left & right gusts)
 
 ///point constructor
 function Point(current_x, current_y, materiality="material") {  // materiality can be "material" or "immaterial"
+  this.class = "point";
   this.cx = current_x;
   this.cy = current_y; 
   this.px = this.cx;  // previous x value
@@ -60,6 +61,7 @@ function Point(current_x, current_y, materiality="material") {  // materiality c
 
 ///span constructor
 function Span(point_1, point_2, visibility="visible") {  // visibility can be "visible" or "hidden"
+  this.class = "span";
   this.p1 = point_1;
   this.p2 = point_2;
   this.l = distance(this.p1,this.p2); // length
@@ -71,6 +73,7 @@ function Span(point_1, point_2, visibility="visible") {  // visibility can be "v
 
 ///skins constructor
 function Skin(points_array,color) {
+  this.class = "skin";
   this.points = points_array;  // an array of points for skin outline path
   this.color = color;
   this.id = skinCount;
