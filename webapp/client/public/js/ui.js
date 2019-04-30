@@ -569,8 +569,17 @@ $(".icon_shadows").click(function(){
 });
 
 ///camera icon (takes a screenshot)
-$("#save").click(function(){
+$("#screenshot").click(function(){
   downloadScreenshot();
+});
+
+///save icon (saves the game)
+$("#icon_save").click(function(){
+  if ( Object.keys(savedGameData).length === 0 ) {
+    if (confirm("Save your progress Here?\n(You can only do this once ... for now.)")) { saveGame(); } 
+  } else {
+    if (confirm("Go back and resume where you saved your progress?\n(You'll lose your progress since then ...  for now.)")) { resumeSavedGame( savedGameData ); }
+  }
 });
 
 ///pause/resume icons

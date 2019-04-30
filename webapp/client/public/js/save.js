@@ -263,6 +263,7 @@ function assignSegments( plant ) {
 
 
 function resumeSavedGame( retrievedGameData ) {
+	pause();
 	parsedData = JSON.parse( retrievedGameData );
 	//object collections
 	assignPoints();
@@ -314,7 +315,6 @@ function resumeSavedGame( retrievedGameData ) {
 	ccs4 = parsedData.ccs4; 
 	//misc.
 	initialGeneValueAverages = parsedData.initialGeneValueAverages;
-	pause();
 	display();
 }
 

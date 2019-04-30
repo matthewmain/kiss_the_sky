@@ -859,7 +859,7 @@ function renderPlants() {
 
 function downloadScreenshot() {
   var image = canvas.toDataURL("image/png");
-  var download = document.getElementById("save");
+  var download = document.getElementById("screenshot");
   download.href = image;
   var seasonTitleCase = currentSeason.charAt(0).toUpperCase()+currentSeason.slice(1);
   download.download = "Kiss the Sky - Year "+currentYear+", "+seasonTitleCase+".png";
@@ -1089,12 +1089,12 @@ function display() {
   }
   //runLogs( 600 );
 
-          if ( worldTime === 500 ) {  //{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{XXXXX}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}
-            console.log( plants );
-            saveGame(); 
-            console.log(savedGameData);
-            resumeSavedGame( savedGameData );
-          } 
+          // if ( worldTime === 500 ) {  //{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{XXXXX}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}
+          //   console.log( plants );
+          //   saveGame(); 
+          //   console.log(savedGameData);
+          //   resumeSavedGame( savedGameData );
+          // } 
 
   if ( !gamePaused ) { window.requestAnimationFrame( display ); }
 }
