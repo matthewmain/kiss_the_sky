@@ -8,7 +8,6 @@
 var currentYear = 1;
 var yearTime = 0;
 var currentSeason;
-var currentGreatestMaxSegment;
 
 ///season lengths
 var spL = 1000;  // spring length

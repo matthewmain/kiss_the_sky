@@ -26,7 +26,6 @@ var milestone90HasBeenRun = false;
 
 ///flower constructor 
 function Flower( plant, parentSegment, basePoint1, basePoint2 ) {
-  this.class = "flower";
   this.id = plant.flowerCount;
   this.plantId = plant.id;
   this.generation = Tl.obById( plants, this.plantId ).generation;
@@ -113,7 +112,7 @@ function Flower( plant, parentSegment, basePoint1, basePoint2 ) {
 
 ///pollination animation object constructor
 function PollinationAnimation( pollinatorFlower, pollinatedFlower ) {
-  this.class = "pollinationAnimation";
+  this.saveTagClass = "pollinationAnimation";
   this.id = pollinationAnimationCount;
   this.f1 = pollinatorFlower;  // flower 1 (pollinator)
   this.f2 = pollinatedFlower;  // flower 2 (pollinated)
@@ -400,7 +399,6 @@ function developFlower( plant, flower ) {
     f.budHasFullyMatured = f.spHbM.l >= p.maxSegmentWidth*p.maxFlowerBaseWidth;
   //otherwise, if bud has not fully bloomed, it continues to bloom
   } else if ( f.budHasFullyMatured && !f.hasFullyBloomed && p.energy > p.maxEnergyLevel*minBloomEnLevRatio ) {
-    removePetalAndBudTipPoints( p );
     if ( f.bloomRatio < 1 ) { 
       f.bloomRatio += 0.01; 
     } else { 
@@ -452,21 +450,6 @@ function trackMaxRedFlowerHeights( flower ) {
 function removePollinationAnimation( id ) {
   for ( var i=0; i<pollinationAnimations.length; i++){ 
     if ( pollinationAnimations[i].id === id) { pollinationAnimations.splice(i,1); }
-  }
-}
-
-///removes petal and bud tip points
-function removePetalAndBudTipPoints( plant ) {
-  for ( var i=0; i<plant.flowers.length; i++ ) {
-    var f = plant.flowers[i];
-    removePoint( f.ptPtL.id );  // flower petal top left point  
-    removePoint( f.ptPtM.id );  // flower petal top middle point  
-    removePoint( f.ptPtR.id );  // flower petal top right point  
-    removePoint( f.ptPbL.id );  // flower petal bottom left point  
-    removePoint( f.ptPbM.id );  // flower petal bottom middle point  
-    removePoint( f.ptPbR.id );  // flower petal bottom right point  
-    removePoint( f.ptPodTipL.id );  // flower pod tip left point 
-    removePoint( f.ptPodTipR.id );  // flower pod tip right point
   }
 }
 

@@ -145,7 +145,7 @@ function scaleEliminationCursor() {
   var baseWidthsSum = 0;
   var activePlantCount = 0;
   for ( var i=0; i<plants.length; i++ ) { 
-    if ( plants[i].sourceSeed.hasGerminated && plants[i].isAlive ) { 
+    if ( plants[i].sourceSeed && plants[i].sourceSeed.hasGerminated && plants[i].isAlive ) { 
       baseWidthsSum += plants[i].spB.l; 
       activePlantCount++;
     } 

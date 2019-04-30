@@ -11,7 +11,7 @@
 
 ///sun ray constructor
 function SunRay() {
-  this.class = "sunRay";
+  this.saveTagClass = "sunRay";
   this.id = sunRayCount;
   this.x = xValFromPct( this.id );
   this.intensity = sunRayIntensity;
@@ -20,7 +20,6 @@ function SunRay() {
 
 ///shadow constructor
 function Shadow( segment ) {
-  this.class = "shadow";
   this.s = segment;
   this.p1t = segment.spLf1.p2;
   this.p2t = segment.spLf1.p1;
