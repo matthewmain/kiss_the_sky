@@ -33,7 +33,6 @@ function saveGame() {
 	savedGameData.gameDifficulty = gameDifficulty;
 	savedGameData.ambientMode = ambientMode;
 	savedGameData.endOfGameAnnouncementDisplayed = endOfGameAnnouncementDisplayed;
-	savedGameData.darkMode = darkMode;
 	savedGameData.viewShadows = viewShadows;
 	//progress
 	savedGameData.highestRedFlowerPct = highestRedFlowerPct;
@@ -57,6 +56,12 @@ function saveGame() {
 	savedGameData.suL = suL;
 	savedGameData.photosynthesisRatio = photosynthesisRatio;
 	savedGameData.livEnExp = livEnExp;
+	savedGameData.csbg = csbg; 
+	savedGameData.psbg = psbg; 
+	savedGameData.ccs1 = ccs1; 
+	savedGameData.ccs2 = ccs2; 
+	savedGameData.ccs3 = ccs3;  
+	savedGameData.ccs4 = ccs4; 
 	//misc.
 	savedGameData.initialGeneValueAverages = initialGeneValueAverages;
 	//encode & compress data
@@ -278,7 +283,6 @@ function resumeSavedGame( retrievedGameData ) {
 	gameDifficulty = parsedData.gameDifficulty;
 	ambientMode = parsedData.ambientMode;
 	endOfGameAnnouncementDisplayed = parsedData.endOfGameAnnouncementDisplayed;
-	darkMode = parsedData.darkMode;
 	viewShadows = parsedData.viewShadows;
 	//progress
 	highestRedFlowerPct = parsedData.highestRedFlowerPct;
@@ -302,8 +306,16 @@ function resumeSavedGame( retrievedGameData ) {
 	suL = parsedData.suL;
 	photosynthesisRatio = parsedData.photosynthesisRatio;
 	livEnExp = parsedData.livEnExp;
+	csbg = parsedData.csbg; 
+	psbg = parsedData.psbg; 
+	ccs1 = parsedData.ccs1; 
+	ccs2 = parsedData.ccs2; 
+	ccs3 = parsedData.ccs3;  
+	ccs4 = parsedData.ccs4; 
 	//misc.
 	initialGeneValueAverages = parsedData.initialGeneValueAverages;
+	pause();
+	display();
 }
 
 

@@ -1089,7 +1089,7 @@ function display() {
   }
   //runLogs( 600 );
 
-          if ( worldTime === 1500 ) {  //{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{XXXXX}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}
+          if ( worldTime === 500 ) {  //{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{XXXXX}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}
             console.log( plants );
             saveGame(); 
             console.log(savedGameData);

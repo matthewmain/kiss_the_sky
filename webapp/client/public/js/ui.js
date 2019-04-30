@@ -248,6 +248,7 @@ function eliminatePlants( e, plant ) {
 function pause() {
   document.getElementById("icon_pause").style.visibility = "hidden";
   document.getElementById("icon_play").style.visibility = "visible";
+  $("#modal_play").css("visibility", "visible");
   gamePaused = true;
 }
 
@@ -576,7 +577,6 @@ $("#save").click(function(){
 $(".icon_game_run").click(function(){
   if ( !gamePaused ) { 
     pause(); 
-    $("#modal_play").css("visibility", "visible");
   } else { 
     removeModals();  // removes any modals if visible
     resume(); 
