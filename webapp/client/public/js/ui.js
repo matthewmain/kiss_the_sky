@@ -145,7 +145,7 @@ function scaleEliminationCursor() {
   var baseWidthsSum = 0;
   var activePlantCount = 0;
   for ( var i=0; i<plants.length; i++ ) { 
-    if ( plants[i].sourceSeed.hasGerminated && plants[i].isAlive ) { 
+    if ( plants[i].sourceSeed && plants[i].sourceSeed.hasGerminated && plants[i].isAlive ) { 
       baseWidthsSum += plants[i].spB.l; 
       activePlantCount++;
     } 
@@ -230,11 +230,20 @@ function eliminatePlants( e, plant ) {
               var s2 = p.segments[k];
               s2.ptE1.mass = s2.ptE2.mass = 15;  // increases plant mass for faster collapse
               if (!s2.isBaseSegment) {
-                removeSpan(s2.spCdP.id);  // downward (l to r) cross span to parent
-                removeSpan(s2.spCuP.id);  // upward (l to r) cross span to parent
+                if ( s2.spCdP ) { removeSpan(s2.spCdP.id); }  // downward (l to r) cross span to parent
+                if ( s2.spCuP ) { removeSpan(s2.spCuP.id); }  // upward (l to r) cross span to parent
               }
-              removeSpan(s2.spCd.id);  // downward (l to r) cross span
-              removeSpan(s2.spCu.id);  // upward (l to r) cross span
+              if ( s2.spCd ) { removeSpan(s2.spCd.id); }  // downward (l to r) cross span
+              if ( s2.spCu ) { removeSpan(s2.spCu.id); }  // upward (l to r) cross span
+            }
+            if ( p.hasFlowers ) {
+              for (var l=0; l<p.flowers.length; l++) {
+                var f = p.flowers[l];
+                if ( f.spCuP ) { removeSpan(f.spCuP.id); }  // downward (l to r) cross span to parent
+                if ( f.spCdP ) { removeSpan(f.spCdP.id); }  // upward (l to r) cross span to parent
+                if ( f.spCu ) { removeSpan(f.spCu.id); }  // downward (l to r) cross span
+                if ( f.spCd ) { removeSpan(f.spCd.id); }  // upward (l to r) cross span
+              }
             }
             p.hasBeenEliminatedByPlayer = true;
           }
@@ -248,6 +257,7 @@ function eliminatePlants( e, plant ) {
 function pause() {
   document.getElementById("icon_pause").style.visibility = "hidden";
   document.getElementById("icon_play").style.visibility = "visible";
+  $("#modal_play").css("visibility", "visible");
   gamePaused = true;
 }
 
@@ -568,15 +578,25 @@ $(".icon_shadows").click(function(){
 });
 
 ///camera icon (takes a screenshot)
-$("#save").click(function(){
+$("#screenshot").click(function(){
   downloadScreenshot();
+});
+
+///save icon (saves the game)
+$("#icon_save").click(function(){
+  //(placeholder until database is set up...)
+  if ( Object.keys(savedGameData).length === 0 ) {
+    if (confirm("Save your progress here?")) { saveGame(); } 
+  } else {
+    if (confirm("Resume where you last saved your progress?\n(This will delete your old save point ... for now. But you can save again after this.)")) { resumeSavedGame( savedGameData ); }
+    savedGameData = {};  // removes previous saved game so new game can be saved
+  }
 });
 
 ///pause/resume icons
 $(".icon_game_run").click(function(){
   if ( !gamePaused ) { 
     pause(); 
-    $("#modal_play").css("visibility", "visible");
   } else { 
     removeModals();  // removes any modals if visible
     resume(); 
