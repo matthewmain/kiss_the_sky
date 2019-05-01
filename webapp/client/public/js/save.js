@@ -14,7 +14,6 @@ var savedGameData = {};
 
 
 function saveGame() {
-	pause();
 	//object collections
 	savedGameData.points = JSON.parse(JSON.stringify(points));
 	savedGameData.spans = JSON.parse(JSON.stringify(spans));
@@ -33,7 +32,6 @@ function saveGame() {
 	savedGameData.gameDifficulty = gameDifficulty;
 	savedGameData.ambientMode = ambientMode;
 	savedGameData.endOfGameAnnouncementDisplayed = endOfGameAnnouncementDisplayed;
-	savedGameData.viewShadows = viewShadows;
 	//progress
 	savedGameData.highestRedFlowerPct = highestRedFlowerPct;
 	savedGameData.gameHasBegun = gameHasBegun;
@@ -126,7 +124,11 @@ var parsedData;
 
 
 function needsCodification( value ) {
-	return value !== null && value.saveTagClass ? true : false; 
+	return value !== null && value.saveTagClass;
+}
+
+function existsInCollection( object ) {
+
 }
 
 
@@ -263,7 +265,6 @@ function assignSegments( plant ) {
 
 
 function resumeSavedGame( retrievedGameData ) {
-	pause();
 	parsedData = JSON.parse( retrievedGameData );
 	//object collections
 	assignPoints();
@@ -315,7 +316,6 @@ function resumeSavedGame( retrievedGameData ) {
 	ccs4 = parsedData.ccs4; 
 	//misc.
 	initialGeneValueAverages = parsedData.initialGeneValueAverages;
-	display();
 }
 
 

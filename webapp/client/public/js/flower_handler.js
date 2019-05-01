@@ -286,7 +286,7 @@ function positionPetal( plant, flower, petalTipPoint, xShift, yShift ) {
   var hexHeight = distance( f.ptHtL, f.ptHbL );
   var htmp = spanMidPoint( f.spHtM );  // hex top middle span mid point
   var hbmp = spanMidPoint( f.spHbM );  // hex bottom middle span mid point
-  var hcp = spanMidPoint( f.spHcH );  // hex center point
+  var hcp = midPoint( f.ptHoL, f.ptHoR );  // hex center point
   var bh = p.flowerBudHeight;  // bud height
   var budTip = { x: ( htmp.x + ( htmp.x - hbmp.x ) * bh ), y: (htmp.y + ( htmp.y - hbmp.y ) * bh) };  // bud tip
   var fullBloomX = hbmp.x + (hexHeight*-xShift) * (hcp.y-hbmp.y)/(hexHeight*0.5) + (hbmp.x-hcp.x)*(yShift-2.5)*2;
@@ -373,7 +373,7 @@ function positionPodHalf( plant, flower, podTipPoint, xShift, yShift ) {
   var hexHeight = distance( f.ptHtL, f.ptHbL );
   var htmp = spanMidPoint( f.spHtM );  // hex top middle span mid point
   var hbmp = spanMidPoint( f.spHbM );  // hex bottom middle span mid point
-  var hcp = spanMidPoint( f.spHcH );  // hex center point
+  var hcp = midPoint( f.ptHoL, f.ptHoR );
   var bh = p.flowerBudHeight;  // bud height
   var budTip = { x: ( htmp.x + ( htmp.x - hbmp.x ) * bh ), y: (htmp.y + ( htmp.y - hbmp.y ) * bh) };  // bud tip
   var fullyOpenX = hbmp.x + (hexHeight*-xShift) * (hcp.y-hbmp.y)/(hexHeight*0.5) + (hbmp.x-hcp.x)*(yShift-2.5)*2;
@@ -457,40 +457,40 @@ function removePollinationAnimation( id ) {
 function removeAllflowerPointsAndSpans( plant ) {
   for ( var i=0; i<plant.flowers.length; i++ ) {
     var f = plant.flowers[i];
-    removePoint( f.ptHbL.id );  // flower hex bottom left point
-    removePoint( f.ptHbR.id );  // flower hex bottom right point
-    removePoint( f.ptHoL.id );  // flower hex outer left point
-    removePoint( f.ptHoR.id );  // flower hex outer right point
-    removePoint( f.ptHtL.id );  // flower hex top left point
-    removePoint( f.ptHtR.id );  // flower hex top right point
-    removePoint( f.ptBudTip.id );  // flower bud tip point
-    removePoint( f.ptPtL.id );  // flower petal top left point  
-    removePoint( f.ptPtM.id );  // flower petal top middle point  
-    removePoint( f.ptPtR.id );  // flower petal top right point  
-    removePoint( f.ptPbL.id );  // flower petal bottom left point  
-    removePoint( f.ptPbM.id );  // flower petal bottom middle point  
-    removePoint( f.ptPbR.id );  // flower petal bottom right point  
-    removePoint( f.ptPodTipL.id );  // flower pod tip left point 
-    removePoint( f.ptPodTipR.id );  // flower pod tip right point
-    removeSpan( f.spOiL.id );  // flower ovule inner left span
-    removeSpan( f.spOiR.id );  // flower ovule inner right span
-    removeSpan( f.spCd.id );  // flower downward (l to r) cross span
-    removeSpan( f.spCu.id );  // flower upward (l to r) cross span
-    removeSpan( f.spCdP.id );  // flower downward (l to r) cross span to parent
-    removeSpan( f.spCuP.id );  // flower upward (l to r) cross span to parent
-    removeSpan( f.spOoL.id );  // flower ovule outer left span 
-    removeSpan( f.spOoR.id );  // flower ovule outer right span 
-    removeSpan( f.spHbM.id );  // flower hex bottom middle span
-    removeSpan( f.spHbL.id );  // flower hex bottom left span
-    removeSpan( f.spHbR.id );  // flower hex bottom right span
-    removeSpan( f.spHtL.id );  // flower hex top left span
-    removeSpan( f.spHtR.id );  // flower hex top right span
-    removeSpan( f.spHtM.id );  // flower hex top middle span
-    removeSpan( f.spHcH.id );  // flower hex cross horizontal span
-    removeSpan( f.spHcDB.id );  // flower hex cross downward span to flower base
-    removeSpan( f.spHcUB.id );  // flower hex cross upward span to flower base
-    removeSpan( f.spBTSL.id );  // flower bud tip scaffolding left span
-    removeSpan( f.spBTSR.id );  // flower bud tip scaffolding right span
+    if ( f.ptHbL ) { removePoint( f.ptHbL.id ); }  // flower hex bottom left point
+    if ( f.ptHbR ) { removePoint( f.ptHbR.id ); }  // flower hex bottom right point
+    if ( f.ptHoL ) { removePoint( f.ptHoL.id ); }  // flower hex outer left point
+    if ( f.ptHoR ) { removePoint( f.ptHoR.id ); }  // flower hex outer right point
+    if ( f.ptHtL ) { removePoint( f.ptHtL.id ); }  // flower hex top left point
+    if ( f.ptHtR ) { removePoint( f.ptHtR.id ); }  // flower hex top right point
+    if ( f.ptBudTip ) { removePoint( f.ptBudTip.id ); }  // flower bud tip point
+    if ( f.ptPtL ) { removePoint( f.ptPtL.id ); }  // flower petal top left point  
+    if ( f.ptPtM ) { removePoint( f.ptPtM.id ); }  // flower petal top middle point  
+    if ( f.ptPtR ) { removePoint( f.ptPtR.id ); }  // flower petal top right point  
+    if ( f.ptPbL ) { removePoint( f.ptPbL.id ); }  // flower petal bottom left point  
+    if ( f.ptPbM ) { removePoint( f.ptPbM.id ); }  // flower petal bottom middle point  
+    if ( f.ptPbR ) { removePoint( f.ptPbR.id ); }  // flower petal bottom right point  
+    if ( f.ptPodTipL ) { removePoint( f.ptPodTipL.id ); }  // flower pod tip left point 
+    if ( f.ptPodTipR ) { removePoint( f.ptPodTipR.id ); }  // flower pod tip right point
+    if ( f.spOiL ) { removeSpan( f.spOiL.id ); }  // flower ovule inner left span
+    if ( f.spOiR ) { removeSpan( f.spOiR.id ); }  // flower ovule inner right span
+    if ( f.spCd ) { removeSpan( f.spCd.id ); }  // flower downward (l to r) cross span
+    if ( f.spCu ) { removeSpan( f.spCu.id ); }  // flower upward (l to r) cross span
+    if ( f.spCdP ) { removeSpan( f.spCdP.id ); }  // flower downward (l to r) cross span to parent
+    if ( f.spCuP ) { removeSpan( f.spCuP.id ); }  // flower upward (l to r) cross span to parent
+    if ( f.spOoL ) { removeSpan( f.spOoL.id ); }  // flower ovule outer left span 
+    if ( f.spOoR ) { removeSpan( f.spOoR.id ); }  // flower ovule outer right span 
+    if ( f.spHbM ) { removeSpan( f.spHbM.id ); }  // flower hex bottom middle span
+    if ( f.spHbL ) { removeSpan( f.spHbL.id ); }  // flower hex bottom left span
+    if ( f.spHbR ) { removeSpan( f.spHbR.id ); }  // flower hex bottom right span
+    if ( f.spHtL ) { removeSpan( f.spHtL.id ); }  // flower hex top left span
+    if ( f.spHtR ) { removeSpan( f.spHtR.id ); }  // flower hex top right span
+    if ( f.spHtM ) { removeSpan( f.spHtM.id ); }  // flower hex top middle span
+    if ( f.spHcH ) { removeSpan( f.spHcH.id ); }  // flower hex cross horizontal span
+    if ( f.spHcDB ) { removeSpan( f.spHcDB.id ); }  // flower hex cross downward span to flower base
+    if ( f.spHcUB ) { removeSpan( f.spHcUB.id ); }  // flower hex cross upward span to flower base
+    if ( f.spBTSL ) { removeSpan( f.spBTSL.id ); }  // flower bud tip scaffolding left span
+    if ( f.spBTSR ) { removeSpan( f.spBTSR.id ); }  // flower bud tip scaffolding right span
   }
 }
 
