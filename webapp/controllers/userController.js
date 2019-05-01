@@ -61,6 +61,23 @@ const UserControllers = {
           res.status(422).json(err)
         }
       })
+  },
+
+  save: function(req, res) {
+    console.log('\n👥 💾 🌺 Attempting user save 🌺 💾 👥')
+    console.log(' - '+req.body.username)
+    db.User.findOneAndUpdate(
+      {_id: req.body._id},
+      {$push: {saved_games: {data:req.body.saveObj}}
+    })
+      .then(resp => {
+        console.log(" - 👥 💾 🌺 User saves new game 🌺 💾 👥\n")
+        // updateAdmin_images_saved(req.body.image)
+        console.log(resp)
+        res.json(resp)
+      })
+      .catch(err => res.status(422).json(err) )
+
   }
 
 }
