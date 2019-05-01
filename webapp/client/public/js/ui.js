@@ -586,10 +586,13 @@ $("#screenshot").click(function(){
 $("#icon_save").click(function(){
   //(placeholder until database is set up...)
   if ( Object.keys(savedGameData).length === 0 ) {
-    if (confirm("Save your progress here?")) { saveGame(); } 
+    if ( confirm("Save your progress here?") ) { 
+      saveGame(); 
+    } 
   } else {
-    if (confirm("Resume where you last saved your progress?\n(This will delete your old save point ... for now. But you can save again after this.)")) { resumeSavedGame( savedGameData ); }
-    savedGameData = {};  // removes previous saved game so new game can be saved
+    if ( confirm("Resume where you last saved your progress?\n(This will delete your old save point ... for now. But you can save again after this.)") ) { resumeSavedGame( savedGameData ); 
+      savedGameData = {};  // removes previous saved game so new game can be saved
+    }
   }
 });
 
