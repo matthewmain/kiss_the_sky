@@ -163,7 +163,7 @@ function PollinationAnimation( pollinatorFlower, pollinatedFlower ) {
   }
 }
 
-var HeightMarker = {
+var heightMarker = {
   w: canvas.width*0.025,  // marker width 
   h: canvas.width*0.025,  // marker height
   y: canvas.height,  // marker position y value (at point)
@@ -441,7 +441,7 @@ function trackMaxRedFlowerHeights( flower ) {
     if ( heightPct > highestRedFlowerPct ) { 
       highestRedFlowerPct = heightPct; 
       if ( highestRedFlowerPct > 100 ) { highestRedFlowerPct = 100; }  // caps highest red flower percentage at 100%
-      HeightMarker.chrfx = f.ptPtM.cx;  // updates flower's top petal tip x value
+      heightMarker.chrfx = f.ptPtM.cx;  // updates flower's top petal tip x value
     }
   }
 }
@@ -737,7 +737,7 @@ function renderHeightAnnouncement() {
     .text( Math.floor( highestRedFlowerPct ) + "%" )
     .css({  
       top: 100-highestRedFlowerPct+ha + "%",
-      left: pctFromXVal( HeightMarker.chrfx ) + "%",
+      left: pctFromXVal( heightMarker.chrfx ) + "%",
       opacity: 1,
       color: c,
     })
@@ -796,58 +796,58 @@ function renderMilestones() {
 ///renders markers that track the highest red flower height so far
 function renderHeightMarker() {
   var hrfy = canvas.height - yValFromPct( highestRedFlowerPct );  // highest red flower y value currently
-  var chmp = 100-pctFromYVal(HeightMarker.y);  // current height marker percentage
+  var chmp = 100-pctFromYVal(heightMarker.y);  // current height marker percentage
   if ( Math.floor( highestRedFlowerPct ) > Math.floor(chmp) ) {   // initializes animations if new highest red flower
-    HeightMarker.y = hrfy;  // y value
-    HeightMarker.baa = true;  // bounce animation active
-    HeightMarker.bat = 0;  // bounce animation time elapsed
-    HeightMarker.laa = true;  // line animation active
-    HeightMarker.lat = 0;  // line animation time elapsed
+    heightMarker.y = hrfy;  // y value
+    heightMarker.baa = true;  // bounce animation active
+    heightMarker.bat = 0;  // bounce animation time elapsed
+    heightMarker.laa = true;  // line animation active
+    heightMarker.lat = 0;  // line animation time elapsed
     $("#height_number").text( Math.floor( highestRedFlowerPct ) );
     renderHeightAnnouncement();
   }
   //new highest height marker bounce animation (size expansion & contraction)
-  if ( HeightMarker.baa ) {  
-    HeightMarker.bat++;
+  if ( heightMarker.baa ) {  
+    heightMarker.bat++;
     var a = -0.12;  // corresponds to animation duration ( higher value is longer duration; 0 is infinite)
     var b = 2;  // extent of expansion ( higher value is greater expansion )
-    var x = HeightMarker.bat; 
+    var x = heightMarker.bat; 
     var y = a*Math.pow(x,2) + b*x;  // current marker expansion extent (quadratic formula; y = ax^2 + bx + c)
-    HeightMarker.w = canvas.width*0.025 + y;
-    if ( y <= 0 ) { HeightMarker.baa = false; HeightMarker.bat = 0; }
+    heightMarker.w = canvas.width*0.025 + y;
+    if ( y <= 0 ) { heightMarker.baa = false; heightMarker.bat = 0; }
   }
   //new highest height line animation
-  if ( HeightMarker.laa ) {  
-    HeightMarker.lat++;
+  if ( heightMarker.laa ) {  
+    heightMarker.lat++;
     var lad = 40;  // line animation duration
-    var o = 1 - HeightMarker.lat/lad;  // opacity
+    var o = 1 - heightMarker.lat/lad;  // opacity
     ctx.beginPath();
     ctx.lineWidth = 2;
-    var lGrad = ctx.createLinearGradient( HeightMarker.chrfx-canvas.width, HeightMarker.y, HeightMarker.chrfx+canvas.width, HeightMarker.y );
+    var lGrad = ctx.createLinearGradient( heightMarker.chrfx-canvas.width, heightMarker.y, heightMarker.chrfx+canvas.width, heightMarker.y );
     lGrad.addColorStop("0", "rgba( 161, 0, 0, 0 )");
     lGrad.addColorStop("0.4", "rgba( 161, 0, 0, " + 0.3*o + ")");
     lGrad.addColorStop("0.5", "rgba( 161, 0, 0, " + 1*o + ")");
     lGrad.addColorStop("0.6", "rgba( 161, 0, 0, " +0.3*o + ")");
     lGrad.addColorStop("1", "rgba( 161, 0, 0, 0 )");
     ctx.strokeStyle = lGrad;
-    ctx.moveTo( HeightMarker.chrfx-canvas.width, HeightMarker.y );
-    ctx.lineTo( HeightMarker.chrfx+canvas.width, HeightMarker.y );
+    ctx.moveTo( heightMarker.chrfx-canvas.width, heightMarker.y );
+    ctx.lineTo( heightMarker.chrfx+canvas.width, heightMarker.y );
     ctx.stroke();
-    if ( HeightMarker.lat > lad ) { HeightMarker.laa = false; HeightMarker.lat = 0; }
+    if ( heightMarker.lat > lad ) { heightMarker.laa = false; heightMarker.lat = 0; }
   }
   //draws marker
   if ( highestRedFlowerPct > 0 ) {  
     ctx.beginPath();  // top triangle
     ctx.fillStyle = "#D32100";
-    ctx.moveTo( canvas.width, HeightMarker.y );  
-    ctx.lineTo( canvas.width, HeightMarker.y - HeightMarker.h/2 ); 
-    ctx.lineTo( canvas.width-HeightMarker.w, HeightMarker.y ); 
+    ctx.moveTo( canvas.width, heightMarker.y );  
+    ctx.lineTo( canvas.width, heightMarker.y - heightMarker.h/2 ); 
+    ctx.lineTo( canvas.width-heightMarker.w, heightMarker.y ); 
     ctx.fill();  
     ctx.beginPath();  // bottom triangle
     ctx.fillStyle = "#A10000";
-    ctx.moveTo( canvas.width, HeightMarker.y );  
-    ctx.lineTo( canvas.width, HeightMarker.y + HeightMarker.h/2 ); 
-    ctx.lineTo( canvas.width-HeightMarker.w, HeightMarker.y ); 
+    ctx.moveTo( canvas.width, heightMarker.y );  
+    ctx.lineTo( canvas.width, heightMarker.y + heightMarker.h/2 ); 
+    ctx.lineTo( canvas.width-heightMarker.w, heightMarker.y ); 
     ctx.fill();
   }
 }

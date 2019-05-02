@@ -34,6 +34,7 @@ function saveGame() {
 	savedGameData.endOfGameAnnouncementDisplayed = endOfGameAnnouncementDisplayed;
 	//progress
 	savedGameData.highestRedFlowerPct = highestRedFlowerPct;
+	savedGameData.heightMarker = heightMarker;
 	savedGameData.gameHasBegun = gameHasBegun;
 	savedGameData.readyForEliminationDemo = readyForEliminationDemo; 
 	savedGameData.readyForChangeDemo = readyForChangeDemo; 
@@ -288,6 +289,8 @@ function resumeSavedGame( retrievedGameData ) {
 	viewShadows = parsedData.viewShadows;
 	//progress
 	highestRedFlowerPct = parsedData.highestRedFlowerPct;
+	heightMarker = parsedData.heightMarker;
+	$("#height_number").text( Math.floor( highestRedFlowerPct ) );
 	gameHasBegun = parsedData.gameHasBegun;
 	readyForEliminationDemo = parsedData.readyForEliminationDemo; 
 	readyForChangeDemo = parsedData.readyForChangeDemo; 
