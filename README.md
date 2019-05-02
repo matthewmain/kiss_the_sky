@@ -1,9 +1,13 @@
 ### KISS THE SKY
-#### A Plant Evolution Game
+
+Kiss The Sky is a browser-based indie video game. At its heart is a programmatic replica of Mendelian genetics, and the gameplay is based on real-time Darwinian selection. You can either compete to breed a flower that reaches the sky, or let ambient mode play out for hours or days or weeks.
+
+Every year, flowers bloom and bear seeds that carry a combination of their own genes and the genes of the flowers that pollinated them. In spring, seedlings sprout and compete for the sunlight they need to grow. New plants with genes for the broadest leaves and the tallest, strongest stalks thrive. The rest whither or topple over to die in the shadows. When summer arrives, healthy plants bloom flowers whose colors are determined by the most dominant genes they carry for petal hue and brightness. But things are always changing. No year is quite like the last. With every new generation, a few genes mutate to produce new traits that have never existed before, and that may change the species forever.
+
+Your goal is to breed a bright red flower that reaches all the way to the sky. Tap or swipe to eliminate any unwanted plants; leave only plants with genes that might produce the tallest stalks and the reddest flowers in the next generation. When there are no red flowers, keep plants with flowers whose colors are closest to a bright red color. Then watch for mutations of hue and brightness until you've yielded a beautiful red bloom. Keep plants with the strongest stalks, even if they're short. Keep plants with the tallest stalks, even if they're weak. Don't forget to keep some plants with the broadest leaves as well. When your population cross-pollinates to yield a new leafy plant with a tall, strong stalk, eliminate the rest and let the new species propagate until new mutations arise yet again.
 
 <br>
 <br>
-Browser
 <br>
 <br>
 
@@ -20,29 +24,5 @@ Browser
 <br>
 
 - [ ] [Web App](https://github.com/matthewmain/plant_evolution_app/tree/master/webapp) - _Authentication, Basic Server Side Functionality, High Score Tracking, & Independent Hosting_
-
-<br>
-<br>
-<br>
-
-to add/ideas:
-   
-<br>
-
- - update flower structure so that all points are non-verlet; instead, use simple x/y points placed relationally to uppermost segment using trig. Will fix inverted flower bug. (Can add 3 invisible segments to give flower effective physicality, so it will not pass through walls, etc.)
- - add complexity to flowers by adding radial symmetry, variable petal counts, petal layers, petal lengths, petal shapes, petal gradients/stripes, etc.
- - ability to isolate flowers in different sections so that only flowers in same section polinate one another
- - image capture & record every mid summer
- - ability to view first generation garden snapshot & compare to current
- - plant stalk branching and multiple flowers per plant
- - drawer with menu for each gene and current allele values averages, plus ability to select any individual plant to reveal its genes
- - social: users can trade flower breeds for cross-breeding
- - selective seed storing & planting
- - swiping for breeze on ambient mode
- - changing seasonal backgrounds to imagery of hills or woods, etc.
- - possibly winter snowfall
- - music & sounds (different music for different seasons, birds chirping, etc.)
-
-
 
 
