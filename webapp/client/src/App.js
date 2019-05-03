@@ -2,6 +2,8 @@ import React, { Component } from 'react'
 import { BrowserRouter, Route, Switch } from "react-router-dom"
 
 import API from "./utils/API"
+import Save from "./utils/save.js"
+
 import "./styles/app.sass"
 
 import E404 from "./pages/E404/e404.js"
@@ -121,6 +123,8 @@ class App extends Component {
       this.setState({gamePaused: state})
     }
   }
+
+  save = (params)=>{ Save.saveGame(this.state, params) }
 
   render() {
     return (

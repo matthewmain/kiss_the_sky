@@ -1,6 +1,5 @@
 import React, { Component } from 'react'
 import { Link } from "react-router-dom"
-import API from "./../../utils/API"
 import Icon_menu from './../../images/icon_menu.svg'
 import Icon_menu_close from './../../images/icon_menu_close.svg'
 import Flower_avatar from './../../images/flower_avatar.svg'
@@ -58,25 +57,6 @@ class Landing extends Component {
     if (page && !hold) this.toggleMenu()
     if (!page && this.props.appState.gamePaused === "doUnpause") {
       this.props.appState.appFunc("togglePauseResume", false)
-    }
-  }
-
-  save = ()=>{
-    const saveObj = window.save()
-    console.log("saveObj :", saveObj)
-    if (this.props.appState.username && this.props.appState._id) {
-      console.log(" 👤 💾 🌺 attempting user save 🌺 💾 👤" )
-      API.save({
-        username: this.props.appState.username,
-        _id: this.props.appState._id,
-        saveObj: saveObj
-      })
-        .then( resp => {
-          console.log(" - 🌺 save :", resp.data)
-        })
-        .catch( err => console.log(err))
-    } else {
-      console.log('please log in...')
     }
   }
 
@@ -228,6 +208,14 @@ class Landing extends Component {
 
               </div>
             }
+
+            <hr />
+
+            <div className="btn" onClick={()=>{this.props.appState.appFunc("save")}}>
+
+              save
+
+            </div>
 
           </div>
         </div>
