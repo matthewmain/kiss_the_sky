@@ -19,6 +19,9 @@ export default {
   },
   signUp: function(newUser){
     return axios.post("/api/user/signup", newUser)
+  },
+  save: function(saveObj){
+    return axios.put("/api/user/save", saveObj)
   }
 
 }
