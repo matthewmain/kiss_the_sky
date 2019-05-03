@@ -18,9 +18,9 @@ function saveGame() {
 	savedGameData.points = JSON.parse(JSON.stringify(points));
 	savedGameData.spans = JSON.parse(JSON.stringify(spans));
 	savedGameData.skins = JSON.parse(JSON.stringify(skins));
-	savedGameData.seeds = JSON.parse(JSON.stringify(seeds)); 
+	savedGameData.seeds = JSON.parse(JSON.stringify(seeds));
 	savedGameData.plants = JSON.parse(JSON.stringify(plants));
-	savedGameData.pollinationAnimations = []; 
+	savedGameData.pollinationAnimations = [];
 	//counters
 	savedGameData.pointCount = pointCount;
 	savedGameData.spanCount = spanCount;
@@ -36,11 +36,11 @@ function saveGame() {
 	savedGameData.highestRedFlowerPct = highestRedFlowerPct;
 	savedGameData.heightMarker = heightMarker;
 	savedGameData.gameHasBegun = gameHasBegun;
-	savedGameData.readyForEliminationDemo = readyForEliminationDemo; 
-	savedGameData.readyForChangeDemo = readyForChangeDemo; 
+	savedGameData.readyForEliminationDemo = readyForEliminationDemo;
+	savedGameData.readyForChangeDemo = readyForChangeDemo;
 	savedGameData.eliminationDemoHasBegun = eliminationDemoHasBegun;
 	savedGameData.changeDemoHasBegun = changeDemoHasBegun;
-	savedGameData.allDemosHaveRun = allDemosHaveRun; 
+	savedGameData.allDemosHaveRun = allDemosHaveRun;
 	savedGameData.readyForNextMilestoneAnnouncement = readyForNextMilestoneAnnouncement;
 	savedGameData.milestoneFirstRedHasBeenRun = milestoneFirstRedHasBeenRun;
 	savedGameData.milestoneThirdHasBeenRun = milestoneThirdHasBeenRun;
@@ -48,19 +48,19 @@ function saveGame() {
 	savedGameData.milestoneTwoThirdsHasBeenRun = milestoneTwoThirdsHasBeenRun;
 	savedGameData.milestone90HasBeenRun = milestone90HasBeenRun;
 	//time
-	savedGameData.worldTime = worldTime;  
+	savedGameData.worldTime = worldTime;
 	savedGameData.currentYear = currentYear;
 	savedGameData.yearTime = yearTime;
 	savedGameData.currentSeason = currentSeason;
 	savedGameData.suL = suL;
 	savedGameData.photosynthesisRatio = photosynthesisRatio;
 	savedGameData.livEnExp = livEnExp;
-	savedGameData.csbg = csbg; 
-	savedGameData.psbg = psbg; 
-	savedGameData.ccs1 = ccs1; 
-	savedGameData.ccs2 = ccs2; 
-	savedGameData.ccs3 = ccs3;  
-	savedGameData.ccs4 = ccs4; 
+	savedGameData.csbg = csbg;
+	savedGameData.psbg = psbg;
+	savedGameData.ccs1 = ccs1;
+	savedGameData.ccs2 = ccs2;
+	savedGameData.ccs3 = ccs3;
+	savedGameData.ccs4 = ccs4;
 	//misc.
 	savedGameData.initialGeneValueAverages = initialGeneValueAverages;
 	//encode & compress data
@@ -74,20 +74,20 @@ function saveGame() {
 
 
 function encodeAndCompressSavedGameData( gameData ) {
-	for ( var key in gameData ) {  
-		if ( Array.isArray(gameData[key]) ) { 
+	for ( var key in gameData ) {
+		if ( Array.isArray(gameData[key]) ) {
 			var obColArr = gameData[key];  // object collection array
-			for ( var i=0; i<obColArr.length; i++) {  
+			for ( var i=0; i<obColArr.length; i++) {
 				var colOb = obColArr[i];  // collected object
 				for ( var innerKey in colOb ) {
 					//encode object references that are direct properties of an object
 					if ( needsCodification( colOb[innerKey] ) ) {
-						colOb[innerKey] = "#" + colOb[innerKey].saveTagClass + ":" + colOb[innerKey].id; 
+						colOb[innerKey] = "#" + colOb[innerKey].saveTagClass + ":" + colOb[innerKey].id;
 					//encode object references that are collected in arrays as properties of an object
-					} else if ( Array.isArray(colOb[innerKey]) ) { 
+					} else if ( Array.isArray(colOb[innerKey]) ) {
 						encodeInnerObjectCollection( colOb[innerKey] );
 					}
-				}	
+				}
 			}
 		}
 	}
@@ -98,19 +98,19 @@ function encodeAndCompressSavedGameData( gameData ) {
 
 
 function encodeInnerObjectCollection( objectCollectionArray ) {
-	for ( var i=0; i<objectCollectionArray.length; i++) {  
+	for ( var i=0; i<objectCollectionArray.length; i++) {
 		if ( needsCodification( objectCollectionArray[i] ) ) {
-			objectCollectionArray[i] = "#" + objectCollectionArray[i].saveTagClass + ":" + objectCollectionArray[i].id; 
+			objectCollectionArray[i] = "#" + objectCollectionArray[i].saveTagClass + ":" + objectCollectionArray[i].id;
 		} else {
 			for ( var key in objectCollectionArray[i] ) {
 				//encode object references that are direct properties of an object
 				if ( needsCodification( objectCollectionArray[i][key] ) ) {
-					objectCollectionArray[i][key] = "#" + objectCollectionArray[i][key].saveTagClass + ":" + objectCollectionArray[i][key].id; 
+					objectCollectionArray[i][key] = "#" + objectCollectionArray[i][key].saveTagClass + ":" + objectCollectionArray[i][key].id;
 				//encode object references that are collected in arrays as properties of an object
-				} else if ( Array.isArray(objectCollectionArray[i][key]) ) { 
+				} else if ( Array.isArray(objectCollectionArray[i][key]) ) {
 					encodeInnerObjectCollection( objectCollectionArray[i][key] );
 				}
-			}	
+			}
 		}
 	}
 }
@@ -142,9 +142,9 @@ function assignSpans() {
 	for ( var i=0; i<parsedData.spans.length; i++ ) {
 		var span = parsedData.spans[i];
 		for ( var key in span ) {
-			if ( typeof span[key] === "string" && /^#/.test(span[key]) ) {	
-				var objectId = parseInt( span[key].match(/:(.*)/)[1] );  
-				span[key] = points.find( object => object.id === objectId );  
+			if ( typeof span[key] === "string" && /^#/.test(span[key]) ) {
+				var objectId = parseInt( span[key].match(/:(.*)/)[1] );
+				span[key] = points.find( object => object.id === objectId );
 			}
 		}
 	}
@@ -156,8 +156,8 @@ function assignSkins() {
 	for ( var i=0; i<parsedData.skins.length; i++ ) {
 		var skin = parsedData.skins[i];
 		for ( var j=0; j<skin.points.length; j++) {
-			var objectId = parseInt( skin.points[j].match(/:(.*)/)[1] );  
-			skin.points[j] = points.find( object => object.id === objectId );  
+			var objectId = parseInt( skin.points[j].match(/:(.*)/)[1] );
+			skin.points[j] = points.find( object => object.id === objectId );
 		}
 	}
 	skins = parsedData.skins;
@@ -168,13 +168,13 @@ function assignSeeds() {
 	for ( var i=0; i<parsedData.seeds.length; i++ ) {
 		var seed = parsedData.seeds[i];
 		for ( var key in seed ) {
-			if ( typeof seed[key] === "string" && /^#/.test(seed[key]) ) {	
+			if ( typeof seed[key] === "string" && /^#/.test(seed[key]) ) {
 				var objectClass = seed[key].match(/#(.*?):/)[1];
-				var objectId = parseInt( seed[key].match(/:(.*)/)[1] );  
+				var objectId = parseInt( seed[key].match(/:(.*)/)[1] );
 				switch( objectClass ) {
-					case "point": 
-						seed[key] = points.find( object => object.id === objectId ); break; 
-					case "span": 
+					case "point":
+						seed[key] = points.find( object => object.id === objectId ); break;
+					case "span":
 						seed[key] = spans.find( object => object.id === objectId );
 				}
 			}
@@ -188,15 +188,15 @@ function assignPlants() {
 	for ( var i=0; i<parsedData.plants.length; i++ ) {
 		var plant = parsedData.plants[i];
 		for ( var key in plant ) {
-			if ( typeof plant[key] === "string" && /^#/.test(plant[key]) ) {	
+			if ( typeof plant[key] === "string" && /^#/.test(plant[key]) ) {
 				var objectClass = plant[key].match(/#(.*?):/)[1];
-				var objectId = parseInt( plant[key].match(/:(.*)/)[1] );  
+				var objectId = parseInt( plant[key].match(/:(.*)/)[1] );
 				switch( objectClass ) {
-					case "point": 
-						plant[key] = points.find( object => object.id === objectId ); break; 
-					case "span": 
+					case "point":
+						plant[key] = points.find( object => object.id === objectId ); break;
+					case "span":
 						plant[key] = spans.find( object => object.id === objectId ); break;
-					case "seed": 
+					case "seed":
 						plant[key] = seeds.find( object => object.id === objectId );
 				}
 			} else if ( key === "flowers" ) {
@@ -215,13 +215,13 @@ function assignFlowers( plant ) {
 		var flower = plant.flowers[i];
 		for ( var key in flower ) {
 			var objectClass, objectId;
-			if ( typeof flower[key] === "string" && /^#/.test(flower[key]) ) {	
+			if ( typeof flower[key] === "string" && /^#/.test(flower[key]) ) {
 				objectClass = flower[key].match(/#(.*?):/)[1];
-				objectId = parseInt( flower[key].match(/:(.*)/)[1] );  
+				objectId = parseInt( flower[key].match(/:(.*)/)[1] );
 				switch( objectClass ) {
-					case "point": 
+					case "point":
 						flower[key] = points.find( object => object.id === objectId ); break;
-					case "span": 
+					case "span":
 						flower[key] = spans.find( object => object.id === objectId );
 				}
 			} else if ( key === "seeds") {
@@ -240,13 +240,13 @@ function assignSegments( plant ) {
 		var segment = plant.segments[i];
 		for ( var key in segment ) {
 			var objectClass, objectId;
-			if ( typeof segment[key] === "string" && /^#/.test(segment[key]) ) {	
+			if ( typeof segment[key] === "string" && /^#/.test(segment[key]) ) {
 				objectClass = segment[key].match(/#(.*?):/)[1];
-				objectId = parseInt( segment[key].match(/:(.*)/)[1] );  
+				objectId = parseInt( segment[key].match(/:(.*)/)[1] );
 				switch( objectClass ) {
-					case "point": 
+					case "point":
 						segment[key] = points.find( object => object.id === objectId ); break;
-					case "span": 
+					case "span":
 						segment[key] = spans.find( object => object.id === objectId );
 				}
 			} else if ( key === "skins") {
@@ -274,7 +274,7 @@ function resumeSavedGame( retrievedGameData ) {
 	assignSeeds();
 	assignPlants();
 	sunRays = []; createSunRays();
-	pollinationAnimations = []; 
+	pollinationAnimations = [];
 	//counters
 	pointCount = parsedData.pointCount;
 	spanCount = parsedData.spanCount;
@@ -292,11 +292,11 @@ function resumeSavedGame( retrievedGameData ) {
 	heightMarker = parsedData.heightMarker;
 	$("#height_number").text( Math.floor( highestRedFlowerPct ) );
 	gameHasBegun = parsedData.gameHasBegun;
-	readyForEliminationDemo = parsedData.readyForEliminationDemo; 
-	readyForChangeDemo = parsedData.readyForChangeDemo; 
+	readyForEliminationDemo = parsedData.readyForEliminationDemo;
+	readyForChangeDemo = parsedData.readyForChangeDemo;
 	eliminationDemoHasBegun = parsedData.eliminationDemoHasBegun;
 	changeDemoHasBegun = parsedData.changeDemoHasBegun;
-	allDemosHaveRun = parsedData.allDemosHaveRun; 
+	allDemosHaveRun = parsedData.allDemosHaveRun;
 	readyForNextMilestoneAnnouncement = parsedData.readyForNextMilestoneAnnouncement;
 	milestoneFirstRedHasBeenRun = parsedData.milestoneFirstRedHasBeenRun;
 	milestoneThirdHasBeenRun = parsedData.milestoneThirdHasBeenRun;
@@ -304,24 +304,19 @@ function resumeSavedGame( retrievedGameData ) {
 	milestoneTwoThirdsHasBeenRun = parsedData.milestoneTwoThirdsHasBeenRun;
 	milestone90HasBeenRun = parsedData.milestone90HasBeenRun;
 	//time
-	worldTime = parsedData.worldTime;  
+	worldTime = parsedData.worldTime;
 	currentYear = parsedData.currentYear;
 	yearTime = parsedData.yearTime;
 	currentSeason = parsedData.currentSeason;
 	suL = parsedData.suL;
 	photosynthesisRatio = parsedData.photosynthesisRatio;
 	livEnExp = parsedData.livEnExp;
-	csbg = parsedData.csbg; 
-	psbg = parsedData.psbg; 
-	ccs1 = parsedData.ccs1; 
-	ccs2 = parsedData.ccs2; 
-	ccs3 = parsedData.ccs3;  
-	ccs4 = parsedData.ccs4; 
+	csbg = parsedData.csbg;
+	psbg = parsedData.psbg;
+	ccs1 = parsedData.ccs1;
+	ccs2 = parsedData.ccs2;
+	ccs3 = parsedData.ccs3;
+	ccs4 = parsedData.ccs4;
 	//misc.
 	initialGeneValueAverages = parsedData.initialGeneValueAverages;
 }
-
-
-
-
-

@@ -7,10 +7,6 @@
   * We had to included a `Home` component page that's empty in the `/app.js` file. to hold the pace for pages that are only the main page.... yes it's odd.
   * All other pages with endpoints are "overlays" over this "background" main page
 
-* `/signup`
-
-* `/signin`
-
 * `/leaderboard` (default `/leaderboard/myhighscores` )
   * `/leaderboard/savedsessions`
   * `/leaderboard/myhighscores`
@@ -20,6 +16,10 @@
   * `/leaderboard/beginner`
   * `/leaderboard/intermediate`
   * `/leaderboard/expert` >
+
+### Hash pages
+* `#signup` > HASH Page
+* `#signin`
 
 * Default: `*` > 404 page
 

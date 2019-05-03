@@ -4,11 +4,16 @@ import "./dashboard.sass"
 class Dashboard extends Component {
 
   state = {
+    opacity: 0,
     history: this.props.history
   }
 
   componentDidMount(){
     this.props.appState.changeAppState("showGame", false)
+    window.requestAnimationFrame(()=>{ this.setState({opacity: 1}) })
+    if (!this.props.appState.gamePaused) {
+      this.props.appState.appFunc("togglePauseResume", true)
+    }
   }
 
   componentWillUnmount(){
@@ -24,7 +29,7 @@ class Dashboard extends Component {
   render(){
     const route = this.props.history.location.pathname.split("/")
     return (
-      <div className="dashboard">
+      <div className="dashboard" style={{ opacity: `${this.state.opacity}`}}>
 
         <div className="dashboard-header">
           {this.props.appState.username}

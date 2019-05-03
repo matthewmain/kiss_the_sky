@@ -12,6 +12,7 @@
     top: 20px
     left: 35px
     width: 170px
+    transition: opacity 0.5s
   #menu_dropdown_container
     position: absolute
     top: 90px
@@ -25,20 +26,22 @@
     text-align: left
     box-shadow: 0 2px 4px 0 black
     box-shadow: inset 0 1px 3px 0 black
-    transition: opacity .3s
+    transition: opacity 1s
   #menu_icon_container
     position: absolute
-    top: 30px
+    top: 40px
     right: 30px
-    padding: 5px
     cursor: pointer
-    width: 150px
-  #menu_icon
-    margin-bottom: 12px
-    min-height: 20px
+    width: 100px
+  .toggle_menu_container
+    display: inline-block
+  .menu_icons
+    position: absolute
+    top: 12px
+    transition: opacity .5s, right .4s, top .4s
   #flower_avatar
-    width: 40px
     margin-left: 15px
+    transition: max-width .3s, padding-top .3s, padding-right .3s
   .btn
     color: #8D8E87
     letter-spacing: 1px
@@ -65,3 +68,18 @@
     padding-top: 10px
   .link
     text-decoration: none
+
+.signUpLogIn-container
+  position: absolute
+  top: 0px
+  right: 0px
+  left: 0px
+  bottom: 0px
+  z-index: 3
+  transition: opacity .5s
+
+@media only screen and (max-width: 830px)
+  .menu
+    #menu_icon_container
+      top: 5px
+      right: 5px

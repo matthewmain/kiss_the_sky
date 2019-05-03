@@ -14,4 +14,7 @@ router.route('/logout')
 router.route("/signup")
   .post(userController.signUp)
 
+router.route("/save")
+  .put(userController.save)
+
 module.exports = router

@@ -3,8 +3,16 @@ import "./leaderboard.sass"
 
 class Leaderboard extends Component {
 
+  state = {
+    opacity: 0
+  }
+
   componentDidMount(){
     this.props.appState.changeAppState("showGame", false)
+    window.requestAnimationFrame(()=>{ this.setState({opacity: 1}) })
+    if (!this.props.appState.gamePaused) {
+      this.props.appState.appFunc("togglePauseResume", true)
+    }
   }
 
   componentWillUnmount(){
@@ -14,7 +22,7 @@ class Leaderboard extends Component {
   render(){
     const route = this.props.history.location.pathname.split("/")
     return (
-      <div className="leaderboard">
+      <div className="leaderboard" style={{ opacity: `${this.state.opacity}`}}>
 
         <div className="leaderboard-header">
           Leaderboard

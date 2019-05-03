@@ -6,11 +6,11 @@ Game Enviroment
 * `landing_page_div`: 1
 
 React components
-* `Menu`: 2
+* `Menu`: 3
 
 React pages
 * `App`: none
-* `Game`: none
+* `Game`: 2
 * `LogIn`: 2
 * `SignUp`: 2
 * `E404`: 3

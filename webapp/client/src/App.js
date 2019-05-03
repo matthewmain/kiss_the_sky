@@ -1,16 +1,13 @@
 import React, { Component } from 'react'
 import { BrowserRouter, Route, Switch } from "react-router-dom"
+
 import API from "./utils/API"
 import "./styles/app.sass"
 
 import E404 from "./pages/E404/e404.js"
 import Game from "./pages/Game/game.js"
-import SignUp from "./pages/SignUp/signUp.js"
-import LogIn from "./pages/LogIn/logIn.js"
 import Dashboard from "./pages/Dashboard/dashboard.js"
 import Leaderboard from "./pages/Leaderboard/leaderboard.js"
-
-
 import Menu from "./components/Menu/menu.js"
 
 class App extends Component {
@@ -22,6 +19,10 @@ class App extends Component {
     openMenu: false,
     waitingforSession: true,
     showGame: true,
+    gameLoaded: false,
+    signUpLogIn: false,
+    gamePaused: false,
+    appFunc: (func, params)=>{this[func](params)},
     changeAppState: (state, value)=>{ this.setState({[state]: value})}
   }
 
@@ -49,9 +50,19 @@ class App extends Component {
         } else {
           console.log(" - 📜 No Session User Logged In")
           this.setState({waitingforSession: false})
+          this.handleHash()
         }
       })
       .catch( err => console.log(err))
+  }
+
+  handleHash(){
+    if (window.location.hash) {
+      if (["#login", "#singin"].includes(window.location.hash)){
+        console.log("!", )
+        this.setState({signUpLogIn: window.location.hash.split('#')[1]})
+      }
+    }
   }
 
   updateUser = (data)=>{
@@ -60,8 +71,13 @@ class App extends Component {
     this.setState({
       username: data.username,
       _id:  data._id,
-      waitingforSession: false
+      waitingforSession: false,
+      transition: "close",
+      signUpLogIn: false,
     })
+    if (this.state.gamePaused === "doUnpause") {
+      this.togglePauseResume(false)
+    }
   }
 
   logIn = (user)=>{
@@ -70,9 +86,6 @@ class App extends Component {
       .then( resp => {
         if (resp.data._id) {
           this.updateUser(resp.data)
-          this.setState({subPage: "manifest"})
-          const last = user.history.location.pathname
-          last === '/login' ? user.history.push('/') : user.history.goBack()
         } else {
           alert(resp.data.message)
         }
@@ -86,7 +99,6 @@ class App extends Component {
       .then( resp => {
         if (resp.data._id) {
           this.logIn(newUser)
-          this.setState({subPage: "manifest"})
         } else {
           alert(resp.data.errors)
         }
@@ -99,6 +111,15 @@ class App extends Component {
     API.logOut()
       .then( resp => this.updateUser(resp.data) )
       .catch( err => console.log(err) )
+      .finally(()=>{this.setState({forceClose: true})})
+  }
+
+  togglePauseResume = (state)=>{
+    if (window.gameHasBegun) {
+      const togglePause = document.querySelector(".icon_game_run")
+      togglePause.click()
+      this.setState({gamePaused: state})
+    }
   }
 
   render() {
@@ -111,30 +132,23 @@ class App extends Component {
             render={route => <Menu {...route}
               appState={this.state}
               logOut={this.logOut}
+              logIn={this.logIn}
+              signUp={this.signUp}
+              updateUser={this.updateUser}
             />}
           />
 
           {this.state.showGame &&
-            <Game />
+            <Route
+              render={route => <Game {...route}
+                appState={this.state}
+              />}
+            />
           }
 
           <Switch>
-            <Route exact path="/(|landing|game|home)/"
+            <Route exact path="/(|landing|game|home)/" // 🚨 Check in game.js if changing. the list is there too.
               render={() => <Home /> }
-            />
-            <Route exact path="/signup"
-              render={route => <SignUp {...route}
-                appState={this.state}
-                signUp={this.signUp}
-                updateUser={this.updateUser}
-              />}
-            />
-            <Route exact path="/login"
-              render={route => <LogIn {...route}
-                appState={this.state}
-                logIn={this.logIn}
-                updateUser={this.updateUser}
-              />}
             />
             <Route exact path={"/dashboard("
               +"|/savedsessions"
@@ -154,6 +168,7 @@ class App extends Component {
             />
             <Route path="*" render={() => <E404 appState={this.state}/> }/>
           </Switch>
+
         </BrowserRouter>
 
       </div>
