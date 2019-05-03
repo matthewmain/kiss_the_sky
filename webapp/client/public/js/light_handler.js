@@ -11,6 +11,7 @@
 
 ///sun ray constructor
 function SunRay() {
+  this.saveTagClass = "sunRay";
   this.id = sunRayCount;
   this.x = xValFromPct( this.id );
   this.intensity = sunRayIntensity;

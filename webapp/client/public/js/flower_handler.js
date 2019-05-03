@@ -112,6 +112,7 @@ function Flower( plant, parentSegment, basePoint1, basePoint2 ) {
 
 ///pollination animation object constructor
 function PollinationAnimation( pollinatorFlower, pollinatedFlower ) {
+  this.saveTagClass = "pollinationAnimation";
   this.id = pollinationAnimationCount;
   this.f1 = pollinatorFlower;  // flower 1 (pollinator)
   this.f2 = pollinatedFlower;  // flower 2 (pollinated)
@@ -162,7 +163,7 @@ function PollinationAnimation( pollinatorFlower, pollinatedFlower ) {
   }
 }
 
-var HeightMarker = {
+var heightMarker = {
   w: canvas.width*0.025,  // marker width 
   h: canvas.width*0.025,  // marker height
   y: canvas.height,  // marker position y value (at point)
@@ -285,7 +286,7 @@ function positionPetal( plant, flower, petalTipPoint, xShift, yShift ) {
   var hexHeight = distance( f.ptHtL, f.ptHbL );
   var htmp = spanMidPoint( f.spHtM );  // hex top middle span mid point
   var hbmp = spanMidPoint( f.spHbM );  // hex bottom middle span mid point
-  var hcp = spanMidPoint( f.spHcH );  // hex center point
+  var hcp = midPoint( f.ptHoL, f.ptHoR );  // hex center point
   var bh = p.flowerBudHeight;  // bud height
   var budTip = { x: ( htmp.x + ( htmp.x - hbmp.x ) * bh ), y: (htmp.y + ( htmp.y - hbmp.y ) * bh) };  // bud tip
   var fullBloomX = hbmp.x + (hexHeight*-xShift) * (hcp.y-hbmp.y)/(hexHeight*0.5) + (hbmp.x-hcp.x)*(yShift-2.5)*2;
@@ -372,7 +373,7 @@ function positionPodHalf( plant, flower, podTipPoint, xShift, yShift ) {
   var hexHeight = distance( f.ptHtL, f.ptHbL );
   var htmp = spanMidPoint( f.spHtM );  // hex top middle span mid point
   var hbmp = spanMidPoint( f.spHbM );  // hex bottom middle span mid point
-  var hcp = spanMidPoint( f.spHcH );  // hex center point
+  var hcp = midPoint( f.ptHoL, f.ptHoR );
   var bh = p.flowerBudHeight;  // bud height
   var budTip = { x: ( htmp.x + ( htmp.x - hbmp.x ) * bh ), y: (htmp.y + ( htmp.y - hbmp.y ) * bh) };  // bud tip
   var fullyOpenX = hbmp.x + (hexHeight*-xShift) * (hcp.y-hbmp.y)/(hexHeight*0.5) + (hbmp.x-hcp.x)*(yShift-2.5)*2;
@@ -398,7 +399,6 @@ function developFlower( plant, flower ) {
     f.budHasFullyMatured = f.spHbM.l >= p.maxSegmentWidth*p.maxFlowerBaseWidth;
   //otherwise, if bud has not fully bloomed, it continues to bloom
   } else if ( f.budHasFullyMatured && !f.hasFullyBloomed && p.energy > p.maxEnergyLevel*minBloomEnLevRatio ) {
-    removePetalAndBudTipPoints( p );
     if ( f.bloomRatio < 1 ) { 
       f.bloomRatio += 0.01; 
     } else { 
@@ -441,7 +441,7 @@ function trackMaxRedFlowerHeights( flower ) {
     if ( heightPct > highestRedFlowerPct ) { 
       highestRedFlowerPct = heightPct; 
       if ( highestRedFlowerPct > 100 ) { highestRedFlowerPct = 100; }  // caps highest red flower percentage at 100%
-      HeightMarker.chrfx = f.ptPtM.cx;  // updates flower's top petal tip x value
+      heightMarker.chrfx = f.ptPtM.cx;  // updates flower's top petal tip x value
     }
   }
 }
@@ -453,59 +453,44 @@ function removePollinationAnimation( id ) {
   }
 }
 
-///removes petal and bud tip points
-function removePetalAndBudTipPoints( plant ) {
-  for ( var i=0; i<plant.flowers.length; i++ ) {
-    var f = plant.flowers[i];
-    removePoint( f.ptPtL.id );  // flower petal top left point  
-    removePoint( f.ptPtM.id );  // flower petal top middle point  
-    removePoint( f.ptPtR.id );  // flower petal top right point  
-    removePoint( f.ptPbL.id );  // flower petal bottom left point  
-    removePoint( f.ptPbM.id );  // flower petal bottom middle point  
-    removePoint( f.ptPbR.id );  // flower petal bottom right point  
-    removePoint( f.ptPodTipL.id );  // flower pod tip left point 
-    removePoint( f.ptPodTipR.id );  // flower pod tip right point
-  }
-}
-
 ///removes all flower points & spans
 function removeAllflowerPointsAndSpans( plant ) {
   for ( var i=0; i<plant.flowers.length; i++ ) {
     var f = plant.flowers[i];
-    removePoint( f.ptHbL.id );  // flower hex bottom left point
-    removePoint( f.ptHbR.id );  // flower hex bottom right point
-    removePoint( f.ptHoL.id );  // flower hex outer left point
-    removePoint( f.ptHoR.id );  // flower hex outer right point
-    removePoint( f.ptHtL.id );  // flower hex top left point
-    removePoint( f.ptHtR.id );  // flower hex top right point
-    removePoint( f.ptBudTip.id );  // flower bud tip point
-    removePoint( f.ptPtL.id );  // flower petal top left point  
-    removePoint( f.ptPtM.id );  // flower petal top middle point  
-    removePoint( f.ptPtR.id );  // flower petal top right point  
-    removePoint( f.ptPbL.id );  // flower petal bottom left point  
-    removePoint( f.ptPbM.id );  // flower petal bottom middle point  
-    removePoint( f.ptPbR.id );  // flower petal bottom right point  
-    removePoint( f.ptPodTipL.id );  // flower pod tip left point 
-    removePoint( f.ptPodTipR.id );  // flower pod tip right point
-    removeSpan( f.spOiL.id );  // flower ovule inner left span
-    removeSpan( f.spOiR.id );  // flower ovule inner right span
-    removeSpan( f.spCd.id );  // flower downward (l to r) cross span
-    removeSpan( f.spCu.id );  // flower upward (l to r) cross span
-    removeSpan( f.spCdP.id );  // flower downward (l to r) cross span to parent
-    removeSpan( f.spCuP.id );  // flower upward (l to r) cross span to parent
-    removeSpan( f.spOoL.id );  // flower ovule outer left span 
-    removeSpan( f.spOoR.id );  // flower ovule outer right span 
-    removeSpan( f.spHbM.id );  // flower hex bottom middle span
-    removeSpan( f.spHbL.id );  // flower hex bottom left span
-    removeSpan( f.spHbR.id );  // flower hex bottom right span
-    removeSpan( f.spHtL.id );  // flower hex top left span
-    removeSpan( f.spHtR.id );  // flower hex top right span
-    removeSpan( f.spHtM.id );  // flower hex top middle span
-    removeSpan( f.spHcH.id );  // flower hex cross horizontal span
-    removeSpan( f.spHcDB.id );  // flower hex cross downward span to flower base
-    removeSpan( f.spHcUB.id );  // flower hex cross upward span to flower base
-    removeSpan( f.spBTSL.id );  // flower bud tip scaffolding left span
-    removeSpan( f.spBTSR.id );  // flower bud tip scaffolding right span
+    if ( f.ptHbL ) { removePoint( f.ptHbL.id ); }  // flower hex bottom left point
+    if ( f.ptHbR ) { removePoint( f.ptHbR.id ); }  // flower hex bottom right point
+    if ( f.ptHoL ) { removePoint( f.ptHoL.id ); }  // flower hex outer left point
+    if ( f.ptHoR ) { removePoint( f.ptHoR.id ); }  // flower hex outer right point
+    if ( f.ptHtL ) { removePoint( f.ptHtL.id ); }  // flower hex top left point
+    if ( f.ptHtR ) { removePoint( f.ptHtR.id ); }  // flower hex top right point
+    if ( f.ptBudTip ) { removePoint( f.ptBudTip.id ); }  // flower bud tip point
+    if ( f.ptPtL ) { removePoint( f.ptPtL.id ); }  // flower petal top left point  
+    if ( f.ptPtM ) { removePoint( f.ptPtM.id ); }  // flower petal top middle point  
+    if ( f.ptPtR ) { removePoint( f.ptPtR.id ); }  // flower petal top right point  
+    if ( f.ptPbL ) { removePoint( f.ptPbL.id ); }  // flower petal bottom left point  
+    if ( f.ptPbM ) { removePoint( f.ptPbM.id ); }  // flower petal bottom middle point  
+    if ( f.ptPbR ) { removePoint( f.ptPbR.id ); }  // flower petal bottom right point  
+    if ( f.ptPodTipL ) { removePoint( f.ptPodTipL.id ); }  // flower pod tip left point 
+    if ( f.ptPodTipR ) { removePoint( f.ptPodTipR.id ); }  // flower pod tip right point
+    if ( f.spOiL ) { removeSpan( f.spOiL.id ); }  // flower ovule inner left span
+    if ( f.spOiR ) { removeSpan( f.spOiR.id ); }  // flower ovule inner right span
+    if ( f.spCd ) { removeSpan( f.spCd.id ); }  // flower downward (l to r) cross span
+    if ( f.spCu ) { removeSpan( f.spCu.id ); }  // flower upward (l to r) cross span
+    if ( f.spCdP ) { removeSpan( f.spCdP.id ); }  // flower downward (l to r) cross span to parent
+    if ( f.spCuP ) { removeSpan( f.spCuP.id ); }  // flower upward (l to r) cross span to parent
+    if ( f.spOoL ) { removeSpan( f.spOoL.id ); }  // flower ovule outer left span 
+    if ( f.spOoR ) { removeSpan( f.spOoR.id ); }  // flower ovule outer right span 
+    if ( f.spHbM ) { removeSpan( f.spHbM.id ); }  // flower hex bottom middle span
+    if ( f.spHbL ) { removeSpan( f.spHbL.id ); }  // flower hex bottom left span
+    if ( f.spHbR ) { removeSpan( f.spHbR.id ); }  // flower hex bottom right span
+    if ( f.spHtL ) { removeSpan( f.spHtL.id ); }  // flower hex top left span
+    if ( f.spHtR ) { removeSpan( f.spHtR.id ); }  // flower hex top right span
+    if ( f.spHtM ) { removeSpan( f.spHtM.id ); }  // flower hex top middle span
+    if ( f.spHcH ) { removeSpan( f.spHcH.id ); }  // flower hex cross horizontal span
+    if ( f.spHcDB ) { removeSpan( f.spHcDB.id ); }  // flower hex cross downward span to flower base
+    if ( f.spHcUB ) { removeSpan( f.spHcUB.id ); }  // flower hex cross upward span to flower base
+    if ( f.spBTSL ) { removeSpan( f.spBTSL.id ); }  // flower bud tip scaffolding left span
+    if ( f.spBTSR ) { removeSpan( f.spBTSR.id ); }  // flower bud tip scaffolding right span
   }
 }
 
@@ -752,7 +737,7 @@ function renderHeightAnnouncement() {
     .text( Math.floor( highestRedFlowerPct ) + "%" )
     .css({  
       top: 100-highestRedFlowerPct+ha + "%",
-      left: pctFromXVal( HeightMarker.chrfx ) + "%",
+      left: pctFromXVal( heightMarker.chrfx ) + "%",
       opacity: 1,
       color: c,
     })
@@ -811,58 +796,58 @@ function renderMilestones() {
 ///renders markers that track the highest red flower height so far
 function renderHeightMarker() {
   var hrfy = canvas.height - yValFromPct( highestRedFlowerPct );  // highest red flower y value currently
-  var chmp = 100-pctFromYVal(HeightMarker.y);  // current height marker percentage
+  var chmp = 100-pctFromYVal(heightMarker.y);  // current height marker percentage
   if ( Math.floor( highestRedFlowerPct ) > Math.floor(chmp) ) {   // initializes animations if new highest red flower
-    HeightMarker.y = hrfy;  // y value
-    HeightMarker.baa = true;  // bounce animation active
-    HeightMarker.bat = 0;  // bounce animation time elapsed
-    HeightMarker.laa = true;  // line animation active
-    HeightMarker.lat = 0;  // line animation time elapsed
+    heightMarker.y = hrfy;  // y value
+    heightMarker.baa = true;  // bounce animation active
+    heightMarker.bat = 0;  // bounce animation time elapsed
+    heightMarker.laa = true;  // line animation active
+    heightMarker.lat = 0;  // line animation time elapsed
     $("#height_number").text( Math.floor( highestRedFlowerPct ) );
     renderHeightAnnouncement();
   }
   //new highest height marker bounce animation (size expansion & contraction)
-  if ( HeightMarker.baa ) {  
-    HeightMarker.bat++;
+  if ( heightMarker.baa ) {  
+    heightMarker.bat++;
     var a = -0.12;  // corresponds to animation duration ( higher value is longer duration; 0 is infinite)
     var b = 2;  // extent of expansion ( higher value is greater expansion )
-    var x = HeightMarker.bat; 
+    var x = heightMarker.bat; 
     var y = a*Math.pow(x,2) + b*x;  // current marker expansion extent (quadratic formula; y = ax^2 + bx + c)
-    HeightMarker.w = canvas.width*0.025 + y;
-    if ( y <= 0 ) { HeightMarker.baa = false; HeightMarker.bat = 0; }
+    heightMarker.w = canvas.width*0.025 + y;
+    if ( y <= 0 ) { heightMarker.baa = false; heightMarker.bat = 0; }
   }
   //new highest height line animation
-  if ( HeightMarker.laa ) {  
-    HeightMarker.lat++;
+  if ( heightMarker.laa ) {  
+    heightMarker.lat++;
     var lad = 40;  // line animation duration
-    var o = 1 - HeightMarker.lat/lad;  // opacity
+    var o = 1 - heightMarker.lat/lad;  // opacity
     ctx.beginPath();
     ctx.lineWidth = 2;
-    var lGrad = ctx.createLinearGradient( HeightMarker.chrfx-canvas.width, HeightMarker.y, HeightMarker.chrfx+canvas.width, HeightMarker.y );
+    var lGrad = ctx.createLinearGradient( heightMarker.chrfx-canvas.width, heightMarker.y, heightMarker.chrfx+canvas.width, heightMarker.y );
     lGrad.addColorStop("0", "rgba( 161, 0, 0, 0 )");
     lGrad.addColorStop("0.4", "rgba( 161, 0, 0, " + 0.3*o + ")");
     lGrad.addColorStop("0.5", "rgba( 161, 0, 0, " + 1*o + ")");
     lGrad.addColorStop("0.6", "rgba( 161, 0, 0, " +0.3*o + ")");
     lGrad.addColorStop("1", "rgba( 161, 0, 0, 0 )");
     ctx.strokeStyle = lGrad;
-    ctx.moveTo( HeightMarker.chrfx-canvas.width, HeightMarker.y );
-    ctx.lineTo( HeightMarker.chrfx+canvas.width, HeightMarker.y );
+    ctx.moveTo( heightMarker.chrfx-canvas.width, heightMarker.y );
+    ctx.lineTo( heightMarker.chrfx+canvas.width, heightMarker.y );
     ctx.stroke();
-    if ( HeightMarker.lat > lad ) { HeightMarker.laa = false; HeightMarker.lat = 0; }
+    if ( heightMarker.lat > lad ) { heightMarker.laa = false; heightMarker.lat = 0; }
   }
   //draws marker
   if ( highestRedFlowerPct > 0 ) {  
     ctx.beginPath();  // top triangle
     ctx.fillStyle = "#D32100";
-    ctx.moveTo( canvas.width, HeightMarker.y );  
-    ctx.lineTo( canvas.width, HeightMarker.y - HeightMarker.h/2 ); 
-    ctx.lineTo( canvas.width-HeightMarker.w, HeightMarker.y ); 
+    ctx.moveTo( canvas.width, heightMarker.y );  
+    ctx.lineTo( canvas.width, heightMarker.y - heightMarker.h/2 ); 
+    ctx.lineTo( canvas.width-heightMarker.w, heightMarker.y ); 
     ctx.fill();  
     ctx.beginPath();  // bottom triangle
     ctx.fillStyle = "#A10000";
-    ctx.moveTo( canvas.width, HeightMarker.y );  
-    ctx.lineTo( canvas.width, HeightMarker.y + HeightMarker.h/2 ); 
-    ctx.lineTo( canvas.width-HeightMarker.w, HeightMarker.y ); 
+    ctx.moveTo( canvas.width, heightMarker.y );  
+    ctx.lineTo( canvas.width, heightMarker.y + heightMarker.h/2 ); 
+    ctx.lineTo( canvas.width-heightMarker.w, heightMarker.y ); 
     ctx.fill();
   }
 }
