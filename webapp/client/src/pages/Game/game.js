@@ -21,7 +21,6 @@ class Home extends Component {
     if (
       this.props.gameLoaded
       || ["/","/game","/landing","/home"].includes(route)
-      // || this.props.appState.showGame
     ) {
       window.requestAnimationFrame(()=>{ this.setState({opacity: 0}) })
     }

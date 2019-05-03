@@ -21,10 +21,14 @@ class Landing extends Component {
     this.addClickToCloseEvent()
   }
 
-  componentWillReceiveProps(){
-    if (this.props.appState.openMenu && !this.state.open) {
+  componentWillReceiveProps(props){
+    if (props.appState.openMenu && !this.state.open) {
       this.toggleMenu()
       this.setState({open: true})
+    }
+    if (props.appState.forceClose) {
+      this.toggleMenu()
+      this.props.appState.changeAppState("forceClose", false)
     }
   }
 

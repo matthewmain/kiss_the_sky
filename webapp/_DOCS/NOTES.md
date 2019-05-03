@@ -1,7 +1,7 @@
 # Notes
 
 ### CSS React && Router Transitions
-What I ...
+After messing around with `react-transitions-group` npm package, I realized that It'd probably be best to handle this in house. The major reason was that the transition package couldn't handle our dual environments and was fight against the existence of our outside DOM element.
 
 Here's how the workaround works...
 * The `.js` Component...
@@ -16,9 +16,9 @@ componentDidMount(){
 }
 ...
 // 👇 Option for Close Fade
-exit = ()=>{
+exit = (toPage)=>{
   this.setState({opacity: 0})
-  setTimeout(()=>{this.props.history.push(back)},500)  // 🚨 Check delay on .signup-login CLASS in css
+  setTimeout(()=>{this.props.history.push(toPage)},500)  // 🚨 Check delay on .signup-login CLASS in css
 }
 // ☝️
 ...

@@ -71,14 +71,6 @@ class SignUp extends Component {
     this.setState({[events.target.name]: events.target.value})
   }
 
-  // exit = ()=>{
-  //   // !!! Don't need this!
-  //   this.setState({opacity: 0})
-  //   let back = this.state.history.location.pathname
-  //   if(back === "/login" || back ==="/signup") back = "/"
-  //   setTimeout(()=>{this.props.history.push(back)},490)  // 🚨 Check delay on .signup-login CLASS in css
-  // }
-
   submit = ()=>{
     if (this.props.appState.signUpLogIn === "login") {
       this.props.logIn(this.state)

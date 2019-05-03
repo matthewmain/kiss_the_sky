@@ -6,7 +6,6 @@ import "./styles/app.sass"
 
 import E404 from "./pages/E404/e404.js"
 import Game from "./pages/Game/game.js"
-// import SignUpLogIn from "./pages/SignUp_logIn/signUp_logIn.js"
 import Dashboard from "./pages/Dashboard/dashboard.js"
 import Leaderboard from "./pages/Leaderboard/leaderboard.js"
 import Menu from "./components/Menu/menu.js"
@@ -20,7 +19,6 @@ class App extends Component {
     openMenu: false,
     waitingforSession: true,
     showGame: true,
-    transition: "open", // only what we remove from signUpLogIn?
     gameLoaded: false,
     signUpLogIn: false,
     gamePaused: false,
@@ -88,9 +86,6 @@ class App extends Component {
       .then( resp => {
         if (resp.data._id) {
           this.updateUser(resp.data)
-          // this.setState({transition: "close"})
-          // const last = user.history.location.pathname
-          // last === '/login' ? user.history.push('/') : user.history.goBack()
         } else {
           alert(resp.data.message)
         }
@@ -116,6 +111,7 @@ class App extends Component {
     API.logOut()
       .then( resp => this.updateUser(resp.data) )
       .catch( err => console.log(err) )
+      .finally(()=>{this.setState({forceClose: true})})
   }
 
   togglePauseResume = (state)=>{
@@ -154,14 +150,6 @@ class App extends Component {
             <Route exact path="/(|landing|game|home)/" // 🚨 Check in game.js if changing. the list is there too.
               render={() => <Home /> }
             />
-            {/* <Route exact path="/(signup|login)/"
-              render={route => <SignUpLogIn {...route}
-                appState={this.state}
-                signUp={this.signUp}
-                logIn={this.logIn}
-                updateUser={this.updateUser}
-              />}
-            /> */}
             <Route exact path={"/dashboard("
               +"|/savedsessions"
               +"|/myhighscores"
