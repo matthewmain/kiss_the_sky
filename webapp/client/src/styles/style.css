@@ -114,27 +114,31 @@ body {
 }
 
 #icon_info {
-	right: 32%;
+	right: 37.5%;
 	height: 21.5%;
 	bottom: 25.5%;
 }
 
 #icon_dark_toggle {
-  right: 25.75%;
+  right: 31.5%;
 }
 
 #icon_shadows_on {
-	right: 19%;
+	right: 25%;
 	visibility: visible;
 }
 
 #icon_shadows_off {
-	right: 19%;
+	right: 25%;
 	visibility: hidden;
 }
 
 #icon_camera {
-	right: 12.5%;
+	right: 18.25%;
+}
+
+#icon_save {
+  right: 12%;
 }
 
 #icon_pause {

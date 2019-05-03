@@ -2,10 +2,8 @@
 
 
 ////////////////////////////////////////////////////////// 
-////////////     Kiss The Sky: Version 2.0     /////////// 
+////////////       Kiss The Sky: Web App       /////////// 
 //////////////////////////////////////////////////////////
-
-//https://github.com/matthewmain/kiss_the_sky/tree/master/builds/v2.0
 
 
 
@@ -96,6 +94,7 @@ var C = {
 
 ///seed constructor
 function Seed( parentFlower, zygoteGenotype ) {
+  this.saveTagClass = "seed";
   this.id = seedCount;
   this.parentFlowerId = parentFlower === null ? null : parentFlower.id;
   this.parentPlantId = parentFlower === null ? null : parentFlower.plantId;
@@ -127,7 +126,9 @@ function Seed( parentFlower, zygoteGenotype ) {
 
 ///plant constructor
 function Plant( sourceSeed ) {
+  this.saveTagClass = "plant";
   this.sourceSeed = sourceSeed;
+  this.sourceSeedHasGerminated = false;
   this.sourceSeedHasBeenRemoved = false;
   this.id = plantCount;
   this.generation = sourceSeed.generation;
@@ -360,6 +361,7 @@ function germinateSeed( seed ) {
   plant.spB = addSp( plant.ptB1.id, plant.ptB2.id );  // adds base span
   createSegment( plant, null, plant.ptB1, plant.ptB2 );  // creates the base segment (with "null" parent)
   seed.hasGerminated = true;
+  plant.sourceSeedHasGerminated = true;
   plant.germinationYear = currentYear;
 }
 
@@ -434,7 +436,7 @@ function generateLeavesWhenReady( plant, segment ) {
 function addLeafScaffolding( plant, segment ) {
   var p = plant;
   var s = segment;
-  removeSpan(s.leafTipsTetherSpan.id);  // removes leaf tips tether
+  if ( s.leafTipsTetherSpan ) { removeSpan( s.leafTipsTetherSpan.id ); }  // removes leaf tips tether
   s.ptLf1.cx -= gravity * 100;  // leaf-unfold booster left
   s.ptLf2.cx += gravity * 100;  // leaf-unfold booster right
   //scaffolding points, leaf 1
@@ -489,7 +491,7 @@ function growPlants() {
     var p = plants[i];
     if ( p.isActive ) {
       p.age++;
-      if ( !p.sourceSeed.hasGerminated ) { 
+      if ( !p.sourceSeedHasGerminated ) { 
         germinateSeedWhenReady( p.sourceSeed );  
       } else if ( !p.sourceSeedHasBeenRemoved ) {
         hideAndRemoveSeed( p.sourceSeed ); 
@@ -531,7 +533,7 @@ function growPlants() {
         p.oldAgeReduction += oldAgeRate;
         p.energy -= p.oldAgeReduction;  
       }
-      if ( p.sourceSeed.hasGerminated ) {
+      if ( p.sourceSeedHasGerminated ) {
         p.energy -= p.segmentCount * livEnExp;  // cost of living: reduces energy by a ratio of segment count
       } 
       if ( p.isAlive && p.energy < p.maxEnergyLevel*deathEnergyLevelRatio && restrictGrowthByEnergy ) {
@@ -623,7 +625,7 @@ function killPlant( plant ) {
   p.isAlive = false;  
   for (var i=0; i<plant.segments.length; i++) {
     var s = plant.segments[i];
-    if ( s.hasLeaves && s.spLf1.l > plant.maxLeafLength/3 ) {
+    if ( s.leafTipsTetherSpan && s.hasLeaves && s.spLf1.l > plant.maxLeafLength/3 ) {
       removeSpan( s.leafTipsTetherSpan.id );  // removes large leaf bud tethers
     }
     if ( s.hasLeafScaffolding ) {  // removes leaf scaffolding
@@ -648,23 +650,23 @@ function collapsePlant( plant ) {
   for (var i=0; i<plant.segments.length; i++) {
     var s = plant.segments[i];
     if (!s.isBaseSegment) {
-      removeSpan(s.spCdP.id);  // downward (l to r) cross span to parent
-      removeSpan(s.spCuP.id);  // upward (l to r) cross span to parent
+      if ( s.spCdP ) { removeSpan(s.spCdP.id); }  // downward (l to r) cross span to parent
+      if ( s.spCuP ) { removeSpan(s.spCuP.id); }  // upward (l to r) cross span to parent
     }
-    removeSpan(s.spCd.id);  // downward (l to r) cross span
-    removeSpan(s.spCu.id);  // upward (l to r) cross span
+    if ( s.spCd ) { removeSpan(s.spCd.id); }  // downward (l to r) cross span
+    if ( s.spCu ) { removeSpan(s.spCu.id); }  // upward (l to r) cross span
     s.ptE1.mass = s.ptE2.mass = 5;
   }
   if ( p.hasFlowers ) {
     for (var j=0; j<p.flowers.length; j++ ) {
       var f = p.flowers[j];
-      removeSpan(f.spCuP.id);
-      removeSpan(f.spCdP.id);
-      removeSpan(f.spCu.id);
-      removeSpan(f.spCd.id);
-      removeSpan(f.spHcDB.id);
-      removeSpan(f.spHcUB.id);
-      removeSpan(f.spHcH.id);
+      if ( f.spCuP ) { removeSpan(f.spCuP.id); }
+      if ( f.spCdP ) { removeSpan(f.spCdP.id); }
+      if ( f.spCu ) { removeSpan(f.spCu.id); }
+      if ( f.spCd ) { removeSpan(f.spCd.id); }
+      if ( f.spHcDB ) { removeSpan(f.spHcDB.id); }
+      if ( f.spHcUB ) { removeSpan(f.spHcUB.id); }
+      if ( f.spHcH ) { removeSpan(f.spHcH.id); }
     }
   }
   p.hasCollapsed = true; 
@@ -673,7 +675,7 @@ function collapsePlant( plant ) {
 ///decomposes plant after collapse
 function decomposePlant( plant ) {
   if ( plant.leafArcHeight > 0.05 ) {  
-    plant.leafArcHeight -= 0.0001;
+    plant.leafArcHeight -= 0.005;
   } else {
     plant.leafArcHeight = 0.05;
     plant.hasDecomposed = true;
@@ -684,32 +686,33 @@ function decomposePlant( plant ) {
 function fadePlantOutAndRemove( plant ) {
   var p = plant;
   if ( p.opacity > 0 ) {
-    p.opacity -= 0.001;
+    p.opacity -= 0.005;
   } else {
-    removePoint( p.ptB1.id );  // plant base point 1
-    removePoint( p.ptB2.id );  // plant base point 2
-    removeSpan( p.spB.id );  // plant base span
+    if ( p.ptB1 ) { removePoint( p.ptB1.id ); }  // plant base point 1
+    if ( p.ptB2 ) { removePoint( p.ptB2.id ); }  // plant base point 2
+    if ( p.spB ) { removeSpan( p.spB.id ); }  // plant base span
     for ( var i=0; i<p.segments.length; i++ ) {
       sg = p.segments[i];
-      removePoint( sg.ptE1.id );  // segment extension point 1
-      removePoint( sg.ptE2.id );  // segment extension point 1
-      removeSpan( sg.spL.id );  // segment left span
-      removeSpan( sg.spR.id );  // segment right span
-      removeSpan( sg.spF.id );  // segment forward span
-      removeSpan( sg.spCd.id );  // segment downward (l to r) cross span
-      removeSpan( sg.spCu.id );  // segment upward (l to r) cross span
-      for (var j=0; j<sg.skins.length; j++) {
-        removeSkin( sg.skins[j].id );
-      } 
+      if ( sg.ptE1 ) { removePoint( sg.ptE1.id ); }  // segment extension point 1
+      if ( sg.ptE2 ) { removePoint( sg.ptE2.id ); }  // segment extension point 1
+      if ( sg.spL ) { removeSpan( sg.spL.id ); }  // segment left span
+      if ( sg.spR ) { removeSpan( sg.spR.id ); }  // segment right span
+      if ( sg.spF ) { removeSpan( sg.spF.id ); }  // segment forward span
+      if ( sg.spCd ) { removeSpan( sg.spCd.id ); }  // segment downward (l to r) cross span
+      if ( sg.spCu ) { removeSpan( sg.spCu.id ); }  // segment upward (l to r) cross span
+      if ( sg.leafTipsTetherSpan ) { removeSpan( sg.leafTipsTetherSpan.id ); }  // leaf tips tether span
       if (!sg.isBaseSegment) {
-        removeSpan( sg.spCdP.id );  // segment downward (l to r) cross span to parent
-        removeSpan( sg.spCuP.id );  // segment upward (l to r) cross span to parent
+        if ( sg.spCdP ) { removeSpan( sg.spCdP.id ); }  // segment downward (l to r) cross span to parent
+        if ( sg.spCuP ) { removeSpan( sg.spCuP.id ); }  // segment upward (l to r) cross span to parent
       }
+      for (var j=0; j<sg.skins.length; j++) {
+        if ( sg.skins[j] ) { removeSkin( sg.skins[j].id ); }
+      } 
       if ( sg.hasLeaves ) {
-        removePoint( sg.ptLf1.id );  // segment leaf point 1 (leaf tip)
-        removePoint( sg.ptLf2.id );  // segment leaf point 2 (leaf tip)  
-        removeSpan( sg.spLf1.id );  // segment leaf 1 Span
-        removeSpan( sg.spLf2.id );  // segment leaf 2 Span
+        if ( sg.ptLf1 ) { removePoint( sg.ptLf1.id ); }  // segment leaf point 1 (leaf tip)
+        if ( sg.ptLf2 ) { removePoint( sg.ptLf2.id ); }  // segment leaf point 2 (leaf tip)  
+        if ( sg.spLf1 ) { removeSpan( sg.spLf1.id ); }  // segment leaf 1 Span
+        if ( sg.spLf2 ) { removeSpan( sg.spLf2.id ); }  // segment leaf 2 Span
       }
     }
     removeAllflowerPointsAndSpans( p );
@@ -725,43 +728,45 @@ function fadePlantOutAndRemove( plant ) {
 
 ///renders seeds
 function renderSeed( resultingPlant ) {
-  var seed = resultingPlant.sourceSeed;
-  //point instances (centers of the two component circles)
-  var p1 = seed.p1;
-  var p2 = seed.p2;
-  var sp = seed.sp;
-  var p1x = p1.cx; 
-  var p1y = p1.cy;
-  var p2x = p2.cx; 
-  var p2y = p2.cy;
-  //references points (polar points)
-  var r1x = p1.cx - ( p2.cx - p1.cx ) * (p1.width*0.5 / sp.l );
-  var r1y = p1.cy - ( p2.cy - p1.cy ) * (p1.width*0.5 / sp.l );
-  var r2x = p2.cx + ( p2.cx - p1.cx ) * (p2.width*0.5 / sp.l );
-  var r2y = p2.cy + ( p2.cy - p1.cy ) * (p2.width*0.5 / sp.l );
-  //bezier handle lengths
-  var h1l = seed.sw*0.85;
-  var h2l = seed.sw*0.35;
-  //top bezier handles points
-  var h1x = r1x + h1l * ( p1y - r1y ) / (p1.width*0.5);
-  var h1y = r1y - h1l * ( p1x - r1x ) / (p1.width*0.5);
-  var h2x = r2x - h2l * ( p2y - r2y ) / (p2.width*0.5);
-  var h2y = r2y - h2l * ( r2x - p2x ) / (p2.width*0.5);
-  //bottom bezier handles points
-  var h3x = r2x + h2l * ( p2y - r2y ) / (p2.width*0.5);
-  var h3y = r2y + h2l * ( r2x - p2x ) / (p2.width*0.5);
-  var h4x = r1x - h1l * ( p1y - r1y ) / (p1.width*0.5);
-  var h4y = r1y + h1l * ( p1x - r1x ) / (p1.width*0.5);
-  //rendering
-  ctx.strokeStyle = "rgba( 0, 0, 0, "+seed.opacity+" )";
-  ctx.fillStyle = "rgba( 73, 5, 0, "+seed.opacity+" )";
-  ctx.lineWidth = "1";
-  ctx.beginPath();
-  ctx.moveTo( r1x, r1y );
-  ctx.bezierCurveTo( h1x, h1y, h2x, h2y, r2x, r2y );
-  ctx.bezierCurveTo( h3x, h3y, h4x, h4y, r1x, r1y );
-  ctx.stroke();
-  ctx.fill();
+  if ( !resultingPlant.sourceSeedHasBeenRemoved ) {
+    var seed = resultingPlant.sourceSeed;
+    //point instances (centers of the two component circles)
+    var p1 = seed.p1;
+    var p2 = seed.p2;
+    var sp = seed.sp;
+    var p1x = p1.cx; 
+    var p1y = p1.cy;
+    var p2x = p2.cx; 
+    var p2y = p2.cy;
+    //references points (polar points)
+    var r1x = p1.cx - ( p2.cx - p1.cx ) * (p1.width*0.5 / sp.l );
+    var r1y = p1.cy - ( p2.cy - p1.cy ) * (p1.width*0.5 / sp.l );
+    var r2x = p2.cx + ( p2.cx - p1.cx ) * (p2.width*0.5 / sp.l );
+    var r2y = p2.cy + ( p2.cy - p1.cy ) * (p2.width*0.5 / sp.l );
+    //bezier handle lengths
+    var h1l = seed.sw*0.85;
+    var h2l = seed.sw*0.35;
+    //top bezier handles points
+    var h1x = r1x + h1l * ( p1y - r1y ) / (p1.width*0.5);
+    var h1y = r1y - h1l * ( p1x - r1x ) / (p1.width*0.5);
+    var h2x = r2x - h2l * ( p2y - r2y ) / (p2.width*0.5);
+    var h2y = r2y - h2l * ( r2x - p2x ) / (p2.width*0.5);
+    //bottom bezier handles points
+    var h3x = r2x + h2l * ( p2y - r2y ) / (p2.width*0.5);
+    var h3y = r2y + h2l * ( r2x - p2x ) / (p2.width*0.5);
+    var h4x = r1x - h1l * ( p1y - r1y ) / (p1.width*0.5);
+    var h4y = r1y + h1l * ( p1x - r1x ) / (p1.width*0.5);
+    //rendering
+    ctx.strokeStyle = "rgba( 0, 0, 0, "+seed.opacity+" )";
+    ctx.fillStyle = "rgba( 73, 5, 0, "+seed.opacity+" )";
+    ctx.lineWidth = "1";
+    ctx.beginPath();
+    ctx.moveTo( r1x, r1y );
+    ctx.bezierCurveTo( h1x, h1y, h2x, h2y, r2x, r2y );
+    ctx.bezierCurveTo( h3x, h3y, h4x, h4y, r1x, r1y );
+    ctx.stroke();
+    ctx.fill();
+  }
 }
 
 ///renders leaf
@@ -855,7 +860,7 @@ function renderPlants() {
 
 function downloadScreenshot() {
   var image = canvas.toDataURL("image/png");
-  var download = document.getElementById("save");
+  var download = document.getElementById("screenshot");
   download.href = image;
   var seasonTitleCase = currentSeason.charAt(0).toUpperCase()+currentSeason.slice(1);
   download.download = "Kiss the Sky - Year "+currentYear+", "+seasonTitleCase+".png";
