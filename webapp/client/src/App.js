@@ -1,17 +1,12 @@
 import React, { Component } from 'react'
 import { BrowserRouter, Route, Switch } from "react-router-dom"
-// import { CSSTransition } from "react-transition-group";
-// https://o7planning.org/en/12159/react-transition-group-csstransition-example
-// http://reactcommunity.org/react-transition-group/css-transition
-// https://medium.com/@khwsc1/step-by-step-guide-of-simple-routing-transition-effect-for-react-with-react-router-v4-and-9152db1566a0
-
 
 import API from "./utils/API"
 import "./styles/app.sass"
 
 import E404 from "./pages/E404/e404.js"
 import Game from "./pages/Game/game.js"
-import SignUpLogIn from "./pages/SignUp_logIn/signUp_logIn.js"
+// import SignUpLogIn from "./pages/SignUp_logIn/signUp_logIn.js"
 import Dashboard from "./pages/Dashboard/dashboard.js"
 import Leaderboard from "./pages/Leaderboard/leaderboard.js"
 import Menu from "./components/Menu/menu.js"
@@ -25,6 +20,11 @@ class App extends Component {
     openMenu: false,
     waitingforSession: true,
     showGame: true,
+    transition: "open", // only what we remove from signUpLogIn?
+    gameLoaded: false,
+    signUpLogIn: false,
+    gamePaused: false,
+    appFunc: (func, params)=>{this[func](params)},
     changeAppState: (state, value)=>{ this.setState({[state]: value})}
   }
 
@@ -52,9 +52,19 @@ class App extends Component {
         } else {
           console.log(" - 📜 No Session User Logged In")
           this.setState({waitingforSession: false})
+          this.handleHash()
         }
       })
       .catch( err => console.log(err))
+  }
+
+  handleHash(){
+    if (window.location.hash) {
+      if (["#login", "#singin"].includes(window.location.hash)){
+        console.log("!", )
+        this.setState({signUpLogIn: window.location.hash.split('#')[1]})
+      }
+    }
   }
 
   updateUser = (data)=>{
@@ -63,8 +73,13 @@ class App extends Component {
     this.setState({
       username: data.username,
       _id:  data._id,
-      waitingforSession: false
+      waitingforSession: false,
+      transition: "close",
+      signUpLogIn: false,
     })
+    if (this.state.gamePaused === "doUnpause") {
+      this.togglePauseResume(false)
+    }
   }
 
   logIn = (user)=>{
@@ -73,9 +88,9 @@ class App extends Component {
       .then( resp => {
         if (resp.data._id) {
           this.updateUser(resp.data)
-          this.setState({subPage: "manifest"})
-          const last = user.history.location.pathname
-          last === '/login' ? user.history.push('/') : user.history.goBack()
+          // this.setState({transition: "close"})
+          // const last = user.history.location.pathname
+          // last === '/login' ? user.history.push('/') : user.history.goBack()
         } else {
           alert(resp.data.message)
         }
@@ -89,7 +104,6 @@ class App extends Component {
       .then( resp => {
         if (resp.data._id) {
           this.logIn(newUser)
-          this.setState({subPage: "manifest"})
         } else {
           alert(resp.data.errors)
         }
@@ -104,6 +118,14 @@ class App extends Component {
       .catch( err => console.log(err) )
   }
 
+  togglePauseResume = (state)=>{
+    if (window.gameHasBegun) {
+      const togglePause = document.querySelector(".icon_game_run")
+      togglePause.click()
+      this.setState({gamePaused: state})
+    }
+  }
+
   render() {
     return (
       <div className="app">
@@ -114,36 +136,32 @@ class App extends Component {
             render={route => <Menu {...route}
               appState={this.state}
               logOut={this.logOut}
+              logIn={this.logIn}
+              signUp={this.signUp}
+              updateUser={this.updateUser}
             />}
           />
 
           {this.state.showGame &&
-            <Game />
+            <Route
+              render={route => <Game {...route}
+                appState={this.state}
+              />}
+            />
           }
 
           <Switch>
-            <Route exact path="/(|landing|game|home)/"
+            <Route exact path="/(|landing|game|home)/" // 🚨 Check in game.js if changing. the list is there too.
               render={() => <Home /> }
             />
-{/*
-            <CSSTransition
-              // in={this.state.showGame}
-              timeout={400}
-              classNames='my-node'
-              appear
-            > */}
-
-              <Route exact path="/(signup|login)/"
-                render={route => <SignUpLogIn {...route}
-                  appState={this.state}
-                  signUp={this.signUp}
-                  logIn={this.logIn}
-                  updateUser={this.updateUser}
-                />}
-              />
-
-            {/* </CSSTransition> */}
-
+            {/* <Route exact path="/(signup|login)/"
+              render={route => <SignUpLogIn {...route}
+                appState={this.state}
+                signUp={this.signUp}
+                logIn={this.logIn}
+                updateUser={this.updateUser}
+              />}
+            /> */}
             <Route exact path={"/dashboard("
               +"|/savedsessions"
               +"|/myhighscores"

@@ -36,7 +36,7 @@ That's it! Should be at live at address they give you as output after (loooong) 
 
 Note: modification
 
-### targeting
+### Adding to client's NPM Package 
 
 From within `/webapp`
 `npm install --prefix ./client some-npm-package`

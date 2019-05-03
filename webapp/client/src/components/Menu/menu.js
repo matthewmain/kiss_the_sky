@@ -7,13 +7,13 @@ import Title_header_dark from './../../images/title_header_dark.svg'
 
 import "./menu.sass"
 
+import SignUpLogIn from "./../../pages/SignUp_logIn/signUp_logIn.js"
+
 class Landing extends Component {
 
   state = {
     icon: Icon_menu,
     open: false,
-    pointerEvents: "none",
-    opacity: 0
   }
 
   componentDidMount(){
@@ -30,8 +30,6 @@ class Landing extends Component {
   toggleMenu = ()=>{
     this.props.appState.changeAppState("openMenu", !this.state.open)
     this.setState({
-      pointerEvents: this.state.pointerEvents === "none" ? "" : "none",
-      opacity: this.state.opacity > 0.5 ? 0 : 1,
       open: !this.state.open
     })
   }
@@ -50,6 +48,14 @@ class Landing extends Component {
     }
   }
 
+  toggleSignUpLogIn = (page, hold)=>{
+    this.props.appState.changeAppState("signUpLogIn", page)
+    if (page && !hold) this.toggleMenu()
+    if (!page && this.props.appState.gamePaused === "doUnpause") {
+      this.props.appState.appFunc("togglePauseResume", false)
+    }
+  }
+
   save(){
     alert('Handle Save PlaceHolder')
     console.log("Handle Save Here")
@@ -63,132 +69,164 @@ class Landing extends Component {
     if (this.props.appState.showGame) route = ""
 
     return (
-      <div className="menu">
+      <>
+        <div className="menu">
 
-        {!this.props.appState.showGame &&
           <Link to="/">
             <img
               id="title_header_dark"
               src={Title_header_dark}
               alt="title header dark"
+              style={{
+                opacity: `${this.props.appState.showGame ? 0 : 1}`,
+                pointerEvents: `${this.props.appState.showGame ? "none" : ""}`
+              }}
             />
           </Link>
-        }
 
-        {/* ⚠️ Warning: Changing 👇 this className name will effect event listener to toggle menu view/unview */}
-        <div id="menu_icon_container"
-          className="noListen"
-          onClick={this.toggleMenu}>
-          <img
-            id="menu_icon"
-            src={this.state.pointerEvents === "none" ? Icon_menu : Icon_menu_close  }
-            alt="icon menu"/>
-          {this.props.appState.username &&
+          {/* ⚠️ Warning: Changing 👇 this className name will effect event listener to toggle menu view/unview */}
+          <div id="menu_icon_container"
+            className="noListen"
+            onClick={this.toggleMenu}>
+
+            <div className="toggle_menu_container">
+              <img
+                id="menu_icon_closed"
+                className="menu_icons"
+                src={Icon_menu_close}
+                alt="icon menu"
+                style={{
+                  opacity: `${this.state.open ? 1 : 0}`,
+                  right: `${!this.props.appState.username ? "2px" : "57px"}`,
+                }}/>
+
+              <img
+                id="menu_icon"
+                className="menu_icons"
+                src={Icon_menu}
+                alt="icon menu"
+                style={{
+                  opacity: `${this.state.open ? 0 : 1}`,
+                  right: `${!this.props.appState.username ? "2px" : "57px"}`,
+                }}/>
+            </div>
+
             <img
               id="flower_avatar"
               src={Flower_avatar}
               alt="flower avatar"
+              style={{
+                maxWidth: `${this.props.appState.username ? "40px" : "0px"}`,
+                paddingTop: `${this.props.appState.username ? "0px" : "20px"}`,
+                paddingRight: `${this.props.appState.username ? "0px" : "12px"}`,
+              }}
             />
-          }
-        </div>
 
-        {/* ⚠️ Warning: Changing 👇 this className name will effect event listener to toggle menu view/unview */}
-        <div id="menu_dropdown_container"
-          className="noListen"
-          style={{
-            opacity: `${this.state.opacity}`,
-            pointerEvents: `${this.state.pointerEvents}`
-          }}
-        >
+          </div>
 
-          {this.props.appState.username && <>
-            <div className="username">
-              {this.props.appState.username}
-            </div>
-            <Link to="/dashboard/savedsessions" className="link" onClick={this.toggleMenu}>
-              <div className={"btn "+(route === "savedsessions" ? "active" : "")}>
+          {/* ⚠️ Warning: Changing 👇 this className name will effect event listener to toggle menu view/unview */}
+          <div id="menu_dropdown_container"
+            className="noListen"
+            style={{
+              opacity: `${this.state.open ? 1 : 0}`,
+              pointerEvents: `${this.state.open ? "" : "none"}`
+            }}
+          >
 
-                saved sessions
-
+            {this.props.appState.username && <>
+              <div className="username">
+                {this.props.appState.username}
               </div>
-            </Link>
-            <Link to="/dashboard/myhighscores" className="link" onClick={this.toggleMenu}>
-              <div className={"btn "+(route === "myhighscores" ? "active" : "")}>
+              <Link to="/dashboard/savedsessions" className="link" onClick={this.toggleMenu}>
+                <div className={"btn "+(route === "savedsessions" ? "active" : "")}>
 
-                my high scores
+                  saved sessions
 
-              </div>
-            </Link>
-            <Link to="/dashboard/settings" className="link" onClick={this.toggleMenu}>
-              <div className={"btn "+(route === "settings" ? "active" : "")}>
+                </div>
+              </Link>
+              <Link to="/dashboard/myhighscores" className="link" onClick={this.toggleMenu}>
+                <div className={"btn "+(route === "myhighscores" ? "active" : "")}>
 
-                settings
+                  my high scores
 
-              </div>
-            </Link>
-          </>}
+                </div>
+              </Link>
+              <Link to="/dashboard/settings" className="link" onClick={this.toggleMenu}>
+                <div className={"btn "+(route === "settings" ? "active" : "")}>
 
-          <Link to="/leaderboard"
-            className="link"
-            onClick={this.toggleMenu}>
-            <div className={"btn leaderboard-btn "+(route === "leaderboard" ? "active" : "")}>
+                  settings
 
-                leaderboard
+                </div>
+              </Link>
+            </>}
 
-            </div>
-          </Link>
-
-          {!this.props.appState.showGame &&
-            <Link to="/game"
+            <Link to="/leaderboard"
               className="link"
               onClick={this.toggleMenu}>
-              <div className="btn gamemode-btn">
+              <div className={"btn leaderboard-btn "+(route === "leaderboard" ? "active" : "")}>
 
-                  game mode
-
-              </div>
-            </Link>
-          }
-
-          {!this.props.appState.username && <>
-
-            <Link to="/signup"
-              className="link"
-              onClick={this.toggleMenu}>
-              <div className="btn">
-
-                sign up
+                  leaderboard
 
               </div>
             </Link>
 
-            <Link to="/login"
-              className="link"
-              onClick={this.toggleMenu}>
-              <div className="btn">
+            {!this.props.appState.showGame &&
+              <Link to="/game"
+                className="link"
+                onClick={this.toggleMenu}>
+                <div className="btn gamemode-btn">
+
+                    game mode
+
+                </div>
+              </Link>
+            }
+
+            {!this.props.appState.username && <>
+
+              <div
+                className="link btn"
+                onClick={()=>{this.toggleSignUpLogIn("signup")}}>
+
+                  sign up
+
+              </div>
+
+              <div
+                className="link btn"
+                onClick={()=>{this.toggleSignUpLogIn("login")}}>
 
                 log in
 
               </div>
-            </Link>
 
-          </>}
+            </>}
 
-          {this.props.appState.username &&
-            <div className="btn" onClick={()=>{this.props.logOut()}}>
+            {this.props.appState.username &&
+              <div className="btn" onClick={()=>{this.props.logOut()}}>
 
-              log out
+                log out
 
-            </div>
-          }
-          {/* <hr/>
-          <div className="btn" onClick={this.save}>
+              </div>
+            }
 
-            Save
-
-          </div> */}
+          </div>
         </div>
-      </div>
+
+        <div className="signUpLogIn-container" style={{
+          opacity: `${this.props.appState.signUpLogIn ? 1 : 0}`,
+          pointerEvents: `${this.props.appState.signUpLogIn ? "" : "none"}`
+        }}>
+          <SignUpLogIn
+            toggleSignUpLogIn={this.toggleSignUpLogIn}
+            appState={this.props.appState}
+            signUp={this.props.signUp}
+            logIn={this.props.logIn}
+            history={this.props.history}
+          />
+        </div>
+
+      </>
     )
   }
 }

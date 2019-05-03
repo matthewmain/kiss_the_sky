@@ -3,6 +3,10 @@ import "./game.sass"
 
 class Home extends Component {
 
+  state = {
+    opacity: 1,
+  }
+
   componentDidMount(){
     const game = document.getElementById("game")
     game.style.display = "block"
@@ -13,6 +17,15 @@ class Home extends Component {
       window.scaleLanding()
       window.updateUI()
     }
+    const route = this.props.history.location.pathname
+    if (
+      this.props.gameLoaded
+      || ["/","/game","/landing","/home"].includes(route)
+      // || this.props.appState.showGame
+    ) {
+      window.requestAnimationFrame(()=>{ this.setState({opacity: 0}) })
+    }
+    this.props.appState.changeAppState("gameLoaded", true)
   }
 
   componentWillUnmount(){
@@ -22,7 +35,7 @@ class Home extends Component {
 
   render() {
     return (
-      <div className="game"></div>
+      <div className="game" style={{ opacity: `${this.state.opacity}`}}></div>
     )
   }
 
