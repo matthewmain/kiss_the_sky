@@ -5,6 +5,9 @@ import Icon_menu_close from './../../images/icon_menu_close.svg'
 import Flower_avatar from './../../images/flower_avatar.svg'
 import Title_header_dark from './../../images/title_header_dark.svg'
 
+import Save from "./../../utils/save.js"
+import User from "./../../utils/user.js"
+
 import "./menu.sass"
 
 import SignUpLogIn from "./../../pages/SignUp_logIn/signUp_logIn.js"
@@ -27,12 +30,12 @@ class Landing extends Component {
     }
     if (props.appState.forceClose) {
       this.toggleMenu()
-      this.props.appState.changeAppState("forceClose", false)
+      this.props.appState.set({forceClose: false})
     }
   }
 
   toggleMenu = ()=>{
-    this.props.appState.changeAppState("openMenu", !this.state.open)
+    this.props.appState.set({openMenu: !this.state.open})
     this.setState({
       open: !this.state.open
     })
@@ -53,11 +56,9 @@ class Landing extends Component {
   }
 
   toggleSignUpLogIn = (page, hold)=>{
-    this.props.appState.changeAppState("signUpLogIn", page)
+    this.props.appState.set({signUpLogIn: page})
     if (page && !hold) this.toggleMenu()
-    if (!page && this.props.appState.gamePaused === "doUnpause") {
-      this.props.appState.appFunc("togglePauseResume", false)
-    }
+    page ? window.pause() : window.resume()
   }
 
   render() {
@@ -202,7 +203,7 @@ class Landing extends Component {
             </>}
 
             {this.props.appState.username &&
-              <div className="btn" onClick={()=>{this.props.logOut()}}>
+              <div className="btn" onClick={()=>{User.logOut(this.props.appState)}}>
 
                 log out
 
@@ -211,7 +212,9 @@ class Landing extends Component {
 
             <hr />
 
-            <div className="btn" onClick={()=>{this.props.appState.appFunc("save")}}>
+            <div className="btn" onClick={
+              ()=>{Save.saveGame( this.props.appState, this.props.history )}
+            }>
 
               save
 
@@ -227,9 +230,6 @@ class Landing extends Component {
           <SignUpLogIn
             toggleSignUpLogIn={this.toggleSignUpLogIn}
             appState={this.props.appState}
-            signUp={this.props.signUp}
-            logIn={this.props.logIn}
-            history={this.props.history}
           />
         </div>
 

@@ -1,6 +1,5 @@
 const router = require("express").Router()
 const userController = require("../../controllers/userController")
-const User = require('../../models/userModel')
 const passport = require('../../passport')
 
 // 👥 "/api/user" +
@@ -13,8 +12,5 @@ router.route('/logout')
 
 router.route("/signup")
   .post(userController.signUp)
-
-router.route("/save")
-  .put(userController.save)
 
 module.exports = router

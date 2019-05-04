@@ -36,7 +36,15 @@ That's it! Should be at live at address they give you as output after (loooong) 
 
 Note: modification
 
-### Adding to client's NPM Package 
+### Adding to client's NPM Package
 
 From within `/webapp`
 `npm install --prefix ./client some-npm-package`
+
+### MongoDB Notes 
+- Drop DB
+  - $`mongo` returns `>` commandline
+    - >`show databases` > shows all local dbs
+    - >`use kts`
+    - >`db.dropDatabase()`
+  - NOTE: you'll have to run `npm run seed` to reset the manifest db, then `npm start`

@@ -24,7 +24,7 @@ class Home extends Component {
     ) {
       window.requestAnimationFrame(()=>{ this.setState({opacity: 0}) })
     }
-    this.props.appState.changeAppState("gameLoaded", true)
+    this.props.appState.set({gameLoaded: true})
   }
 
   componentWillUnmount(){

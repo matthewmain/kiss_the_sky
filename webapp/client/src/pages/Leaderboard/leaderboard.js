@@ -8,15 +8,13 @@ class Leaderboard extends Component {
   }
 
   componentDidMount(){
-    this.props.appState.changeAppState("showGame", false)
+    this.props.appState.set({showGame: false})
     window.requestAnimationFrame(()=>{ this.setState({opacity: 1}) })
-    if (!this.props.appState.gamePaused) {
-      this.props.appState.appFunc("togglePauseResume", true)
-    }
+    window.pause()
   }
 
   componentWillUnmount(){
-    this.props.appState.changeAppState("showGame", true)
+    this.props.appState.set({showGame: true})
   }
 
   render(){

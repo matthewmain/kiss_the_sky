@@ -1,6 +1,8 @@
 import React, { Component } from 'react'
 import "./dashboard.sass"
 
+import Save from "./../../utils/save.js"
+
 class Dashboard extends Component {
 
   state = {
@@ -9,21 +11,36 @@ class Dashboard extends Component {
   }
 
   componentDidMount(){
-    this.props.appState.changeAppState("showGame", false)
+    this.props.appState.set({showGame: false})
     window.requestAnimationFrame(()=>{ this.setState({opacity: 1}) })
-    if (!this.props.appState.gamePaused) {
-      this.props.appState.appFunc("togglePauseResume", true)
-    }
+    window.pause()
+    this.checkForSavedGames()
   }
 
   componentWillUnmount(){
-    this.props.appState.changeAppState("showGame", true)
+    this.props.appState.set({showGame: true})
   }
 
   componentDidUpdate(){
     if (!this.props.appState.username && !this.props.appState.waitingforSession) {
       this.state.history.push('/')
+    } else if (this.props.appState.username && !this.props.appState.savedGames) {
+      this.checkForSavedGames()
     }
+  }
+
+  checkForSavedGames = ()=>{
+    if (
+      this.props.history.location.pathname === "/dashboard/savedsessions"
+      && this.props.appState.username
+    ) {
+      Save.savedGames(this.props.appState)
+    }
+  }
+
+  resume = (index)=>{
+    window.resumeState(this.props.appState.savedGames[index].data)
+    this.state.history.push('/game')
   }
 
   render(){
@@ -51,6 +68,18 @@ class Dashboard extends Component {
         {route[2] === "settings" && <>
           Settings
         </>}
+
+        {this.props.appState.savedGames &&
+          <div>
+            WE GOT GAMES<br />
+            {
+              this.props.appState.savedGames.map((game,index)=>
+              <div key={index}>
+                <button onClick={()=>this.resume(index)}> Game #{index}</button> <br />
+              </div>)
+            }
+          </div>
+        }
 
       </div>
     )
