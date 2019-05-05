@@ -28,7 +28,7 @@ export default {
       API.saveGame({
         username: app.username,
         _id: app._id,
-        saveObj: window.savedGameData
+        saveObj: window.localSavedGameData
       })
         .then( resp => {
           alert("game saved 👍")

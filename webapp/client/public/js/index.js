@@ -1070,9 +1070,9 @@ function runLogs( frequency ) {
 function display() {
   if ( gameHasBegun ) {
     if ( currentYear === 1 && currentSeason === "Spring" ) {  // starts with high frame rate for smooth seed scatter
-      renderBackground(); renderPlants(); displayEliminatePlantIconWithCursor();
+      renderBackground(); renderPlants();
     } else if ( worldTime % renderFactor === 0 ) {  // improves performance to render less often than verlet runs
-      renderBackground(); renderPlants(); displayEliminatePlantIconWithCursor();
+      renderBackground(); renderPlants();
     }
     trackSeasons();
     shedSunlight();
@@ -1082,6 +1082,7 @@ function display() {
   updateUI();
   runVerlet();
   if ( !ambientMode ) { 
+    displayEliminatePlantIconWithCursor();
     renderDemosInFirstYear();
     renderMilestones();
     renderHeightMarker(); 

@@ -10,62 +10,62 @@
 /////**** Record Initial Raw Save Data ****/////
 
 
-var savedGameData = {};
+var localSavedGameData = {};
 
 
 
 function saveGame() {
 	//object collections
-	savedGameData.points = JSON.parse(JSON.stringify(points));
-	savedGameData.spans = JSON.parse(JSON.stringify(spans));
-	savedGameData.skins = JSON.parse(JSON.stringify(skins));
-	savedGameData.seeds = JSON.parse(JSON.stringify(seeds));
-	savedGameData.plants = JSON.parse(JSON.stringify(plants));
-	savedGameData.pollinationAnimations = [];
+	localSavedGameData.points = JSON.parse(JSON.stringify(points));
+	localSavedGameData.spans = JSON.parse(JSON.stringify(spans));
+	localSavedGameData.skins = JSON.parse(JSON.stringify(skins));
+	localSavedGameData.seeds = JSON.parse(JSON.stringify(seeds));
+	localSavedGameData.plants = JSON.parse(JSON.stringify(plants));
+	localSavedGameData.pollinationAnimations = [];
 	//counters
-	savedGameData.pointCount = pointCount;
-	savedGameData.spanCount = spanCount;
-	savedGameData.skinCount = skinCount;
-	savedGameData.seedCount = seedCount;
-	savedGameData.plantCount = plantCount;
-	savedGameData.pollinationAnimationCount = 0;
+	localSavedGameData.pointCount = pointCount;
+	localSavedGameData.spanCount = spanCount;
+	localSavedGameData.skinCount = skinCount;
+	localSavedGameData.seedCount = seedCount;
+	localSavedGameData.plantCount = plantCount;
+	localSavedGameData.pollinationAnimationCount = 0;
 	//settings
-	savedGameData.gameDifficulty = gameDifficulty;
-	savedGameData.ambientMode = ambientMode;
-	savedGameData.endOfGameAnnouncementDisplayed = endOfGameAnnouncementDisplayed;
+	localSavedGameData.gameDifficulty = gameDifficulty;
+	localSavedGameData.ambientMode = ambientMode;
+	localSavedGameData.endOfGameAnnouncementDisplayed = endOfGameAnnouncementDisplayed;
 	//progress
-	savedGameData.highestRedFlowerPct = highestRedFlowerPct;
-	savedGameData.heightMarker = heightMarker;
-	savedGameData.gameHasBegun = gameHasBegun;
-	savedGameData.readyForEliminationDemo = readyForEliminationDemo;
-	savedGameData.readyForChangeDemo = readyForChangeDemo;
-	savedGameData.eliminationDemoHasBegun = eliminationDemoHasBegun;
-	savedGameData.changeDemoHasBegun = changeDemoHasBegun;
-	savedGameData.allDemosHaveRun = allDemosHaveRun;
-	savedGameData.readyForNextMilestoneAnnouncement = readyForNextMilestoneAnnouncement;
-	savedGameData.milestoneFirstRedHasBeenRun = milestoneFirstRedHasBeenRun;
-	savedGameData.milestoneThirdHasBeenRun = milestoneThirdHasBeenRun;
-	savedGameData.milestoneHalfHasBeenRun = milestoneHalfHasBeenRun;
-	savedGameData.milestoneTwoThirdsHasBeenRun = milestoneTwoThirdsHasBeenRun;
-	savedGameData.milestone90HasBeenRun = milestone90HasBeenRun;
+	localSavedGameData.gameHasBegun = gameHasBegun;
+	localSavedGameData.highestRedFlowerPct = highestRedFlowerPct;
+	localSavedGameData.heightMarker = heightMarker;
+	localSavedGameData.readyForEliminationDemo = readyForEliminationDemo;
+	localSavedGameData.readyForChangeDemo = readyForChangeDemo;
+	localSavedGameData.eliminationDemoHasBegun = eliminationDemoHasBegun;
+	localSavedGameData.changeDemoHasBegun = changeDemoHasBegun;
+	localSavedGameData.allDemosHaveRun = allDemosHaveRun;
+	localSavedGameData.readyForNextMilestoneAnnouncement = readyForNextMilestoneAnnouncement;
+	localSavedGameData.milestoneFirstRedHasBeenRun = milestoneFirstRedHasBeenRun;
+	localSavedGameData.milestoneThirdHasBeenRun = milestoneThirdHasBeenRun;
+	localSavedGameData.milestoneHalfHasBeenRun = milestoneHalfHasBeenRun;
+	localSavedGameData.milestoneTwoThirdsHasBeenRun = milestoneTwoThirdsHasBeenRun;
+	localSavedGameData.milestone90HasBeenRun = milestone90HasBeenRun;
 	//time
-	savedGameData.worldTime = worldTime;
-	savedGameData.currentYear = currentYear;
-	savedGameData.yearTime = yearTime;
-	savedGameData.currentSeason = currentSeason;
-	savedGameData.suL = suL;
-	savedGameData.photosynthesisRatio = photosynthesisRatio;
-	savedGameData.livEnExp = livEnExp;
-	savedGameData.csbg = csbg;
-	savedGameData.psbg = psbg;
-	savedGameData.ccs1 = ccs1;
-	savedGameData.ccs2 = ccs2;
-	savedGameData.ccs3 = ccs3;
-	savedGameData.ccs4 = ccs4;
+	localSavedGameData.worldTime = worldTime;
+	localSavedGameData.currentYear = currentYear;
+	localSavedGameData.yearTime = yearTime;
+	localSavedGameData.currentSeason = currentSeason;
+	localSavedGameData.suL = suL;
+	localSavedGameData.photosynthesisRatio = photosynthesisRatio;
+	localSavedGameData.livEnExp = livEnExp;
+	localSavedGameData.csbg = csbg;
+	localSavedGameData.psbg = psbg;
+	localSavedGameData.ccs1 = ccs1;
+	localSavedGameData.ccs2 = ccs2;
+	localSavedGameData.ccs3 = ccs3;
+	localSavedGameData.ccs4 = ccs4;
 	//misc.
-	savedGameData.initialGeneValueAverages = initialGeneValueAverages;
+	localSavedGameData.initialGeneValueAverages = initialGeneValueAverages;
 	//encode & compress data
-  savedGameData = encodeAndCompressSavedGameData( savedGameData );
+  localSavedGameData = encodeAndCompressSavedGameData( localSavedGameData );
 }
 
 
@@ -284,14 +284,13 @@ function resumeSavedGame( retrievedGameData ) {
 	plantCount = parsedData.plantCount;
 	pollinationAnimationCount = 0;
 	//settings
-	gameDifficulty = parsedData.gameDifficulty;
 	ambientMode = parsedData.ambientMode;
+	gameDifficulty = parsedData.gameDifficulty;
 	endOfGameAnnouncementDisplayed = parsedData.endOfGameAnnouncementDisplayed;
-	viewShadows = parsedData.viewShadows;
 	//progress
 	highestRedFlowerPct = parsedData.highestRedFlowerPct;
-	heightMarker = parsedData.heightMarker;
 	$("#height_number").text( Math.floor( highestRedFlowerPct ) );
+	heightMarker = parsedData.heightMarker;
 	gameHasBegun = parsedData.gameHasBegun;
 	readyForEliminationDemo = parsedData.readyForEliminationDemo;
 	readyForChangeDemo = parsedData.readyForChangeDemo;
@@ -309,33 +308,34 @@ function resumeSavedGame( retrievedGameData ) {
 	currentYear = parsedData.currentYear;
 	yearTime = parsedData.yearTime;
 	currentSeason = parsedData.currentSeason;
-	suL = parsedData.suL;
+	suL = parsedData.suL;  // summer length (varies depending on average plant segment count)
 	photosynthesisRatio = parsedData.photosynthesisRatio;
 	livEnExp = parsedData.livEnExp;
-	csbg = parsedData.csbg;
-	psbg = parsedData.psbg;
-	ccs1 = parsedData.ccs1;
-	ccs2 = parsedData.ccs2;
-	ccs3 = parsedData.ccs3;
-	ccs4 = parsedData.ccs4;
+	csbg = parsedData.csbg;  // current season background
+	psbg = parsedData.psbg;  // previous season background
+	ccs1 = parsedData.ccs1;  // current color stop 1
+	ccs2 = parsedData.ccs2;  // current color stop 2
+	ccs3 = parsedData.ccs3;  // current color stop 3
+	ccs4 = parsedData.ccs4;  // current color stop 4
 	//misc.
 	initialGeneValueAverages = parsedData.initialGeneValueAverages;
 }
 
 
+function resumeState( game ) {
+	resumeSavedGame( game );
+	localSavedGameData = {};
+	$("#landing_page_div, #overlay_game_mode_options_div, #overlay_ambient_mode_options_div").hide();
+	$(".icon, #footer_div").show();
+	if ( ambientMode ) { displayAmbientModeUI(); } else { displayGameModeUI(); }
+	pause();
 
-
-/////**** Resume Saved Game ****/////
-
-function resumeState(game){
-	window.requestAnimationFrame(window.resume)
-	resumeSavedGame( game )
-	savedGameData = {}
-	button_game_mode.click()
-	$("#overlay_game_mode_options_div, #overlay_ambient_mode_options_div").fadeOut(500, function(){
-		$(".icon").fadeIn(5000);
-		$("#footer_div").fadeIn(5000);
-	});
-	gameHasBegun = true
-	window.requestAnimationFrame(window.pause)
+	renderBackground(); 
+	renderPlants();
+	
+	display();
 }
+
+
+
+
