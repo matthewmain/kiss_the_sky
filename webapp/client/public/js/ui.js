@@ -317,23 +317,34 @@ function displayEliminatePlantIconWithCursor(e) {
       }
     }
     if ( displayIcon ) {
-      var xo = selectRadius*0.06;  // x offset
-      var yo = selectRadius*0.1;  // y offset
+      var yo = selectRadius*0.66;  // y offset
+      var obo = selectRadius*0.7;  // outer bar offset
+      var ibo = selectRadius*0.45;  // inner bar offset
+      var outerLineWidth = selectRadius*0.1;
+      var barWidth = selectRadius*0.3;
       ctx.fillStyle = "rgba(232,73,0,0.5)";
-      ctx.strokeStyle = "rgba(232,73,0,1)";
+      ctx.strokeStyle = "#EE570D";
       //circle
       ctx.beginPath();
-      ctx.lineWidth = 1;
-      ctx.arc( xValFromPct(mouseCanvasXPct), yValFromPct(mouseCanvasYPct-yo), selectRadius, 0, 2*Math.PI );
+      ctx.lineWidth = outerLineWidth;
+      ctx.arc( xValFromPct(mouseCanvasXPct), yValFromPct(mouseCanvasYPct)-yo, selectRadius, 0, 2*Math.PI );
       ctx.fill();
       ctx.stroke();
-      //bar
+      //bars
       ctx.beginPath();
-      ctx.lineWidth = selectRadius*0.3;
+      ctx.lineWidth = barWidth;
       ctx.lineCap = "butt";
-      ctx.moveTo( xValFromPct(mouseCanvasXPct-xo), yValFromPct(mouseCanvasYPct-yo) );
-      ctx.lineTo( xValFromPct(mouseCanvasXPct+xo), yValFromPct(mouseCanvasYPct-yo) );
-      ctx.fill();
+      ctx.moveTo( xValFromPct(mouseCanvasXPct)-obo, yValFromPct(mouseCanvasYPct)-obo-yo );
+      ctx.lineTo( xValFromPct(mouseCanvasXPct)-ibo, yValFromPct(mouseCanvasYPct)-ibo-yo );
+      ctx.stroke();
+      ctx.moveTo( xValFromPct(mouseCanvasXPct)+obo, yValFromPct(mouseCanvasYPct)-obo-yo );
+      ctx.lineTo( xValFromPct(mouseCanvasXPct)+ibo, yValFromPct(mouseCanvasYPct)-ibo-yo );
+      ctx.stroke();
+      ctx.moveTo( xValFromPct(mouseCanvasXPct)+obo, yValFromPct(mouseCanvasYPct)+obo-yo );
+      ctx.lineTo( xValFromPct(mouseCanvasXPct)+ibo, yValFromPct(mouseCanvasYPct)+ibo-yo );
+      ctx.stroke();
+      ctx.moveTo( xValFromPct(mouseCanvasXPct)-obo, yValFromPct(mouseCanvasYPct)+obo-yo );
+      ctx.lineTo( xValFromPct(mouseCanvasXPct)-ibo, yValFromPct(mouseCanvasYPct)+ibo-yo );
       ctx.stroke();
     }
   }
