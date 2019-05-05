@@ -1,7 +1,8 @@
 import React, { Component } from 'react'
-// import { Link } from "react-router-dom"
 import Icon_exit_modal from "./../../images/icon_exit_modal.svg"
 import "./signUp_logIn.sass"
+
+import User from "./../../utils/user.js"
 
 class SignUp extends Component {
 
@@ -46,9 +47,6 @@ class SignUp extends Component {
       if (props.appState.signUpLogIn === "signup") {
         this.setState({ username: "", email: "", password: "", confirm: "",})
       }
-      if (!props.appState.gamePaused) {
-        this.props.appState.appFunc("togglePauseResume", "doUnpause")
-      }
       window.location.hash = props.appState.signUpLogIn || ""
     }
     if (this.props.appState.signUpLogIn) {
@@ -59,26 +57,18 @@ class SignUp extends Component {
 
   }
 
-  togglePauseResume(){
-    if (window.gameHasBegun) {
-      const togglePause = document.querySelector(".icon_game_run")
-      togglePause.click()
-      this.props.appState.changeAppState("gamePaused", !this.props.appState.gamePaused)
-    }
-  }
-
   handleInput = (events) => {
     this.setState({[events.target.name]: events.target.value})
   }
 
   submit = ()=>{
     if (this.props.appState.signUpLogIn === "login") {
-      this.props.logIn(this.state)
+      User.logIn(this.props.appState, this.state)
     } else {
       if (this.state.password === this.state.confirm) {
         const newUser = {...this.state}
         delete(newUser.confirm)
-        this.props.signUp(newUser)
+        User.signUp(this.props.appState, newUser)
       } else {
         alert("your PASSWORD does NOT match your CONFIRM password")
       }

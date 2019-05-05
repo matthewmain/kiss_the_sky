@@ -20,6 +20,7 @@ const UserControllers = {
       if (!user) return res.json(info)
       req.logIn(user, function(err) {
         if (err) { return next(err) }
+        user.saved_games = [] // This should be fixed to just have relations to games
         return res.json(user)
       })
     })(req, res, next)
@@ -62,23 +63,6 @@ const UserControllers = {
         }
       })
   },
-
-  save: function(req, res) {
-    console.log('\n👥 💾 🌺 Attempting user save 🌺 💾 👥')
-    console.log(' - '+req.body.username)
-    db.User.findOneAndUpdate(
-      {_id: req.body._id},
-      {$push: {saved_games: {data:req.body.saveObj}}
-    })
-      .then(resp => {
-        console.log(" - 👥 💾 🌺 User saves new game 🌺 💾 👥\n")
-        // updateAdmin_images_saved(req.body.image)
-        console.log(resp)
-        res.json(resp)
-      })
-      .catch(err => res.status(422).json(err) )
-
-  }
 
 }
 

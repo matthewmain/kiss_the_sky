@@ -1,10 +1,12 @@
 import React, { Component } from 'react'
 import { Link } from "react-router-dom"
-import API from "./../../utils/API"
 import Icon_menu from './../../images/icon_menu.svg'
 import Icon_menu_close from './../../images/icon_menu_close.svg'
 import Flower_avatar from './../../images/flower_avatar.svg'
 import Title_header_dark from './../../images/title_header_dark.svg'
+
+import Save from "./../../utils/save.js"
+import User from "./../../utils/user.js"
 
 import "./menu.sass"
 
@@ -28,12 +30,12 @@ class Landing extends Component {
     }
     if (props.appState.forceClose) {
       this.toggleMenu()
-      this.props.appState.changeAppState("forceClose", false)
+      this.props.appState.set({forceClose: false})
     }
   }
 
   toggleMenu = ()=>{
-    this.props.appState.changeAppState("openMenu", !this.state.open)
+    this.props.appState.set({openMenu: !this.state.open})
     this.setState({
       open: !this.state.open
     })
@@ -54,30 +56,9 @@ class Landing extends Component {
   }
 
   toggleSignUpLogIn = (page, hold)=>{
-    this.props.appState.changeAppState("signUpLogIn", page)
+    this.props.appState.set({signUpLogIn: page})
     if (page && !hold) this.toggleMenu()
-    if (!page && this.props.appState.gamePaused === "doUnpause") {
-      this.props.appState.appFunc("togglePauseResume", false)
-    }
-  }
-
-  save = ()=>{
-    const saveObj = window.save()
-    console.log("saveObj :", saveObj)
-    if (this.props.appState.username && this.props.appState._id) {
-      console.log(" 👤 💾 🌺 attempting user save 🌺 💾 👤" )
-      API.save({
-        username: this.props.appState.username,
-        _id: this.props.appState._id,
-        saveObj: saveObj
-      })
-        .then( resp => {
-          console.log(" - 🌺 save :", resp.data)
-        })
-        .catch( err => console.log(err))
-    } else {
-      console.log('please log in...')
-    }
+    page ? window.pause() : window.resume()
   }
 
   render() {
@@ -222,12 +203,22 @@ class Landing extends Component {
             </>}
 
             {this.props.appState.username &&
-              <div className="btn" onClick={()=>{this.props.logOut()}}>
+              <div className="btn" onClick={()=>{User.logOut(this.props.appState)}}>
 
                 log out
 
               </div>
             }
+
+            <hr />
+
+            <div className="btn" onClick={
+              ()=>{Save.saveGame( this.props.appState, this.props.history )}
+            }>
+
+              save
+
+            </div>
 
           </div>
         </div>
@@ -239,9 +230,6 @@ class Landing extends Component {
           <SignUpLogIn
             toggleSignUpLogIn={this.toggleSignUpLogIn}
             appState={this.props.appState}
-            signUp={this.props.signUp}
-            logIn={this.props.logIn}
-            history={this.props.history}
           />
         </div>
 

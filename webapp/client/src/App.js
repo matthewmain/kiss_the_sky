@@ -1,7 +1,9 @@
 import React, { Component } from 'react'
 import { BrowserRouter, Route, Switch } from "react-router-dom"
 
-import API from "./utils/API"
+import User from "./utils/user.js"
+import Manifest from "./utils/manifest.js"
+
 import "./styles/app.sass"
 
 import E404 from "./pages/E404/e404.js"
@@ -13,112 +15,31 @@ import Menu from "./components/Menu/menu.js"
 class App extends Component {
 
   state = {
+    manifest: {},
     username: null,
     _id: null,
-    manifest: {},
+    savedGames: false,
     openMenu: false,
     waitingforSession: true,
     showGame: true,
     gameLoaded: false,
     signUpLogIn: false,
-    gamePaused: false,
-    appFunc: (func, params)=>{this[func](params)},
-    changeAppState: (state, value)=>{ this.setState({[state]: value})}
+    fn: (func, params)=>{this[func](params)},
+    set: (params)=>{ this.setState(params)}
   }
 
   componentDidMount() {
-    this.getManifest()
-    this.getUser()
+    Manifest.getManifest(this.state)
+    User.getUser(this.state)
   }
 
-  getManifest() {
-    console.log("🧮 requesting manifest from API" )
-    API.getManifest()
-      .then( resp => {
-        console.log(" - 🧮 manifest :", resp.data)
-        this.setState({manifest: resp.data})
-      })
-      .catch( err => console.log(err))
-  }
-
-  getUser() {
-    console.log("📜 check for logged in session user" )
-    API.getUser()
-      .then( resp => {
-        if (resp.data.user) {
-          this.updateUser(resp.data.user)
-        } else {
-          console.log(" - 📜 No Session User Logged In")
-          this.setState({waitingforSession: false})
-          this.handleHash()
-        }
-      })
-      .catch( err => console.log(err))
-  }
-
-  handleHash(){
-    if (window.location.hash) {
-      if (["#login", "#singin"].includes(window.location.hash)){
-        console.log("!", )
+  handleHash(hashGiven){
+    if (hashGiven) {
+      this.setState({signUpLogIn: hashGiven})
+    } else if (window.location.hash) {
+      if (["#login", "#signup"].includes(window.location.hash)){
         this.setState({signUpLogIn: window.location.hash.split('#')[1]})
       }
-    }
-  }
-
-  updateUser = (data)=>{
-    if (data.username) console.log(" - 📜 👤 User Logged In > ", data.username )
-    else console.log(" - 📜 👤 User Logged Out")
-    this.setState({
-      username: data.username,
-      _id:  data._id,
-      waitingforSession: false,
-      transition: "close",
-      signUpLogIn: false,
-    })
-    if (this.state.gamePaused === "doUnpause") {
-      this.togglePauseResume(false)
-    }
-  }
-
-  logIn = (user)=>{
-    console.log('👤 Log In: user: ', user.username)
-    API.logIn(user)
-      .then( resp => {
-        if (resp.data._id) {
-          this.updateUser(resp.data)
-        } else {
-          alert(resp.data.message)
-        }
-      })
-      .catch( err => console.log(err) )
-  }
-
-  signUp = (newUser)=>{
-    console.log('👆 Sign UP > newUser: ', newUser)
-    API.signUp(newUser)
-      .then( resp => {
-        if (resp.data._id) {
-          this.logIn(newUser)
-        } else {
-          alert(resp.data.errors)
-        }
-      })
-      .catch( err => console.log(err))
-  }
-
-  logOut = ()=>{
-    console.log('✌️ log Out: user: ', this.state.username)
-    API.logOut()
-      .then( resp => this.updateUser(resp.data) )
-      .catch( err => console.log(err) )
-      .finally(()=>{this.setState({forceClose: true})})
-  }
-
-  togglePauseResume = (state)=>{
-    if (window.gameHasBegun) {
-      const togglePause = document.querySelector(".icon_game_run")
-      togglePause.click()
-      this.setState({gamePaused: state})
     }
   }
 
@@ -131,10 +52,6 @@ class App extends Component {
           <Route
             render={route => <Menu {...route}
               appState={this.state}
-              logOut={this.logOut}
-              logIn={this.logIn}
-              signUp={this.signUp}
-              updateUser={this.updateUser}
             />}
           />
 

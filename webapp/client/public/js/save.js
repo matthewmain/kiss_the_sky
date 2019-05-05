@@ -13,6 +13,7 @@
 var savedGameData = {};
 
 
+
 function saveGame() {
 	//object collections
 	savedGameData.points = JSON.parse(JSON.stringify(points));
@@ -319,4 +320,22 @@ function resumeSavedGame( retrievedGameData ) {
 	ccs4 = parsedData.ccs4;
 	//misc.
 	initialGeneValueAverages = parsedData.initialGeneValueAverages;
+}
+
+
+
+
+/////**** Resume Saved Game ****/////
+
+function resumeState(game){
+	window.requestAnimationFrame(window.resume)
+	resumeSavedGame( game )
+	savedGameData = {}
+	button_game_mode.click()
+	$("#overlay_game_mode_options_div, #overlay_ambient_mode_options_div").fadeOut(500, function(){
+		$(".icon").fadeIn(5000);
+		$("#footer_div").fadeIn(5000);
+	});
+	gameHasBegun = true
+	window.requestAnimationFrame(window.pause)
 }
