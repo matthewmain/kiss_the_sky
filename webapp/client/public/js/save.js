@@ -300,7 +300,7 @@ function resumeSavedGame( retrievedGameData ) {
 	readyForNextMilestoneAnnouncement = parsedData.readyForNextMilestoneAnnouncement;
 	milestoneFirstRedHasBeenRun = parsedData.milestoneFirstRedHasBeenRun;
 	milestoneThirdHasBeenRun = parsedData.milestoneThirdHasBeenRun;
-	milestoneHalfHasBeenRun = parsedData.milestoneHalfHasBeenRu;
+	milestoneHalfHasBeenRun = parsedData.milestoneHalfHasBeenRun;
 	milestoneTwoThirdsHasBeenRun = parsedData.milestoneTwoThirdsHasBeenRun;
 	milestone90HasBeenRun = parsedData.milestone90HasBeenRun;
 	//time
@@ -329,10 +329,8 @@ function resumeState( game ) {
 	$(".icon, #footer_div").show();
 	if ( ambientMode ) { displayAmbientModeUI(); } else { displayGameModeUI(); }
 	pause();
-
 	renderBackground(); 
 	renderPlants();
-	
 	display();
 }
 
