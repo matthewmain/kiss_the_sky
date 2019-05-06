@@ -285,9 +285,23 @@ function removeModals() {
   infoModalOpenWhilePaused = false;
 }
 
-function omitRedFlowerFooterContent() {
-  $("#height_text, #tag_div, #tag_svg, #tag_content, #percent").css("visibility", "hidden");
+
+///display game mode footer content
+function displayGameModeUI() {
+  viewRedFlowerIndicator = true;
+  $("#height_text, #tag_div, #tag_svg, #tag_content, #percent").css("visibility", "visible");
+  $("#season_left, #pie_svg_left").css("display", "inline");
+  $("#ambient_footer_right").css("display", "none");
 }
+
+///display ambient mode footer
+function displayAmbientModeUI() {
+  viewRedFlowerIndicator = false;
+  $("#height_text, #tag_div, #tag_svg, #tag_content, #percent").css("visibility", "hidden");
+  $("#season_left, #pie_svg_left").css("display", "none");
+  $("#ambient_footer_right").css("display", "block");
+}
+
 
 
 
@@ -423,6 +437,8 @@ $(window).resize(function() {
 $("#button_game_mode").click(function(){
   $("#landing_page_div").hide();
   $("#overlay_game_mode_options_div").css("visibility", "visible");
+  ambientMode = false;
+  displayGameModeUI();
 });
 
 ///choose ambient mode on landing
@@ -430,10 +446,7 @@ $("#button_ambient_mode").click(function(){
   $("#landing_page_div").hide();
   $("#overlay_ambient_mode_options_div").css("visibility", "visible");
   ambientMode = true;
-  viewRedFlowerIndicator = false;
-  omitRedFlowerFooterContent();
-  $("#season_left, #pie_svg_left").css("display", "none");
-  $("#ambient_footer_right").css("display", "block");
+  displayAmbientModeUI();
 });
 
 ///select beginner on game options overlay
@@ -596,13 +609,13 @@ $("#screenshot").click(function(){
 ///save icon (saves the game)
 $("#icon_save").click(function(){
   //(placeholder until database is set up...)
-  if ( Object.keys(savedGameData).length === 0 ) {
+  if ( Object.keys(localSavedGameData).length === 0 ) {
     if ( confirm("Save your progress here?") ) { 
       saveGame(); 
     } 
   } else {
-    if ( confirm("Resume where you last saved your progress?\n(This will delete your old save point ... for now. But you can save again after this.)") ) { resumeSavedGame( savedGameData ); 
-      savedGameData = {};  // removes previous saved game so new game can be saved
+    if ( confirm("Resume where you last saved your progress?\n(This will delete your old save point ... for now. But you can save again after this.)") ) { resumeSavedGame( localSavedGameData ); 
+      localSavedGameData = {};  // removes previous saved game so new game can be saved
     }
   }
 });
