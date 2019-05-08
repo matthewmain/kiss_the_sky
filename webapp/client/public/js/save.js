@@ -48,6 +48,7 @@ function saveGame() {
 	localSavedGameData.milestoneHalfHasBeenRun = milestoneHalfHasBeenRun;
 	localSavedGameData.milestoneTwoThirdsHasBeenRun = milestoneTwoThirdsHasBeenRun;
 	localSavedGameData.milestone90HasBeenRun = milestone90HasBeenRun;
+	localSavedGameData.gameHasEnded = gameHasEnded;
 	//time
 	localSavedGameData.worldTime = worldTime;
 	localSavedGameData.currentYear = currentYear;
@@ -286,7 +287,9 @@ function resumeSavedGame( retrievedGameData ) {
 	//settings
 	ambientMode = parsedData.ambientMode;
 	gameDifficulty = parsedData.gameDifficulty;
-	endOfGameAnnouncementDisplayed = parsedData.endOfGameAnnouncementDisplayed;
+
+	//endOfGameAnnouncementDisplayed = parsedData.endOfGameAnnouncementDisplayed;  //{{{{{{{{xxx}}}}}}}}
+
 	//progress
 	highestRedFlowerPct = parsedData.highestRedFlowerPct;
 	$("#height_number").text( Math.floor( highestRedFlowerPct ) );
@@ -303,6 +306,7 @@ function resumeSavedGame( retrievedGameData ) {
 	milestoneHalfHasBeenRun = parsedData.milestoneHalfHasBeenRun;
 	milestoneTwoThirdsHasBeenRun = parsedData.milestoneTwoThirdsHasBeenRun;
 	milestone90HasBeenRun = parsedData.milestone90HasBeenRun;
+	gameHasEnded = false;  // sets to false so that end-of-game displays will run on resume
 	//time
 	worldTime = parsedData.worldTime;
 	currentYear = parsedData.currentYear;
@@ -317,7 +321,19 @@ function resumeSavedGame( retrievedGameData ) {
 	ccs2 = parsedData.ccs2;  // current color stop 2
 	ccs3 = parsedData.ccs3;  // current color stop 3
 	ccs4 = parsedData.ccs4;  // current color stop 4
+	//end of game display remove & reset
+
+  								if ( endOfGameAnnouncementDisplayed ) { stopGameWinFlowersAnimation = true; }  // {{{{xxx}}}}
+
+	$(".end_of_game_div ").css({ visibility: "hidden", opacity: "0"});
+  $("#game_win_mode").text( "" );
+  $("#hundred_pct_large_height_announcement").css({ fontSize: "100pt", letterSpacing: "0", opacity: "0"});
+  $(".flower").remove();
+  $(".game_win_svg").hide();
 	//misc.
+	$("#landing_page_div, #overlay_game_mode_options_div, #overlay_ambient_mode_options_div").hide();
+	$(".icon, #footer_div").show();
+	$(".announcement").finish();
 	initialGeneValueAverages = parsedData.initialGeneValueAverages;
 }
 
@@ -325,8 +341,6 @@ function resumeSavedGame( retrievedGameData ) {
 function resumeState( game ) {
 	resumeSavedGame( game );
 	localSavedGameData = {};
-	$("#landing_page_div, #overlay_game_mode_options_div, #overlay_ambient_mode_options_div").hide();
-	$(".icon, #footer_div").show();
 	if ( ambientMode ) { displayAmbientModeUI(); } else { displayGameModeUI(); }
 	pause();
 	renderBackground(); 

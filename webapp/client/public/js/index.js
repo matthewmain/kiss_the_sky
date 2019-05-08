@@ -53,14 +53,15 @@ var sunShadeHandles = [], sunShadeHandleCount = 0;
 var sunShades = [], sunShadeCount = 0;
 var shadows = [], shadowCount = 0;
 var initialGeneValueAverages = {};
-var highestRedFlowerPct = 0;
 var gameHasBegun = false;  // (whether user has initiated game play)
+var highestRedFlowerPct = 0;
 var readyForEliminationDemo = false;  // (whether first year and spring announcement has completed)
 var readyForChangeDemo = false;  // (whether first year and summer announcement has completed)
 var eliminationDemoHasBegun = false;  // (whether instructional elimination demo has begun running)
 var changeDemoHasBegun = false;  // (whether instructional mutation/recessive trait demo has begun running)
 var allDemosHaveRun = false;
 var gamePaused = false;  // (whether game is paused)
+var gameHasEnded = false;
 
 
 
@@ -899,10 +900,12 @@ function checkForGameOver() {
       if ( plants[i].isAlive ) { allDead = false; }
     }
     if ( allDead ) {
-      $("#season_announcement").finish();
+      gameHasEnded = true;
+      $(".announcement").finish();
       $("#game_over_div").css( "visibility", "visible" ).animate({ opacity: 1 }, 3000, "linear" );
       endOfGameAnnouncementDisplayed = true;
-      pause();
+      pause(); 
+      $("#modal_play").css("visibility", "hidden");  // hides play modal that normally appears when paused
     }
   }
 }
@@ -910,10 +913,16 @@ function checkForGameOver() {
 ///check for game win (whether a red flower reaches 100% screen height)  
 function checkForGameWin() {
   if ( gameHasBegun && !endOfGameAnnouncementDisplayed && highestRedFlowerPct === 100) {
-    pause();
+    gameHasEnded = true;
+    $(".announcement").finish();
+    pause(); 
+    $("#modal_play").css("visibility", "hidden");  // hides play modal that normally appears when paused
     runGameWinFlowersAnimation();
   }
 }
+
+
+                    var stopGameWinFlowersAnimation = false;  // {{{{{{xxx}}}}}}
 
 ///game win animation
 function runGameWinFlowersAnimation() {
@@ -932,7 +941,7 @@ function runGameWinFlowersAnimation() {
       letterSpacing: "+=3pt",
       opacity: 0,    
     }, 700, "linear", function() {
-      (function flowerLoop( i ) {  // flower splatter (uses self-invoking function (for looping with timeouts)
+      (function flowerLoop( i ) {  // flower splatter (uses self-invoking function (for looping with timeouts))
         $(".announcement").finish();
         var tint = Tl.rib(1,2) === 1 ? "light" : "dark"; 
         var top = Tl.rib( 0, 100 );
@@ -959,8 +968,20 @@ function runGameWinFlowersAnimation() {
             case 330: $("#game_win_mode_text").fadeIn(1500); break;
             case 270: $(".button_game_win_play_again").fadeIn(3000);
           }
+
+                    try {  // {{{{{{xxx}}}}}}
+                      console.log(i);
+                      if( stopGameWinFlowersAnimation ) throw "runGameWinFlowersAnimation() has been aborted";
+                    }
+                    catch( message ) {
+                      i = 1;
+                      stopGameWinFlowersAnimation = false;
+                      resume();
+                      console.log( message );
+                    }
+
           if ( --i ) flowerLoop( i );  //  decrements i and recursively calls loop function if i > 0 (i.e., true)
-        }, delay);  // sets delay with current delay variable
+        }, delay );  // sets delay with current delay variable
       })( totalFlowers );  // sets the loop's total iteration count as the argument of the self-invoking function
     });
 }
