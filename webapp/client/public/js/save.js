@@ -33,6 +33,9 @@ function saveGame() {
 	localSavedGameData.gameDifficulty = gameDifficulty;
 	localSavedGameData.ambientMode = ambientMode;
 	localSavedGameData.endOfGameAnnouncementDisplayed = endOfGameAnnouncementDisplayed;
+
+		//localSavedGameData.endOfGameAnnouncementComplete = endOfGameAnnouncementComplete; // {{{{{xxx}}}}}
+
 	//progress
 	localSavedGameData.gameHasBegun = gameHasBegun;
 	localSavedGameData.highestRedFlowerPct = highestRedFlowerPct;
@@ -287,8 +290,9 @@ function resumeSavedGame( retrievedGameData ) {
 	//settings
 	ambientMode = parsedData.ambientMode;
 	gameDifficulty = parsedData.gameDifficulty;
+	endOfGameAnnouncementDisplayed = parsedData.endOfGameAnnouncementDisplayed;
 
-	//endOfGameAnnouncementDisplayed = parsedData.endOfGameAnnouncementDisplayed;  //{{{{{{{{xxx}}}}}}}}
+		//endOfGameAnnouncementComplete = parsedData.endOfGameAnnouncementComplete;   //{{{{{{{{xxx}}}}}}}}
 
 	//progress
 	highestRedFlowerPct = parsedData.highestRedFlowerPct;
@@ -323,14 +327,14 @@ function resumeSavedGame( retrievedGameData ) {
 	ccs4 = parsedData.ccs4;  // current color stop 4
 	//end of game display remove & reset
 
-  								if ( endOfGameAnnouncementDisplayed ) { stopGameWinFlowersAnimation = true; }  // {{{{xxx}}}}
+	  // if ( gameWinFlowerAnimationDisplayed ) {  // {{{{xxx}}}}
 
-	$(".end_of_game_div ").css({ visibility: "hidden", opacity: "0"});
-  $("#game_win_mode").text( "" );
-  $("#hundred_pct_large_height_announcement").css({ fontSize: "100pt", letterSpacing: "0", opacity: "0"});
-  $(".flower").remove();
-  $(".game_win_svg").hide();
-	//misc.
+			stopGameWinFlowersAnimation = true; 
+			clearGameEndDisplays();
+
+		// }
+
+	//initiation
 	$("#landing_page_div, #overlay_game_mode_options_div, #overlay_ambient_mode_options_div").hide();
 	$(".icon, #footer_div").show();
 	$(".announcement").finish();

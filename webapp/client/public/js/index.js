@@ -913,6 +913,9 @@ function checkForGameOver() {
 ///check for game win (whether a red flower reaches 100% screen height)  
 function checkForGameWin() {
   if ( gameHasBegun && !endOfGameAnnouncementDisplayed && highestRedFlowerPct === 100) {
+
+      stopGameWinFlowersAnimation = false; // {{{{xxx}}}}
+
     gameHasEnded = true;
     $(".announcement").finish();
     pause(); 
@@ -923,10 +926,17 @@ function checkForGameWin() {
 
 
                     var stopGameWinFlowersAnimation = false;  // {{{{{{xxx}}}}}}
+                    var gameWinFlowerAnimationComplete = false;
 
 ///game win animation
 function runGameWinFlowersAnimation() {
+
+    // gameWinFlowerAnimationDisplayed = true;  // {{{{{{xxx}}}}}}
+    // var previousSessionAnimationComplete = gameWinFlowerAnimationComplete; 
+    // gameWinFlowerAnimationComplete = false;
+
   var totalFlowers = 600;
+  $(".announcement").finish();
   $("#game_win_div").css({ visibility: "visible", opacity: "1"});
   $("#game_win_gen_number").text( currentYear.toString().replace(/0/g,"O") );  // (replace is for dotted Nunito zero)
   $("#game_win_mode").text( gameDifficulty.toUpperCase() );
@@ -942,7 +952,6 @@ function runGameWinFlowersAnimation() {
       opacity: 0,    
     }, 700, "linear", function() {
       (function flowerLoop( i ) {  // flower splatter (uses self-invoking function (for looping with timeouts))
-        $(".announcement").finish();
         var tint = Tl.rib(1,2) === 1 ? "light" : "dark"; 
         var top = Tl.rib( 0, 100 );
         var left = Tl.rib( 0, 100 );
@@ -966,23 +975,35 @@ function runGameWinFlowersAnimation() {
             case 410: $("#game_win_SKY").fadeIn(100); break;
             case 380: $("#game_win_gen_count_text").fadeIn(1500); break;
             case 330: $("#game_win_mode_text").fadeIn(1500); break;
-            case 270: $(".button_game_win_play_again").fadeIn(3000);
+            case 270: $(".button_game_win_play_again").fadeIn(3000); break;
+            case 1: gameWinFlowerAnimationComplete = true;
           }
 
                     try {  // {{{{{{xxx}}}}}}
-                      console.log(i);
-                      if( stopGameWinFlowersAnimation ) throw "runGameWinFlowersAnimation() has been aborted";
-                    }
-                    catch( message ) {
-                      i = 1;
-                      console.log( message );
-                      stopGameWinFlowersAnimation = false;
-                    }
+                      if ( stopGameWinFlowersAnimation ) {
+                        clearGameEndDisplays();
+                        stopGameWinFlowersAnimation = false;
+                        i = 1;  // sets iterator at 1 to stop flowerLoop() recursion
+                      }
+                    } catch( err ) { }
 
           if ( --i ) flowerLoop( i );  //  decrements i and recursively calls loop function if i > 0 (i.e., true)
         }, delay );  // sets delay with current delay variable
       })( totalFlowers );  // sets the loop's total iteration count as the argument of the self-invoking function
     });
+}
+
+///clears game win flowers animation
+function clearGameEndDisplays() {
+  $(".flower").remove();
+  $(".end_of_game_div").css({ visibility: "hidden", opacity: "0"});
+  $("#game_win_mode").text( "" );
+  $("#hundred_pct_large_height_announcement").css({ fontSize: "100pt", letterSpacing: "0", opacity: "0"});
+  $(".game_win_svg").hide();
+  $(".game_win_text").hide();
+  $(".button_game_win_play_again").hide();
+  endOfGameAnnouncementDisplayed = false;
+  gameWinFlowerAnimationDisplayed = false;
 }
 
 
