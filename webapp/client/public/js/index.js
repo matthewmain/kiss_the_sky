@@ -975,9 +975,8 @@ function runGameWinFlowersAnimation() {
                     }
                     catch( message ) {
                       i = 1;
-                      stopGameWinFlowersAnimation = false;
-                      resume();
                       console.log( message );
+                      stopGameWinFlowersAnimation = false;
                     }
 
           if ( --i ) flowerLoop( i );  //  decrements i and recursively calls loop function if i > 0 (i.e., true)
