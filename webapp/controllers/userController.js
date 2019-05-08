@@ -64,6 +64,20 @@ const UserControllers = {
       })
   },
 
+  checkAvailable: function(req, res) {
+    console.log('\n👥 📝 Checking if '+JSON.stringify(req.body)+' is available 📝 👥')
+    const field = Object.keys(req.body)[0]
+    db.User.findOne(req.body)
+      .then(user=> {
+        if (user) {
+          res.json({ available: false, field: field, value: req.body[field] })
+        } else {
+          res.json({ available: true, field: field, value: req.body[field] })
+        }
+      })
+      .catch(err => res.json(err))
+  }
+
 }
 
 module.exports = UserControllers

@@ -20,6 +20,9 @@ export default {
   signUp: function(newUser){
     return axios.post("/api/user/signup", newUser)
   },
+  checkAvailable: function(field){
+    return axios.post("/api/user/checkavailable", field)
+  },
 
   // 💾 🌺
   savedGames: function(user){
