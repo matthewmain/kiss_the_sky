@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import "./dashboard.sass"
 
-import Save from "./../../utils/save.js"
+import Save from "./../../api/save.js"
 
 class Dashboard extends Component {
 

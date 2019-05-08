@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="111px" height="100px" viewBox="0 0 111 100" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 52.6 (67491) - http://www.bohemiancoding.com/sketch -->
+    <title>icon_restart</title>
+    <desc>Created with Sketch.</desc>
+    <g id="icon_restart" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" stroke-linecap="round">
+        <path d="M28.9058632,84.3871047 C37.3064166,92.2122533 48.5775275,97 60.9676464,97 C86.942898,97 108,75.9573832 108,50 C108,24.0426168 86.942898,3 60.9676464,3 C35.8271639,3 15.2938005,22.7118522 14,47.5131783" id="Path" stroke="#74756F" stroke-width="6" stroke-linejoin="round" fill-rule="nonzero"></path>
+        <polyline id="Path-4" stroke="#74756F" stroke-width="6" fill-rule="nonzero" points="3 33 13.5265278 50 29 34.936438"></polyline>
+    </g>
+</svg>

@@ -1,8 +1,13 @@
 import React, { Component } from 'react'
 import Icon_exit_modal from "./../../images/icon_exit_modal.svg"
-import "./signUp_logIn.sass"
+import Icon_loading from "./../../images/icon_loading.svg"
+import Icon_check_green from "./../../images/icon_check_green.svg"
+import Icon_exit_modal_red from "./../../images/icon_exit_modal_red.svg"
 
-import User from "./../../utils/user.js"
+import "./signUp_logIn.sass"
+import "./loading.sass"
+
+import User from "./../../api/user.js"
 
 class SignUp extends Component {
 
@@ -19,7 +24,7 @@ class SignUp extends Component {
       routeTo: "login",
       option1: {
         message: "It's cool. I just want to ",
-        link: "keep playing without signing in"
+        link: "keep playing without signing in."
       },
       option2: {
         message: "Already a member? ",
@@ -61,6 +66,45 @@ class SignUp extends Component {
     this.setState({[events.target.name]: events.target.value})
   }
 
+  focusIn = (field)=>{
+    this.setState({
+      [field+"State"]: false,
+      [field+"FontColor"]: ""
+    })
+  }
+
+  focusOut = (field)=>{
+    if (
+      this.state[field] !== ""
+      && this.props.appState.signUpLogIn === "signup"
+      && ["username","email"].includes(field)
+    ) {
+      this.setState({
+        [field+"State"]: Icon_loading,
+        [field+"FontColor"]: "#666"
+      })
+      setTimeout(()=>{  // 🚨 Note out for projection (or remove after letting sit for awhile. )
+        User.checkAvailable({[field]: this.state[field]})
+          .then( resp => {
+            if (resp.available) {
+              this.setState({
+                [field+"State"]: Icon_check_green,
+                [field+"FontColor"]: "#51C856"
+              })
+            } else {
+              this.setState({
+                [field+"State"]: Icon_exit_modal_red,
+                [field+"FontColor"]: "#A70000"
+              })
+            }
+          })
+      },1000)
+
+    } else { // the password and confirm icons don't need the api call, but leverage the in/out input state (So, here we just need to say true for that to take effect.)
+      this.setState({ [field+"State"]: true })
+    }
+  }
+
   submit = ()=>{
     if (this.props.appState.signUpLogIn === "login") {
       User.logIn(this.props.appState, this.state)
@@ -79,6 +123,8 @@ class SignUp extends Component {
 
     const route = this.props.appState.signUpLogIn || "login"
     const toggle = route === "login" ? "signup" : "login"
+    let title = this.state[route].title
+    if (!window.gameHasBegun) title = "Welcome to Kiss The Sky!"
 
     return (
       <div className="signup-login">
@@ -94,7 +140,7 @@ class SignUp extends Component {
 
           <div className="title">
 
-            {this.state[route].title}
+            {title}
 
           </div>
 
@@ -106,32 +152,77 @@ class SignUp extends Component {
 
           <div className="input-container">
 
-            <input
-              name="username"
-              placeholder="Username"
-              spellCheck="false"
-              value={this.state.username}
-              onChange={this.handleInput}
-            />
+            <div className="inputs-container"
+              onFocus={()=>{this.focusIn("username")}}
+              onBlur={()=>{this.focusOut("username")}}
+            >
+              <input
+                name="username"
+                placeholder="Username"
+                spellCheck="false"
+                value={this.state.username}
+                onChange={this.handleInput}
+                style={{color: this.state.usernameFontColor}}
+              />
+              {(this.props.appState.signUpLogIn === "signup"
+                && this.state.usernameState
+                && this.state.username !== "")  &&
+                <img
+                  className={"icon_loading "
+                  +(this.state.usernameState === Icon_loading ? " rotate" : "")}
+                  src={this.state.usernameState} alt={this.state.usernameState}
+                />
+              }
+            </div>
 
             {route === "signup" && <>
-              <input
-                name="email"
-                placeholder="Email"
-                spellCheck="false"
-                value={this.state.email}
-                onChange={this.handleInput}
-              />
-              <input
-                name="password"
-                type="password"
-                placeholder="Password"
-                spellCheck="false"
-                autoComplete="new-password"
-                value={this.state.password}
-                onChange={this.handleInput}
-              />
-            </>}
+
+              <div className="inputs-container"
+                onFocus={()=>{this.focusIn("email")}}
+                onBlur={()=>{this.focusOut("email")}}
+              >
+                <input
+                  name="email"
+                  placeholder="Email"
+                  spellCheck="false"
+                  value={this.state.email}
+                  onChange={this.handleInput}
+                  style={{color: this.state.emailFontColor}}
+                />
+                { (this.state.emailState && this.state.email !== "") &&
+                  <img className={"icon_loading "
+                    +(this.state.emailState === Icon_loading ? " rotate" : "")}
+                    src={this.state.emailState} alt={this.state.emailState}
+                  />
+                }
+              </div>
+
+              <div className="inputs-container"
+                onFocus={()=>{this.focusIn("password")}}
+                onBlur={()=>{this.focusOut("password")}}
+              >
+                <input
+                  name="password"
+                  type="password"
+                  placeholder="Password"
+                  spellCheck="false"
+                  autoComplete="new-password"
+                  value={this.state.password}
+                  onChange={this.handleInput}
+                />
+                {(this.state.password !== "" && this.state.passwordState) &&
+                  <img className="icon_loading"
+                    src={
+                      this.state.password.length >= 6
+                      ? Icon_check_green
+                      : Icon_exit_modal_red
+                    }
+                    alt="Password Check Icon"
+                  />
+                }
+              </div>
+
+              </>}
 
             {route === "login" &&
               <input
@@ -145,14 +236,30 @@ class SignUp extends Component {
             }
 
             {route === "signup" &&
-              <input
-                name="confirm"
-                type="password"
-                placeholder="Confirm Password"
-                spellCheck="false"
-                value={this.state.confirm}
-                onChange={this.handleInput}
-              />
+              <div className="inputs-container"
+                onFocus={()=>{this.focusIn("confirm")}}
+                onBlur={()=>{this.focusOut("confirm")}}
+              >
+                <input
+                  name="confirm"
+                  type="password"
+                  placeholder="Confirm Password"
+                  spellCheck="false"
+                  value={this.state.confirm}
+                  onChange={this.handleInput}
+                />
+                {(this.state.confirm !== "" && this.state.confirmState) &&
+                  <img className="icon_loading"
+                    src={
+                      (this.state.password.length >= 6
+                      && this.state.password === this.state.confirm)
+                      ? Icon_check_green
+                      : Icon_exit_modal_red
+                    }
+                    alt="Password Check Icon"
+                  />
+                }
+              </div>
             }
 
           </div>

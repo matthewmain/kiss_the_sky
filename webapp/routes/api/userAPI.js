@@ -13,4 +13,7 @@ router.route('/logout')
 router.route("/signup")
   .post(userController.signUp)
 
+router.route("/checkavailable")
+  .post(userController.checkAvailable)
+
 module.exports = router

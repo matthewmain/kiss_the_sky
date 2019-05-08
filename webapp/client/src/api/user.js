@@ -61,6 +61,13 @@ export default {
         .then( resp => this.updateUser(app, resp.data) )
         .catch( err => console.log(err) )
         .finally( ()=>{ app.set({forceClose: true}) } )
+    },
+
+    checkAvailable: async function(field) {
+      console.log('📝 Check if '+JSON.stringify(field)+' is available')
+      return API.checkAvailable(field)
+        .then( resp => resp.data )
+        .catch( err => console.log(err) )
     }
 
 }

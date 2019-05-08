@@ -5,8 +5,8 @@ import Icon_menu_close from './../../images/icon_menu_close.svg'
 import Flower_avatar from './../../images/flower_avatar.svg'
 import Title_header_dark from './../../images/title_header_dark.svg'
 
-import Save from "./../../utils/save.js"
-import User from "./../../utils/user.js"
+import Save from "./../../api/save.js"
+import User from "./../../api/user.js"
 
 import "./menu.sass"
 
