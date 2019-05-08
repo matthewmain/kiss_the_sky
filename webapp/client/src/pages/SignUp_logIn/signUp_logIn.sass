@@ -1,6 +1,5 @@
 .signup-login *
-  font-family: "Dosis", Avenir, sans-serif
-  letter-spacing: 1px
+  font-family: "Gill Sans", Avenir, sans-serif
 .signup-login
   position: absolute
   top: 0px
@@ -24,38 +23,46 @@
     box-shadow: inset 0px 1px 1px 0px rgba(0,0,0,0.3), 0px 0px 4px 0px rgba(0,0,0,0.3)
   #icon_exit_modal
     position: absolute
-    right: 0px
+    right: 3px
+    top: 5px
     width: 40px
     cursor: pointer
+    z-index: 3
   .title
-    font-size: 18px
-    letter-spacing: 1px
-    font-weight: 1000
+    font-size: 16px
+    font-weight: 400
+    opacity: 0.8
     padding-top: 50px
   .sub-title
-    font-size: 14px
-    color: #8D8E87
+    font-size: 13px
+    font-weight: 200
+    letter-spacing: 0.4px
+    color: #767676
     padding: 5px
   .input-container
     position: absolute
-    top: 45%
+    top: 43%
     left: 50%
     width: 100%
     transform: translate(-50%, -50%)
   input
-    font-size: 16px
-    width: 50%
+    font-size: 13px
+    width: 42%
     border: none
     outline: none
     border-bottom: solid 1px
-    border-color: #333333
+    border-color: rgba(51,51,51,0.75)
     padding-left: 5px
-    margin-top: 20px
+    padding-bottom: 2px
+    margin-top: 22px
+    font-weight: 100
     text-decoration: none
     -webkit-box-shadow: 0 0 0px 1000px #FFFFFF inset
+  input::placeholder
+    opacity: 0.8
   .bottom-container
     position: absolute
-    bottom: 30px
+    top: 73%
     left: 0px
     right: 0px
   .btn
@@ -64,9 +71,8 @@
     font-weight: 300
     font-size: 15px
     letter-spacing: 3px
-    width: 210px
+    width: 205px
     height: 40px
-    box-shadow: 0px 2px 4px 0px rgba(0,0,0,0.5)
     border: none
     border-radius: 1px
     cursor: pointer
@@ -76,7 +82,7 @@
     opacity: 0.8
     transition: opacity .3s
   .options-container
-    font-size: 12px
+    font-size: 10px
   .keep-playing
     padding-bottom: 7px
   .link

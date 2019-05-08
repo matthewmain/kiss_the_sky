@@ -1,8 +1,8 @@
 import React, { Component } from 'react'
 import { BrowserRouter, Route, Switch } from "react-router-dom"
 
-import User from "./utils/user.js"
-import Manifest from "./utils/manifest.js"
+import User from "./api/user.js"
+import Manifest from "./api/manifest.js"
 
 import "./styles/app.sass"
 
