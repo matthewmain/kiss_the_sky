@@ -54,14 +54,19 @@ var sunShades = [], sunShadeCount = 0;
 var shadows = [], shadowCount = 0;
 var initialGeneValueAverages = {};
 var gameHasBegun = false;  // (whether user has initiated game play)
+var gamePaused = false;  // (whether game is paused)
 var highestRedFlowerPct = 0;
 var readyForEliminationDemo = false;  // (whether first year and spring announcement has completed)
 var readyForChangeDemo = false;  // (whether first year and summer announcement has completed)
 var eliminationDemoHasBegun = false;  // (whether instructional elimination demo has begun running)
 var changeDemoHasBegun = false;  // (whether instructional mutation/recessive trait demo has begun running)
 var allDemosHaveRun = false;
-var gamePaused = false;  // (whether game is paused)
 var gameHasEnded = false;
+var endOfGameAnnouncementDisplayed = false;
+var gameOverDisplayed = false;
+var gameWinFlowerAnimationDisplayed = false;
+var stopGameWinFlowersAnimation = false;
+var gameWinFlowerAnimationComplete = false; 
 
 
 
@@ -894,53 +899,53 @@ function renderDemosInFirstYear() {
 
 ///checks for game over (whether all plants have died) displays game over overlay and try again button
 function checkForGameOver() {
-  if ( yearTime === spL + suL + faL + wiL/2 ) {
-    var allDead = true;
-    for ( var i=0; i<plants.length; i++ ) {
-      if ( plants[i].isAlive ) { allDead = false; }
-    }
-    if ( allDead ) {
+  if ( yearTime === spL + suL + faL + Math.round(wiL/2) ) {
+    if ( !gameOverDisplayed && allPlantsAreDead() ) {
       gameHasEnded = true;
-      $(".announcement").finish();
-      $("#game_over_div").css( "visibility", "visible" ).animate({ opacity: 1 }, 3000, "linear" );
-      endOfGameAnnouncementDisplayed = true;
-      pause(); 
-      $("#modal_play").css("visibility", "hidden");  // hides play modal that normally appears when paused
+      displayGameOver();
     }
   }
+}
+
+///checks if all plants are dead
+function allPlantsAreDead() {
+  var allDead = true;
+  for ( var i=0; i<plants.length; i++ ) {
+    if ( plants[i].isAlive ) { allDead = false; }
+  }
+  return allDead;
+}
+
+///displays game over overlay
+function displayGameOver() {
+  pause(); 
+  $("#modal_play").css("visibility", "hidden");  // hides play modal that normally appears when paused
+  endOfGameAnnouncementDisplayed = true;
+  gameOverDisplayed = true;
+  $(".announcement").finish();
+  $("#game_over_div").css( "visibility", "visible" ).animate({ opacity: 1 }, 3000, "linear" );
 }
 
 ///check for game win (whether a red flower reaches 100% screen height)  
 function checkForGameWin() {
-  if ( gameHasBegun && !endOfGameAnnouncementDisplayed && highestRedFlowerPct === 100) {
-
-      stopGameWinFlowersAnimation = false; // {{{{xxx}}}}
-
+  if ( !gameWinFlowerAnimationDisplayed && highestRedFlowerPct === 100) {
+    stopGameWinFlowersAnimation = false;
     gameHasEnded = true;
-    $(".announcement").finish();
-    pause(); 
-    $("#modal_play").css("visibility", "hidden");  // hides play modal that normally appears when paused
     runGameWinFlowersAnimation();
   }
 }
 
-
-                    var stopGameWinFlowersAnimation = false;  // {{{{{{xxx}}}}}}
-                    var gameWinFlowerAnimationComplete = false;
-
 ///game win animation
 function runGameWinFlowersAnimation() {
-
-    // gameWinFlowerAnimationDisplayed = true;  // {{{{{{xxx}}}}}}
-    // var previousSessionAnimationComplete = gameWinFlowerAnimationComplete; 
-    // gameWinFlowerAnimationComplete = false;
-
-  var totalFlowers = 600;
+  pause(); 
+  $("#modal_play").css("visibility", "hidden");  // hides play modal that normally appears when paused
+  endOfGameAnnouncementDisplayed = true;
+  gameWinFlowerAnimationDisplayed = true;
   $(".announcement").finish();
   $("#game_win_div").css({ visibility: "visible", opacity: "1"});
   $("#game_win_gen_number").text( currentYear.toString().replace(/0/g,"O") );  // (replace is for dotted Nunito zero)
   $("#game_win_mode").text( gameDifficulty.toUpperCase() );
-  endOfGameAnnouncementDisplayed = true;
+  var totalFlowers = 600;
   $("#hundred_pct_large_height_announcement")  // initial large 100% text burst
     .animate({ 
       fontSize: "+=10pt",
@@ -978,32 +983,44 @@ function runGameWinFlowersAnimation() {
             case 270: $(".button_game_win_play_again").fadeIn(3000); break;
             case 1: gameWinFlowerAnimationComplete = true;
           }
-
-                    try {  // {{{{{{xxx}}}}}}
-                      if ( stopGameWinFlowersAnimation ) {
-                        clearGameEndDisplays();
-                        stopGameWinFlowersAnimation = false;
-                        i = 1;  // sets iterator at 1 to stop flowerLoop() recursion
-                      }
-                    } catch( err ) { }
-
+          try {  // try-catch block allows game win flowers animation termination upon resumed saved game
+            if ( stopGameWinFlowersAnimation ) {
+              i = 1;  // sets iterator at 1 to stop flowerLoop() recursion when next checked
+              clearGameEndDisplays();
+              replaceGameEndDisplays();
+            }
+          } catch( err ) { }
           if ( --i ) flowerLoop( i );  //  decrements i and recursively calls loop function if i > 0 (i.e., true)
         }, delay );  // sets delay with current delay variable
       })( totalFlowers );  // sets the loop's total iteration count as the argument of the self-invoking function
     });
 }
 
-///clears game win flowers animation
+///clears game end displays (for resuming a saved game after the end of a current game)
 function clearGameEndDisplays() {
-  $(".flower").remove();
   $(".end_of_game_div").css({ visibility: "hidden", opacity: "0"});
+  $(".flower").remove();
   $("#game_win_mode").text( "" );
   $("#hundred_pct_large_height_announcement").css({ fontSize: "100pt", letterSpacing: "0", opacity: "0"});
   $(".game_win_svg").hide();
   $(".game_win_text").hide();
   $(".button_game_win_play_again").hide();
-  endOfGameAnnouncementDisplayed = false;
+  gameOverDisplayed = false;
   gameWinFlowerAnimationDisplayed = false;
+  gameWinFlowerAnimationComplete = false;
+  gameHasEnded = false;
+}
+
+/// replaces game end displays (for resuming a game that has been saved after the end of that game)
+function replaceGameEndDisplays() {
+  if ( endOfGameAnnouncementDisplayed && allPlantsAreDead() ) {
+    displayGameOver();
+  } else if ( endOfGameAnnouncementDisplayed && highestRedFlowerPct >= 100 ) {
+    stopGameWinFlowersAnimation = false;
+    runGameWinFlowersAnimation();
+  } else {
+    endOfGameAnnouncementDisplayed = false;
+  }
 }
 
 

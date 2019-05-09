@@ -27,10 +27,16 @@ body {
   bottom: 0;
   font-size: 6pt;
   letter-spacing: 0.5px;
+  margin: 0;
   padding: 0 5px 5px 0;
   text-decoration: none;
   color: #777777;
   z-index: 2;
+}
+
+.copyright_link {
+  text-decoration: none;
+  color: #777777;
 }
 
 .hover {
@@ -667,7 +673,7 @@ body {
   font-family: "Nunito", Avenir, sans-serif;
   color: rgb( 130, 0, 0 );
   text-align: center;
-  font-size: 100pt;
+  font-size: 80pt;
   font-weight: 600;
   letter-spacing: 0;
   opacity: 0;

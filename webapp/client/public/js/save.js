@@ -33,9 +33,6 @@ function saveGame() {
 	localSavedGameData.gameDifficulty = gameDifficulty;
 	localSavedGameData.ambientMode = ambientMode;
 	localSavedGameData.endOfGameAnnouncementDisplayed = endOfGameAnnouncementDisplayed;
-
-		//localSavedGameData.endOfGameAnnouncementComplete = endOfGameAnnouncementComplete; // {{{{{xxx}}}}}
-
 	//progress
 	localSavedGameData.gameHasBegun = gameHasBegun;
 	localSavedGameData.highestRedFlowerPct = highestRedFlowerPct;
@@ -291,9 +288,6 @@ function resumeSavedGame( retrievedGameData ) {
 	ambientMode = parsedData.ambientMode;
 	gameDifficulty = parsedData.gameDifficulty;
 	endOfGameAnnouncementDisplayed = parsedData.endOfGameAnnouncementDisplayed;
-
-		//endOfGameAnnouncementComplete = parsedData.endOfGameAnnouncementComplete;   //{{{{{{{{xxx}}}}}}}}
-
 	//progress
 	highestRedFlowerPct = parsedData.highestRedFlowerPct;
 	$("#height_number").text( Math.floor( highestRedFlowerPct ) );
@@ -310,7 +304,7 @@ function resumeSavedGame( retrievedGameData ) {
 	milestoneHalfHasBeenRun = parsedData.milestoneHalfHasBeenRun;
 	milestoneTwoThirdsHasBeenRun = parsedData.milestoneTwoThirdsHasBeenRun;
 	milestone90HasBeenRun = parsedData.milestone90HasBeenRun;
-	gameHasEnded = false;  // sets to false so that end-of-game displays will run on resume
+	gameHasEnded = parsedData.gameHasEnded;
 	//time
 	worldTime = parsedData.worldTime;
 	currentYear = parsedData.currentYear;
@@ -325,19 +319,18 @@ function resumeSavedGame( retrievedGameData ) {
 	ccs2 = parsedData.ccs2;  // current color stop 2
 	ccs3 = parsedData.ccs3;  // current color stop 3
 	ccs4 = parsedData.ccs4;  // current color stop 4
-	//end of game display remove & reset
-
-	  // if ( gameWinFlowerAnimationDisplayed ) {  // {{{{xxx}}}}
-
-			stopGameWinFlowersAnimation = true; 
-			clearGameEndDisplays();
-
-		// }
-
+	//game end display remove & reset
+	if ( gameWinFlowerAnimationDisplayed && !gameWinFlowerAnimationComplete) {
+		stopGameWinFlowersAnimation = true;  // clear & replace game end displays handled in runGameWinFlowersAnimation()
+	} else {
+		clearGameEndDisplays();
+		replaceGameEndDisplays();  // replaces any game end displays running from saved game
+	}
 	//initiation
 	$("#landing_page_div, #overlay_game_mode_options_div, #overlay_ambient_mode_options_div").hide();
 	$(".icon, #footer_div").show();
 	$(".announcement").finish();
+	scaleContent();
 	initialGeneValueAverages = parsedData.initialGeneValueAverages;
 }
 
@@ -346,7 +339,7 @@ function resumeState( game ) {
 	resumeSavedGame( game );
 	localSavedGameData = {};
 	if ( ambientMode ) { displayAmbientModeUI(); } else { displayGameModeUI(); }
-	pause();
+	if ( !endOfGameAnnouncementDisplayed ) { pause(); }
 	renderBackground(); 
 	renderPlants();
 	display();
