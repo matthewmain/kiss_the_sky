@@ -48,6 +48,7 @@ function saveGame() {
 	localSavedGameData.milestoneHalfHasBeenRun = milestoneHalfHasBeenRun;
 	localSavedGameData.milestoneTwoThirdsHasBeenRun = milestoneTwoThirdsHasBeenRun;
 	localSavedGameData.milestone90HasBeenRun = milestone90HasBeenRun;
+	localSavedGameData.gameHasEnded = gameHasEnded;
 	//time
 	localSavedGameData.worldTime = worldTime;
 	localSavedGameData.currentYear = currentYear;
@@ -303,6 +304,7 @@ function resumeSavedGame( retrievedGameData ) {
 	milestoneHalfHasBeenRun = parsedData.milestoneHalfHasBeenRun;
 	milestoneTwoThirdsHasBeenRun = parsedData.milestoneTwoThirdsHasBeenRun;
 	milestone90HasBeenRun = parsedData.milestone90HasBeenRun;
+	gameHasEnded = parsedData.gameHasEnded;
 	//time
 	worldTime = parsedData.worldTime;
 	currentYear = parsedData.currentYear;
@@ -317,7 +319,18 @@ function resumeSavedGame( retrievedGameData ) {
 	ccs2 = parsedData.ccs2;  // current color stop 2
 	ccs3 = parsedData.ccs3;  // current color stop 3
 	ccs4 = parsedData.ccs4;  // current color stop 4
-	//misc.
+	//game end display remove & reset
+	if ( gameWinFlowerAnimationDisplayed && !gameWinFlowerAnimationComplete) {
+		stopGameWinFlowersAnimation = true;  // clear & replace game end displays handled in runGameWinFlowersAnimation()
+	} else {
+		clearGameEndDisplays();
+		replaceGameEndDisplays();  // replaces any game end displays running from saved game
+	}
+	//initiation
+	$("#landing_page_div, #overlay_game_mode_options_div, #overlay_ambient_mode_options_div").hide();
+	$(".icon, #footer_div").show();
+	$(".announcement").finish();
+	scaleContent();
 	initialGeneValueAverages = parsedData.initialGeneValueAverages;
 }
 
@@ -325,10 +338,8 @@ function resumeSavedGame( retrievedGameData ) {
 function resumeState( game ) {
 	resumeSavedGame( game );
 	localSavedGameData = {};
-	$("#landing_page_div, #overlay_game_mode_options_div, #overlay_ambient_mode_options_div").hide();
-	$(".icon, #footer_div").show();
 	if ( ambientMode ) { displayAmbientModeUI(); } else { displayGameModeUI(); }
-	pause();
+	if ( !endOfGameAnnouncementDisplayed ) { pause(); }
 	renderBackground(); 
 	renderPlants();
 	display();

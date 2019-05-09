@@ -26,7 +26,6 @@ var ambientMode = false;
 var infoModalOpen = false;
 var infoModalOpenWhilePaused = false;
 var restartModalOpen = false;
-var endOfGameAnnouncementDisplayed = false;
 
 
 
@@ -74,11 +73,11 @@ function attachHeaderAndFooter() {
   footerDiv.style.width = canvasContainerDiv.style.width;
   footerDiv.style.height = canvasHeight*0.075+"px";
   footerDiv.style.top = canvasTop+canvasHeight+"px";
-  scaleFooterContent();
+  scaleContent();
 }
 
 ///scales text content down for smaller window sizes
-function scaleFooterContent() {
+function scaleContent() {
   if ( $("#canvas_container_div").width() < 230 ) {
     $(".footer_text").css({ fontSize: "4pt", top: "1px" });
     $("#pie_svg_left").css({ top: "7.4px" });
