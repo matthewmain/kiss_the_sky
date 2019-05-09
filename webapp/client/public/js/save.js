@@ -321,10 +321,10 @@ function resumeSavedGame( retrievedGameData ) {
 	ccs4 = parsedData.ccs4;  // current color stop 4
 	//game end display remove & reset
 	if ( gameWinFlowerAnimationDisplayed && !gameWinFlowerAnimationComplete) {
-		stopGameWinFlowersAnimation = true;  // clear & replace game end displays handled in runGameWinFlowersAnimation()
+		stopGameWinFlowersAnimation = true;  // (clearGameEndDisplays() & replaceGameEndDisplays() handled in runGameWinFlowersAnimation())
 	} else {
 		clearGameEndDisplays();
-		replaceGameEndDisplays();  // replaces any game end displays running from saved game
+		replaceGameEndDisplays();
 	}
 	//initiation
 	$("#landing_page_div, #overlay_game_mode_options_div, #overlay_ambient_mode_options_div").hide();
