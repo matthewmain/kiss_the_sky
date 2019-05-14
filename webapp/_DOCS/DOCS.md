@@ -31,6 +31,7 @@
 * `/api/user` : POST : creates new user : returns username & id
 * `/api/user/logout` : GET : logs out user : returns success message only
 * `/api/user/signup` : POST : creates new user : returns username & id
+* `/api/user/checkavailable` : POST : checks used field: returns available(bool)
 
 *🧮 Admin*
 

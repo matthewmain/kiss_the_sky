@@ -83,6 +83,8 @@ class SignUp extends Component {
         [field+"State"]: Icon_loading,
         [field+"FontColor"]: "#666"
       })
+      //
+      //
       setTimeout(()=>{  // 🚨 Note out for projection (or remove after letting sit for awhile. )
         User.checkAvailable({[field]: this.state[field]})
           .then( resp => {
@@ -99,7 +101,8 @@ class SignUp extends Component {
             }
           })
       },1000)
-
+      //
+      //
     } else { // the password and confirm icons don't need the api call, but leverage the in/out input state (So, here we just need to say true for that to take effect.)
       this.setState({ [field+"State"]: true })
     }

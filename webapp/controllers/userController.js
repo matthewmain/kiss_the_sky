@@ -7,7 +7,7 @@ const UserControllers = {
 
   getUser: function(req, res) {
     console.log('\n👥 👍 Attempting to get a logged in user 👍 👥')
-    console.log(" - " + req.user + "\n")
+    console.log(" - " + req.user.username + "\n")
     if (req.user) { res.json({ user: req.user }) }
     else { res.json({ user: null }) }
   },
@@ -20,8 +20,7 @@ const UserControllers = {
       if (!user) return res.json(info)
       req.logIn(user, function(err) {
         if (err) { return next(err) }
-        user.saved_games = [] // This should be fixed to just have relations to games
-        return res.json(user)
+        return res.json({username,_id} = user)
       })
     })(req, res, next)
   },

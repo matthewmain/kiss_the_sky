@@ -7,7 +7,7 @@ const userSchema = new Schema({
   username: { type: String, required: true, unique: true },
   email: { type: String, required: true, unique: true },
   password: { type: String, required: true, minlength: 6 },
-  saved_games: { type: Array, default: []}, 
+  saved_games: { type: Array, default: []},
   created_at: { type: Date, default: Date.now },
 })
 

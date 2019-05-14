@@ -17,15 +17,16 @@ const SaveControllers = {
   saveGame: function(req, res) {
     console.log('\n👥 💾 🌺 Attempting user save 🌺 💾 👥')
     console.log(' - '+req.body.username)
-    db.User.findOneAndUpdate(
-      {_id: req.body._id},
-      {$push: {saved_games: {data:req.body.saveObj}}
-    })
-      .then(resp => {
-        console.log(" - 👥 💾 🌺 User saves new game 🌺 💾 👥\n")
-        res.json(resp)
-      })
-      .catch(err => res.status(422).json(err) )
+    console.log("*** - ", req.body.manifest)
+    // db.User.findOneAndUpdate(
+    //   {_id: req.body._id},
+    //   {$push: {saved_games: {data:req.body.saveObj}}
+    // })
+    //   .then(resp => {
+    //     console.log(" - 👥 💾 🌺 User saves new game 🌺 💾 👥\n")
+    //     res.json(resp)
+    //   })
+    //   .catch(err => res.status(422).json(err) )
 
   }
 

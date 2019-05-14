@@ -18,7 +18,7 @@ export default {
     },
 
     updateUser: function(app, user){
-      if (user.username) console.log(" - 📜 👤 User Logged In > ", user.username )
+      if (user.username) console.log(" - 📜 👤 User Logged In > ", user )
       else console.log(" - 📜 👤 User Logged Out")
       app.set({
         username: user.username,
@@ -29,9 +29,9 @@ export default {
       window.resume()
     },
 
-    logIn: function(app, user){
-      console.log('👤 Log In: user: ', user.username)
-      API.logIn(user)
+    logIn: function(app, {username,password}){
+      console.log('👤 Log In: user: ', username)
+      API.logIn({username,password})
         .then( resp => {
           if (resp.data._id) {
             this.updateUser(app, resp.data)
@@ -42,12 +42,12 @@ export default {
         .catch( err => console.log(err) )
     },
 
-    signUp: function(app, newUser){
-      console.log('👆 Sign UP > newUser: ', newUser)
-      API.signUp(newUser)
+    signUp: function(app, {username,password,email}){
+      console.log('👆 Sign UP > newUser: ', username)
+      API.signUp({username,password,email})
         .then( resp => {
           if (resp.data._id) {
-            this.logIn(app, newUser)
+            this.logIn(app, {username,password})
           } else {
             alert(resp.data.errors)
           }
