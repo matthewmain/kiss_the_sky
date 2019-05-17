@@ -25,16 +25,25 @@
 
 ### API
 
-*👥 User*
-
-* `/api/user` : GET : returns session logged in user
-* `/api/user` : POST : creates new user : returns username & id
-* `/api/user/logout` : GET : logs out user : returns success message only
-* `/api/user/signup` : POST : creates new user : returns username & id
-
 *🧮 Admin*
 
 * `api/manifest` : GET : Returns complete manifest data.
   * local Example: http://localhost:3004/api/manifest
   * heroku Example: https://kiss-the-sky.herokuapp.com/api/manifest
 * `api/manifest` : PUT : Increments "visits" count
+
+*👥 User*
+
+* `/api/user` : GET : returns session logged in user
+* `/api/user` : POST : creates new user : returns username & id
+* `/api/user/logout` : GET : logs out user : returns message only
+* `/api/user/signup` : POST : creates new user : returns username & id
+* `/api/user/checkavailable` : POST : checks used field: returns available(bool)
+
+*💾 Saved*
+
+* `/api/saved` : POST : returns all saved game's manifests
+* `/api/saved` : PUT : returns message only
+* `/api/saved/resume` : POST : returns game Object
+* `/api/saved/delete` : POST : returns message only
+* `/api/saved/update` : PUT : returns message only

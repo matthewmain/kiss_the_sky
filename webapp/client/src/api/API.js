@@ -25,11 +25,20 @@ export default {
   },
 
   // 💾 🌺
-  savedGames: function(user){
-    return axios.post("/api/save", user)
+  saved: function(user){
+    return axios.post("/api/saved", user)
   },
-  saveGame: function(saveObj){
-    return axios.put("/api/save", saveObj)
+  save: function(saveObj){
+    return axios.put("/api/saved", saveObj)
   },
+  resume: function(_id) {
+    return axios.post("/api/saved/resume", {_id})
+  },
+  delete: function(ids) {
+    return axios.post("/api/saved/delete", ids)
+  },
+  update: function(ids) {
+    return axios.put("/api/saved/update", ids)
+  }
 
 }
