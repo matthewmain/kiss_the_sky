@@ -47,10 +47,7 @@ From within `/webapp`
     - >`show databases` > shows all local dbs
     - >`use kts`
     - >`db.dropDatabase()`
-  - NOTE: you'll have to run `npm run seed` to reset the manifest db, then `npm start`
-- Sub-Docs:
-  - https://vegibit.com/mongoose-relationships-tutorial/
-  - https://mongoosejs.com/docs/subdocs.html#removing-subdocs
+  - NOTE: you'll have to run `npm run seed manifest` to reset the manifest db, then `npm start`
 
 ### Potential issues
 
