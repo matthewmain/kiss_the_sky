@@ -7,20 +7,21 @@ const UserControllers = {
 
   getUser: function(req, res) {
     console.log('\n👥 👍 Attempting to get a logged in user 👍 👥')
-    console.log(" - " + req.user.username + "\n")
+    console.log(" - " + (req.body && req.body.username) + "\n")
     if (req.user) { res.json({ user: req.user }) }
     else { res.json({ user: null }) }
   },
 
   logIn: function(req, res, next) {
     console.log('\n👥 📜 Attempting to log in user 📜 👥')
-    console.log(' - '+req.body.username)
+    console.log(' - '+(req.body && req.body.username))
     passport.authenticate('local', function(err, user, info) {
       if (err) return next(err)
       if (!user) return res.json(info)
       req.logIn(user, function(err) {
         if (err) { return next(err) }
-        return res.json({username,_id} = user)
+        const {username,_id} = user
+        return res.json({username,_id})
       })
     })(req, res, next)
   },

@@ -41,10 +41,23 @@ Note: modification
 From within `/webapp`
 `npm install --prefix ./client some-npm-package`
 
-### MongoDB Notes 
+### MongoDB Notes
 - Drop DB
   - $`mongo` returns `>` commandline
     - >`show databases` > shows all local dbs
     - >`use kts`
     - >`db.dropDatabase()`
   - NOTE: you'll have to run `npm run seed` to reset the manifest db, then `npm start`
+- Sub-Docs:
+  - https://vegibit.com/mongoose-relationships-tutorial/
+  - https://mongoosejs.com/docs/subdocs.html#removing-subdocs
+
+### Potential issues
+
+Port in use error.
+- To kill a port that is stuck in use
+  - Run $`lsof -i :3003` (Or whatever port you need).
+- This will show a list of services using that port.
+- Find the `PID` number associated with the port you want to kill
+  - Run $`kill -QUIT PID`
+  - Example: $`kill -QUIT 23451` (NOTE: number character length may vary.)

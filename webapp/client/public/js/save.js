@@ -50,6 +50,7 @@ function saveGame() {
 	localSavedGameData.milestone90HasBeenRun = milestone90HasBeenRun;
 	localSavedGameData.gameHasEnded = gameHasEnded;
 	//time
+	localSavedGameData.timeStamp = new Date();
 	localSavedGameData.worldTime = worldTime;
 	localSavedGameData.currentYear = currentYear;
 	localSavedGameData.yearTime = yearTime;
@@ -340,11 +341,7 @@ function resumeState( game ) {
 	localSavedGameData = {};
 	if ( ambientMode ) { displayAmbientModeUI(); } else { displayGameModeUI(); }
 	if ( !endOfGameAnnouncementDisplayed ) { pause(); }
-	renderBackground(); 
+	renderBackground();
 	renderPlants();
 	display();
 }
-
-
-
-

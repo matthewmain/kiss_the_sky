@@ -3,11 +3,23 @@ const bcrypt = require("bcryptjs")
 const uniqueValidator = require('mongoose-unique-validator');
 const Schema = mongoose.Schema
 
+const userSavedSchema = new Schema({
+  created_at: { type: Date, default: Date.now },
+  title: { type: String },
+  date: { type: String },
+  ambientMode: { type: Boolean },
+  gameDifficulty: { type: String },
+  currentSeason: { type: String },
+  currentYear: { type: String },
+  highestRedFlowerPct: { type: String },
+  saved_id: { type: String },
+})
+
 const userSchema = new Schema({
   username: { type: String, required: true, unique: true },
   email: { type: String, required: true, unique: true },
   password: { type: String, required: true, minlength: 6 },
-  saved_games: { type: Array, default: []},
+  saved: [userSavedSchema],
   created_at: { type: Date, default: Date.now },
 })
 
