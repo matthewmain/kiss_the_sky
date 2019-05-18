@@ -51,9 +51,10 @@ From within `/webapp`
 
 ### Potential issues
 
-Port in use error.
+Port in use error:
+- Example: `[0] Error: listen EADDRINUSE: address already in use :::3004`
 - To kill a port that is stuck in use
-  - Run $`lsof -i :3003` (Or whatever port you need).
+  - Run $`lsof -i :3004` (Or whatever port you need).
 - This will show a list of services using that port.
 - Find the `PID` number associated with the port you want to kill
   - Run $`kill -QUIT PID`

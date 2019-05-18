@@ -23,7 +23,10 @@ Once you have all the required software install.
 
 ### Seed your database
 The application may behave oddly if you haven't seeded any data.
-- From the within the `webapp` folder, run $`npm run seed all`
+- From the within the `webapp` folder, run $`npm run seed reset`
+  - NOTE: there are other specific seeds, but $`npm run seed reset` will restore all seeds for basic testing.
+  - OR: you can just run $`npm run seed manifest` if you don't want any seeds, just basic
+- WARNING! You will lose any saved data locally when running these commands.
 
 Finally, start your local development environment
 - Do this within the `/webapp` folder (NOT inside the `/client`)
