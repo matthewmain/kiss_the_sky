@@ -23,6 +23,7 @@ export default {
       app.set({
         username: user.username,
         _id:  user._id,
+        avatar: user.avatar || false,
         waitingforSession: false,
         signUpLogIn: false
       })
@@ -34,7 +35,7 @@ export default {
       API.logIn({username,password})
         .then( resp => {
           if (resp.data._id) {
-            this.updateUser(app, resp.data)
+            this.updateUser(app, resp.data, resp.data.avatar)
           } else {
             alert(resp.data.message)
           }
@@ -58,7 +59,10 @@ export default {
     logOut: function(app){
       console.log('✌️ log Out: user: ', app.username)
       API.logOut()
-        .then( resp => this.updateUser(app, resp.data) )
+        .then( resp => {
+          resp.data.avatar = app.avatar
+          this.updateUser(app, resp.data)
+        })
         .catch( err => console.log(err) )
         .finally( ()=>{ app.set({forceClose: true}) } )
     },
