@@ -26,4 +26,8 @@ Your goal is to breed a bright red flower that reaches all the way to the sky. T
 
 - [ ] [Web App](https://github.com/matthewmain/plant_evolution_app/tree/master/webapp) - _Authentication, Basic Server Side Functionality, High Score Tracking, & Independent Hosting_
 
+<br>
+
+- [ ] ([iOS App (independent Repo)](https://github.com/matthewmain/kiss_the_sky_iOS)
+
 
