@@ -18,6 +18,7 @@ class App extends Component {
     manifest: {},
     username: null,
     _id: null,
+    avatar: false,
     savedGames: false,
     openMenu: false,
     waitingforSession: true,

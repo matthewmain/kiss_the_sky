@@ -85,7 +85,7 @@ class SignUp extends Component {
       })
       //
       //
-      setTimeout(()=>{  // 🚨 Note out for projection (or remove after letting sit for awhile. )
+      // setTimeout(()=>{  // 🚨 Note out for projection (or remove after letting sit for awhile. )
         User.checkAvailable({[field]: this.state[field]})
           .then( resp => {
             if (resp.available) {
@@ -100,7 +100,7 @@ class SignUp extends Component {
               })
             }
           })
-      },1000)
+      // },1000)
       //
       //
     } else { // the password and confirm icons don't need the api call, but leverage the in/out input state (So, here we just need to say true for that to take effect.)

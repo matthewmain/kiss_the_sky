@@ -15,7 +15,6 @@ const SavedControllers = {
 
   save: function(req, res, next) {
     console.log('\n👥 💾 🌺 Attempting user save 🌺 💾 👥')
-    console.log(' - '+req.body.username+"\n"+req.body.manifest)
     req.body.user = req.user._id
     db.Saved.create(req.body)
       .then(resp => {
@@ -36,7 +35,6 @@ const SavedControllers = {
 
   resume: function(req, res) {
     console.log(" 👤 💾 💥 🌺 attempting resume saved game 🌺 💥 💾 👤" )
-    console.log(' - '+req.body)
     db.Saved.findOne({_id: req.body._id, user: req.user._id})
       .then(resp => {
         console.log(" 👤 💾 💥 🌺 sending back saved game 🌺 💥 💾 👤" )
@@ -64,7 +62,6 @@ const SavedControllers = {
 
   update: function(req, res) {
     console.log(" 👤 ☝️ 🌺 attempting UPDATE to saved game 🌺 ☝️ 👤" )
-    console.log(req.body)
     db.Saved.findOneAndUpdate(
       {_id: req.body.saved_id, user: req.user._id},
       {$set: {["manifest."+req.body.field]: req.body.value}}

@@ -7,8 +7,14 @@ const UserControllers = {
 
   getUser: function(req, res) {
     console.log('\n👥 👍 Attempting to get a logged in user 👍 👥')
-    console.log(" - " + (req.body && req.body.username) + "\n")
-    if (req.user) { res.json({ user: req.user }) }
+    if (req.user) {
+      db.User.findOne({_id: req.user._id})
+        .then(user => {
+          req.user.avatar = user.avatar
+          res.json({ user: req.user })
+        })
+        .catch(err => res.json(err))
+    }
     else { res.json({ user: null }) }
   },
 
@@ -20,8 +26,13 @@ const UserControllers = {
       if (!user) return res.json(info)
       req.logIn(user, function(err) {
         if (err) { return next(err) }
-        const {username,_id} = user
-        return res.json({username,_id})
+        db.User.findOne({_id: user._id})
+          .then(user => {
+            const {username,_id,avatar} = user
+            return res.json({username,_id,avatar})
+            res.json({ user: req.user, avatar: user.avatar })
+          })
+          .catch(err => res.json(err))
       })
     })(req, res, next)
   },

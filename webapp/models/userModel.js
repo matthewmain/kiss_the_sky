@@ -19,8 +19,14 @@ const userSchema = new Schema({
   username: { type: String, required: true, unique: true },
   email: { type: String, required: true, unique: true },
   password: { type: String, required: true, minlength: 6 },
-  saved: [userSavedSchema],
   created_at: { type: Date, default: Date.now },
+  avatar: { type: Object, default: {
+    colors: {
+      pistil: "#E0993E",
+      petal: "#0E7FD9"
+    }
+  }},
+  saved: [userSavedSchema]
 })
 
 userSchema.methods = {
