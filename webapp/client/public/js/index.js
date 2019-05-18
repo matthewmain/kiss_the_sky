@@ -1147,7 +1147,9 @@ function display() {
     checkForGameWin(); 
   }
   //runLogs( 600 );
-  if ( !gamePaused ) { window.requestAnimationFrame( display ); }
+  if ( !gamePaused ) { setTimeout( ()=> { display(); }, 17); }  // (RAF is only slightly smoother, while setTimeout regulates rate much more consistently)
+
+
 }
 
 createSunRays();
