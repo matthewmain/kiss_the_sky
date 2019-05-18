@@ -1147,7 +1147,11 @@ function display() {
     checkForGameWin(); 
   }
   //runLogs( 600 );
-  if ( !gamePaused ) { window.requestAnimationFrame( display ); }
+
+  //if ( !gamePaused ) { window.requestAnimationFrame( display ); }
+  if ( !gamePaused ) { setTimeout( ()=> { display(); }, 17); }
+
+
 }
 
 createSunRays();
