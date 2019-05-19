@@ -2,7 +2,7 @@
 
 <br>
 
-Kiss The Sky is a browser-based indie video game. At its heart is a programmatic replica of Mendelian genetics, and the gameplay is based on real-time Darwinian selection. You can either compete to breed a flower that reaches the sky, or let ambient mode play out for hours or days or weeks.
+Kiss The Sky is a browser-based indie video game. At its heart is a programmatic replica of Mendelian genetics, which allows the gameplay to be based on real-time Darwinian selection. Players can either compete to breed a flower that reaches the sky, or let ambient mode play out for hours or days or weeks.
 
 Every year, flowers bloom and bear seeds that carry a combination of their own genes and the genes of the flowers that pollinated them. In spring, seedlings sprout and compete for the sunlight they need to grow. New plants with genes for the broadest leaves and the tallest, strongest stalks thrive. The rest whither or topple over to die in the shadows. When summer arrives, healthy plants bloom flowers whose colors are determined by the most dominant genes they carry for petal hue and brightness. But things are always changing. No year is quite like the last. With every new generation, a few genes mutate to produce new traits that have never existed before, and that may change the species forever.
 
