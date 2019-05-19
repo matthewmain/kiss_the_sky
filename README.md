@@ -28,6 +28,6 @@ Your goal is to breed a bright red flower that reaches all the way to the sky. T
 
 <br>
 
-- [ ] [iOS App (independent Repo)](https://github.com/matthewmain/kiss_the_sky_iOS)
+- [ ] [iOS App (independent repository)](https://github.com/matthewmain/kiss_the_sky_iOS)
 
 
