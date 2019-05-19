@@ -52,10 +52,7 @@ const UserControllers = {
     console.log('\n👥 🌱 Attempting to sign up a new user 🌱 👥')
     console.log(' - '+req.body.username)
     db.User.create(req.body)
-      .then(user => {
-        res.json(user)
-        manifestController.incrementUsers()
-      })
+      .then(user => res.json(user) )
       .catch(err => {
         if (err.errors) {
           let errors = ""

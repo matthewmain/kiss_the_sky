@@ -9,12 +9,18 @@ mongoose.connect( process.env.MONGODB_URI || "mongodb://localhost/kts", { useNew
 console.log(seed, '🌰...Seeding...💦...💦...🌱')
 
 switch (seed) {
-  case "manifest": Manifest.resetManifestDb(logSeed, true); break
-  case "users": User.seedUsers(logSeed, true); break
+  case "manifest": Manifest.resetManifestDb(logSeed, false); break
+  case "users": User.seedUsers(logSeed, false); break
   case "reset":
-    User.seedUsers(logSeed, false, ()=>{
-      Manifest.resetManifestDb(logSeed, true)
-    })
+    mongoose.connection.dropCollection('sessions')
+      .then(resp => console.log("dropped sessions:", resp))
+      .then(()=> db.Saved.deleteMany({}))
+      .then(resp=>console.log("cleared saveds:", resp))
+      .then(()=>{
+        User.seedUsers(logSeed, ()=>{
+          Manifest.resetManifestDb(logSeed)
+        })
+      })
     break
   default: {
     console.log('\n🤔please enter a seed argument... i.e. `npm run seed manifest`\n')
@@ -22,8 +28,8 @@ switch (seed) {
   }
 }
 
-function logSeed(data, exit, next){
+function logSeed(data, next){
   console.log("\nDocument(s) inserted!\n" + JSON.stringify(data, null, 2))
-  if (exit) process.exit(0)
-  if (next) next()
+  if (!next) process.exit(0)
+  else { next() }
 }

@@ -5,8 +5,18 @@ const ManifestControllers = {
 
   getManifest: function(req, res) {
     console.log('\n 📜 Get manifest API attempt 📜 \n')
-    db.Manifest.find( { name: "manifest" })
-      .then(manifest => res.json(manifest) )
+    db.Manifest.findOne({ name: "manifest" })
+      .then(resp => { db.Saved.countDocuments()
+        .then(saveds => { db.User.countDocuments()
+          .then (users => {
+            const manifest = {...resp}._doc
+            manifest.saved = saveds
+            manifest.users = users
+            manifest.userList = "http://"+req.headers.host+"/api/manifest/userList"
+            res.json(manifest)
+          })
+        })
+      })
       .catch(err => res.status(422).json(err) )
   },
 
@@ -14,17 +24,32 @@ const ManifestControllers = {
     console.log('\n 🧮 👊 ➕➕ Increment visits attempt ➕➕ 👊 🧮 \n')
     const edits = { $inc : {visits : 1} }
     db.Manifest.findOneAndUpdate( { name: "manifest" }, edits )
-      .then(manifest => res.json(manifest) )
-      .catch(err => res.status(422).json(err) )
+      .then(resp=> res.json({fullManifest: "http://"+req.headers.host+"/api/manifest"}))
+      .catch(err=> res.status(422).json(err) )
   },
 
-  incrementUsers: function() {
-    console.log('\n 🧮 👥 ➕➕ Increment users attempt ➕➕ 👥 🧮 \n')
-    const edits = { $inc : {total_users : 1} }
-    db.Manifest.findOneAndUpdate( { name: "manifest" }, edits )
-      .then(manifest => console.log("User Count Updated") )
+  userList: function(req, res) {
+    console.log('\n 👥👥👥 get list of all users attempt 👥👥👥 \n')
+    db.User.find({}, {"username": 1, "_id": 0, "saved": 1})
+      .then(users => {
+        res.json(users.map(u=>{
+          return {
+            username: u.username,
+            saved: u.saved.length,
+            profile: "http://"+req.headers.host+"/api/manifest/user/"+u.username
+          }
+        }))
+      })
       .catch(err => console.log(err) )
-  }
+  },
+
+  user: function(req, res) {
+    console.log('\n 👥 Increment users attempt 👥 \n')
+    console.log(req.params.username)
+    db.User.findOne({username: req.params.username})
+      .then(users => res.json(users) )
+      .catch(err => console.log(err) )
+  },
 
 }
 
