@@ -13,7 +13,6 @@ const Manifest = {
           .then(data => seedLogger(data, next) )
           .catch(err => { console.error(err); process.exit(1); } )
       })
-
   }
 
 }

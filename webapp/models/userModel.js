@@ -13,6 +13,7 @@ const userSavedSchema = new Schema({
   currentYear: { type: String },
   highestRedFlowerPct: { type: String },
   saved_id: { type: String },
+  size: { type: String }
 })
 
 const userSchema = new Schema({

@@ -16,6 +16,7 @@ const SavedControllers = {
   save: function(req, res, next) {
     console.log('\n👥 💾 🌺 Attempting user save 🌺 💾 👥')
     req.body.user = req.user._id
+    req.body.manifest.size = Math.round(req.body.game.length / 1000).toLocaleString()+' kb'
     db.Saved.create(req.body)
       .then(resp => {
         resp.manifest.saved_id = resp._id

@@ -31,6 +31,10 @@
   * local Example: http://localhost:3004/api/manifest
   * heroku Example: https://kiss-the-sky.herokuapp.com/api/manifest
 * `api/manifest` : PUT : Increments "visits" count
+* `api/manifest/userlist` : GET : returns all users (username,saveds,link to profile)
+* `api/manifest/savedlist` : GET : returns all saved game info
+* `api/manifest/savedstats` : GET : returns saved collection stats
+* `api/manifest/user/:username` : GET : returns user profile
 
 *👥 User*
 
