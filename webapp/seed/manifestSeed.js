@@ -2,7 +2,7 @@ const db = require("../models")
 
 const Manifest = {
 
-  resetManifestDb: (seedLogger, exit, next)=>{
+  resetManifestDb: (seedLogger, next)=>{
     db.User.collection.count()
       .then( users => {
         db.Manifest
@@ -10,10 +10,9 @@ const Manifest = {
           .then(() => db.Manifest.insertMany([{
             total_users: users
           }]) )
-          .then(data => seedLogger(data, exit, next) )
+          .then(data => seedLogger(data, next) )
           .catch(err => { console.error(err); process.exit(1); } )
       })
-
   }
 
 }

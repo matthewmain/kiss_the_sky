@@ -3,7 +3,7 @@ const bcrypt = require("bcryptjs")
 
 const Manifest = {
 
-  seedUsers: (seedLogger, exit, next)=>{
+  seedUsers: (seedLogger, next)=>{
     const users= [
       {
         username: "dev",
@@ -67,7 +67,7 @@ const Manifest = {
     db.User
       .deleteMany({})
       .then(() => db.User.insertMany(users) )
-      .then(data => seedLogger(data, exit, next) )
+      .then(data => seedLogger(data, next) )
       .catch(err => { console.error(err); process.exit(1); } )
   }
 
