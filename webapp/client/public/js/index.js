@@ -1,8 +1,8 @@
 
 
 
-////////////////////////////////////////////////////////// 
-////////////       Kiss The Sky: Web App       /////////// 
+//////////////////////////////////////////////////////////
+////////////       Kiss The Sky: Web App       ///////////
 //////////////////////////////////////////////////////////
 
 
@@ -15,7 +15,7 @@ var renderFactor = 3;  // factor of verlet iterations (worldTime) when scenes ar
 var useSunShades = false;  // (whether to place extendable sun shades)
 var darkMode = true;  // UI dark mode (on by default)
 var viewShadows = true;  // (shadow visibility)
-var viewStalks = true;  // (stalk visibility) 
+var viewStalks = true;  // (stalk visibility)
 var viewLeaves = true;  // (leaf visibility)
 var viewFlowers = true;  // (flower visibility)
 var viewPods = true;  // (pod visibilty)
@@ -36,8 +36,8 @@ var energyStoreFactor = 1000;  // (a plant's maximum storable energy units per s
 var oldAgeMarker = 20000;  // (age after flower bloom when plant starts dying of old age, in worldtime units)
 var oldAgeRate = 0.001;  // (additional energy reduction per iteration after plant reaches old age)
 var unhealthyEnergyLevelRatio = 0.075;  // ratio of maximum energy when plant becomes unhealthy (starts yellowing)
-var minBloomEnLevRatio = 0;  // min energy level ratio for flower to bloom 
-var minPollEnLevRatio = 0;  // min energy level ratio for flower to pollinate or be pollinated 
+var minBloomEnLevRatio = 0;  // min energy level ratio for flower to bloom
+var minPollEnLevRatio = 0;  // min energy level ratio for flower to pollinate or be pollinated
 var flowerFadeEnergyLevelRatio = -0.025;  // ratio of maximum energy when flower begins to fade
 var polinatorPadFadeEnergyLevelRatio = -0.075;  // ratio of maximum energy when polinator pad begins to fade
 var sickEnergyLevelRatio = -0.2;  // ratio of maximum energy when plant becomes sick (starts darkening)
@@ -66,7 +66,7 @@ var endOfGameAnnouncementDisplayed = false;
 var gameOverDisplayed = false;
 var gameWinFlowerAnimationDisplayed = false;
 var stopGameWinFlowersAnimation = false;
-var gameWinFlowerAnimationComplete = false; 
+var gameWinFlowerAnimationComplete = false;
 
 
 
@@ -82,11 +82,11 @@ var C = {
   df: { r: 94, g: 77, b: 21, a: 1 },  // dead fill color (dark brown)
   //outlines
   hol: { r: 42, g: 32, b: 0, a: 1 },  // healthy outline color (very dark brown)
-  yol: { r: 107, g: 90, b: 31, a: 1 },  // yellowed outline color (slightly darker sickly yellow than leaf fill) 
+  yol: { r: 107, g: 90, b: 31, a: 1 },  // yellowed outline color (slightly darker sickly yellow than leaf fill)
   dol: { r: 42, g: 32, b: 0, a: 1 },  // dead outline color (very dark brown)
   //inner lines
   hil: { r: 0, g: 112, b: 0, a: 1 },  // healthy inner line color (slightly darker green than leaf fill)
-  yil: { r: 107, g: 90, b: 31, a: 1 },  // yellowed inner line color (slightly darker sickly yellow than leaf fill) 
+  yil: { r: 107, g: 90, b: 31, a: 1 },  // yellowed inner line color (slightly darker sickly yellow than leaf fill)
   dil: { r: 56, g: 47, b: 12, a: 1 },  // dead inner line color (slightly darker brown than leaf fill)
   //leaf shadows
   hls: { r: 0, g: 0, b: 0, a: 0.1 },  // healthy leaf shadow color
@@ -105,7 +105,7 @@ function Seed( parentFlower, zygoteGenotype ) {
   this.parentFlowerId = parentFlower === null ? null : parentFlower.id;
   this.parentPlantId = parentFlower === null ? null : parentFlower.plantId;
   if ( parentFlower === null ) {
-    this.sw = 14;  // seed width 
+    this.sw = 14;  // seed width
     this.p1 = addPt( Tl.rib(33,66), Tl.rib(5,25) );  // seed point 1 (placed in air for scattering at initiation)
     this.p2 = addPt( pctFromXVal( this.p1.cx + this.sw*1.6 ), pctFromYVal( this.p1.cy ) );  // seed point 2
     this.generation = 1;
@@ -117,9 +117,9 @@ function Seed( parentFlower, zygoteGenotype ) {
     this.p2 = addPt( pctFromXVal(p2.x), pctFromYVal(p2.y) );  // seed point 2
     this.generation = Tl.obById( Tl.obById( plants, this.parentPlantId ).flowers, this.parentFlowerId ).generation + 1;
   }
-  this.genotype = zygoteGenotype;  
+  this.genotype = zygoteGenotype;
   this.phenotype = EV.generatePhenotype( this.genotype );
-  this.p1.width = this.sw*1; 
+  this.p1.width = this.sw*1;
   this.p1.mass = 5;
   this.p2.width = this.sw*0.35; this.p2.mass = 5;
   this.sp = addSp( this.p1.id, this.p2.id );  // seed span
@@ -139,7 +139,7 @@ function Plant( sourceSeed ) {
   this.id = plantCount;
   this.generation = sourceSeed.generation;
   this.germinationYear = currentYear;  // germination year
-  this.age = 0;  // plant age in worldtime units 
+  this.age = 0;  // plant age in worldtime units
   this.segments = []; this.segmentCount = 0;
   this.flowers = []; this.flowerCount = 0;
   this.xLocation = null;
@@ -203,7 +203,7 @@ function Segment( plant, parentSegment, basePoint1, basePoint2 ) {
   this.ptB2 = basePoint2;  // base point 2
   //extension points
   var originX = ( this.ptB1.cx + this.ptB2.cx ) / 2;  // center of base points x values
-  var originY = ( this.ptB1.cy + this.ptB2.cy ) / 2;  // center of base points y values                    
+  var originY = ( this.ptB1.cy + this.ptB2.cy ) / 2;  // center of base points y values
   this.ptE1 = addPt( pctFromXVal( originX ) - 0.1, pctFromYVal( originY ) - 0.1 );  // extension point 1
   this.ptE2 = addPt( pctFromXVal( originX ) + 0.1, pctFromYVal( originY ) - 0.1 );  // extension point 2
   this.ptE1.mass = this.mass / 2;
@@ -230,15 +230,15 @@ function Segment( plant, parentSegment, basePoint1, basePoint2 ) {
   this.skins.push( addSk( [ this.ptE1.id, this.ptE2.id, this.ptB2.id, this.ptB1.id ], null ) );
   //leaves
   this.ptLf1 = null;  // leaf point 1 (leaf tip)
-  this.ptLf2 = null;  // leaf point 2 (leaf tip)  
+  this.ptLf2 = null;  // leaf point 2 (leaf tip)
   this.spLf1 = null;  // leaf 1 Span
   this.spLf2 = null;  // leaf 2 Span
   //colors
   this.clS = C.hdf;  // stalk color (dark green when healthy)
   this.clO = C.hol;  // outline color (very dark brown when healthy)
-  this.clI = C.hil;  // inner line color (slightly darker green than leaf fill when healthy) 
+  this.clI = C.hil;  // inner line color (slightly darker green than leaf fill when healthy)
   this.clL = C.hlf;  // leaf color (green when healthy)
-  this.clLS = C.hls;  // leaf shadow color (barely opaque black when healthy) 
+  this.clLS = C.hls;  // leaf shadow color (barely opaque black when healthy)
 }
 
 
@@ -261,13 +261,13 @@ function createSeed( parentFlower, zygoteGenotype ) {
 function createPlant( sourceSeed ) {
   plantCount++;
   if ( sourceSeed.parentFlowerId === null ) {  // if seed is initiating seed, adds new plant to end of the plants array
-    plants.push( new Plant( sourceSeed ) ); 
-    return plants[plants.length-1]; 
+    plants.push( new Plant( sourceSeed ) );
+    return plants[plants.length-1];
   } else {
     for ( var i=0; i<plants.length; i++) {  // if not initiating seed, adds new plant before parent in plants array
-      if ( sourceSeed.parentPlantId === plants[i].id ) { 
-        plants.splice( i, 0, new Plant( sourceSeed ) ); 
-        return plants[i];  
+      if ( sourceSeed.parentPlantId === plants[i].id ) {
+        plants.splice( i, 0, new Plant( sourceSeed ) );
+        return plants[i];
       }
     }
   }
@@ -286,14 +286,14 @@ function createSegment( plant, parentSegment, basePoint1, basePoint2 ) {
 
 ///removes a seed by id from seeds array
 function removeSeed( seedId ) {
-  for( var i=0; i<seeds.length; i++){ 
+  for( var i=0; i<seeds.length; i++){
     if ( seeds[i].id === seedId ) { seeds.splice(i, 1); }
   }
 }
 
 ///removes a plant by id from plants array
 function removePlant( plantId ) {
-  for( var i=0; i<plants.length; i++){ 
+  for( var i=0; i<plants.length; i++){
     if ( plants[i].id === plantId ) { plants.splice(i, 1); }
   }
 }
@@ -309,7 +309,7 @@ function recordInitialGeneValueAverages() {
     for ( i=0; i<plants.length; i++ ) {
       var p = plants[i];
       alleleAvg += p.genotype.genes[gene].allele1.value;
-      alleleAvg += p.genotype.genes[gene].allele2.value;      
+      alleleAvg += p.genotype.genes[gene].allele2.value;
     }
     alleleAvg = alleleAvg/(plants.length*2);
     initialGeneValueAverages[gene] = alleleAvg;
@@ -329,7 +329,7 @@ function dropSeed( seed ) {
 
 ///plants seed (secures its position to ground)
 function plantSeed( seed ) {
-  seed.p1.fixed = true; 
+  seed.p1.fixed = true;
   seed.p2.materiality = "immaterial";
   var seedUpright = seed.p2.cx > seed.p1.cx-canvas.width*0.005 && seed.p2.cx < seed.p1.cx+canvas.width*0.005;
   var seedSunk = seed.p1.cy >= canvas.height;
@@ -381,7 +381,7 @@ function hideAndRemoveSeed( seed ) {
     removeSpan( seed.sp.id );
     removeSeed( seed.id );
     Tl.obById( plants, seed.resultingPlantId ).sourceSeedHasBeenRemoved = true;
-  } 
+  }
 }
 
 ///lengthens segment spans for growth
@@ -397,7 +397,7 @@ function lengthenSegmentSpans( plant, segment ) {
     segment.spCuP.l = segment.spCdP.l * segment.forwardGrowthRateVariation;
     segment.spCd.l = distance( segment.ptE1, segment.ptB2 );
     segment.spCu.l = distance( segment.ptB1, segment.ptE2 );
-  } 
+  }
   segment.spF.l += plant.outwardGrowthRate;
   segment.spL.l = distance( segment.ptB1, segment.ptE1 );
   segment.spR.l = distance( segment.ptB2, segment.ptE2 );
@@ -461,13 +461,13 @@ function addLeafScaffolding( plant, segment ) {
   s.ptLf2ScB = addPt( pctFromXVal( x ), pctFromXVal( y ), "immaterial" ); s.ptLf2ScB.mass = 0;
   //scaffolding spans, leaf 1
   s.spLf1ScA = addSp( s.ptE1.id, s.ptLf1ScA.id, "hidden" );
-  s.spLf1ScB = addSp( s.ptB1.id, s.ptLf1ScA.id, "hidden" ); 
-  s.spLf1ScC = addSp( s.ptLf1ScA.id, s.ptLf1ScB.id, "hidden" ); 
-  s.spLf1ScD = addSp( s.ptLf1ScB.id, s.ptLf1.id, "hidden" ); 
+  s.spLf1ScB = addSp( s.ptB1.id, s.ptLf1ScA.id, "hidden" );
+  s.spLf1ScC = addSp( s.ptLf1ScA.id, s.ptLf1ScB.id, "hidden" );
+  s.spLf1ScD = addSp( s.ptLf1ScB.id, s.ptLf1.id, "hidden" );
   //scaffolding spans, leaf 2
-  s.spLf2ScA = addSp( s.ptE2.id, s.ptLf2ScA.id, "hidden" ); 
-  s.spLf2ScB = addSp( s.ptB2.id, s.ptLf2ScA.id, "hidden" ); 
-  s.spLf2ScC = addSp( s.ptLf2ScA.id, s.ptLf2ScB.id, "hidden" ); 
+  s.spLf2ScA = addSp( s.ptE2.id, s.ptLf2ScA.id, "hidden" );
+  s.spLf2ScB = addSp( s.ptB2.id, s.ptLf2ScA.id, "hidden" );
+  s.spLf2ScC = addSp( s.ptLf2ScA.id, s.ptLf2ScB.id, "hidden" );
   s.spLf2ScD = addSp( s.ptLf2ScB.id, s.ptLf2.id, "hidden" );
   s.hasLeafScaffolding = true;
 }
@@ -497,51 +497,51 @@ function growPlants() {
     var p = plants[i];
     if ( p.isActive ) {
       p.age++;
-      if ( !p.sourceSeedHasGerminated ) { 
-        germinateSeedWhenReady( p.sourceSeed );  
+      if ( !p.sourceSeedHasGerminated ) {
+        germinateSeedWhenReady( p.sourceSeed );
       } else if ( !p.sourceSeedHasBeenRemoved ) {
-        hideAndRemoveSeed( p.sourceSeed ); 
+        hideAndRemoveSeed( p.sourceSeed );
       }
       if ( p.energy > p.segmentCount*energyStoreFactor && p.energy>p.seedEnergy ) {
         p.energy = p.segmentCount*energyStoreFactor;  // caps plant max energy level based on segment count
       }
-      if ( p.hasFlowers ) { 
+      if ( p.hasFlowers ) {
         for ( var j=0; j<p.flowers.length; j++ ) {
           var flower = p.flowers[j];
-          developFlower( p, flower );  
+          developFlower( p, flower );
           if ( flower.ageSinceBlooming > oldAgeMarker ) {  // plant starts dying of old age
             p.hasReachedOldAge = true;
-          } 
+          }
         }
       }
-      if ( p.energy > 0 || !restrictGrowthByEnergy && !p.hasReachedOldAge ) { 
-        for (var k=0; k<p.segments.length; k++) { 
+      if ( p.energy > 0 || !restrictGrowthByEnergy && !p.hasReachedOldAge ) {
+        for (var k=0; k<p.segments.length; k++) {
           var s = p.segments[k];
-          if ( s.spF.l < p.maxSegmentWidth ) { 
+          if ( s.spF.l < p.maxSegmentWidth ) {
             lengthenSegmentSpans( p, s );
             p.energy -= s.spCd.l * groEnExp;  // reduces energy by segment width while growing
           }
-          if ( readyForChildSegment( p, s ) ) { 
-            createSegment( p, s, s.ptE1, s.ptE2 ); 
+          if ( readyForChildSegment( p, s ) ) {
+            createSegment( p, s, s.ptE1, s.ptE2 );
           }
-          if ( !s.hasLeaves ) { 
-            generateLeavesWhenReady( p, s ); 
+          if ( !s.hasLeaves ) {
+            generateLeavesWhenReady( p, s );
           } else if ( s.spLf1.l < p.maxLeafLength ) {
-            growLeaves( p, s ); 
+            growLeaves( p, s );
             p.energy -= s.spLf1.l*groEnExp;  // reduces energy by one leaf length while leaves growing
           }
           if ( !p.hasFlowers && readyForFlower( p, s ) ) {
-            createFlower( p, s, s.ptE1, s.ptE2 ); 
+            createFlower( p, s, s.ptE1, s.ptE2 );
           }
         }
       }
       if ( p.hasReachedOldAge ) {
         p.oldAgeReduction += oldAgeRate;
-        p.energy -= p.oldAgeReduction;  
+        p.energy -= p.oldAgeReduction;
       }
       if ( p.sourceSeedHasGerminated ) {
         p.energy -= p.segmentCount * livEnExp;  // cost of living: reduces energy by a ratio of segment count
-      } 
+      }
       if ( p.isAlive && p.energy < p.maxEnergyLevel*deathEnergyLevelRatio && restrictGrowthByEnergy ) {
         killPlant( p );  // plant dies if energy level falls below minimum to be alive
       }
@@ -595,7 +595,7 @@ function applyHealthColoration( plant, segment ) {
     s.clI = rgbaPlantColorShift( p, C.hil, C.yil, uel, sel );  // inner lines
     s.clLS = rgbaPlantColorShift( p, C.hls, C.yls, uel, sel );  // leaf shadows
   } else if ( cel <= sel && cel > del ) {  // sick energy levels (darkening)
-    s.clS = rgbaPlantColorShift( p, C.yf, C.df, sel, del );  // stalks 
+    s.clS = rgbaPlantColorShift( p, C.yf, C.df, sel, del );  // stalks
     s.clL = rgbaPlantColorShift( p, C.yf, C.df, sel, del );  // leaves
     s.clO = rgbaPlantColorShift( p, C.yol, C.dol, sel, del );  // outlines
     s.clI = rgbaPlantColorShift( p, C.yil, C.dil, sel, del );  // inner lines
@@ -608,17 +608,17 @@ function applyHealthColoration( plant, segment ) {
       f.clO = s.clO;  // outline color (matches plant dark outline color)
       var fc = plant.flowerColor;
       //petals
-      var ffel = p.maxEnergyLevel * flowerFadeEnergyLevelRatio;  
+      var ffel = p.maxEnergyLevel * flowerFadeEnergyLevelRatio;
       if ( cel <= ffel && cel > sel ) {  // flower fading energy levels
         f.clP = hslaPlantColorShift( p, {h:fc.h,s:100,l:fc.l}, {h:fc.h,s:50,l:100}, ffel, sel );  // fade color
       } else if ( cel <= sel && cel > del ) {  // sick energy levels
         f.clP = hslaPlantColorShift( p, {h:50,s:50,l:100}, {h:45,s:100,l:15}, sel, del );  // darken color
-      }      
+      }
       //polinator pad
       var ppfel = p.maxEnergyLevel * polinatorPadFadeEnergyLevelRatio;
       if ( cel <= ppfel && cel > sel ) {  // polinator pad fading energy levels
         f.clH = rgbaPlantColorShift( p, p.pollenPadColor, {r:77,g:57,b:0,a:1}, ppfel, sel );  // fade color
-      } else if ( cel <= sel && cel > del ) {  // sick energy levels 
+      } else if ( cel <= sel && cel > del ) {  // sick energy levels
         f.clH = rgbaPlantColorShift( p, {r:77,g:57,b:0,a:1}, {r:51,g:37,b:0,a:1}, sel, del );  // darken color
       }
     }
@@ -628,7 +628,7 @@ function applyHealthColoration( plant, segment ) {
 ///kills plant if its energy level falls below minimum to be alive
 function killPlant( plant ) {
   var p = plant;
-  p.isAlive = false;  
+  p.isAlive = false;
   for (var i=0; i<plant.segments.length; i++) {
     var s = plant.segments[i];
     if ( s.leafTipsTetherSpan && s.hasLeaves && s.spLf1.l > plant.maxLeafLength/3 ) {
@@ -652,7 +652,7 @@ function killPlant( plant ) {
 
 ///collapses plant
 function collapsePlant( plant ) {
-  var p = plant; 
+  var p = plant;
   for (var i=0; i<plant.segments.length; i++) {
     var s = plant.segments[i];
     if (!s.isBaseSegment) {
@@ -675,12 +675,12 @@ function collapsePlant( plant ) {
       if ( f.spHcH ) { removeSpan(f.spHcH.id); }
     }
   }
-  p.hasCollapsed = true; 
+  p.hasCollapsed = true;
 }
 
 ///decomposes plant after collapse
 function decomposePlant( plant ) {
-  if ( plant.leafArcHeight > 0.05 ) {  
+  if ( plant.leafArcHeight > 0.05 ) {
     plant.leafArcHeight -= 0.005;
   } else {
     plant.leafArcHeight = 0.05;
@@ -713,10 +713,10 @@ function fadePlantOutAndRemove( plant ) {
       }
       for (var j=0; j<sg.skins.length; j++) {
         if ( sg.skins[j] ) { removeSkin( sg.skins[j].id ); }
-      } 
+      }
       if ( sg.hasLeaves ) {
         if ( sg.ptLf1 ) { removePoint( sg.ptLf1.id ); }  // segment leaf point 1 (leaf tip)
-        if ( sg.ptLf2 ) { removePoint( sg.ptLf2.id ); }  // segment leaf point 2 (leaf tip)  
+        if ( sg.ptLf2 ) { removePoint( sg.ptLf2.id ); }  // segment leaf point 2 (leaf tip)
         if ( sg.spLf1 ) { removeSpan( sg.spLf1.id ); }  // segment leaf 1 Span
         if ( sg.spLf2 ) { removeSpan( sg.spLf2.id ); }  // segment leaf 2 Span
       }
@@ -740,9 +740,9 @@ function renderSeed( resultingPlant ) {
     var p1 = seed.p1;
     var p2 = seed.p2;
     var sp = seed.sp;
-    var p1x = p1.cx; 
+    var p1x = p1.cx;
     var p1y = p1.cy;
-    var p2x = p2.cx; 
+    var p2x = p2.cx;
     var p2y = p2.cy;
     //references points (polar points)
     var r1x = p1.cx - ( p2.cx - p1.cx ) * (p1.width*0.5 / sp.l );
@@ -829,7 +829,7 @@ function renderStalks( plant, segment ) {
     for(var j=1; j<sk.points.length; j++) { ctx.lineTo(sk.points[j].cx, sk.points[j].cy); }
     ctx.lineTo(sk.points[0].cx, sk.points[0].cy);
     ctx.stroke();
-    ctx.fill(); 
+    ctx.fill();
     //outlines
     ctx.beginPath();
     ctx.lineWidth = 1;
@@ -888,7 +888,7 @@ function renderDemosInFirstYear() {
       .css( "visibility", "visible" )
       .animate({ opacity: 1 }, 2000, "linear" )
       .delay(4000)
-      .animate({ opacity: 0 }, 2000, "linear", function() { 
+      .animate({ opacity: 0 }, 2000, "linear", function() {
         allDemosHaveRun = true;
       });
   }
@@ -918,7 +918,7 @@ function allPlantsAreDead() {
 
 ///displays game over overlay
 function displayGameOver() {
-  pause(); 
+  pause();
   $("#modal_play").css("visibility", "hidden");  // hides play modal that normally appears when paused
   endOfGameAnnouncementDisplayed = true;
   gameOverDisplayed = true;
@@ -926,18 +926,29 @@ function displayGameOver() {
   $("#game_over_div").css( "visibility", "visible" ).animate({ opacity: 1 }, 3000, "linear" );
 }
 
-///check for game win (whether a red flower reaches 100% screen height)  
+///check for game win (whether a red flower reaches 100% screen height)
 function checkForGameWin() {
   if ( !gameWinFlowerAnimationDisplayed && highestRedFlowerPct === 100) {
     stopGameWinFlowersAnimation = false;
     gameHasEnded = true;
     runGameWinFlowersAnimation();
+    reactCallback({
+      date: new Date(),
+      difficulty: gameDifficulty,
+      years: ( currentYear + (yearTime/(spL+suL+faL+wiL)) ).toFixed(2)
+    })
   }
 }
+// This var & function allows the game enviroment to call a react components.
+var reactCallback;
+function createReactCallback(callback) {
+  reactCallback = callback;
+}
+
 
 ///game win animation
 function runGameWinFlowersAnimation() {
-  pause(); 
+  pause();
   $("#modal_play").css("visibility", "hidden");  // hides play modal that normally appears when paused
   endOfGameAnnouncementDisplayed = true;
   gameWinFlowerAnimationDisplayed = true;
@@ -946,18 +957,19 @@ function runGameWinFlowersAnimation() {
   $("#game_win_gen_number").text( currentYear.toString().replace(/0/g,"O") );  // (replace is for dotted Nunito zero)
   $("#game_win_mode").text( gameDifficulty.toUpperCase() );
   var totalFlowers = 600;
+  const game = document.getElementById("game")
   $("#hundred_pct_large_height_announcement")  // initial large 100% text burst
-    .animate({ 
+    .animate({
       fontSize: "+=10pt",
       opacity: 1,
     }, 500, "linear" )
-    .animate({ 
+    .animate({
       fontSize: "+=10pt",
       letterSpacing: "+=3pt",
-      opacity: 0,    
+      opacity: 0,
     }, 700, "linear", function() {
       (function flowerLoop( i ) {  // flower splatter (uses self-invoking function (for looping with timeouts))
-        var tint = Tl.rib(1,2) === 1 ? "light" : "dark"; 
+        var tint = Tl.rib(1,2) === 1 ? "light" : "dark";
         var top = Tl.rib( 0, 100 );
         var left = Tl.rib( 0, 100 );
         var width = Tl.rfb( 12, 22 );
@@ -965,32 +977,36 @@ function runGameWinFlowersAnimation() {
         var delay = i > 20 ? 400-Math.pow(totalFlowers-i,2)*3 : 400-i*20;  // starts slow, quickens, slows at end
         delay = delay < 20 ? 20 : delay;  // sets minimum delay
         setTimeout(function () {  // delays append and position of each new flower
-          $("#game_win_div").prepend( "<img id='f"+i+"' class='flower' src='assets/flower_"+tint+".svg'>" );
-          $("#f"+i).css({ 
-            position: "absolute",
-            top: top+"%", 
-            left: left+"%", 
-            width: width+"%", 
-            transform: "translate(-50%,-50%) rotate("+rotation+"deg)",
-          });
-          switch( i ) {  // text and buttons sequencial heavy slam in
-            case 500: $("#game_win_YOU").fadeIn(100); break;
-            case 470: $("#game_win_KISSED").fadeIn(100); break;
-            case 440: $("#game_win_THE").fadeIn(100); break;
-            case 410: $("#game_win_SKY").fadeIn(100); break;
-            case 380: $("#game_win_gen_count_text").fadeIn(1500); break;
-            case 330: $("#game_win_mode_text").fadeIn(1500); break;
-            case 270: $(".button_game_win_play_again").fadeIn(3000); break;
-            case 1: gameWinFlowerAnimationComplete = true;
-          }
-          try {  // try-catch block allows game win flowers animation termination upon resumed saved game
-            if ( stopGameWinFlowersAnimation ) {
-              i = 1;  // sets iterator at 1 to stop flowerLoop() recursion when next checked
-              clearGameEndDisplays();
-              replaceGameEndDisplays();
+          if (game.style.display !== "none") {
+            $("#game_win_div").prepend( "<img id='f"+i+"' class='flower' src='assets/flower_"+tint+".svg'>" );
+            $("#f"+i).css({
+              position: "absolute",
+              top: top+"%",
+              left: left+"%",
+              width: width+"%",
+              transform: "translate(-50%,-50%) rotate("+rotation+"deg)",
+            });
+            switch( i ) {  // text and buttons sequencial heavy slam in
+              case 500: $("#game_win_YOU").fadeIn(100); break;
+              case 470: $("#game_win_KISSED").fadeIn(100); break;
+              case 440: $("#game_win_THE").fadeIn(100); break;
+              case 410: $("#game_win_SKY").fadeIn(100); break;
+              case 380: $("#game_win_gen_count_text").fadeIn(1500); break;
+              case 330: $("#game_win_mode_text").fadeIn(1500); break;
+              case 270: $(".button_game_win_play_again").fadeIn(3000); break;
+              case 1: gameWinFlowerAnimationComplete = true;
             }
-          } catch( err ) { }
-          if ( --i ) flowerLoop( i );  //  decrements i and recursively calls loop function if i > 0 (i.e., true)
+            try {  // try-catch block allows game win flowers animation termination upon resumed saved game
+              if ( stopGameWinFlowersAnimation ) {
+                i = 1;  // sets iterator at 1 to stop flowerLoop() recursion when next checked
+                clearGameEndDisplays();
+                replaceGameEndDisplays();
+              }
+            } catch( err ) { }
+            if ( --i ) flowerLoop( i );  //  decrements i and recursively calls loop function if i > 0 (i.e., true)
+          } else {
+            flowerLoop( i );
+          }
         }, delay );  // sets delay with current delay variable
       })( totalFlowers );  // sets the loop's total iteration count as the argument of the self-invoking function
     });
@@ -1033,7 +1049,7 @@ function logAllGeneChanges() {
     for ( i=0; i<plants.length; i++ ) {
       var p = plants[i];
       currentAlleleAvg += p.genotype.genes[geneName].allele1.value;
-      currentAlleleAvg += p.genotype.genes[geneName].allele2.value;      
+      currentAlleleAvg += p.genotype.genes[geneName].allele2.value;
     }
     currentAlleleAvg = currentAlleleAvg/(plants.length*2);
     var change = currentAlleleAvg - initialGeneValueAverages[geneName];
@@ -1048,7 +1064,7 @@ function logGeneChange( geneName ) {  // (enter name as string)
   for ( i=0; i<plants.length; i++ ) {
     var p = plants[i];
     currentAlleleAvg += p.genotype.genes[geneName].allele1.value;
-    currentAlleleAvg += p.genotype.genes[geneName].allele2.value;      
+    currentAlleleAvg += p.genotype.genes[geneName].allele2.value;
   }
   currentAlleleAvg = currentAlleleAvg/(plants.length*2);
   var change = currentAlleleAvg - initialGeneValueAverages[geneName];
@@ -1066,7 +1082,7 @@ function logCurrentGenePresence( geneName ) {  // (enter name as string)
   }
   genArr2 = [];
   for (j=0;j<genArr.length;j++) {
-    if ( !genArr2.includes(genArr[j]) ) { genArr2.push(genArr[j]); } 
+    if ( !genArr2.includes(genArr[j]) ) { genArr2.push(genArr[j]); }
   }
   console.log( "\ncurrent '"+geneName+"' gene presence, by value, in order of dominance index: " );
   console.log( genArr2.sort() );
@@ -1074,7 +1090,7 @@ function logCurrentGenePresence( geneName ) {  // (enter name as string)
 
 ///runs logs (frequency in screen repaints)
 function runLogs( frequency ) {
-  if ( worldTime % frequency === 0 ) { 
+  if ( worldTime % frequency === 0 ) {
 
     console.log("\n");
 
@@ -1112,7 +1128,7 @@ function runLogs( frequency ) {
 //for ( var i=0; i<10; i++ ) { createSeed( null, generateRandomPlantGenotype() ); }
 //for ( var i=0; i<10; i++ ) { createSeed( null, generateRandomRedFlowerPlantGenotype() ); }
 //for ( var i=0; i<10; i++ ) { createSeed( null, generateTinyWhiteFlowerPlantGenotype() ); }
-//for ( var i=0; i<10; i++ ) { createSeed( null, generateSmallPlantGenotype() ); }  
+//for ( var i=0; i<10; i++ ) { createSeed( null, generateSmallPlantGenotype() ); }
 //for ( var i=0; i<10; i++ ) { createSeed( null, generateMediumPlantGenotype() ); }
 //for ( var i=0; i<10; i++ ) { createSeed( null, generateLargePlantGenotype() ); }
 //for ( var i=0; i<10; i++ ) { createSeed( null, generateTallPlantGenotype() ); }
@@ -1134,17 +1150,17 @@ function display() {
     }
     trackSeasons();
     shedSunlight();
-    growPlants();  
+    growPlants();
     if ( runPollinationAnimations ) { renderPollinationAnimations(); }
   }
   updateUI();
   runVerlet();
-  if ( !ambientMode ) { 
+  if ( !ambientMode ) {
     renderDemosInFirstYear();
     renderMilestones();
-    renderHeightMarker(); 
-    checkForGameOver(); 
-    checkForGameWin(); 
+    renderHeightMarker();
+    checkForGameOver();
+    checkForGameWin();
   }
   //runLogs( 600 );
   if ( !gamePaused ) { setTimeout( ()=> { display(); }, 17); }  // (RAF is only slightly smoother, while setTimeout regulates rate much more consistently)
@@ -1155,23 +1171,3 @@ function display() {
 createSunRays();
 if ( useSunShades ) { placeSunShades(3,3); }
 display();
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

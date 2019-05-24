@@ -1,7 +1,7 @@
 const db = require("../models")
 const bcrypt = require("bcryptjs")
 
-const Manifest = {
+const Users = {
 
   seedUsers: (seedLogger, next)=>{
     const users= [
@@ -62,6 +62,12 @@ const Manifest = {
         email: "WARCHILD666@kts.com",
         password: bcrypt.hashSync("asdfasdf", 10),
         avatar: { colors: { pistil: "#E0993E", petal: "#FF0DCB" }}
+      },
+      {
+        username: "ReferenceError",
+        email: "ReferenceError@kts.com",
+        password: bcrypt.hashSync("asdfasdf", 10),
+        avatar: { colors: { pistil: "#E0993E", petal: "#FF0DCB" }}
       }
     ]
     db.User
@@ -73,4 +79,4 @@ const Manifest = {
 
 }
 
-module.exports = Manifest
+module.exports = Users

@@ -18,27 +18,27 @@ var wiL = 300;  // winter length
 ///background gradient colors
 var BgG = {
   sp: {  // spring
-    cs1: { r: 244, g: 244, b: 244, a: 1 },  // color stop 1 ... 
-    cs2: { r: 242, g: 247, b: 250, a: 1 }, 
-    cs3: { r: 240, g: 250, b: 255, a: 1 }, 
+    cs1: { r: 244, g: 244, b: 244, a: 1 },  // color stop 1 ...
+    cs2: { r: 242, g: 247, b: 250, a: 1 },
+    cs3: { r: 240, g: 250, b: 255, a: 1 },
     cs4: { r: 167, g: 223, b: 255, a: 1 }
   },
   su: {  // summer
-    cs1: { r: 251, g: 252, b: 244, a: 1 }, 
-    cs2: { r: 128, g: 209, b: 255, a: 1 }, 
-    cs3: { r: 112, g: 203, b: 255, a: 1 }, 
+    cs1: { r: 251, g: 252, b: 244, a: 1 },
+    cs2: { r: 128, g: 209, b: 255, a: 1 },
+    cs3: { r: 112, g: 203, b: 255, a: 1 },
     cs4: { r: 167, g: 223, b: 255, a: 1 }
   },
   fa: {  // fall
-    cs1: { r: 248, g: 232, b: 209, a: 1 }, 
-    cs2: { r: 254, g: 248, b: 240, a: 1 }, 
-    cs3: { r: 235, g: 247, b: 255, a: 1 }, 
+    cs1: { r: 248, g: 232, b: 209, a: 1 },
+    cs2: { r: 254, g: 248, b: 240, a: 1 },
+    cs3: { r: 235, g: 247, b: 255, a: 1 },
     cs4: { r: 245, g: 250, b: 252, a: 1 }
   },
   wi: {  // winter
-    cs1: { r: 29,  g: 25,  b: 20,  a: 1 }, 
-    cs2: { r: 114, g: 105, b: 97,  a: 1 }, 
-    cs3: { r: 163, g: 157, b: 150, a: 1 }, 
+    cs1: { r: 29,  g: 25,  b: 20,  a: 1 },
+    cs2: { r: 114, g: 105, b: 97,  a: 1 },
+    cs3: { r: 163, g: 157, b: 150, a: 1 },
     cs4: { r: 180, g: 179, b: 179, a: 1 }
   }
 };
@@ -58,9 +58,9 @@ var ccs4 = psbg.cs4;  // current color stop 4
 function trackSeasons() {
   yearTime++;
   //spring
-  if ( yearTime === 1 ) { 
+  if ( yearTime === 1 ) {
     currentSeason = "Spring"; photosynthesisRatio = 1; livEnExp = 0.75;
-    renderYearAnnouncement(); renderSeasonAnnouncement(); 
+    renderYearAnnouncement(); renderSeasonAnnouncement();
   //summer
   } else if ( yearTime === spL+1 ) {
     currentSeason = "Summer"; photosynthesisRatio = 1; livEnExp = 1;
@@ -69,7 +69,7 @@ function trackSeasons() {
     } else { // adjusts summer length based on tallest plant's height
       suL = 85*currentGreatestMaxSegment() > 300 ? 85*currentGreatestMaxSegment() : 300;
     }
-    scaleEliminationCursor();  // scales elimination cursor based on avg plant base width; 
+    scaleEliminationCursor();  // scales elimination cursor based on avg plant base width;
     renderSeasonAnnouncement();
   //fall
   } else if ( yearTime === spL+suL+1 ) {
@@ -116,7 +116,7 @@ function updateSeasonPieChart() {
 
 ///renders background
 function renderBackground() {
-  switch( currentSeason ) {  // updates current and previous season 
+  switch( currentSeason ) {  // updates current and previous season
     case "Spring": csbg = BgG.sp; psbg = BgG.wi; break;
     case "Summer": csbg = BgG.su; psbg = BgG.sp; break;
     case "Fall": csbg = BgG.fa; psbg = BgG.su; break;
@@ -126,11 +126,11 @@ function renderBackground() {
     csbg = BgG.sp; psbg = BgG.sp;  // starts game off with full spring background, not in mid-transition from winter
   }
   if ( gameHasBegun ) {
-    ccs1 = Tl.rgbaCs( psbg.cs1, csbg.cs1, ccs1, 200/renderFactor );  // current color stop redshift 
+    ccs1 = Tl.rgbaCs( psbg.cs1, csbg.cs1, ccs1, 200/renderFactor );  // current color stop redshift
     ccs2 = Tl.rgbaCs( psbg.cs2, csbg.cs2, ccs2, 200/renderFactor );  // current color stop greenshift
     ccs3 = Tl.rgbaCs( psbg.cs3, csbg.cs3, ccs3, 200/renderFactor );  // current color stop blueshift
     ccs4 = Tl.rgbaCs( psbg.cs4, csbg.cs4, ccs4, 200/renderFactor );  // current color stop alphashift
-  } 
+  }
   var grd=ctx.createLinearGradient( 0, 0, 0, canvas.height );
   grd.addColorStop( 0,
     "rgba("+ Math.round(ccs1.r)+","+
@@ -156,31 +156,31 @@ function renderBackground() {
   ctx.fillRect(0, 0, canvas.width, canvas.height);
 }
 
-///renders year change announcements 
+///renders year change announcements
 function renderYearAnnouncement() {
   var fsi = 1.5;  // font size increase
   var lsi = 1.5;  // letter spacing increase
   var om = 1;  // opacity maximum
   var dur = 1800;  // duration (of each animation segment)
-  var del = 0;  // delay  
+  var del = 0;  // delay
   if ( currentYear === 1 ) { del = 1000; }
   $("#year_announcement")
     .text("YEAR "+currentYear.toString().replace(/0/g,"O") )  // replace gets rid of Nunito font dotted zero
     .delay(del)
-    .animate({ 
-      fontSize: "+="+fsi+"pt", 
+    .animate({
+      fontSize: "+="+fsi+"pt",
       letterSpacing: "+="+lsi+"pt",
-      opacity: om*0.5, 
+      opacity: om*0.5,
     }, dur, "linear" )
-    .animate({ 
-      fontSize: "+="+fsi+"pt", 
+    .animate({
+      fontSize: "+="+fsi+"pt",
       letterSpacing: "+="+lsi+"pt",
       opacity: om,
     }, dur, "linear" )
-    .animate({ 
-      fontSize: "+="+fsi+"pt", 
+    .animate({
+      fontSize: "+="+fsi+"pt",
       letterSpacing: "+="+lsi+"pt",
-      opacity: 0, 
+      opacity: 0,
     }, dur, "linear", function() {
       //callback resets original values
       $("#year_announcement").css({
@@ -203,34 +203,25 @@ function renderSeasonAnnouncement() {
   $("#season_announcement")
     .text(currentSeason.toUpperCase())
     .delay(del)
-    .animate({ 
-      fontSize: "+="+fsi+"pt", 
+    .animate({
+      fontSize: "+="+fsi+"pt",
       letterSpacing: "+="+lsi+"pt",
-      opacity: om, 
+      opacity: om,
     }, dur, "linear" )
-    .animate({ 
-      fontSize: "+="+fsi+"pt", 
+    .animate({
+      fontSize: "+="+fsi+"pt",
       letterSpacing: "+="+lsi+"pt",
     }, dur, "linear" )
-    .animate({ 
-      fontSize: "+="+fsi+"pt", 
+    .animate({
+      fontSize: "+="+fsi+"pt",
       letterSpacing: "+="+lsi+"pt",
-      opacity: 0, 
+      opacity: 0,
     }, dur, "linear", function() {
       $("#season_announcement").css({  // resets original values
         fontSize: "16pt",
         letterSpacing: "1.25pt"
-      }); 
+      });
       if ( currentSeason === "Spring" && currentYear === 1 ) readyForEliminationDemo = true;
       if ( currentSeason === "Summer" && currentYear === 1 ) readyForChangeDemo = true;
     });
 }
-
-
-
-
-
-
-
-
-

@@ -115,7 +115,7 @@ class Dashboard extends Component {
               >
                 &nbsp; {game.title} &nbsp;| &nbsp;
 
-                {moment(this.props.appState.savedGames[0].date, 'YYYY-MM-DD').format('M/D/YY')} &nbsp;| &nbsp;
+                {moment(game.date, 'YYYY-MM-DD').format('M/D/YY')} &nbsp;| &nbsp;
 
                 {game.ambientMode ? "Ambient Mode" : "Game Mode" }
                 &nbsp;({window._cap(game.gameDifficulty)}, {Math.floor(game.highestRedFlowerPct)}%) &nbsp;|&nbsp;
