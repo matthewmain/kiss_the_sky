@@ -1,4 +1,6 @@
 import React, { Component } from 'react'
+import Winner from "./../../api/winner.js"
+
 import "./game.sass"
 
 class Home extends Component {
@@ -18,18 +20,23 @@ class Home extends Component {
       window.updateUI()
     }
     const route = this.props.history.location.pathname
-    if (
-      this.props.gameLoaded
+    if ( this.props.gameLoaded
       || ["/","/game","/landing","/home"].includes(route)
     ) {
       window.requestAnimationFrame(()=>{ this.setState({opacity: 0}) })
     }
     this.props.appState.set({gameLoaded: true})
+    window.createReactCallback(this.gameWon)
   }
 
   componentWillUnmount(){
     const game = document.getElementById("game")
     game.style.display = "none"
+  }
+
+  gameWon = (score) => {
+    score.avatar = this.props.appState.avatar
+    Winner.winner(score)
   }
 
   render() {

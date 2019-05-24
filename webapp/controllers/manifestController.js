@@ -10,17 +10,20 @@ const ManifestControllers = {
     db.Manifest.findOne({ name: "manifest" })
       .then(resp => { db.User.countDocuments()
         .then(users => { db.Saved.countDocuments()
-          .then (saved => { mongoose.connection.db.stats()
-            .then(stats => {
-              const manifest = {...resp}._doc
-              manifest.saved = saved
-              manifest.users = users
-              manifest.db_dataSizse = Math.round(stats.dataSize / 1000).toLocaleString()+' kb'
-              manifest.db_storageSize = Math.round(stats.storageSize / 1000).toLocaleString()+' kb'
-              manifest.user_list = "http://"+req.headers.host+"/api/manifest/userList"
-              manifest.saved_list = "http://"+req.headers.host+"/api/manifest/savedList"
-              manifest.saved_stats = "http://"+req.headers.host+"/api/manifest/savedstats"
-              res.json(manifest)
+          .then(saved => { db.Winner.countDocuments()
+            .then (winners => { mongoose.connection.db.stats()
+              .then(stats => {
+                const manifest = {...resp}._doc
+                manifest.saved = saved
+                manifest.users = users
+                manifest.winners = winners
+                manifest.db_dataSizse = Math.round(stats.dataSize / 1000).toLocaleString()+' kb'
+                manifest.db_storageSize = Math.round(stats.storageSize / 1000).toLocaleString()+' kb'
+                manifest.user_list = "http://"+req.headers.host+"/api/manifest/userList"
+                manifest.saved_list = "http://"+req.headers.host+"/api/manifest/savedList"
+                manifest.saved_stats = "http://"+req.headers.host+"/api/manifest/savedstats"
+                res.json(manifest)
+              })
             })
           })
         })

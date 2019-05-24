@@ -51,3 +51,9 @@
 * `/api/saved/resume` : POST : returns game Object
 * `/api/saved/delete` : POST : returns message only
 * `/api/saved/update` : PUT : returns message only
+
+*⭐️ Winner*
+
+* `/api/winner` : GET : return all winner's with condensed array.
+* `/api/winner` : POST : returns message only
+* `/api/winner/leaderboard/:difficulty/:page` : GET : returns paginated leaderboard page

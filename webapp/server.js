@@ -21,6 +21,8 @@ mongoose.connect(
   process.env.MONGODB_URI || "mongodb://localhost/kts",
   { useNewUrlParser: true }
 )
+mongoose.set('useFindAndModify', false)
+mongoose.set('useCreateIndex', true)
 
 const dbConnection = mongoose.connection
 

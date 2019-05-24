@@ -16,6 +16,16 @@ const userSavedSchema = new Schema({
   size: { type: String }
 })
 
+const userWinnerSchema = new Schema({
+  created_at: { type: Date, default: Date.now },
+  avatar: { type: Object, required: true },
+  username: { type: String, required: true },
+  difficulty: { type: String, required: true },
+  date: { type: String, required: true },
+  years: { type: String, required: true },
+  winner_id: { type: String, required: true  },
+})
+
 const userSchema = new Schema({
   username: { type: String, required: true, unique: true },
   email: { type: String, required: true, unique: true },
@@ -27,7 +37,8 @@ const userSchema = new Schema({
       petal: "#0E7FD9"
     }
   }},
-  saved: [userSavedSchema]
+  saved: [userSavedSchema],
+  scores: [userWinnerSchema]
 })
 
 userSchema.methods = {

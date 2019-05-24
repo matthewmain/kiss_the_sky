@@ -39,6 +39,14 @@ export default {
   },
   update: function(ids) {
     return axios.put("/api/saved/update", ids)
+  },
+
+  // ⭐️
+  winner: function(score) {
+    return axios.post("/api/winner", score)
+  },
+  leaderboard: function({difficulty, page}) {
+    return axios.get("/api/winner/leaderboard/"+difficulty+"/"+page)
   }
 
 }

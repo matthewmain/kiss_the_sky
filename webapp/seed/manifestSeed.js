@@ -2,7 +2,7 @@ const db = require("../models")
 
 const Manifest = {
 
-  resetManifestDb: (seedLogger, next)=>{
+  seedManifest: (seedLogger, next)=>{
     db.User.collection.count()
       .then( users => {
         db.Manifest

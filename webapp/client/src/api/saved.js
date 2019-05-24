@@ -15,9 +15,7 @@ export default {
           app.set({savedGames: resp.data || []})
         })
         .catch( err => console.log(err))
-    } else {
-      console.log('please log in...')
-    }
+    } 
   },
 
   save: function(app, history, title){
@@ -58,7 +56,7 @@ export default {
     console.log(" 👤 💾 💥 🌺 attempting resume saved game 🌺 💥 💾 👤" )
     API.resume(_id)
       .then( resp => {
-        console.log(" - 👤 💾 💥 🌺 save :", resp)
+        console.log(" - 👤 💾 💥 🌺 resume saved game :", resp)
         window.resumeState(resp.data)
         history.push('/game')
       })
