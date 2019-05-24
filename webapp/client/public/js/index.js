@@ -932,10 +932,11 @@ function checkForGameWin() {
     stopGameWinFlowersAnimation = false;
     gameHasEnded = true;
     runGameWinFlowersAnimation();
+    const patchSuL = suL ? suL : 800
     reactCallback({
       date: new Date(),
       difficulty: gameDifficulty,
-      years: ( currentYear + (yearTime/(spL+suL+faL+wiL)) ).toFixed(2)
+      years: ( (currentYear-1) + (yearTime/(spL+patchSuL+faL+wiL)) ).toFixed(2)
     })
   }
 }

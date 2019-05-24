@@ -19,19 +19,13 @@ switch (seed) {
   case "winners": Winner.seedWinners(logSeed, false); break
   case "saved": Saved.seedSaved(logSeed, false); break
   case "reset":
-    // mongoose.connection.dropCollection('sessions')
-    //   .then(resp=> console.log("dropped sessions:", resp))
-      // .then(()=> db.Saved.deleteMany({}))
-      // .then(resp=> console.log("cleared saveds:", resp))
-      // .then(()=>{
-        User.seedUsers(logSeed, ()=>{
-          Winner.seedWinners(logSeed, ()=>{
-            Saved.seedSaved(logSeed, ()=>{
-              Manifest.seedManifest(logSeed)
-            })
-          })
+    User.seedUsers(logSeed, ()=>{
+      Winner.seedWinners(logSeed, ()=>{
+        Saved.seedSaved(logSeed, ()=>{
+          Manifest.seedManifest(logSeed)
         })
-      // })
+      })
+    })
     break
   default: {
     console.log('\n🤔please enter a seed argument... i.e. `npm run seed manifest`\n')
