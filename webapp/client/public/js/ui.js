@@ -35,14 +35,14 @@ var restartModalOpen = false;
 
 ///sun shade handle constructor
 function SunShadeHandle( xPositionPct ) {
-  this.x = xValFromPct(xPositionPct); 
+  this.x = xValFromPct(xPositionPct);
   this.y = sunShadeY;
 }
 
 ///sun shade constructor
 function SunShade( handle1, handle2 ) {
   this.h1 = handle1;
-  this.h2 = handle2; 
+  this.h2 = handle2;
 }
 
 
@@ -96,7 +96,7 @@ function scaleContent() {
     $(".game_win_text").css({ fontSize: "10pt"});
     $("#game_win_gen_number").css({ fontSize: "14pt"});
     $("#game_win_mode").css({ fontSize: "12pt"});
-  } else if ( $("#canvas_container_div").width() < 400 ){ 
+  } else if ( $("#canvas_container_div").width() < 400 ){
     $(".footer_text").css({ fontSize: "9pt", top: "7px" });
     $("#pie_svg_left").css({ top: "13.4px" });
     $("#tag_content").css({ fontSize: "8pt", top: "19.5px" });
@@ -143,11 +143,11 @@ function placeSunShades( leftCount, rightCount ) {
 function scaleEliminationCursor() {
   var baseWidthsSum = 0;
   var activePlantCount = 0;
-  for ( var i=0; i<plants.length; i++ ) { 
-    if ( plants[i].sourceSeed && plants[i].sourceSeed.hasGerminated && plants[i].isAlive ) { 
-      baseWidthsSum += plants[i].spB.l; 
+  for ( var i=0; i<plants.length; i++ ) {
+    if ( plants[i].sourceSeed && plants[i].sourceSeed.hasGerminated && plants[i].isAlive ) {
+      baseWidthsSum += plants[i].spB.l;
       activePlantCount++;
-    } 
+    }
   }
   baseWidthAvg = baseWidthsSum/activePlantCount;
   selectRadius = baseWidthAvg*1.5 > canvas.width*0.015 ? baseWidthAvg*1.5 : canvas.width*0.015 ;
@@ -309,7 +309,7 @@ function displayAmbientModeUI() {
 
 ///renders eliminate plant icon at cursor location
 function displayEliminatePlantIconWithCursor(e) {
-  if ( !ambientMode ) { 
+  if ( !ambientMode ) {
     var displayIcon = false;
     for ( var i=0; i<plants.length; i++ ) {
       var p = plants[i];
@@ -375,10 +375,10 @@ function renderSunShades() {
       ctx.fillStyle = "rgba( 0, 0, 0, 0.333 )";
       ctx.beginPath();
       ctx.moveTo( s.h1.x, y );
-      ctx.lineTo( s.h2.x, y ); 
+      ctx.lineTo( s.h2.x, y );
       ctx.lineTo( s.h2.x, yValFromPct(100) );
       ctx.lineTo( s.h1.x, yValFromPct(100) );
-      ctx.fill();  
+      ctx.fill();
     }
     //line
     ctx.beginPath();
@@ -532,7 +532,7 @@ $("#modal_play").click(function(){
 $(".button_sow").click(function(){
   switch( gameDifficulty ) {
     case "beginner":
-      for ( var i=0; i<15; i++ ) { createSeed( null, generateRandomRedFlowerPlantGenotype() ); } 
+      for ( var i=0; i<15; i++ ) { createSeed( null, generateRandomRedFlowerPlantGenotype() ); }
       break;
     case "intermediate":
       for ( var j=0; j<20; j++ ) { createSeed( null, generateRandomPlantGenotype() ); }
@@ -543,7 +543,7 @@ $(".button_sow").click(function(){
   }
   recordInitialGeneValueAverages();
   for ( var m=0; m<seeds.length; m++ ) { scatterSeed( seeds[m] ); }
-  $("#overlay_game_mode_options_div, #overlay_ambient_mode_options_div").fadeOut(500, function(){ 
+  $("#overlay_game_mode_options_div, #overlay_ambient_mode_options_div").fadeOut(500, function(){
     $(".icon").fadeIn(5000);
     $("#footer_div").fadeIn(5000);
   });
@@ -608,24 +608,27 @@ $("#screenshot").click(function(){
 ///save icon (saves the game)
 $("#icon_save").click(function(){
   //(placeholder until database is set up...)
-  if ( Object.keys(localSavedGameData).length === 0 ) {
-    if ( confirm("Save your progress here?") ) { 
-      saveGame(); 
-    } 
-  } else {
-    if ( confirm("Resume where you last saved your progress?\n(This will delete your old save point ... for now. But you can save again after this.)") ) { resumeSavedGame( localSavedGameData ); 
-      localSavedGameData = {};  // removes previous saved game so new game can be saved
-    }
-  }
+  reactGameSaveCallback()
+  //
+  // if ( Object.keys(localSavedGameData).length === 0 ) {
+  //   if ( confirm("Save your progress here?") ) {
+  //     saveGame();
+  //   }
+  // } else {
+  //   if ( confirm("Resume where you last saved your progress?\n(This will delete your old save point ... for now. But you can save again after this.)") ) { resumeSavedGame( localSavedGameData );
+  //     localSavedGameData = {};  // removes previous saved game so new game can be saved
+  //   }
+  // }
+  //
 });
 
 ///pause/resume icons
 $(".icon_game_run").click(function(){
-  if ( !gamePaused ) { 
-    pause(); 
-  } else { 
+  if ( !gamePaused ) {
+    pause();
+  } else {
     removeModals();  // removes any modals if visible
-    resume(); 
+    resume();
   }
 });
 
@@ -656,9 +659,9 @@ $("#button_restart_cancel_hover").click(function() {
 });
 
 ///eliminate plants on a single click
-document.addEventListener("click", function(e) { 
-  startEliminatingPlants(); 
-  eliminatePlants(e); 
+document.addEventListener("click", function(e) {
+  startEliminatingPlants();
+  eliminatePlants(e);
   stopEliminatingPlants();
 });
 
@@ -694,5 +697,3 @@ function updateUI() {
   $("#season_right").text( currentSeason );
   updateSeasonPieChart();
 }
-
-

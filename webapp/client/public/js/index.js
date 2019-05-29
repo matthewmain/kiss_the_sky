@@ -933,7 +933,7 @@ function checkForGameWin() {
     gameHasEnded = true;
     runGameWinFlowersAnimation();
     const patchSuL = suL ? suL : 800
-    reactCallback({
+    reactGameWonCallback({
       date: new Date(),
       difficulty: gameDifficulty,
       years: ( (currentYear-1) + (yearTime/(spL+patchSuL+faL+wiL)) ).toFixed(2)
@@ -941,10 +941,11 @@ function checkForGameWin() {
   }
 }
 // This var & function allows the game enviroment to call a react components.
-var reactCallback;
-function createReactCallback(callback) {
-  reactCallback = callback;
-}
+// var reactCallback;
+// function createReactCallback(callback) {
+//   console.log('....ok')
+//   reactCallback = callback;
+// }
 
 
 ///game win animation
