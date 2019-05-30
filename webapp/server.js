@@ -18,7 +18,9 @@ if (process.env.NODE_ENV === "production") {
 }
 
 mongoose.connect(
-  process.env.MONGODB_URI || "mongodb://localhost/kts",
+  // process.env.MONGODB_URI || "mongodb://localhost/kts",
+  // for OFF-LINE DEV use 👇 NOT OUT ☝️ used for network dev (aka, router to test on phone) // ALSO, in REACTS's package.json you HAVE to change for👇 http://127.0.0.1:3004/  for  👆 http://localhost:3000/
+  process.env.MONGODB_URI || "mongodb://127.0.0.1/kts",
   { useNewUrlParser: true }
 )
 mongoose.set('useFindAndModify', false)

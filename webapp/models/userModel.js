@@ -27,9 +27,9 @@ const userWinnerSchema = new Schema({
 })
 
 const userSchema = new Schema({
-  username: { type: String, required: true, unique: true },
-  email: { type: String, required: true, unique: true },
-  password: { type: String, required: true, minlength: 6 },
+  username: { type: String, required: true, unique: true, maxlength: 30 }, //NOTE maxlength message is hardcoded in userController.
+  email: { type: String, required: true, unique: true, maxlength: 127 }, 
+  password: { type: String, required: true, minlength: 6, maxlength: 127 },
   created_at: { type: Date, default: Date.now },
   avatar: { type: Object, default: {
     colors: {

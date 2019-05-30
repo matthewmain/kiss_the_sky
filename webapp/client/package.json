@@ -2,7 +2,7 @@
   "name": "Kiss_The_Sky",
   "version": "0.1.0",
   "private": true,
-  "proxy": "http://localhost:3004/",
+  "proxy": "http://127.0.0.1:3004/",
   "dependencies": {
     "axios": "^0.18.0",
     "moment": "^2.24.0",

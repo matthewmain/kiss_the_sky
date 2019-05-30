@@ -6,24 +6,14 @@ import "./game.sass"
 
 class Home extends Component {
 
-  // state = {
-  //   opacity: 1,
-  //   history:
-  // }
-  constructor(props){
-    super()
-    this.state = {
-      opacity: 1,
-      history: props.history,
-      app: props.appState
-    }
+  state = {
+    opacity: 1,
   }
 
   componentDidMount(){
     const game = document.getElementById("game")
     game.style.display = "block"
     game.style.opacity = 1
-    console.log("process.env.NODE_ENV: ", process.env.NODE_ENV)
     if (process.env.NODE_ENV === 'development') {
       console.log("force resize window (development only)")
       window.scaleLanding()
@@ -49,14 +39,9 @@ class Home extends Component {
     Winner.winner(score)
   }
 
-  gameSave = (app, history)=>{
+  gameSave = ()=>{
     const title = prompt("Save Session as... (You can change this name later)", "untitled")
-    if (title) Saved.save( this.state.app, this.state.history, title )
-    //
-    // 🔥
-    console.log("\n\n\n\n - Ok, we just don't need the history, before we were going BACK to the /game because we had to go the the /menu to save. so it looked like no page was changing when really it was... - \n\n\n\n")
-    // 🔥
-    //
+    if (title) Saved.save( this.props.appState, title )
   }
 
   render() {

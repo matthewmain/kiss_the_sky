@@ -15,13 +15,14 @@ export default {
           app.set({savedGames: resp.data || []})
         })
         .catch( err => console.log(err))
-    } 
+    }
   },
 
-  save: function(app, history, title){
+  save: function(app, title){
     window.pause()
     window.localSavedGameData = {}
     window.saveGame()
+    console.log(app)
     if (app.username && app._id) {
       console.log(" 👤 💾 🌺 attempting user save 🌺 💾 👤" )
       const objGame = JSON.parse(window.localSavedGameData)
@@ -41,14 +42,12 @@ export default {
         .then( resp => {
           alert("game saved 👍")
           window.resume()
-          app.set({forceClose: true})
           console.log(" - 👤 💾 🌺 save :", resp.data)
         })
         .catch( err => console.log(err))
     } else {
       app.fn("handleHash", "login")
       app.set({forceClose: true})
-      window.pause()
     }
   },
 

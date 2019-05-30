@@ -940,13 +940,6 @@ function checkForGameWin() {
     })
   }
 }
-// This var & function allows the game enviroment to call a react components.
-// var reactCallback;
-// function createReactCallback(callback) {
-//   console.log('....ok')
-//   reactCallback = callback;
-// }
-
 
 ///game win animation
 function runGameWinFlowersAnimation() {
