@@ -15,8 +15,6 @@ class Leaderboard extends Component {
     this.props.appState.set({showGame: false})
     window.requestAnimationFrame(()=>{ this.setState({opacity: 1}) })
     window.pause()
-    //
-    //
     const route = this.props.history.location.pathname.split("/")
     if (!route[2]) route[2] = "expert"
     Winner.leaderboard(

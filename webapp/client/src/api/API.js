@@ -47,6 +47,9 @@ export default {
   },
   leaderboard: function({difficulty, page}) {
     return axios.get("/api/winner/leaderboard/"+difficulty+"/"+page)
+  },
+  myHighScores: function(user) {
+    return axios.get("/api/winner/myhighscores")
   }
 
 }

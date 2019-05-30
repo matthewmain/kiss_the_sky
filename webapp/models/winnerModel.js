@@ -7,7 +7,7 @@ const winnerSchema = new Schema({
   username: { type: String, required: true },
   difficulty: { type: String, required: true },
   date: { type: String, required: true },
-  years: { type:String, required: true },
+  years: { type: mongoose.Decimal128, required: true },
   user: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Winner',
