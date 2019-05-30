@@ -56,13 +56,26 @@ const UserControllers = {
       .catch(err => {
         if (err.errors) {
           let errors = ""
-          for (const val in err.errors) {
-            if (val === "password") {
+          for (const field in err.errors) {
+            const kind = err.errors[field].kind
+            const message = err.errors[field].message
+            // PASSWORD
+            if (field === "password" && kind === "minlength") {
               errors += "This password is too Short. \n"
-                +"It must have (6) or more characters.\n\n"
-            } else {
-              errors += "This "+val+" 👇 is already taken☹️\n - "
-                +req.body[val]+"\n\n"
+                +" - It must have (6) or more characters.\n\n"
+            }
+            //USERNAME
+            else if (field === "username" && kind === 'maxlength') {
+              errors += "This username 👇 is too large ☹️\n"
+                +" - usernames can be no longer than 30 characters.\n\n"
+            }
+            // ANY Field
+            else if (kind === 'unique') {
+              errors += "This "+field+" 👇 is already taken☹️\n - "
+                +req.body[field]+"\n\n"
+            }
+            else {
+              errors = message
             }
           }
           res.json({errors})

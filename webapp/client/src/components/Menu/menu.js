@@ -4,7 +4,6 @@ import Icon_menu from './../../images/icon_menu.svg'
 import Icon_menu_close from './../../images/icon_menu_close.svg'
 import Title_header_dark from './../../images/title_header_dark.svg'
 
-import Saved from "./../../api/saved.js"
 import User from "./../../api/user.js"
 
 import "./menu.sass"
@@ -58,11 +57,6 @@ class Landing extends Component {
     this.props.appState.set({signUpLogIn: page})
     if (page && !hold) this.toggleMenu()
     page ? window.pause() : window.resume()
-  }
-
-  saveGame = (app, history)=>{
-    const title = prompt("Save Session as... (You can change this name later)", "untitled")
-    if (title) Saved.save( app, history, title )
   }
 
   render() {
@@ -229,16 +223,6 @@ class Landing extends Component {
 
               </div>
             }
-
-            <hr />
-
-            <div className="btn" onClick={
-              ()=>this.saveGame( this.props.appState, this.props.history )
-            }>
-
-              save
-
-            </div>
 
           </div>
         </div>

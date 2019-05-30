@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import Winner from "./../../api/winner.js"
+import Saved from "./../../api/saved.js"
 
 import "./game.sass"
 
@@ -13,7 +14,6 @@ class Home extends Component {
     const game = document.getElementById("game")
     game.style.display = "block"
     game.style.opacity = 1
-    console.log("process.env.NODE_ENV: ", process.env.NODE_ENV)
     if (process.env.NODE_ENV === 'development') {
       console.log("force resize window (development only)")
       window.scaleLanding()
@@ -26,7 +26,7 @@ class Home extends Component {
       window.requestAnimationFrame(()=>{ this.setState({opacity: 0}) })
     }
     this.props.appState.set({gameLoaded: true})
-    window.createReactCallback(this.gameWon)
+    window.createReactCallbacks(this.gameWon, this.gameSave)
   }
 
   componentWillUnmount(){
@@ -37,6 +37,11 @@ class Home extends Component {
   gameWon = (score) => {
     score.avatar = this.props.appState.avatar
     Winner.winner(score)
+  }
+
+  gameSave = ()=>{
+    const title = prompt("Save Session as... (You can change this name later)", "untitled")
+    if (title) Saved.save( this.props.appState, title )
   }
 
   render() {

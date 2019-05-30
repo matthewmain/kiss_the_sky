@@ -17,12 +17,33 @@
   * `/leaderboard/intermediate`
   * `/leaderboard/expert` >
 
-### Hash pages
+#### Hash pages
 * `#signup` > HASH Page
 * `#signin`
 
 * Default: `*` > 404 page
 
+
+----
+### Validators:
+
+username
+  - Must be unique (back-end quick check and on submit)
+  - Must be less than 31 characters (back-end)
+
+email
+  - Must be unique (back-end quick check and on submit)
+  - Must be less than 128 characters (back-end)
+
+password
+  - must match confirm (front-end)
+  - must be longer than 6 characters (front/back-end)
+  - Must be less than 128 characters (back-end)
+
+NOTE: Non-custom errors send default error message(s) from back-end.
+
+
+----
 ### API
 
 *🧮 Admin*
