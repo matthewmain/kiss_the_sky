@@ -78,3 +78,4 @@ NOTE: Non-custom errors send default error message(s) from back-end.
 * `/api/winner` : GET : return all winner's with condensed array.
 * `/api/winner` : POST : returns message only
 * `/api/winner/leaderboard/:difficulty/:page` : GET : returns paginated leaderboard page
+* `/api/winner/myhighscores` : GET : returns user's high scores.

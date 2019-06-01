@@ -37,8 +37,8 @@ const WinnerControllers = {
       .catch(err => res.status(422).json(err) )
   },
 
-  leaderboard: function(req, res,) {
-    console.log('\n 🌟 Attempting to get leaderboard 🌟 ')
+  leaderboard: function(req, res) {
+    console.log('\n 🌟 📊 Attempting to get leaderboard 📊 🌟 ')
     if (typeof req.params.difficulty === "undefined") req.params.difficulty = "expert"
     if (typeof req.params.page === "undefined") req.params.page = 1
     const skip = (req.params.page - 1) * 10
@@ -51,7 +51,35 @@ const WinnerControllers = {
         const condensed = leaderboard.map(w=>{
           return w.difficulty+" - "+w.years+" - "+w.username
         })
-        res.json({condensed,leaderboard})
+        const returnLeaderBoard = leaderboard.map(w=>{
+          const ww = {...w}._doc
+          ww.years = w.years.toString()
+          return ww
+        })
+        res.json({condensed,leaderboard: returnLeaderBoard})
+      })
+      .catch(err => res.status(422).json(err) )
+  },
+
+  myHighScores: function(req, res) {
+    console.log('\n 🌟 👤 Attempting to get user high scores 👤 🌟 ')
+    db.Winner.find(
+      {},
+      { date: 1, years: 1, difficulty: 1, user: 1, username: 1},
+      { sort: { years: 1 } }
+    )
+      .then(resp=>{
+        const cnt = { beginner: 0, intermediate: 0, expert: 0 }
+        const ranked = resp.filter((s,i)=>{
+          const ss = {...s}._doc
+          cnt[ss.difficulty] ++
+          if (req.user._id.toString() == s.user.toString()) {
+            ss.rank = cnt[ss.difficulty]
+            ss.years = ss.years.toString()
+            return ss
+          }
+        })
+        res.json(ranked)
       })
       .catch(err => res.status(422).json(err) )
   }

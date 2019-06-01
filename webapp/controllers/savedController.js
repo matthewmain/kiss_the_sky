@@ -6,10 +6,7 @@ const SavedControllers = {
   saved: function(req, res) {
     console.log('\n👥 💾💾💾 🌺 Attempting get users saved games 🌺 💾💾💾 👥')
     db.User.findOne({_id: req.user._id}, "saved")
-      .then(resp => {
-        console.log(" - 👥 💾💾💾  🌺 return saved games manifests 🌺 💾💾💾 👥\n")
-        res.json(resp.saved)
-      })
+      .then(resp => res.json(resp.saved))
       .catch(err => res.status(422).json(err) )
   },
 

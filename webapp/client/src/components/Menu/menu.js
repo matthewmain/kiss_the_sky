@@ -63,7 +63,7 @@ class Landing extends Component {
 
     const routeArr = this.props.history.location.pathname.split("/")
     let route = routeArr[1] === 'leaderboard' ? 'leaderboard' : routeArr[2]
-    if (!route) route = "myhighscores"
+    if (!route) route = "savedsessions"
     if (this.props.appState.showGame) route = ""
 
     return (

@@ -6,6 +6,9 @@ router.route("/")
   .get(winnerController.winners)
   .post(winnerController.winner)
 
+router.route("/myhighscores")
+  .get(winnerController.myHighScores)
+
 router.route([
   "/leaderboard",
   "/leaderboard/:difficulty",
