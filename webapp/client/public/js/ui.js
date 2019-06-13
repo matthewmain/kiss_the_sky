@@ -606,8 +606,8 @@ $("#screenshot").click(function(){
 });
 
 ///save icon (saves the game)
-$("#button_save").click(function(){
-  reactGameSaveCallback()
+$(".button_save").click(function(){
+  reactGameSaveCallback();
 });
 
 ///pause/resume icons
