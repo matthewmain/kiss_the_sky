@@ -544,7 +544,7 @@ $(".button_sow").click(function(){
   recordInitialGeneValueAverages();
   for ( var m=0; m<seeds.length; m++ ) { scatterSeed( seeds[m] ); }
   $("#overlay_game_mode_options_div, #overlay_ambient_mode_options_div").fadeOut(500, function(){
-    $(".icon").fadeIn(5000);
+    $(".header_item").fadeIn(5000);
     $("#footer_div").fadeIn(5000);
   });
   gameHasBegun = true;
@@ -606,20 +606,8 @@ $("#screenshot").click(function(){
 });
 
 ///save icon (saves the game)
-$("#icon_save").click(function(){
-  //(placeholder until database is set up...)
+$("#button_save").click(function(){
   reactGameSaveCallback()
-  //
-  // if ( Object.keys(localSavedGameData).length === 0 ) {
-  //   if ( confirm("Save your progress here?") ) {
-  //     saveGame();
-  //   }
-  // } else {
-  //   if ( confirm("Resume where you last saved your progress?\n(This will delete your old save point ... for now. But you can save again after this.)") ) { resumeSavedGame( localSavedGameData );
-  //     localSavedGameData = {};  // removes previous saved game so new game can be saved
-  //   }
-  // }
-  //
 });
 
 ///pause/resume icons

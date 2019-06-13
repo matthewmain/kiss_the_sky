@@ -107,59 +107,55 @@ body {
   transform: translate(-50%);
 }
 
-.title_header_svg {
-	height: 86%;
-}
-
-.icon {
+.header_item {
 	position: absolute;
-	bottom: 27%;
+	bottom: 12%;
 	height: 20%;
 	cursor: pointer;
 	display: none;
 }
 
-#icon_info {
-	right: 37.5%;
-	height: 21.5%;
-	bottom: 25.5%;
-}
-
-#icon_dark_toggle {
-  right: 31.5%;
-}
-
-#icon_shadows_on {
-	right: 25%;
-	visibility: visible;
-}
-
-#icon_shadows_off {
-	right: 25%;
-	visibility: hidden;
-}
-
-#icon_camera {
-	right: 18.25%;
-}
-
-#icon_save {
-  right: 12%;
+.button_save {
+  bottom: 10%;
+  height: 26%;
+  left: 0;
 }
 
 #icon_pause {
-	right: 6%;
+	left: 24.25%;
 	visibility: visible;
 }
 
 #icon_play {
-	right: 6%;
+	left: 24.25%;
 	visibility: hidden;
 }
 
 #icon_restart {
-	right: 0;
-	display: block;
+	left: 38.75%;
+}
+
+#icon_dark_toggle {
+  left: 53.52%;
+}
+
+#icon_shadows_on {
+	left: 68.25%;
+	visibility: visible;
+}
+
+#icon_shadows_off {
+	left: 67.75%;
+	visibility: hidden;
+}
+
+#icon_camera {
+	left: 82.52%;
+}
+
+#icon_info {
+  right: 0%;
+  height: 21.5%;
 }
 
 
