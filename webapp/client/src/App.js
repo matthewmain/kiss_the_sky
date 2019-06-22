@@ -4,8 +4,6 @@ import { BrowserRouter, Route, Switch } from "react-router-dom"
 import User from "./api/user.js"
 import Manifest from "./api/manifest.js"
 
-import "./styles/app.sass"
-
 import E404 from "./pages/E404/e404.js"
 import Game from "./pages/Game/game.js"
 import Dashboard from "./pages/Dashboard/dashboard.js"
