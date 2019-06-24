@@ -1,5 +1,5 @@
 .leaderboard *
-  font-family: "Gill Sans", "Gill Sans MT", Calibri, sans-serif
+	font-family: "Dosis", Avenir, sans-serif
 .leaderboard
   position: absolute
   max-width: 768px
@@ -40,13 +40,14 @@
       .link
         text-decoration: none
         cursor: pointer !important
-      .beg
-        border: 2px solid #69AB6C
-      .int
-        border: 2px solid #419E45
-      .exp
-        border: 2px solid #006604
+      // .beg
+      //   border: 2px solid #69AB6C
+      // .int
+      //   border: 2px solid #419E45
+      // .exp
+      //   border: 2px solid #006604
       .level
+        border: 2px solid #006604
         text-align: left
         padding: 10px
         margin-bottom: 20px
@@ -69,16 +70,19 @@
     padding-bottom: 20px
     border-radius: 5px
     font-size: 18px
-    font-weight: 200
+    font-weight: 100
     background-color: #383535
     .left-col
       text-align: left
+      margin-bottom: 10px
+      .username, .date, .rank
+        display: inline-block
+      .rank
+        width: 40px
       .flower-avatar
         width: 20px
-        margin-left: 30px
-        margin-right: 5px
-      .username, .date
-        display: inline
+        margin-left: -5px
+        margin-top: -5px
       .date
         position: absolute
         right: 0px

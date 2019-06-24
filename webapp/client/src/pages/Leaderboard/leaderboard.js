@@ -116,7 +116,9 @@ class Leaderboard extends Component {
 
               <Col md={8} className="left-col">
 
-                {index+((this.props.appState.leaderboardRef.page - 1) * 10)+1}.
+                <div className="rank">
+                  {index+((this.props.appState.leaderboardRef.page - 1) * 10)+1}.
+                </div>
 
                 <svg
                   id="flower_avatar"
