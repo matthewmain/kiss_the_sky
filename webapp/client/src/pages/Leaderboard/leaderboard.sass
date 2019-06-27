@@ -1,44 +1,127 @@
 .leaderboard *
-  font-family: "Gill Sans", "Gill Sans MT", Calibri, sans-serif
+	font-family: "Dosis", Avenir, sans-serif
 .leaderboard
   position: absolute
-  padding: 5%
+  max-width: 768px
+  text-align: center
+  color: #D8D8D8
+  z-index: 2
+  margin: auto
+  padding: 0
+  padding-top: 80px
   top: 0px
   left: 0px
   right: 0px
-  bottom: 0px
-  font-size: 30px
-  color: white
-  z-index: 2
-  background-color: rgba(32,32,32,0.7)
-  font-size: 35px
-  text-align: center
-  transition: opacity 1s
-  // 👆🚨 check delay on > exit = () =>{...}
+  padding-bottom: 20px
   .leaderboard-header
-    font-weight: 400
-    letter-spacing: 1px
-    position: absolute
-    top: 100px
-    left: 0px
-    right: 0px
-    color: #ECEEE2
+    font-size: 35px
+    font-weight: 200
+    letter-spacing: 1.5px
   .leaderboard-subtitle
-    padding-top: 10px
-    letter-spacing: 0.6px
     font-size: 16px
     font-weight: 100
-  .diff-btn
-    font-size: 26px
-    color: #bbb
-    text-decoration: none
-    padding: 5px
-    border-radius: 3px
-  .details-container
-    // 🤔 this class used for style? check all properties
-    width: 610px
-    text-align: left
-    font-size: 20px
-    margin: 10px 50px 
-  .active
-    background-color: #444
+    letter-spacing: 0.6px
+    margin-top: -5px
+  .leaderboard-levels
+    margin-top: 50px
+    .active
+      background-color: #383535
+      border-radius: 3px
+      .level
+        background-color: #006604
+      // .beg
+      //   background-color: #69AB6C
+      // .int
+      //   background-color: #419E45
+      // .exp
+      //   background-color: #006604
+    .container
+      padding: 20px
+      .link
+        text-decoration: none
+        cursor: pointer !important
+      // .beg
+      //   border: 2px solid #69AB6C
+      // .int
+      //   border: 2px solid #419E45
+      // .exp
+      //   border: 2px solid #006604
+      .level
+        border: 2px solid #006604
+        text-align: left
+        padding: 10px
+        margin-bottom: 20px
+        height: 55px
+        border-radius: 3px
+        color: #D8D8D8
+        font-size: 22px
+        line-height: 15px
+        font-weight: 400
+        .subtitle
+          font-size: 9px
+          padding-top: 7px
+          font-weight: 200
+      .level:hover
+        opacity: 0.7
+  .leaderboard-ranks
+    position: relative
+    margin-top: -22px
+    padding: 35px
+    padding-bottom: 20px
+    border-radius: 5px
+    font-size: 18px
+    font-weight: 100
+    background-color: #383535
+    .left-col
+      text-align: left
+      margin-bottom: 10px
+      .username, .date, .rank
+        display: inline-block
+      .rank
+        width: 40px
+      .flower-avatar
+        width: 20px
+        margin-left: -5px
+        margin-top: -5px
+      .date
+        position: absolute
+        right: 0px
+        padding-top: 10px
+        margin-right: 20px
+    .right-col
+      padding-right: 20px
+      text-align: right
+      padding-top: 10px
+    .paginate
+      border: none
+      width: 45px
+      height: 40px
+      border-radius: 5px
+      margin: 5px 9px
+      margin-top: 30px
+      cursor: pointer
+    .disable
+      opacity: 0.2
+      pointer-events: none
+    .arrow
+      margin-top: -5px
+      width: 15px
+      color: #202020
+    .left
+      transform: rotate(-90deg)
+    .right
+      transform: rotate(90deg)
+
+
+@media only screen and (max-width: 768px)
+  .leaderboard
+    padding-top: 140px
+    .leaderboard-levels
+      .container
+        .level
+          margin-bottom: 0px
+    .leaderboard-ranks
+      margin-top: 15px
+      .right-col
+        margin-top: -20px
+        margin-bottom: 20px

@@ -5,9 +5,11 @@
   "proxy": "http://127.0.0.1:3004/",
   "dependencies": {
     "axios": "^0.18.0",
+    "bootstrap": "^4.3.1",
     "moment": "^2.24.0",
     "node-sass": "^4.11.0",
     "react": "^16.8.6",
+    "react-bootstrap": "^1.0.0-beta.9",
     "react-dom": "^16.8.6",
     "react-router-dom": "^5.0.0",
     "react-scripts": "2.1.8"
