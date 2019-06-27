@@ -110,14 +110,20 @@ class Leaderboard extends Component {
         <Container className="leaderboard-ranks">
 
           {this.props.appState.leaderboard.length > 0 && <> {
-            this.props.appState.leaderboard.map((score,index)=>
+            this.props.appState.leaderboard.map((score,index)=>{
 
-            <Row className="details-container" key={index}>
+            let rank = index+((this.props.appState.leaderboardRef.page - 1) * 10)+1
+            rank = rank.toString().replace(/0/g,"O")
+            const username = score.username.toString().replace(/0/g,"O")
+            const date = moment(score.date, 'YYYY-MM-DD').format('M/D/YY').replace(/0/g,"O")
+            const years = score.years.replace(/0/g,"O")
+
+            return (<Row className="details-container" key={index}>
 
               <Col md={8} className="left-col">
 
                 <div className="rank">
-                  {index+((this.props.appState.leaderboardRef.page - 1) * 10)+1}.
+                  {rank}.
                 </div>
 
                 <svg
@@ -145,11 +151,11 @@ class Leaderboard extends Component {
                 </svg>
 
                 <div className="username">
-                  &nbsp; {score.username}
+                  &nbsp; {username}
                 </div>
 
                 <div className="date">
-                  {moment(score.date, 'YYYY-MM-DD').format('M/D/YY')}
+                  {date}
                 </div>
 
 
@@ -157,12 +163,12 @@ class Leaderboard extends Component {
 
               <Col md={4} className="right-col">
                 <div>
-                  {score.years} years
+                  {years} years
                 </div>
               </Col>
 
             </Row>
-            )
+          )})
           } </> }
 
           <button
