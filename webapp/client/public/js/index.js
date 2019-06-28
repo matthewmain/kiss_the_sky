@@ -949,7 +949,7 @@ function runGameWinFlowersAnimation() {
   gameWinFlowerAnimationDisplayed = true;
   $(".announcement").finish();
   $("#game_win_div").css({ visibility: "visible", opacity: "1"});
-  $("#game_win_gen_number").text( currentYear.toString().replace(/0/g,"O") );  // (replace is for dotted Nunito zero)
+  $("#game_win_gen_number").text( currentYear.toString().replace(/0/g,"O") );  // (replace is for dotted Dosis zero)
   $("#game_win_mode").text( gameDifficulty.toUpperCase() );
   var totalFlowers = 600;
   const game = document.getElementById("game")

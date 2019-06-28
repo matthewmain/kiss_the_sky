@@ -165,7 +165,7 @@ function renderYearAnnouncement() {
   var del = 0;  // delay
   if ( currentYear === 1 ) { del = 1000; }
   $("#year_announcement")
-    .text("YEAR "+currentYear.toString().replace(/0/g,"O") )  // replace gets rid of Nunito font dotted zero
+    .text("YEAR "+currentYear.toString().replace(/0/g,"O") )  // replace gets rid of Dosis font dotted zero
     .delay(del)
     .animate({
       fontSize: "+="+fsi+"pt",

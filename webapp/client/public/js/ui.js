@@ -680,7 +680,7 @@ scaleLanding();
 function updateUI() {
   attachHeaderAndFooter();
   if ( useSunShades ) { renderSunShades(); }
-  $("#year_count").text( currentYear.toString().replace(/0/g,"O") );  // replace gets rid of Nunito font dotted zero
+  $("#year_count").text( currentYear.toString().replace(/0/g,"O") );  // replace gets rid of Dosis font dotted zero
   $("#season_left").text( ", " + currentSeason );
   $("#season_right").text( currentSeason );
   updateSeasonPieChart();
