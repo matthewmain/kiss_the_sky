@@ -1,10 +1,12 @@
 import React, { Component } from 'react'
-import moment from "moment"
 import "./dashboard.sass"
 
 import Saved from "./../../api/saved.js"
 
+import SavedSessions from "./../../components/SavedSessions/savedSessions.js"
 import MyHighScores from "./../../components/MyHighScores/myHighScores.js"
+import Settings from "./../../components/Settings/settings.js"
+
 
 class Dashboard extends Component {
 
@@ -45,40 +47,6 @@ class Dashboard extends Component {
     Saved.saved(this.props.appState)
   }
 
-  resume = (index)=>{
-    Saved.resume(
-      this.props.appState.savedGames[index].saved_id,
-      this.state.history
-    )
-  }
-
-  update = (index)=>{
-    const currentTitle = this.props.appState.savedGames[index].title
-    const newTitle = prompt('Change Saved Session title.', currentTitle)
-    if (newTitle) {
-      Saved.update(
-        this.props.appState,
-        this.props.appState.savedGames[index].saved_id,
-        this.props.appState.savedGames[index]._id,
-        "title",
-        newTitle
-      )
-    } else { console.log("cancel update")}
-  }
-
-  delete = (index)=>{
-    const title = this.props.appState.savedGames[index].title
-    if (window.confirm('Are you sure you want to delete "'+title+'"?')) {
-      Saved.delete(
-        this.props.appState,
-        this.props.appState.savedGames[index].saved_id,
-        this.props.appState.savedGames[index]._id
-      )
-    } else { console.log('cancel delete') }
-  }
-
-
-
   render(){
     const route = this.props.history.location.pathname.split("/")
 
@@ -96,42 +64,10 @@ class Dashboard extends Component {
 
         {(!route[2] || route[2] === "savedsessions") && <>
 
-          Saved Sessions
-
-          {this.props.appState.savedGames.length > 0 && <>
-            {this.props.appState.savedGames.map((game,index)=>
-              <div className="saved-container" key={index}>
-
-                <button
-                  className="title-container"
-                  onClick={()=>this.update(index)}
-                > ✎ </button>
-
-                <button
-                  className="details-container"
-                  onClick={()=>this.resume(index)}
-                >
-                  &nbsp; {game.title} &nbsp;| &nbsp;
-
-                  {moment(game.date, 'YYYY-MM-DD').format('M/D/YY')} &nbsp;| &nbsp;
-
-                  {game.ambientMode ? "Ambient Mode" : "Game Mode" }
-                  &nbsp;({window._cap(game.gameDifficulty)}, {Math.floor(game.highestRedFlowerPct)}%) &nbsp;|&nbsp;
-
-                  Year {game.currentYear}, {game.currentSeason}
-
-                </button>
-
-                &nbsp;
-                <button onClick={()=>this.delete(index)}>X</button>
-              </div>)
-            }
-          </>}
-
-          {this.props.appState.savedGames.length <= 0 && <>
-            <br/>
-            ... no saved sessions ...
-          </>}
+          <SavedSessions
+            appState={this.props.appState}
+            history={this.state.history}
+          />
 
         </>}
 
@@ -145,7 +81,11 @@ class Dashboard extends Component {
         </>}
 
         {route[2] === "settings" && <>
-          Settings
+
+          <Settings
+            appState={this.props.appState}
+          />
+
         </>}
 
       </div>
