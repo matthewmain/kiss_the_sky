@@ -3,15 +3,13 @@ import API from "./API"
 export default {
 
   saved: function(app){
-    if (app.username && app._id) {
-      app.set({savedGames: []})
-      API.saved()
-        .then( resp => {
-          console.log(" - 👤 💾💾💾 🌺 savedGames :", resp.data)
-          app.set({savedGames: resp.data || []})
-        })
-        .catch( err => console.log(err))
-    }
+    app.set({savedGames: []})
+    API.saved()
+      .then( resp => {
+        console.log(" - 👤 💾💾💾 🌺 savedGames :", resp.data)
+        app.set({savedGames: resp.data || []})
+      })
+      .catch( err => console.log(err))
   },
 
   save: function(app, title){

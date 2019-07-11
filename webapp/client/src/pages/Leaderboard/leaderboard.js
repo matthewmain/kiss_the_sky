@@ -109,7 +109,7 @@ class Leaderboard extends Component {
 
         <Container className="leaderboard-ranks">
 
-          {this.props.appState.leaderboard.length > 0 && <> {
+          {this.props.appState.leaderboard.length > 0 &&
             this.props.appState.leaderboard.map((score,index)=>{
 
             let rank = index+((this.props.appState.leaderboardRef.page - 1) * 10)+1
@@ -168,9 +168,9 @@ class Leaderboard extends Component {
               </Col>
 
             </Row>
-          )})
-          } </> }
 
+          )})}
+          
           <button
             className={"paginate "+(page > 1 ? "" : "disable")}
             onClick={()=>this.paginate("left")}>

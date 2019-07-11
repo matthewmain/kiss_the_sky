@@ -6,8 +6,15 @@ import Saved from "./../../api/saved.js"
 
 class SavedSessions extends Component {
 
+  componentDidMount(){
+    this.checkForSavedGames()
+  }
+
+  checkForSavedGames = ()=>{
+    Saved.saved(this.props.appState)
+  }
+
   resume = (index)=>{
-    console.log(this)
     Saved.resume(
       this.props.appState.savedGames[index].saved_id,
       this.props.history
@@ -43,37 +50,56 @@ class SavedSessions extends Component {
     return (
       <div className="savedSessions">
 
-        Saved Sessions
+        {this.props.appState.savedGames.length > 0 &&
+          this.props.appState.savedGames.map((game,index)=>{
 
-        {this.props.appState.savedGames.length > 0 && <>
-          {this.props.appState.savedGames.map((game,index)=>
-            <div className="saved-container" key={index}>
+            const date = moment(game.date, 'YYYY-MM-DD').format('M/D/YY').replace(/0/g,"O")
 
-              <button
-                className="title-container"
-                onClick={()=>this.update(index)}
-              > ✎ </button>
+            return (<div className="saved-container" key={index}>
 
-              <button
-                className="details-container"
-                onClick={()=>this.resume(index)}
-              >
-                &nbsp; {game.title} &nbsp;| &nbsp;
+              <table>
+                <tbody>
+                  <tr>
 
-                {moment(game.date, 'YYYY-MM-DD').format('M/D/YY')} &nbsp;| &nbsp;
+                    <th
+                      className="details"
+                      onClick={()=>this.resume(index)}
+                    >
+                      {game.title} /
 
-                {game.ambientMode ? "Ambient Mode" : "Game Mode" }
-                &nbsp;({window._cap(game.gameDifficulty)}, {Math.floor(game.highestRedFlowerPct)}%) &nbsp;|&nbsp;
+                      {date} /
 
-                Year {game.currentYear}, {game.currentSeason}
+                      {game.ambientMode ? "Ambient Mode" : "Game Mode" }
+                      &nbsp;({window._cap(game.gameDifficulty)}, {Math.floor(game.highestRedFlowerPct)}%) &nbsp;|&nbsp;
 
-              </button>
+                      Year {game.currentYear}, {game.currentSeason}
+                    </th>
 
-              &nbsp;
-              <button onClick={()=>this.delete(index)}>X</button>
-            </div>)
-          }
-        </>}
+                    <th
+                      className="icons-container"
+                      onClick={()=>this.update(index)}
+                    >
+                      <div className="icons">
+                        ✎
+                      </div>
+                    </th>
+
+                    <th
+                      className="icons-container"
+                      onClick={()=>this.delete(index)}
+                    >
+                      <div className="icons">
+                        X
+                      </div>
+                    </th>
+
+                  </tr>
+                </tbody>
+              </table>
+
+            </div>
+
+        )})}
 
         {this.props.appState.savedGames.length <= 0 && <>
           <br/>

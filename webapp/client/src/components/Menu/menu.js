@@ -18,7 +18,6 @@ class Landing extends Component {
   }
 
   componentDidMount(){
-    console.log(this)
     this.addClickToCloseEvent()
   }
 
