@@ -1,3 +1,5 @@
+[kissthesky.app](https://kissthesky.app)
+
 # Development Setup Notes
 
 ### Overview
@@ -52,6 +54,10 @@ Port in use error.
 
 Deploy to Heroku as sub-folder
 - `git subtree push --prefix webapp heroku master`
+
+Location
+- primary: [kissthesky.app](https://kissthesky.app) 
+- heroku direct: [kiss-the-sky.herokuapp.com](https://kiss-the-sky.herokuapp.com)
 
 # Resources
 
