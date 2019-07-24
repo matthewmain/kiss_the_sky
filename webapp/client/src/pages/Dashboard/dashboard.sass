@@ -1,43 +1,38 @@
 .dashboard *
-  font-family: "Gill Sans", "Gill Sans MT", Calibri, sans-serif
+	font-family: "Dosis", Avenir, sans-serif
 .dashboard
   position: absolute
-  padding: 5%
+  max-width: 768px
+  text-align: center
+  color: #D8D8D8
+  z-index: 2
+  margin: auto
+  padding: 0
+  padding-top: 80px
   top: 0px
   left: 0px
   right: 0px
-  bottom: 0px
-  font-size: 30px
-  color: white
-  z-index: 2
-  background-color: rgba(32,32,32,0.7)
-  text-align: center
-  font-size: 35px
-  transition: opacity 1s
-  // 👆🚨 check delay on > exit = () =>{...}
-  .dashboard-header
-    font-weight: 400
-    letter-spacing: 1px
-    position: absolute
-    top: 100px
-    left: 0px
-    right: 0px
-    color: #ECEEE2
-  .dashboard-subtitle
-    padding-top: 10px
-    letter-spacing: 0.6px
-    font-size: 16px
-    font-weight: 100
-  .saved-container
-    // 🤔 this class used for style?
-    background-color: #333
-  button
-    cursor: pointer
-    font-size: 16px
-  button:hover
-    background-color: #ccc
-  .details-container
-    // 🤔 this class used for style? check all properties
-    width: 610px
-    line-height: 19px
-    text-align: left
+  padding-bottom: 20px
+  .dashboard-levels
+    margin-bottom: 15px
+    .container
+      padding: 5px
+      .link
+        text-decoration: none
+        .title
+          padding: 18px
+          border-radius: 5px
+          letter-spacing: 1px
+          color: #D8D8D8
+          font-size: 18px
+        .active
+          background-color: #383535
+  .dashboard-container
+    background-color: #383535
+    border-radius: 5px
+    padding: 0px
+    // position: relative
+    // padding: 35px
+    // padding-bottom: 20px
+    // font-size: 18px
+    // font-weight: 100

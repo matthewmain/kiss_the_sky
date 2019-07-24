@@ -1,10 +1,13 @@
 import React, { Component } from 'react'
-import moment from "moment"
+import { Link } from "react-router-dom"
+import { Row, Col, Container } from 'react-bootstrap'
 import "./dashboard.sass"
 
-import Saved from "./../../api/saved.js"
+import Flower from "./../../components/Flower/flower.js"
 
+import SavedSessions from "./../../components/SavedSessions/savedSessions.js"
 import MyHighScores from "./../../components/MyHighScores/myHighScores.js"
+import Settings from "./../../components/Settings/settings.js"
 
 class Dashboard extends Component {
 
@@ -25,65 +28,40 @@ class Dashboard extends Component {
   }
 
   componentDidUpdate(){
-    const route = this.state.history.location.pathname.split('/')[2]
+    // const route = this.state.history.location.pathname.split('/')[2]
     if (!this.props.appState.username && !this.props.appState.waitingforSession) {
+      // 📝 If no user is logged in. Route to home page...
       this.state.history.push('/')
-    } else if (this.props.appState.username && route !== this.state.route) {
-      // 🔥 COMPONENTIZE
-      if (route === "savedsessions") {
-        this.checkForSavedGames()
-      }
-      // 🔥 COMPONENTIZE
-      else if (route === "settings") {
-        console.log('get settings stuff... if needed')
-      }
-      this.setState({ route: route || "savedsessions" })
     }
+    // else if (this.props.appState.username && route !== this.state.route) {
+    //   // 🔥 COMPONENTIZE
+    //   if (route === "savedsessions") {
+    //     this.checkForSavedGames()
+    //   }
+    //   // 🔥 COMPONENTIZE
+    //   else if (route === "settings") {
+    //     console.log('get settings stuff... if needed')
+    //   }
+    //   // console.log('---***---', route)
+    //   this.setState({ route: route || "savedsessions" })
+    // }
   }
 
-  checkForSavedGames = ()=>{
-    Saved.saved(this.props.appState)
-  }
-
-  resume = (index)=>{
-    Saved.resume(
-      this.props.appState.savedGames[index].saved_id,
-      this.state.history
-    )
-  }
-
-  update = (index)=>{
-    const currentTitle = this.props.appState.savedGames[index].title
-    const newTitle = prompt('Change Saved Session title.', currentTitle)
-    if (newTitle) {
-      Saved.update(
-        this.props.appState,
-        this.props.appState.savedGames[index].saved_id,
-        this.props.appState.savedGames[index]._id,
-        "title",
-        newTitle
-      )
-    } else { console.log("cancel update")}
-  }
-
-  delete = (index)=>{
-    const title = this.props.appState.savedGames[index].title
-    if (window.confirm('Are you sure you want to delete "'+title+'"?')) {
-      Saved.delete(
-        this.props.appState,
-        this.props.appState.savedGames[index].saved_id,
-        this.props.appState.savedGames[index]._id
-      )
-    } else { console.log('cancel delete') }
-  }
-
-
+  // checkForSavedGames = ()=>{
+  //   Saved.saved(this.props.appState)
+  // }
 
   render(){
     const route = this.props.history.location.pathname.split("/")
+    if (!route[2]) route[2] = "savedsessions"
 
     return (
       <div className="dashboard" style={{ opacity: `${this.state.opacity}`}}>
+
+        <Flower
+          size={70}
+          appState={this.props.appState}
+        ></Flower>
 
         <div className="dashboard-header">
           {this.props.appState.username}
@@ -94,59 +72,71 @@ class Dashboard extends Component {
 
         <br/><br/><br/><br/>
 
-        {(!route[2] || route[2] === "savedsessions") && <>
+        <Container>
+          <Row className="dashboard-levels">
 
-          Saved Sessions
+            <Col md={4} className="container">
+              <Link to="/dashboard/savedsessions" className="link">
+                <div className={"title "+(route[2] === "savedsessions" ? "active" : "")}>
 
-          {this.props.appState.savedGames.length > 0 && <>
-            {this.props.appState.savedGames.map((game,index)=>
-              <div className="saved-container" key={index}>
+                  Saved Sessions
 
-                <button
-                  className="title-container"
-                  onClick={()=>this.update(index)}
-                > ✎ </button>
+                </div>
+              </Link>
+            </Col>
 
-                <button
-                  className="details-container"
-                  onClick={()=>this.resume(index)}
-                >
-                  &nbsp; {game.title} &nbsp;| &nbsp;
+            <Col md={4} className="container">
+              <Link to="/dashboard/myhighscores" className='link'>
+                <div className={"title "+(route[2] === "myhighscores" ? "active" : "")}>
 
-                  {moment(game.date, 'YYYY-MM-DD').format('M/D/YY')} &nbsp;| &nbsp;
+                  My High Scores
 
-                  {game.ambientMode ? "Ambient Mode" : "Game Mode" }
-                  &nbsp;({window._cap(game.gameDifficulty)}, {Math.floor(game.highestRedFlowerPct)}%) &nbsp;|&nbsp;
+                </div>
+              </Link>
+            </Col>
 
-                  Year {game.currentYear}, {game.currentSeason}
+            <Col md={4} className="container">
+              <Link to="/dashboard/settings" className='link'>
+                <div className={"title "+(route[2] === "settings" ? "active" : "")}>
 
-                </button>
+                  Settings
 
-                &nbsp;
-                <button onClick={()=>this.delete(index)}>X</button>
-              </div>)
-            }
+                </div>
+              </Link>
+            </Col>
+
+          </Row>
+        </Container>
+
+        <Container className="dashboard-container">
+
+          {(!route[2] || route[2] === "savedsessions") && <>
+
+            <SavedSessions
+              appState={this.props.appState}
+              history={this.state.history}
+            />
+
           </>}
 
-          {this.props.appState.savedGames.length <= 0 && <>
-            <br/>
-            ... no saved sessions ...
+          {route[2] === "myhighscores" && <>
+
+            <MyHighScores
+              appState={this.props.appState}
+              viewMyScores={this.state.viewMyScores}
+            />
+
           </>}
 
-        </>}
+          {route[2] === "settings" && <>
 
-        {route[2] === "myhighscores" && <>
+            <Settings
+              appState={this.props.appState}
+            />
 
-          <MyHighScores
-            appState={this.props.appState}
-            viewMyScores={this.state.viewMyScores}
-          />
+          </>}
 
-        </>}
-
-        {route[2] === "settings" && <>
-          Settings
-        </>}
+        </Container>
 
       </div>
     )
