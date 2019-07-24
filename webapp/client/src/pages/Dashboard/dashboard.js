@@ -3,6 +3,8 @@ import { Link } from "react-router-dom"
 import { Row, Col, Container } from 'react-bootstrap'
 import "./dashboard.sass"
 
+import Flower from "./../../components/Flower/flower.js"
+
 import SavedSessions from "./../../components/SavedSessions/savedSessions.js"
 import MyHighScores from "./../../components/MyHighScores/myHighScores.js"
 import Settings from "./../../components/Settings/settings.js"
@@ -55,6 +57,11 @@ class Dashboard extends Component {
 
     return (
       <div className="dashboard" style={{ opacity: `${this.state.opacity}`}}>
+
+        <Flower
+          size={70}
+          appState={this.props.appState}
+        ></Flower>
 
         <div className="dashboard-header">
           {this.props.appState.username}
