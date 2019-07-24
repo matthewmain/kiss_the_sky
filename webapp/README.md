@@ -1,5 +1,3 @@
-[kissthesky.app](https://kissthesky.app)
-
 # Development Setup Notes
 
 ### Overview
