@@ -32,6 +32,8 @@ class App extends Component {
   }
 
   componentDidMount() {
+    window.scaleLanding(); // Deployment needs this for public to load start screen
+    window.updateUI(); // Deployment needs this for public to load start screen
     Manifest.getManifest(this.state)
     User.getUser(this.state)
   }
