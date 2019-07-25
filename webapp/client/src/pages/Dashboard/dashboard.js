@@ -60,32 +60,29 @@ class Dashboard extends Component {
 
     return (
       <div className="dashboard" style={{ opacity: `${this.state.opacity}`}}>
-{/* //
-//
-//
-// */}
-        <div className="flower-avatar-container">
-          <Flower
-            hide={!this.props.appState.username}
-            colors={this.props.appState.avatar.colors}
-            size={70}
-            appState={this.props.appState}
-          ></Flower>
-        </div>
 
-        <div className="dashboard-header">
-          {this.props.appState.username}
-          <div className="dashboard-subtitle">
-            Member since {memberSince}
+        <div className="title">
+
+          <div className="flower-avatar-container">
+            <Flower
+              hide={!this.props.appState.username}
+              colors={this.props.appState.avatar.colors}
+              size={60}
+              appState={this.props.appState}
+            ></Flower>
           </div>
+
+          <div className="user">
+            <div className="username">
+              {this.props.appState.username}
+            </div>
+            <div className="member">
+              Member since {memberSince}
+            </div>
+          </div>
+
         </div>
 
-{/* //
-//
-//
-// */}
-
-        <br/><br/><br/><br/>
 
         <Container>
           <Row className="dashboard-levels">

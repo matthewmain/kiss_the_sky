@@ -1,5 +1,8 @@
 import React, { Component } from 'react'
 import moment from "moment"
+import Icon_exit_modal_black from "./../../images/icon_exit_modal_black.svg"
+import Edit_icon from "./../../images/edit_icon.svg"
+
 import "./savedSessions.sass"
 
 import Saved from "./../../api/saved.js"
@@ -80,7 +83,11 @@ class SavedSessions extends Component {
                       onClick={()=>this.update(index)}
                     >
                       <div className="icons">
-                        ✎
+                        <img
+                          className="edit"
+                          src={Edit_icon}
+                          alt="edit icon"
+                        />
                       </div>
                     </th>
 
@@ -89,8 +96,13 @@ class SavedSessions extends Component {
                       onClick={()=>this.delete(index)}
                     >
                       <div className="icons">
-                        X
+                        <img
+                          className="exit"
+                          src={Icon_exit_modal_black}
+                          alt="delete saved session button"
+                        />
                       </div>
+
                     </th>
 
                   </tr>
