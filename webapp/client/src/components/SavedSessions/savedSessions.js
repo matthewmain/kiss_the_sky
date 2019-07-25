@@ -68,9 +68,13 @@ class SavedSessions extends Component {
                       className="details"
                       onClick={()=>this.resume(index)}
                     >
-                      {game.title} /
+                      <div className="title" title={game.title}>
+                        {game.title}
+                      </div>
 
-                      {date} /
+                      <div className="date" >
+                        {date}
+                      </div>
 
                       {game.ambientMode ? "Ambient Mode" : "Game Mode" }
                       &nbsp;({window._cap(game.gameDifficulty)}, {Math.floor(game.highestRedFlowerPct)}%) &nbsp;|&nbsp;
