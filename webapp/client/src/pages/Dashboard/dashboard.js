@@ -29,28 +29,11 @@ class Dashboard extends Component {
   }
 
   componentDidUpdate(){
-    // const route = this.state.history.location.pathname.split('/')[2]
     if (!this.props.appState.username && !this.props.appState.waitingforSession) {
       // 📝 If no user is logged in. Route to home page...
       this.state.history.push('/')
     }
-    // else if (this.props.appState.username && route !== this.state.route) {
-    //   // 🔥 COMPONENTIZE
-    //   if (route === "savedsessions") {
-    //     this.checkForSavedGames()
-    //   }
-    //   // 🔥 COMPONENTIZE
-    //   else if (route === "settings") {
-    //     console.log('get settings stuff... if needed')
-    //   }
-    //   // console.log('---***---', route)
-    //   this.setState({ route: route || "savedsessions" })
-    // }
   }
-
-  // checkForSavedGames = ()=>{
-  //   Saved.saved(this.props.appState)
-  // }
 
   render(){
     const route = this.props.history.location.pathname.split("/")

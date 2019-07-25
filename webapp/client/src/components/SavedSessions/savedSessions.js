@@ -72,14 +72,19 @@ class SavedSessions extends Component {
                         {game.title}
                       </div>
 
-                      <div className="date" >
+                      <div className="date">
                         {date}
                       </div>
 
-                      {game.ambientMode ? "Ambient Mode" : "Game Mode" }
-                      &nbsp;({window._cap(game.gameDifficulty)}, {Math.floor(game.highestRedFlowerPct)}%) &nbsp;|&nbsp;
+                      <div className="mode">
+                        {game.ambientMode ? "Ambient Mode" : "Game Mode" }
+                        &nbsp;({window._cap(game.gameDifficulty)}, {Math.floor(game.highestRedFlowerPct)}%) 
+                      </div>
 
-                      Year {game.currentYear}, {game.currentSeason}
+                      <div className="year">
+                        Year {game.currentYear}, {game.currentSeason}
+                      </div>
+
                     </th>
 
                     <th

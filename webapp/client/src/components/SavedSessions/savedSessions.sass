@@ -15,25 +15,26 @@
       cursor: pointer
     .details
       text-align: left
-      white-space: nowrap
-      overflow: hidden
-      text-overflow: ellipsis
-      .title, .date
-        padding: 0px
+      font-size: 13.5px
+      .title, .date, .mode, .year
+        position: relative
+        top: -2px
         display: inline-block
       .title
-        width: 40%
-        padding-left: 15px
+        width: 250px
         padding: 0px
-        margin: 0px
-        padding-right: -30px
-        background-color: green
+        padding-right: 15px
+        top: 3px
+        left: 15px
         white-space: nowrap
         overflow: hidden
         text-overflow: ellipsis
       .date
-        background-color: blue
-        width: 20%
+        width: 100px
+      .year
+        top: 3px
+        float: right
+        right: 15px
     .icons-container
       margin: 0px
       padding: 0px
@@ -54,3 +55,24 @@
         width: 35px
         left: -7px
         top: -7px
+
+@media only screen and (max-width: 991px)
+  .savedSessions
+    .saved-container
+      table
+        .details
+          .title
+            width: 200px
+
+@media only screen and (max-width: 768px)
+  .savedSessions
+    .saved-container
+      table
+        .details
+          .title, .mode
+            width: 250px
+            left: 15px
+          .year
+            float: none
+            top: -2px
+            left: 0px
