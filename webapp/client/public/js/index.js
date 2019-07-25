@@ -120,8 +120,8 @@ function Seed( parentFlower, zygoteGenotype ) {
   this.genotype = zygoteGenotype;
   this.phenotype = EV.generatePhenotype( this.genotype );
   this.p1.width = this.sw*1;
-  this.p1.mass = 15;
-  this.p2.width = this.sw*0.35; this.p2.mass = 15;
+  this.p1.mass = 10;
+  this.p2.width = this.sw*0.35; this.p2.mass = 10;
   this.sp = addSp( this.p1.id, this.p2.id );  // seed span
   this.sp.strength = 2;
   this.opacity = 1;
@@ -952,7 +952,7 @@ function runGameWinFlowersAnimation() {
   $("#game_win_gen_number").text( currentYear.toString().replace(/0/g,"O") );  // (replace is for dotted Dosis zero)
   $("#game_win_mode").text( gameDifficulty.toUpperCase() );
   var totalFlowers = 600;
-  const game = document.getElementById("game")
+  const game = document.getElementById("game");
   $("#hundred_pct_large_height_announcement")  // initial large 100% text burst
     .animate({
       fontSize: "+=10pt",
@@ -981,14 +981,13 @@ function runGameWinFlowersAnimation() {
               width: width+"%",
               transform: "translate(-50%,-50%) rotate("+rotation+"deg)",
             });
-            switch( i ) {  // text and buttons sequencial heavy slam in
-              case 500: $("#game_win_YOU").fadeIn(100); break;
-              case 470: $("#game_win_KISSED").fadeIn(100); break;
-              case 440: $("#game_win_THE").fadeIn(100); break;
-              case 410: $("#game_win_SKY").fadeIn(100); break;
-              case 380: $("#game_win_gen_count_text").fadeIn(1500); break;
-              case 330: $("#game_win_mode_text").fadeIn(1500); break;
-              case 270: $(".button_game_win_play_again").fadeIn(3000); break;
+            switch( i ) {  // text and buttons sequencial heavy slam in animation
+              case 550: $("#game_win_YOU").fadeIn(100); break;
+              case 530: $("#game_win_KISSED").fadeIn(100); break;
+              case 510: $("#game_win_THE, #game_win_SKY").fadeIn(100); break;
+              case 490: $("#game_win_gen_count_text").fadeIn(1500); break;
+              case 470: $("#game_win_mode_text").fadeIn(1500); break;
+              case 430: $(".button_game_win_play_again").fadeIn(3000); break;
               case 1: gameWinFlowerAnimationComplete = true;
             }
             try {  // try-catch block allows game win flowers animation termination upon resumed saved game
