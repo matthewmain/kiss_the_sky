@@ -17,6 +17,7 @@ class App extends Component {
     username: null,
     _id: null,
     avatar: false,
+    created_at: false,
     savedGames: false,
     myHighScores: false,
     leaderboardRef: { difficulty: "expert", page: 1},

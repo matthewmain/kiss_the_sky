@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import { Link } from "react-router-dom"
 import { Row, Col, Container } from 'react-bootstrap'
+import moment from "moment"
 import "./dashboard.sass"
 
 import Flower from "./../../components/Flower/flower.js"
@@ -55,20 +56,34 @@ class Dashboard extends Component {
     const route = this.props.history.location.pathname.split("/")
     if (!route[2]) route[2] = "savedsessions"
 
+    const memberSince = moment(this.props.appState.created_at, 'YYYY-MM-DD').format('MMM, Do YYYY').replace(/0/g,"O")
+
     return (
       <div className="dashboard" style={{ opacity: `${this.state.opacity}`}}>
-
-        <Flower
-          size={70}
-          appState={this.props.appState}
-        ></Flower>
+{/* //
+//
+//
+// */}
+        <div className="flower-avatar-container">
+          <Flower
+            hide={!this.props.appState.username}
+            colors={this.props.appState.avatar.colors}
+            size={70}
+            appState={this.props.appState}
+          ></Flower>
+        </div>
 
         <div className="dashboard-header">
           {this.props.appState.username}
           <div className="dashboard-subtitle">
-            ... put member since here...
+            Member since {memberSince}
           </div>
         </div>
+
+{/* //
+//
+//
+// */}
 
         <br/><br/><br/><br/>
 

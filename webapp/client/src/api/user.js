@@ -22,6 +22,7 @@ export default {
       else console.log(" - 📜 👤 User Logged Out")
       app.set({
         username: user.username,
+        created_at: user.created_at,
         _id:  user._id,
         avatar: user.avatar || false,
         waitingforSession: false,
