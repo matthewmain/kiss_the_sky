@@ -120,8 +120,8 @@ function Seed( parentFlower, zygoteGenotype ) {
   this.genotype = zygoteGenotype;
   this.phenotype = EV.generatePhenotype( this.genotype );
   this.p1.width = this.sw*1;
-  this.p1.mass = 5;
-  this.p2.width = this.sw*0.35; this.p2.mass = 5;
+  this.p1.mass = 15;
+  this.p2.width = this.sw*0.35; this.p2.mass = 15;
   this.sp = addSp( this.p1.id, this.p2.id );  // seed span
   this.sp.strength = 2;
   this.opacity = 1;
@@ -1158,7 +1158,8 @@ function display() {
     checkForGameWin();
   }
   //runLogs( 600 );
-  if ( !gamePaused ) { setTimeout( ()=> { display(); }, 17); }  // (RAF is only slightly smoother, while setTimeout regulates rate much more consistently)
+  if ( !gamePaused ) { window.requestAnimationFrame( display ); }  // (smooth with inconsistent frame rate)
+  //if ( !gamePaused ) { setTimeout( ()=> { display(); }, 17); }  // (choppy with consistent frame rate)
 
 
 }
