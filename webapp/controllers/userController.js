@@ -11,6 +11,7 @@ const UserControllers = {
       db.User.findOne({_id: req.user._id})
         .then(user => {
           req.user.avatar = user.avatar
+          req.user.created_at = user.created_at
           res.json({ user: req.user })
         })
         .catch(err => res.json(err))
@@ -28,7 +29,7 @@ const UserControllers = {
         if (err) { return next(err) }
         db.User.findOne({_id: user._id})
           .then(user => {
-            const {username,_id,avatar} = user
+            const { username ,_id , avatar } = user
             return res.json({username,_id,avatar})
             res.json({ user: req.user, avatar: user.avatar })
           })

@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import { Link } from "react-router-dom"
 import { Row, Col, Container } from 'react-bootstrap'
+import moment from "moment"
 import "./dashboard.sass"
 
 import Flower from "./../../components/Flower/flower.js"
@@ -28,49 +29,43 @@ class Dashboard extends Component {
   }
 
   componentDidUpdate(){
-    // const route = this.state.history.location.pathname.split('/')[2]
     if (!this.props.appState.username && !this.props.appState.waitingforSession) {
       // 📝 If no user is logged in. Route to home page...
       this.state.history.push('/')
     }
-    // else if (this.props.appState.username && route !== this.state.route) {
-    //   // 🔥 COMPONENTIZE
-    //   if (route === "savedsessions") {
-    //     this.checkForSavedGames()
-    //   }
-    //   // 🔥 COMPONENTIZE
-    //   else if (route === "settings") {
-    //     console.log('get settings stuff... if needed')
-    //   }
-    //   // console.log('---***---', route)
-    //   this.setState({ route: route || "savedsessions" })
-    // }
   }
-
-  // checkForSavedGames = ()=>{
-  //   Saved.saved(this.props.appState)
-  // }
 
   render(){
     const route = this.props.history.location.pathname.split("/")
     if (!route[2]) route[2] = "savedsessions"
 
+    const memberSince = moment(this.props.appState.created_at, 'YYYY-MM-DD').format('MMM, Do YYYY').replace(/0/g,"O")
+
     return (
       <div className="dashboard" style={{ opacity: `${this.state.opacity}`}}>
 
-        <Flower
-          size={70}
-          appState={this.props.appState}
-        ></Flower>
+        <div className="title">
 
-        <div className="dashboard-header">
-          {this.props.appState.username}
-          <div className="dashboard-subtitle">
-            ... put member since here...
+          <div className="flower-avatar-container">
+            <Flower
+              hide={!this.props.appState.username}
+              colors={this.props.appState.avatar.colors}
+              size={60}
+              appState={this.props.appState}
+            ></Flower>
           </div>
+
+          <div className="user">
+            <div className="username">
+              {this.props.appState.username}
+            </div>
+            <div className="member">
+              Member since {memberSince}
+            </div>
+          </div>
+
         </div>
 
-        <br/><br/><br/><br/>
 
         <Container>
           <Row className="dashboard-levels">

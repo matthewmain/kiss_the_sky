@@ -13,11 +13,66 @@
       border-radius: 5px
       padding: 10px
       cursor: pointer
+    .details
+      text-align: left
+      font-size: 13.5px
+      .title, .date, .mode, .year
+        position: relative
+        top: -2px
+        display: inline-block
+      .title
+        width: 250px
+        padding: 0px
+        padding-right: 15px
+        top: 3px
+        left: 15px
+        white-space: nowrap
+        overflow: hidden
+        text-overflow: ellipsis
+      .date
+        width: 100px
+      .year
+        top: 3px
+        float: right
+        right: 15px
     .icons-container
       margin: 0px
       padding: 0px
     .details
       width: 100%
+      padding: 0px
+      height: 40px
     .icons
       width: 40px
+      height: 40px
       margin-left: 8px
+      .edit
+        position: relative
+        width: 15px
+        top: -5px
+      .exit
+        position: relative
+        width: 35px
+        left: -7px
+        top: -7px
+
+@media only screen and (max-width: 991px)
+  .savedSessions
+    .saved-container
+      table
+        .details
+          .title
+            width: 200px
+
+@media only screen and (max-width: 768px)
+  .savedSessions
+    .saved-container
+      table
+        .details
+          .title, .mode
+            width: 250px
+            left: 15px
+          .year
+            float: none
+            top: -2px
+            left: 0px

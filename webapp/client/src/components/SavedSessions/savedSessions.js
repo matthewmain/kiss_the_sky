@@ -1,5 +1,8 @@
 import React, { Component } from 'react'
 import moment from "moment"
+import Icon_exit_modal_black from "./../../images/icon_exit_modal_black.svg"
+import Edit_icon from "./../../images/edit_icon.svg"
+
 import "./savedSessions.sass"
 
 import Saved from "./../../api/saved.js"
@@ -65,14 +68,23 @@ class SavedSessions extends Component {
                       className="details"
                       onClick={()=>this.resume(index)}
                     >
-                      {game.title} /
+                      <div className="title" title={game.title}>
+                        {game.title}
+                      </div>
 
-                      {date} /
+                      <div className="date">
+                        {date}
+                      </div>
 
-                      {game.ambientMode ? "Ambient Mode" : "Game Mode" }
-                      &nbsp;({window._cap(game.gameDifficulty)}, {Math.floor(game.highestRedFlowerPct)}%) &nbsp;|&nbsp;
+                      <div className="mode">
+                        {game.ambientMode ? "Ambient Mode" : "Game Mode" }
+                        &nbsp;({window._cap(game.gameDifficulty)}, {Math.floor(game.highestRedFlowerPct)}%) 
+                      </div>
 
-                      Year {game.currentYear}, {game.currentSeason}
+                      <div className="year">
+                        Year {game.currentYear}, {game.currentSeason}
+                      </div>
+
                     </th>
 
                     <th
@@ -80,7 +92,11 @@ class SavedSessions extends Component {
                       onClick={()=>this.update(index)}
                     >
                       <div className="icons">
-                        ✎
+                        <img
+                          className="edit"
+                          src={Edit_icon}
+                          alt="edit icon"
+                        />
                       </div>
                     </th>
 
@@ -89,8 +105,13 @@ class SavedSessions extends Component {
                       onClick={()=>this.delete(index)}
                     >
                       <div className="icons">
-                        X
+                        <img
+                          className="exit"
+                          src={Icon_exit_modal_black}
+                          alt="delete saved session button"
+                        />
                       </div>
+
                     </th>
 
                   </tr>

@@ -48,6 +48,8 @@ export default {
     API.resume(_id)
       .then( resp => {
         console.log(" - 👤 💾 💥 🌺 resume saved game :", resp)
+        const headerItem = Array.from(document.querySelectorAll(".header_item"))
+        headerItem.map(i=>i.style.display = "block")
         window.resumeState(resp.data)
         history.push('/game')
       })
