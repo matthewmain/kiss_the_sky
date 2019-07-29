@@ -120,8 +120,8 @@ function Seed( parentFlower, zygoteGenotype ) {
   this.genotype = zygoteGenotype;
   this.phenotype = EV.generatePhenotype( this.genotype );
   this.p1.width = this.sw*1;
-  this.p1.mass = 10;
-  this.p2.width = this.sw*0.35; this.p2.mass = 10;
+  this.p1.mass = 5;
+  this.p2.width = this.sw*0.35; this.p2.mass = 5;
   this.sp = addSp( this.p1.id, this.p2.id );  // seed span
   this.sp.strength = 2;
   this.opacity = 1;
@@ -872,22 +872,22 @@ function downloadScreenshot() {
   download.download = "Kiss the Sky - Year "+currentYear+", "+seasonTitleCase+".png";
 }
 
-///renders instructional demos at game opening (called as callback for season announcements in flower_handler.js)
-function renderDemosInFirstYear() {
-  if ( readyForEliminationDemo && !eliminationDemoHasBegun && currentSeason === "Spring" ) {
+///renders instructional demos at game opening
+function renderDemos() {
+  if ( readyForEliminationDemo && !eliminationDemoHasBegun ) {
     eliminationDemoHasBegun = true;
     $("#demo_elimination_div")
       .css( "visibility", "visible" )
       .animate({ opacity: 1 }, 2000, "linear" )
-      .delay(4000)
+      .delay(10000)
       .animate({ opacity: 0 }, 2000, "linear" );
   }
-  if ( readyForChangeDemo && !changeDemoHasBegun && currentSeason === "Summer" ) {
+  if ( readyForChangeDemo && !changeDemoHasBegun ) {
     changeDemoHasBegun = true;
     $("#demo_change_div")
       .css( "visibility", "visible" )
       .animate({ opacity: 1 }, 2000, "linear" )
-      .delay(4000)
+      .delay(10000)
       .animate({ opacity: 0 }, 2000, "linear", function() {
         allDemosHaveRun = true;
       });
@@ -1150,7 +1150,7 @@ function display() {
   updateUI();
   runVerlet();
   if ( !ambientMode ) {
-    renderDemosInFirstYear();
+    renderDemos();
     renderMilestones();
     renderHeightMarker();
     checkForGameOver();
@@ -1166,3 +1166,11 @@ function display() {
 createSunRays();
 if ( useSunShades ) { placeSunShades(3,3); }
 display();
+
+
+
+
+
+
+
+
