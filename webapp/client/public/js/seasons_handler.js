@@ -10,10 +10,10 @@ var yearTime = 0;
 var currentSeason;
 
 ///season lengths
-var spL = 1000;  // spring length
-var suL;  // summer length (updated ever year in trackSeasons() based on max plant segment count)
-var faL = 200;  // fall length
-var wiL = 300;  // winter length
+var spL;  // spring length (updated in trackSeasons() )
+var suL;  // summer length (updated in trackSeasons() )
+var faL = 500;  // fall length
+var wiL = 500;  // winter length
 
 ///background gradient colors
 var BgG = {
@@ -60,14 +60,19 @@ function trackSeasons() {
   //spring
   if ( yearTime === 1 ) {
     currentSeason = "Spring"; photosynthesisRatio = 1; livEnExp = 0.75;
+    if ( currentYear === 1 && !ambientMode ) {  // sets first year spring length to ensure time for demo animation
+      spL = 3000;
+    } else {
+      spL = 1000;
+    }
     renderYearAnnouncement(); renderSeasonAnnouncement();
   //summer
   } else if ( yearTime === spL+1 ) {
     currentSeason = "Summer"; photosynthesisRatio = 1; livEnExp = 1;
-    if ( currentYear === 1 ) {  // sets first year summer length to ensure enough time for demo animation
-      suL = 800;
+    if ( currentYear === 1 && !ambientMode ) {  // sets first year summer length to ensure time for demo animation
+      suL = 2500;
     } else { // adjusts summer length based on tallest plant's height
-      suL = 85*currentGreatestMaxSegment() > 300 ? 85*currentGreatestMaxSegment() : 300;
+      suL = 85*currentGreatestMaxSegment() > 500 ? 85*currentGreatestMaxSegment() : 500;
     }
     scaleEliminationCursor();  // scales elimination cursor based on avg plant base width;
     renderSeasonAnnouncement();
@@ -158,8 +163,8 @@ function renderBackground() {
 
 ///renders year change announcements
 function renderYearAnnouncement() {
-  var fsi = 1.5;  // font size increase
-  var lsi = 1.5;  // letter spacing increase
+  var fsi = 0;  // font size increase
+  var lsi = 1;  // letter spacing increase
   var om = 1;  // opacity maximum
   var dur = 1800;  // duration (of each animation segment)
   var del = 0;  // delay
@@ -193,8 +198,8 @@ function renderYearAnnouncement() {
 
 ///renders new season announcement at change of seasons
 function renderSeasonAnnouncement() {
-  var fsi = 1.2;  // font size increase
-  var lsi = 0.5;  // letter spacing increase
+  var fsi = 0;  // font size increase
+  var lsi = 0.6;  // letter spacing increase
   var om = 1;  // opacity maximum
   var dur = 1200;  // duration (of each animation segment)
   var del = 0;  // delay
@@ -221,7 +226,18 @@ function renderSeasonAnnouncement() {
         fontSize: "16pt",
         letterSpacing: "1.25pt"
       });
-      if ( currentSeason === "Spring" && currentYear === 1 ) readyForEliminationDemo = true;
-      if ( currentSeason === "Summer" && currentYear === 1 ) readyForChangeDemo = true;
+      if ( currentYear === 1 && currentSeason === "Spring" ) readyForEliminationDemo = true;
+      if ( currentYear === 1 && currentSeason === "Summer" ) readyForChangeDemo = true;
     });
 }
+
+
+
+
+
+
+
+
+
+
+
