@@ -98,6 +98,22 @@ const UserControllers = {
         }
       })
       .catch(err => res.json(err))
+  },
+
+  changeAvatar: function(req, res) {
+    console.log('🌸 Change Avatar ', req.body)
+    db.User.findOneAndUpdate(
+      { _id: req.user._id },
+      { $set: {avatar: {colors: req.body}}}
+    )
+      .then(foundUser => {
+        db.User.findOne({ _id: req.user._id })
+          .then(user => {
+            console.log(' - 🌸 Successfull avatar change ', user.avatar)
+            res.json({ updatedColor: user.avatar.colors })
+          })
+      })
+      .catch(err => res.json(err))
   }
 
 }

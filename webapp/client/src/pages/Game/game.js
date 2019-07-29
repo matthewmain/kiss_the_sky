@@ -26,7 +26,7 @@ class Home extends Component {
       window.requestAnimationFrame(()=>{ this.setState({opacity: 0}) })
     }
     this.props.appState.set({gameLoaded: true})
-    window.createReactCallbacks(this.gameWon, this.gameSave)
+    window.createReactCallbacks(this.gameWon, this.gameSave, this.toggleIcon)
   }
 
   componentWillUnmount(){
@@ -42,6 +42,10 @@ class Home extends Component {
   gameSave = ()=>{
     const title = prompt("Save Session as... (You can change this name later)", "untitled")
     if (title) Saved.save( this.props.appState, title )
+  }
+
+  toggleIcon = ()=>{
+    this.props.appState.set({showIcon: true})
   }
 
   render() {

@@ -287,6 +287,7 @@ function removeModals() {
 
 ///display game mode footer content
 function displayGameModeUI() {
+  reactGameToggleIcon()
   viewRedFlowerIndicator = true;
   $("#height_text, #tag_div, #tag_svg, #tag_content, #percent").css("visibility", "visible");
   $("#season_left, #pie_svg_left").css("display", "inline");
@@ -295,6 +296,7 @@ function displayGameModeUI() {
 
 ///display ambient mode footer
 function displayAmbientModeUI() {
+  reactGameToggleIcon()
   viewRedFlowerIndicator = false;
   $("#height_text, #tag_div, #tag_svg, #tag_content, #percent").css("visibility", "hidden");
   $("#season_left, #pie_svg_left").css("display", "none");

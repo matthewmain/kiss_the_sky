@@ -78,7 +78,7 @@ class SavedSessions extends Component {
 
                       <div className="mode">
                         {game.ambientMode ? "Ambient Mode" : "Game Mode" }
-                        &nbsp;({window._cap(game.gameDifficulty)}, {Math.floor(game.highestRedFlowerPct)}%) 
+                        &nbsp;({window._cap(game.gameDifficulty)}, {Math.floor(game.highestRedFlowerPct)}%)
                       </div>
 
                       <div className="year">
@@ -123,8 +123,7 @@ class SavedSessions extends Component {
         )})}
 
         {this.props.appState.savedGames.length <= 0 && <>
-          <br/>
-          ... no saved sessions ...
+          <div className="no-saved-sessions"> ... no saved sessions ... </div>
         </>}
 
       </div>

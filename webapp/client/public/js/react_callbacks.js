@@ -1,6 +1,9 @@
 var reactGameWonCallback;
 var reactGameSaveCallback;
-function createReactCallbacks(gameWon, gameSave) {
+var reactGameToggleIcon;
+
+function createReactCallbacks(gameWon, gameSave, toggleIcon) {
   reactGameWonCallback = gameWon
   reactGameSaveCallback = gameSave
+  reactGameToggleIcon = toggleIcon
 }

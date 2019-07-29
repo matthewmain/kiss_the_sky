@@ -11,8 +11,25 @@
     position: absolute
     top: 20px
     left: 35px
-    width: 170px
+    width: 135px
     transition: opacity 0.5s
+  .resume-container
+    position: absolute
+    width: 80px
+    top: 90px
+    left: 45px
+    cursor: pointer
+    transition: opacity .5s
+  .resume-container:hover
+    opacity: 0.7
+    transition: opacity .5s
+  #resume_button
+    width: 110px
+  .resume-text
+    font-size: 14px
+    letter-spacing: 1px
+    position: relative
+    top: -29px
   #menu_dropdown_container
     position: absolute
     top: 90px
@@ -29,7 +46,7 @@
     transition: opacity 1s
   #menu_icon_container
     position: absolute
-    top: 40px
+    top: 20px
     right: 30px
     cursor: pointer
     width: 100px
@@ -80,9 +97,3 @@
   bottom: 0px
   z-index: 3
   transition: opacity .5s
-
-// @media only screen and (max-width: 830px)
-//   .menu
-//     #menu_icon_container
-//       top: 5px
-//       right: 5px

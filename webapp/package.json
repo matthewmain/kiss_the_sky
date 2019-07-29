@@ -20,18 +20,18 @@
     "axios": "^0.19.0",
     "bcryptjs": "^2.4.3",
     "connect-mongo": "^2.0.3",
-    "express": "^4.16.4",
-    "express-session": "^1.16.1",
+    "express": "^4.17.1",
+    "express-session": "^1.16.2",
     "if-env": "^1.0.4",
-    "jquery": "^3.4.0",
-    "mongoose": "^5.5.4",
+    "jquery": "^3.4.1",
+    "mongoose": "^5.6.7",
     "mongoose-unique-validator": "^2.0.3",
     "passport": "^0.4.0",
     "passport-local": "^1.0.0",
-    "react-transition-group": "^4.0.0"
+    "react-transition-group": "^4.2.1"
   },
   "devDependencies": {
-    "concurrently": "^4.1.0",
-    "nodemon": "^1.18.11"
+    "concurrently": "^4.1.1",
+    "nodemon": "^1.19.1"
   }
 }

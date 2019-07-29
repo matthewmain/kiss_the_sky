@@ -73,6 +73,17 @@ export default {
       return API.checkAvailable(field)
         .then( resp => resp.data )
         .catch( err => console.log(err) )
+    },
+
+    changeAvatar: function(colors, app) {
+      console.log('🌸 Change Avatar ', colors)
+      API.changeAvatar(colors)
+        .then( resp => {
+          app.set({
+            avatar: {colors: resp.data.updatedColor},
+          })
+        })
+        .catch( err => console.log(err) )
     }
 
 }
