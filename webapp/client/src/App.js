@@ -20,6 +20,7 @@ class App extends Component {
     created_at: false,
     savedGames: false,
     myHighScores: false,
+    showIcon: false,
     leaderboardRef: { difficulty: "expert", page: 1},
     leaderboard: [],
     openMenu: false,

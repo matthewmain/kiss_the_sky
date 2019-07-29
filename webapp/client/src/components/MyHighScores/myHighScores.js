@@ -4,11 +4,12 @@ import "./myHighScores.sass"
 
 import Winner from "./../../api/winner.js"
 
+import Paginate_arrow from './../../images/paginate_arrow.svg'
+
 class MyHighScores extends Component {
 
   state = {
     scoresPage: 1,
-    viewMyScores: false
   }
 
   componentDidMount(){
@@ -36,113 +37,112 @@ class MyHighScores extends Component {
     return (
       <div className="myHighScores">
 
-        My High Scores <br/><br/>
+        <div className="best">Best</div>
 
-        {this.props.appState.myHighScores.length > 0 && <>
-          {!this.state.viewMyScores && <>
+        <div className="score-card beginner">
 
-            <div style={{display: "inline-block", width: 205, backgroundColor: '#333', margin: 5, padding: 5}}>
-              Beginner
-              <hr/>
-              {beginnerBest && <>
-                <div> #{beginnerBest.rank}. </div>
-                <div> {beginnerBest.years} </div>
-                <div> {moment(beginnerBest.date, 'YYYY-MM-DD').format('M/D/YY')} </div>
-              </>}
-              {!beginnerBest && <>
-                <br/>
-                Not Yet. <br/>
-                Keep Trying!<br/>
-              </>}
+            <div className="title"> Beginner </div>
+            <div className="sub-title"> Red Flower Garden </div>
+          {beginnerBest && <>
+            <div className="rank"> #{beginnerBest.rank.toString().replace(/0/g,"O")}. </div>
+            You kissed the sky in
+            <div className="years"> {beginnerBest.years.replace(/0/g,"O")} </div>
+            years
+            <div className="date">
+              on {moment(beginnerBest.date, 'YYYY-MM-DD').format('M/D/YY').replace(/0/g,"O")}
             </div>
-
-            <div style={{display: "inline-block", width: 205, backgroundColor: '#333', margin: 5, padding: 5}}>
-              Intermediate
-              <hr/>
-              {intermediateBest && <>
-                <div> #{intermediateBest.rank}. </div>
-                <div> {intermediateBest.years} </div>
-                <div> {moment(intermediateBest.date, 'YYYY-MM-DD').format('M/D/YY')} </div>
-              </>}
-              {!intermediateBest && <>
-                <br/>
-                Not Yet. <br/>
-                Keep Trying!<br/>
-              </>}
-            </div>
-
-            <div style={{display: "inline-block", width: 205, backgroundColor: '#333', margin: 5, padding: 5}}>
-              expert
-              <hr/>
-              {expertBest && <>
-                <div> #{expertBest.rank}. </div>
-                <div> {expertBest.years} </div>
-                <div> {moment(expertBest.date, 'YYYY-MM-DD').format('M/D/YY')} </div>
-              </>}
-              {!expertBest && <>
-                <br/>
-                Not Yet. <br/>
-                Keep Trying!<br/>
-              </>}
-            </div>
-
           </>}
 
-          <br/>
-          <button onClick={()=>this.setState({viewMyScores: !this.state.viewMyScores})}>
+          {!beginnerBest && <>
+            <div className="none-yet" > None yet. </div>
+            <div className="keep-trying"> Keep trying! </div>
+          </>}
 
-            {!this.state.viewMyScores && <>
-              view all-time high scores
-            </>}
+        </div>
 
-            {this.state.viewMyScores && <>
-              top scores
-            </>}
+        <div className="score-card intermediate">
 
-          </button>
+            <div className="title"> Intermediate </div>
+            <div className="sub-title"> Colorful Flower Garden </div>
+          {intermediateBest && <>
+            <div className="rank"> #{intermediateBest.rank.toString().replace(/0/g,"O")}. </div>
+            You kissed the sky in
+            <div className="years"> {intermediateBest.years.replace(/0/g,"O")} </div>
+            years
+            <div className="date">
+              on {moment(intermediateBest.date, 'YYYY-MM-DD').format('M/D/YY').replace(/0/g,"O")}
+            </div>
+          </>}
 
-          {this.state.viewMyScores && <>
+          {!intermediateBest && <>
+            <div className="none-yet" > None yet. </div>
+            <div className="keep-trying"> Keep trying! </div>
+          </>}
 
+        </div>
+
+        <div className="score-card expert">
+
+            <div className="title"> Expert </div>
+            <div className="sub-title"> Tiny White Flower </div>
+          {expertBest && <>
+            <div className="rank"> #{expertBest.rank.toString().replace(/0/g,"O")}. </div>
+            You kissed the sky in
+            <div className="years"> {expertBest.years.replace(/0/g,"O")} </div>
+            years
+            <div className="date">
+              on {moment(expertBest.date, 'YYYY-MM-DD').format('M/D/YY')}
+            </div>
+          </>}
+
+          {!expertBest && <>
+            <div className="none-yet" > None yet. </div>
+            <div className="keep-trying"> Keep trying! </div>
+          </>}
+
+        </div>
+
+        {this.props.appState.myHighScores.length > 0 && <>
+
+          <div className="all">All</div>
+
+          <div className="scores-container">
             {allTimePage.map((score,index)=>
-              <div className="scores-container" key={index}>
+              <div className="score-container" key={index}>
 
-                  <div style={{width: 400, display: "inline-block", paddingLeft: 50}}>
-                    #{score.rank}.
+                  <div className="rank">
+                    #{score.rank.toString().replace(/0/g,"O")}.
                     &nbsp;
                     {score.difficulty}
                   </div>
 
-                  {moment(score.date, 'YYYY-MM-DD').format('M/D/YY')}
+                  {moment(score.date, 'YYYY-MM-DD').format('M/D/YY').replace(/0/g,"O")}
 
                   <div style={{float: "right"}}>
-                    {score.years} years
+                    {score.years.replace(/0/g,"O")} years
                   </div>
 
               </div>)
             }
-
-            {this.state.scoresPage > 1 &&
-              <button onClick={()=>this.setState({scoresPage: this.state.scoresPage-1})}>
-                &#x2190;
-              </button>
-            }
-
-            {(this.state.scoresPage*10) < myHighScores.length &&
-              <button onClick={()=>this.setState({scoresPage: this.state.scoresPage+1})}>
-                &#x2192;
-              </button>
-            }
-
-          </>}
-        </>}
-
-        {this.props.appState.myHighScores.length <= 0 &&
-          <div>
-            <br/>
-            Not Yet. <br/>
-            Keep Trying!
           </div>
-        }
+
+          <button
+            className={"paginate "+(this.state.scoresPage > 1 ? "" : "disable")}
+            onClick={()=>this.setState({scoresPage: this.state.scoresPage-1})}>
+
+            <img className="arrow left" src={Paginate_arrow} alt="icon menu"/>
+
+          </button>
+
+          <button
+            className={"paginate "+((this.state.scoresPage*10) < myHighScores.length ? "" : "disable")}
+            onClick={()=>this.setState({scoresPage: this.state.scoresPage+1})}>
+
+            <img className="arrow right" src={Paginate_arrow} alt="icon menu"/>
+
+          </button>
+
+        </>}
 
       </div>
     )

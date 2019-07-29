@@ -1,0 +1,115 @@
+.myHighScores *
+  font-family: "Dosis", Avenir, sans-serif
+.myHighScores
+  padding: 8px
+  padding-bottom: 35px
+  padding-top: 30px
+  .best, .all
+    font-size: 24px
+    font-weight: bolder
+    text-align: left
+    padding-left: 27px
+    padding-bottom: 10px
+  .score-card
+    position: relative
+    display: inline-block
+    width: 210px
+    margin: 0px 17px
+    padding: 8px
+    padding-top: 7px
+    border-radius: 3px
+    color: white
+    vertical-align: top
+    min-height: 290px
+    .title
+      color: black
+      text-align: left
+      margin-top: -15px
+      font-size: 19px
+      letter-spacing: 1px
+      padding-left: 7px
+      font-weight: 900
+      padding-bottom: 0px
+    .sub-title
+      font-size: 9px
+      text-align: left
+      color: #202020
+      padding-left: 8px
+      padding-top: 2px
+      padding-bottom: 45px
+    .rank
+      color: black
+      position: absolute
+      right: 10px
+      top: 7px
+      font-size: 16px
+      font-weight: bolder
+      border: 2px solid black
+      width: 42px
+      height: 32px
+      border-radius: 32px
+      line-height: 27px
+      text-align: center
+    .years
+      font-size: 50px
+      font-weight: bolder
+      line-height: 50px
+    .date
+      padding-top: 45px
+      padding-bottom: 25px
+    .none-yet
+      font-size: 28px
+      font-weight: bolder
+      letter-spacing: 1px
+      margin-top: 20px
+    .keep-trying
+      font-size: 15px
+      letter-spacing: 1px
+  .beginner
+    background-color: #69AB6C
+  .intermediate
+    background-color: #419E45
+  .expert
+    background-color: #006604
+  .all
+    padding-top: 40px
+  .scores-container
+    padding: 0px 30px 40px 30px
+    .score-container
+      text-align: left
+      font-size: 16px
+      padding-bottom: 4px
+      .rank
+        display: inline-block
+        width: 50%
+  .paginate
+    border: none
+    width: 45px
+    height: 40px
+    border-radius: 5px
+    margin: 5px 9px
+    cursor: pointer
+  .disable
+    opacity: 0.2
+    pointer-events: none
+  .arrow
+    margin-top: -5px
+    width: 15px
+    color: #202020
+  .left
+    transform: rotate(-90deg)
+  .right
+    transform: rotate(90deg)
+
+@media only screen and (max-width: 991px)
+  .myHighScores
+    .score-card
+      width: 193px
+
+@media only screen and (max-width: 768px)
+  .myHighScores
+    .score-card
+      width: 90%
+      margin-bottom: 30px
+    .all
+      padding-top: 20px

@@ -16,4 +16,7 @@ router.route("/signup")
 router.route("/checkavailable")
   .post(userController.checkAvailable)
 
+router.route("/changeAvatar")
+  .put(userController.changeAvatar)
+
 module.exports = router

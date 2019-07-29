@@ -5,6 +5,7 @@ import Flower from "./../../components/Flower/flower.js"
 import Icon_menu from './../../images/icon_menu.svg'
 import Icon_menu_close from './../../images/icon_menu_close.svg'
 import Title_header_dark from './../../images/title_header_dark.svg'
+import Resume_button from './../../images/resume_button.svg'
 
 import User from "./../../api/user.js"
 
@@ -17,9 +18,11 @@ class Landing extends Component {
   state = {
     icon: Icon_menu,
     open: false,
+    history: this.props.history,
   }
 
   componentDidMount(){
+    console.log(this.props.history, this.state.history)
     this.addClickToCloseEvent()
   }
 
@@ -61,6 +64,13 @@ class Landing extends Component {
     page ? window.pause() : window.resume()
   }
 
+  resumeGame = () => {
+    if (window.gamePaused && window.gameHasBegun) {
+      window.resume()
+      this.state.history.push('/game')
+    }
+  }
+
   render() {
 
     const routeArr = this.props.history.location.pathname.split("/")
@@ -78,11 +88,27 @@ class Landing extends Component {
               src={Title_header_dark}
               alt="title header dark"
               style={{
-                opacity: `${this.props.appState.showGame ? 0 : 1}`,
-                pointerEvents: `${this.props.appState.showGame ? "none" : ""}`
+                opacity: `${(this.props.appState.showIcon || (routeArr[1] !== "" && routeArr[1] !== "game")) ? 1 : 0}`,
+                pointerEvents: `${(this.props.appState.showIcon || (routeArr[1] !== "" && routeArr[1] !== "game")) ? "" : "none"}`
               }}
             />
           </Link>
+
+          <div
+            className="resume-container"
+            onClick={this.resumeGame}
+            style={{
+              opacity: `${(window.gameHasBegun && routeArr[1] !== "" && routeArr[1] !== "game") ? 1 : 0}`,
+              pointerEvents: `${(window.gameHasBegun && routeArr[1] !== "" && routeArr[1] !== "game") ? "" : "none"}`
+            }}
+          >
+            <img
+              id="resume_button"
+              src={Resume_button}
+              alt="Resume Game Button"
+            />
+            <div className="resume-text"> RESUME </div>
+          </div>
 
           {/* ⚠️ Warning: Changing 👇 this className name will effect event listener to toggle menu view/unview */}
           <div id="menu_icon_container"

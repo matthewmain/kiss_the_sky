@@ -16,7 +16,6 @@ export default {
     window.pause()
     window.localSavedGameData = {}
     window.saveGame()
-    console.log(app)
     if (app.username && app._id) {
       const objGame = JSON.parse(window.localSavedGameData)
       API.save({
@@ -48,10 +47,12 @@ export default {
     API.resume(_id)
       .then( resp => {
         console.log(" - 👤 💾 💥 🌺 resume saved game :", resp)
-        const headerItem = Array.from(document.querySelectorAll(".header_item"))
-        headerItem.map(i=>i.style.display = "block")
         window.resumeState(resp.data)
         history.push('/game')
+        setTimeout(function(){ // This is a hacky production patch attempt
+          const headerItem = Array.from(document.querySelectorAll(".header_item"))
+          headerItem.map(i=>i.style.display = "block")
+        },10)
       })
       .catch( err => console.log(err))
   },

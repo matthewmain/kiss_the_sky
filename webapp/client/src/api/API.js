@@ -23,6 +23,9 @@ export default {
   checkAvailable: function(field){
     return axios.post("/api/user/checkavailable", field)
   },
+  changeAvatar: function(color){
+    return axios.put("/api/user/changeAvatar", color)
+  },
 
   // 💾 🌺
   saved: function(user){
