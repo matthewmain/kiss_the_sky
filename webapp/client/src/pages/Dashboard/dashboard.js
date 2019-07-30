@@ -60,7 +60,9 @@ class Dashboard extends Component {
               {this.props.appState.username}
             </div>
             <div className="member">
-              Member since {memberSince}
+              {this.props.appState.created_at && <>
+                Member since {memberSince}
+              </>}
             </div>
           </div>
 
