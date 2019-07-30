@@ -571,7 +571,7 @@ $("#icon_info").click(function() {
 $("#icon_dark_toggle").click(function() {
   if ( darkMode ) {
     $("body").css("background","#FFFFFF");
-    $(".title_header_svg").attr("src","assets/title_header_light.svg");
+    $(".logo").attr("src","assets/title_header_light.svg");
     $("#icon_dark_toggle").css("transform","rotate(180deg)");
     $(".footer_text").css("color","#4A4A4A");
     $(".pie_circle").css("stroke","#4A4A4A");
@@ -579,7 +579,7 @@ $("#icon_dark_toggle").click(function() {
     darkMode = false;
   } else {
     $("body").css("background","#202020");
-    $(".title_header_svg").attr("src","assets/title_header_dark.svg");
+    $(".logo").attr("src","assets/title_header_dark.svg");
     $("#icon_dark_toggle").css("transform","rotate(0deg)");
     $(".footer_text, .pie_circle").css("color","#D5D8C5");
     $(".pie_circle").css("stroke","#D5D8C5");

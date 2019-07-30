@@ -83,7 +83,7 @@ class Landing extends Component {
         <div className="menu">
 
           <img
-            id="title_header_dark"
+            class="logo"
             src={Title_header_dark}
             alt="title header dark"
             style={{
