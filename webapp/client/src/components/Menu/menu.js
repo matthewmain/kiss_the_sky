@@ -82,17 +82,15 @@ class Landing extends Component {
       <>
         <div className="menu">
 
-          <Link to="/">
-            <img
-              id="title_header_dark"
-              src={Title_header_dark}
-              alt="title header dark"
-              style={{
-                opacity: `${(this.props.appState.showIcon || (routeArr[1] !== "" && routeArr[1] !== "game")) ? 1 : 0}`,
-                pointerEvents: `${(this.props.appState.showIcon || (routeArr[1] !== "" && routeArr[1] !== "game")) ? "" : "none"}`
-              }}
-            />
-          </Link>
+          <img
+            id="title_header_dark"
+            src={Title_header_dark}
+            alt="title header dark"
+            style={{
+              opacity: `${(this.props.appState.showIcon || (routeArr[1] !== "" && routeArr[1] !== "game")) ? 1 : 0}`,
+              pointerEvents: `${(this.props.appState.showIcon || (routeArr[1] !== "" && routeArr[1] !== "game")) ? "" : "none"}`
+            }}
+          />
 
           <div
             className="resume-container"
