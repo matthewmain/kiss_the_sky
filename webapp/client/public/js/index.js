@@ -352,7 +352,7 @@ function germinateSeedWhenReady( seed ) {
   if ( !seed.planted && p1Stable && p2Stable ) {
     plantSeed( seed );
   }
-  if ( seed.planted && currentSeason === "Spring" ) {
+  if ( seed.planted && currentSeason === "Spring" && seed.generation === currentYear ) {
     germinateSeed( seed );
   }
 }

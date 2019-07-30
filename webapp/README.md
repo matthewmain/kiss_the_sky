@@ -54,7 +54,7 @@ Deploy to Heroku as sub-folder
 - `git subtree push --prefix webapp heroku master`
 
 Location
-- primary: [kissthesky.app](https://kissthesky.app) 
+- primary: [kissthesky.app](https://www.kissthesky.app) 
 - heroku direct: [kiss-the-sky.herokuapp.com](https://kiss-the-sky.herokuapp.com)
 
 # Resources
