@@ -284,7 +284,6 @@ function removeModals() {
   infoModalOpenWhilePaused = false;
 }
 
-
 ///display game mode footer content
 function displayGameModeUI() {
   reactGameToggleIcon()
@@ -303,6 +302,26 @@ function displayAmbientModeUI() {
   $("#ambient_footer_right").css("display", "block");
 }
 
+///toggle dark/light mode
+function toggleDarkLightMode() {
+  if ( darkMode ) {
+    $("body").css("background","#FFFFFF");
+    $("#logo").attr("src","assets/title_header_light.svg");
+    $("#icon_dark_light_toggle").css("transform","rotate(180deg)");
+    $(".footer_text").css("color","#4A4A4A");
+    $(".pie_circle").css("stroke","#4A4A4A");
+    $(".pie_svg").css("background-color","rgba(213,216,197,1");
+    darkMode = false;
+  } else {
+    $("body").css("background","#202020");
+    $("#logo").attr("src","assets/title_header_dark.svg");
+    $("#icon_dark_light_toggle").css("transform","rotate(0deg)");
+    $(".footer_text, .pie_circle").css("color","#D5D8C5");
+    $(".pie_circle").css("stroke","#D5D8C5");
+    $(".pie_svg").css("background-color","rgba(213,216,197,.25");
+    darkMode = true;
+  }
+}
 
 
 
@@ -568,25 +587,7 @@ $("#icon_info").click(function() {
 });
 
 ///dark mode toggle icon (toggles dark/light modes)
-$("#icon_dark_toggle").click(function() {
-  if ( darkMode ) {
-    $("body").css("background","#FFFFFF");
-    $(".title_header_svg").attr("src","assets/title_header_light.svg");
-    $("#icon_dark_toggle").css("transform","rotate(180deg)");
-    $(".footer_text").css("color","#4A4A4A");
-    $(".pie_circle").css("stroke","#4A4A4A");
-    $(".pie_svg").css("background-color","rgba(213,216,197,1");
-    darkMode = false;
-  } else {
-    $("body").css("background","#202020");
-    $(".title_header_svg").attr("src","assets/title_header_dark.svg");
-    $("#icon_dark_toggle").css("transform","rotate(0deg)");
-    $(".footer_text, .pie_circle").css("color","#D5D8C5");
-    $(".pie_circle").css("stroke","#D5D8C5");
-    $(".pie_svg").css("background-color","rgba(213,216,197,.25");
-    darkMode = true;
-  }
-});
+$("#icon_dark_light_toggle").click( toggleDarkLightMode );
 
 ///shadows icon (toggles shadows)
 $(".icon_shadows").click(function(){

@@ -4,7 +4,8 @@ import { Link } from "react-router-dom"
 import Flower from "./../../components/Flower/flower.js"
 import Icon_menu from './../../images/icon_menu.svg'
 import Icon_menu_close from './../../images/icon_menu_close.svg'
-import Title_header_dark from './../../images/title_header_dark.svg'
+import Logo_dark from './../../images/title_header_dark.svg'
+import Logo_light from './../../images/title_header_light.svg'
 import Resume_button from './../../images/resume_button.svg'
 
 import User from "./../../api/user.js"
@@ -64,10 +65,26 @@ class Landing extends Component {
     page ? window.pause() : window.resume()
   }
 
+  overrideLightModeOnDashboardScreens = () => {
+    if (!this.props.appState.showGame) {
+      document.body.style.background = "#202020"
+      document.getElementById("logo").src = Logo_dark;
+    }
+  }
+
+  resumeLightModeIfOn = () => {
+    if (!window.darkMode) {
+      document.body.style.background = "#FFFFFF"
+      document.getElementById("logo").src = Logo_light;
+    }
+  }
+
   resumeGame = () => {
     if (window.gamePaused && window.gameHasBegun) {
       window.resume()
       this.state.history.push('/game')
+      this.props.appState.set({ showGame: true }) 
+      this.resumeLightModeIfOn()
     }
   }
 
@@ -78,21 +95,21 @@ class Landing extends Component {
     if (!route) route = "savedsessions"
     if (this.props.appState.showGame) route = ""
 
+    this.overrideLightModeOnDashboardScreens()
+
     return (
       <>
         <div className="menu">
 
-          <Link to="/">
-            <img
-              id="title_header_dark"
-              src={Title_header_dark}
-              alt="title header dark"
-              style={{
-                opacity: `${(this.props.appState.showIcon || (routeArr[1] !== "" && routeArr[1] !== "game")) ? 1 : 0}`,
-                pointerEvents: `${(this.props.appState.showIcon || (routeArr[1] !== "" && routeArr[1] !== "game")) ? "" : "none"}`
-              }}
-            />
-          </Link>
+          <img
+            id="logo"
+            src={Logo_dark}
+            alt="logo"
+            style={{
+              opacity: `${(this.props.appState.showIcon || (routeArr[1] !== "" && routeArr[1] !== "game")) ? 1 : 0}`,
+              pointerEvents: `${(this.props.appState.showIcon || (routeArr[1] !== "" && routeArr[1] !== "game")) ? "" : "none"}`
+            }}
+          />
 
           <div
             className="resume-container"
