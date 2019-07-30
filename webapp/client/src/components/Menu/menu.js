@@ -7,6 +7,8 @@ import Icon_menu_close from './../../images/icon_menu_close.svg'
 import Logo_dark from './../../images/title_header_dark.svg'
 import Logo_light from './../../images/title_header_light.svg'
 import Resume_button from './../../images/resume_button.svg'
+import Start_button from './../../images/start_button.svg'
+
 
 import User from "./../../api/user.js"
 
@@ -83,9 +85,13 @@ class Landing extends Component {
     if (window.gamePaused && window.gameHasBegun) {
       window.resume()
       this.state.history.push('/game')
-      this.props.appState.set({ showGame: true }) 
+      this.props.appState.set({ showGame: true })
       this.resumeLightModeIfOn()
     }
+  }
+
+  startGame = () => {
+    this.state.history.push('/game')
   }
 
   render() {
@@ -94,6 +100,9 @@ class Landing extends Component {
     let route = routeArr[1] === 'leaderboard' ? 'leaderboard' : routeArr[2]
     if (!route) route = "savedsessions"
     if (this.props.appState.showGame) route = ""
+    const gamePage = (routeArr[1] !== "" && routeArr[1] !== "game")
+    const showIcon = this.props.appState.showIcon
+    const gameHasBegun = window.gameHasBegun
 
     this.overrideLightModeOnDashboardScreens()
 
@@ -106,25 +115,28 @@ class Landing extends Component {
             src={Logo_dark}
             alt="logo"
             style={{
-              opacity: `${(this.props.appState.showIcon || (routeArr[1] !== "" && routeArr[1] !== "game")) ? 1 : 0}`,
-              pointerEvents: `${(this.props.appState.showIcon || (routeArr[1] !== "" && routeArr[1] !== "game")) ? "" : "none"}`
+              opacity: `${(showIcon || gamePage) ? 1 : 0}`,
+              pointerEvents: `${(showIcon || gamePage) ? "" : "none"}`
             }}
           />
 
           <div
-            className="resume-container"
-            onClick={this.resumeGame}
+            className="start-resume-container"
+            onClick={gameHasBegun ? this.resumeGame : this.startGame}
             style={{
-              opacity: `${(window.gameHasBegun && routeArr[1] !== "" && routeArr[1] !== "game") ? 1 : 0}`,
-              pointerEvents: `${(window.gameHasBegun && routeArr[1] !== "" && routeArr[1] !== "game") ? "" : "none"}`
+              opacity: `${(gamePage) ? 1 : 0}`,
+              pointerEvents: `${(gamePage) ? "" : "none"}`
             }}
           >
             <img
-              id="resume_button"
-              src={Resume_button}
+              className="start-resume-button"
+              src={gameHasBegun ? Resume_button : Start_button}
               alt="Resume Game Button"
             />
-            <div className="resume-text"> RESUME </div>
+            <div
+              className={gameHasBegun ? "resume-text" : "start-text"}>
+              {gameHasBegun ? "RESUME" : "START"}
+            </div>
           </div>
 
           {/* ⚠️ Warning: Changing 👇 this className name will effect event listener to toggle menu view/unview */}
@@ -211,7 +223,7 @@ class Landing extends Component {
               </div>
             </Link>
 
-            {!this.props.appState.showGame &&
+            {/* {!this.props.appState.showGame &&
               <Link to="/game"
                 className="link"
                 onClick={this.toggleMenu}>
@@ -221,7 +233,7 @@ class Landing extends Component {
 
                 </div>
               </Link>
-            }
+            } */}
 
             {!this.props.appState.username && <>
 
