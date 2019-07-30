@@ -68,7 +68,7 @@ class Landing extends Component {
   overrideLightModeOnDashboardScreens = () => {
     if (!this.props.appState.showGame) {
       document.body.style.background = "#202020"
-      document.getElementById("logo").src = Logo_dark; 
+      document.getElementById("logo").src = Logo_dark;
     }
   }
 
@@ -83,7 +83,7 @@ class Landing extends Component {
     if (window.gamePaused && window.gameHasBegun) {
       window.resume()
       this.state.history.push('/game')
-      this.props.appState.showGame = true
+      this.props.appState.set({ showGame: true }) 
       this.resumeLightModeIfOn()
     }
   }
@@ -94,7 +94,7 @@ class Landing extends Component {
     let route = routeArr[1] === 'leaderboard' ? 'leaderboard' : routeArr[2]
     if (!route) route = "savedsessions"
     if (this.props.appState.showGame) route = ""
-      
+
     this.overrideLightModeOnDashboardScreens()
 
     return (
