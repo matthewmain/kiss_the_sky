@@ -25,7 +25,6 @@ class Landing extends Component {
   }
 
   componentDidMount(){
-    console.log(this.props.history, this.state.history)
     this.addClickToCloseEvent()
   }
 
@@ -133,8 +132,7 @@ class Landing extends Component {
               src={gameHasBegun ? Resume_button : Start_button}
               alt="Resume Game Button"
             />
-            <div
-              className={gameHasBegun ? "resume-text" : "start-text"}>
+            <div className={gameHasBegun ? "resume-text" : "start-text"}>
               {gameHasBegun ? "RESUME" : "START"}
             </div>
           </div>
