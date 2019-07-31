@@ -689,3 +689,12 @@ function updateUI() {
   $("#season_right").text( currentSeason );
   updateSeasonPieChart();
 }
+
+
+
+
+
+
+
+
+

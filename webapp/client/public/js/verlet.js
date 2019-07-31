@@ -33,7 +33,7 @@ var rigidity = 10;  // global span rigidity (as iterations of position accuracy 
 var friction = 0.999;  // (proportion of previous velocity after frame refresh)
 var bounceLoss = 0.9;  // (proportion of previous velocity after bouncing)
 var skidLoss = 0.9;  // (proportion of previous velocity if touching the ground)
-var breeze = 0.4;  // breeziness level (applied as brief left & right gusts)
+var breeze = 0.2;  // breeziness level (applied as brief left & right gusts)
 
 
 
