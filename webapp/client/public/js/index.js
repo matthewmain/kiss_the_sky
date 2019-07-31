@@ -11,7 +11,7 @@
 
 
 ///settings
-var renderFactor = 4;  // factor of verlet iterations (worldTime) when scenes are rendered (less is more frequent)
+var renderFrequency = 4;  // factor of verlet iterations (worldTime) when scenes are rendered (less is more frequent)
 var useSunShades = false;  // (whether to place extendable sun shades)
 var darkMode = true;  // UI dark mode (on by default)
 var viewShadows = true;  // (shadow visibility)
@@ -1142,7 +1142,7 @@ function display() {
     renderBackground(); 
     renderPlants(); 
     displayEliminatePlantIconWithCursor();
-    for ( i=0; i<renderFactor; i++ ) {
+    for ( i=0; i<renderFrequency; i++ ) {
       runVerlet();
       trackSeasons();
       shedSunlight();
