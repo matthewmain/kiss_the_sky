@@ -221,6 +221,8 @@ class Landing extends Component {
               </div>
             </Link>
 
+            <div className="divider"></div>
+
             {/* {!this.props.appState.showGame &&
               <Link to="/game"
                 className="link"
