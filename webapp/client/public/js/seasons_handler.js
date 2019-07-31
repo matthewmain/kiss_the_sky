@@ -131,10 +131,10 @@ function renderBackground() {
     csbg = BgG.sp; psbg = BgG.sp;  // starts game off with full spring background, not in mid-transition from winter
   }
   if ( gameHasBegun ) {
-    ccs1 = Tl.rgbaCs( psbg.cs1, csbg.cs1, ccs1, 200/renderFactor );  // current color stop redshift
-    ccs2 = Tl.rgbaCs( psbg.cs2, csbg.cs2, ccs2, 200/renderFactor );  // current color stop greenshift
-    ccs3 = Tl.rgbaCs( psbg.cs3, csbg.cs3, ccs3, 200/renderFactor );  // current color stop blueshift
-    ccs4 = Tl.rgbaCs( psbg.cs4, csbg.cs4, ccs4, 200/renderFactor );  // current color stop alphashift
+    ccs1 = Tl.rgbaCs( psbg.cs1, csbg.cs1, ccs1, 200/renderFrequency );  // current color stop redshift
+    ccs2 = Tl.rgbaCs( psbg.cs2, csbg.cs2, ccs2, 200/renderFrequency );  // current color stop greenshift
+    ccs3 = Tl.rgbaCs( psbg.cs3, csbg.cs3, ccs3, 200/renderFrequency );  // current color stop blueshift
+    ccs4 = Tl.rgbaCs( psbg.cs4, csbg.cs4, ccs4, 200/renderFrequency );  // current color stop alphashift
   }
   var grd=ctx.createLinearGradient( 0, 0, 0, canvas.height );
   grd.addColorStop( 0,
