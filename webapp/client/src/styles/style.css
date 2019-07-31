@@ -114,14 +114,14 @@
 
 .header_item {
 	position: absolute;
-	bottom: 12%;
+	bottom: 22%;
 	height: 20%;
 	cursor: pointer;
 	display: none;
 }
 
 .button_save {
-  bottom: 10%;
+  bottom: 20%;
   height: 26%;
   left: 0;
 }
