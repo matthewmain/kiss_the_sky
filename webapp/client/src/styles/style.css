@@ -1,6 +1,6 @@
-@import url('https://fonts.googleapis.com/css?family=Dosis');
+@import url('https://fonts.googleapis.com/css?family=Dosis:200,300,400,500,600&display=swap');
 
-body {
+#game_screen_page_body {
 	background: #202020;
 	font-family: "Dosis", Avenir, sans-serif;
 	font-weight: 200;
@@ -37,6 +37,11 @@ body {
 .copyright_link {
   text-decoration: none;
   color: #777777;
+}
+
+.copyright_link:hover {
+  text-decoration: none; 
+  color: #AAAAAA;
 }
 
 .hover {
@@ -200,15 +205,14 @@ body {
 
 .footer_text {
 	position: relative;
-	font-size: 9pt;
+  margin-bottom: 0;
 	letter-spacing: 0.4pt;
 	color: #D5D8C5;
-	margin-top: 5px;
-	top: 12px;
 }
 
 #time {
 	float: left;
+  margin-left: 5px;
 }
 
 .pie_circle {
@@ -226,7 +230,6 @@ body {
 
 #pie_svg_left {
   position: relative;
-  top: 18.4px;
   left: 6px;
   height: 12px;
 }
@@ -248,7 +251,7 @@ body {
 
 #height_text {
 	float: right;
-	margin: 5px 12% 0 0;
+	margin-right: 11.5%;
 }
 
 #tag_div {
@@ -268,11 +271,9 @@ body {
   font-family: "Nunito", Avenir, sans-serif;
   position: absolute;
   margin: 0;
-  top: 24.5px;
   left: 50%;
   transform: translate(-50%, -50%);
   font-weight: 700;
-  font-size: 10pt;
   color: #FFFFFF;
 }
 

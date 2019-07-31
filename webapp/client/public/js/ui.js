@@ -80,7 +80,7 @@ function attachHeaderAndFooter() {
 function scaleContent() {
   if ( $("#canvas_container_div").width() < 230 ) {
     $(".footer_text").css({ fontSize: "4pt", top: "1px" });
-    $("#pie_svg_left").css({ top: "7.4px" });
+    $("#pie_svg_left").css({ top: "0px" });
     $("#tag_content").css({ fontSize: "5pt", top: "12px" });
     $("#pie_svg_right").css({ top: "6.35px" });
     $("#hundred_pct_large_height_announcement").css({ fontSize: "15pt"});
@@ -88,8 +88,8 @@ function scaleContent() {
     $("#game_win_gen_number").css({ fontSize: "12pt"});
     $("#game_win_mode").css({ fontSize: "10pt"});
   } else if ( $("#canvas_container_div").width() < 300 ) {
-    $(".footer_text").css({ fontSize: "7pt", top: "3px" });
-    $("#pie_svg_left").css({ top: "7.4px" });
+    $(".footer_text").css({ fontSize: "7pt", top: "6px" });
+    $("#pie_svg_left").css({ top: "0px" });
     $("#tag_content").css({ fontSize: "7pt", top: "15.5px" });
     $("#pie_svg_right").css({ top: "8.35px" });
     $("#hundred_pct_large_height_announcement").css({ fontSize: "20pt"});
@@ -97,18 +97,18 @@ function scaleContent() {
     $("#game_win_gen_number").css({ fontSize: "14pt"});
     $("#game_win_mode").css({ fontSize: "12pt"});
   } else if ( $("#canvas_container_div").width() < 400 ){
-    $(".footer_text").css({ fontSize: "9pt", top: "7px" });
-    $("#pie_svg_left").css({ top: "13.4px" });
-    $("#tag_content").css({ fontSize: "8pt", top: "19.5px" });
+    $(".footer_text").css({ fontSize: "7pt", top: "12px" });
+    $("#pie_svg_left").css({ top: "5px" });
+    $("#tag_content").css({ fontSize: "8pt", top: "20px" });
     $("#pie_svg_right").css({ top: "12.35px" });
     $("#hundred_pct_large_height_announcement").css({ fontSize: "50pt"});
     $(".game_win_text").css({ fontSize: "12pt"});
     $("#game_win_gen_number").css({ fontSize: "16pt"});
     $("#game_win_mode").css({ fontSize: "15pt"});
   } else {  // > 400
-    $(".footer_text").css({ fontSize: "9pt", top: "12px" });
-    $("#pie_svg_left").css({ top: "18.4px" });
-    $("#tag_content").css({ fontSize: "10pt", top: "24.5px" });
+    $(".footer_text").css({ fontSize: "9pt", top: "15px" });
+    $("#pie_svg_left").css({ top: "10px" });
+    $("#tag_content").css({ fontSize: "11pt", top: "25px" });
     $("#pie_svg_right").css({ top: "17.35px" });
     $("#hundred_pct_large_height_announcement").css({ fontSize: "80pt"});
     $(".game_win_text").css({ fontSize: "17pt"});

@@ -1,10 +1,8 @@
 # Style Guide
 
 Fonts
-* Styled Font:
-  * "Dosis", Avenir, sans-serif;
 * Main Font:
-  * "Gill Sans", "Gill Sans MT", Calibri, sans-serif
+  * "Dosis", Avenir, sans-serif;
 
 Background Colors
 * Dark1 (full bg)
