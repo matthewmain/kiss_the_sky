@@ -262,7 +262,7 @@ function pause() {
 
 ///resume game
 function resume() {
-  if ( !endOfGameAnnouncementDisplayed ) {
+  if ( gamePaused && !endOfGameAnnouncementDisplayed ) {
     document.getElementById("icon_pause").style.visibility = "visible";
     document.getElementById("icon_play").style.visibility = "hidden";
     document.getElementById("modal_play").style.visibility = "hidden";
@@ -568,6 +568,7 @@ $(".button_sow").click(function(){
     $(".header_item").fadeIn(5000);
     $("#footer_div").fadeIn(5000);
   });
+  resume();
   gameHasBegun = true;
 });
 
