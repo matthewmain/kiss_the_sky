@@ -9,7 +9,6 @@ import Logo_light from './../../images/title_header_light.svg'
 import Resume_button from './../../images/resume_button.svg'
 import Start_button from './../../images/start_button.svg'
 
-
 import User from "./../../api/user.js"
 
 import "./menu.sass"
