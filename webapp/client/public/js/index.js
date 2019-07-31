@@ -11,7 +11,7 @@
 
 
 ///settings
-var renderFactor = 3;  // factor of verlet iterations (worldTime) when scenes are rendered (less is more frequent)
+var renderFactor = 4;  // factor of verlet iterations (worldTime) when scenes are rendered (less is more frequent)
 var useSunShades = false;  // (whether to place extendable sun shades)
 var darkMode = true;  // UI dark mode (on by default)
 var viewShadows = true;  // (shadow visibility)
@@ -120,8 +120,9 @@ function Seed( parentFlower, zygoteGenotype ) {
   this.genotype = zygoteGenotype;
   this.phenotype = EV.generatePhenotype( this.genotype );
   this.p1.width = this.sw*1;
-  this.p1.mass = 5;
-  this.p2.width = this.sw*0.35; this.p2.mass = 5;
+  this.p1.mass = 2.5;
+  this.p2.width = this.sw*0.35; 
+  this.p2.mass = 2.5;
   this.sp = addSp( this.p1.id, this.p2.id );  // seed span
   this.sp.strength = 2;
   this.opacity = 1;
@@ -318,8 +319,9 @@ function recordInitialGeneValueAverages() {
 
 ///scatters seeds (for initiation)
 function scatterSeed( seed ) {
-  seed.p1.px += Tl.rfb(-5,5); seed.p1.py += Tl.rfb(-5,5);
-  seed.p2.px += Tl.rfb(-5,5); seed.p2.py += Tl.rfb(-5,5);
+  var int = 3;  // intensity
+  seed.p1.px += Tl.rfb(-int,int); seed.p1.py += Tl.rfb(-int,int);
+  seed.p2.px += Tl.rfb(-int,int); seed.p2.py += Tl.rfb(-int,int);
 }
 
 ///drops seeds (for releasing seed from pod)
@@ -1137,34 +1139,32 @@ function runLogs( frequency ) {
 
 function display() {
   if ( gameHasBegun ) {
-    if ( currentYear === 1 && currentSeason === "Spring" ) {  // starts with high frame rate for smooth seed scatter
-      renderBackground(); renderPlants(); displayEliminatePlantIconWithCursor();
-    } else if ( worldTime % renderFactor === 0 ) {  // improves performance to render less often than verlet runs
-      renderBackground(); renderPlants(); displayEliminatePlantIconWithCursor();
+    renderBackground(); 
+    renderPlants(); 
+    displayEliminatePlantIconWithCursor();
+    for ( i=0; i<renderFactor; i++ ) {
+      runVerlet();
+      trackSeasons();
+      shedSunlight();
+      growPlants();
+      if ( i%2 === 0 ) renderPollinationAnimations();
     }
-    trackSeasons();
-    shedSunlight();
-    growPlants();
-    if ( runPollinationAnimations ) { renderPollinationAnimations(); }
-  }
-  updateUI();
-  runVerlet();
-  if ( !ambientMode ) {
-    renderDemos();
-    renderMilestones();
-    renderHeightMarker();
-    checkForGameOver();
-    checkForGameWin();
+    updateUI();
+    if ( !ambientMode ) {
+      renderDemos();
+      renderMilestones();
+      renderHeightMarker();
+      checkForGameOver();
+      checkForGameWin();
+    }
   }
   //runLogs( 600 );
-  if ( !gamePaused ) { window.requestAnimationFrame( display ); }  // (smooth with inconsistent frame rate)
-  //if ( !gamePaused ) { setTimeout( ()=> { display(); }, 17); }  // (choppy with consistent frame rate)
-
-
+  if ( !gamePaused ) { window.requestAnimationFrame( display ); }
 }
 
 createSunRays();
 if ( useSunShades ) { placeSunShades(3,3); }
+scaleToWindow();
 display();
 
 
