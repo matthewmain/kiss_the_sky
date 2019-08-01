@@ -61,7 +61,7 @@ function trackSeasons() {
   if ( yearTime === 1 ) {
     currentSeason = "Spring"; photosynthesisRatio = 1; livEnExp = 0.75;
     if ( currentYear === 1 && !ambientMode ) {  // sets first year spring length to ensure time for demo animation
-      spL = 6000;
+      spL = 4500;
     } else {
       spL = 1000;
     }
@@ -70,7 +70,7 @@ function trackSeasons() {
   } else if ( yearTime === spL+1 ) {
     currentSeason = "Summer"; photosynthesisRatio = 1; livEnExp = 1;
     if ( currentYear === 1 && !ambientMode ) {  // sets first year summer length to ensure time for demo animation
-      suL = 5000;
+      suL = 3500;
     } else { // adjusts summer length based on tallest plant's height
       suL = 85*currentGreatestMaxSegment() > 500 ? 85*currentGreatestMaxSegment() : 500;
     }
