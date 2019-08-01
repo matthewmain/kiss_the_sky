@@ -50,7 +50,7 @@ Port in use error.
 ----
 # Deployment Notes
 
-Deploy to Heroku as sub-folder
+Deploy to Heroku as sub-folder (from the top level)
 - `git subtree push --prefix webapp heroku master`
 
 Location
