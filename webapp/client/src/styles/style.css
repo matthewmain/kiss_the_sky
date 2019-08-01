@@ -115,7 +115,7 @@
 .header_item {
 	position: absolute;
 	bottom: 22%;
-	height: 20%;
+	height: 21%;
 	cursor: pointer;
 	display: none;
 }
@@ -160,7 +160,8 @@
 
 #icon_info {
   right: 0%;
-  height: 21.5%;
+  height: 22%;
+  bottom: 21%;
 }
 
 
