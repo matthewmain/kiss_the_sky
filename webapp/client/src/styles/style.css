@@ -1,4 +1,7 @@
+
+
 @import url('https://fonts.googleapis.com/css?family=Dosis:200,300,400,500,600&display=swap');
+
 
 #game_screen_page_body {
 	background: #202020;
@@ -175,7 +178,7 @@
 
 #canvas_container_div {
   position: absolute;
-  top: 52%;
+  top: 50%;
   left: 50%;
   transform: translate(-50%,-50%);
 }
