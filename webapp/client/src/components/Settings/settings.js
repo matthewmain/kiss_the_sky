@@ -14,7 +14,7 @@ const Settings = (props) => {
     { pistil: "#E0993E", petal: "#30C1B3" },
     { pistil: "#E0993E", petal: "#A330C1" },
     { pistil: "#E0993E", petal: "#F5E8A8" },
-    { pistil: "#E0993E", petal: "#FFFFFF" },
+    { pistil: "#E0993E", petal: "#EEEEEE" },
     { pistil: "#E0993E", petal: "#FF0DCB" },
     { pistil: "#E0993E", petal: "#0E7FD9" }
   ]
