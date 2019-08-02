@@ -901,7 +901,7 @@ function renderDemos() {
 
 ///checks for game over (whether all plants have died) displays game over overlay and try again button
 function checkForGameOver() {
-  if ( yearTime === spL + suL + faL + Math.round(wiL/2) ) {
+  if ( yearTime >= spL + suL + faL + Math.round(wiL/2) ) {
     if ( !gameOverDisplayed && allPlantsAreDead() ) {
       gameHasEnded = true;
       displayGameOver();
