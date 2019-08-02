@@ -901,7 +901,7 @@ function renderDemos() {
 
 ///checks for game over (whether all plants have died) displays game over overlay and try again button
 function checkForGameOver() {
-  if ( yearTime >= spL + suL + faL + Math.round(wiL/2) ) {
+  if ( yearTime === spL + suL + faL + Math.round(wiL/2) ) {
     if ( !gameOverDisplayed && allPlantsAreDead() ) {
       gameHasEnded = true;
       displayGameOver();
@@ -1147,16 +1147,14 @@ function display() {
       trackSeasons();
       shedSunlight();
       growPlants();
+      if ( !ambientMode ) checkForGameOver();
+      if ( !ambientMode ) checkForGameWin();
       if ( i%2 === 0 ) renderPollinationAnimations();
     }
     updateUI();
-    if ( !ambientMode ) {
-      renderDemos();
-      renderMilestones();
-      renderHeightMarker();
-      checkForGameOver();
-      checkForGameWin();
-    }
+    if ( !ambientMode ) renderDemos();
+    if ( !ambientMode ) renderMilestones();
+    if ( !ambientMode ) renderHeightMarker();
   }
   //runLogs( 600 );
   if ( !gamePaused ) { window.requestAnimationFrame( display ); }
