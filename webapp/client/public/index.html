@@ -33,7 +33,13 @@
       <!-- 	LANDING -->
 
     	<div id="loader_div"></div>  <!-- brief blank loader screen; fades out on document ready -->
-    	<script> document.addEventListener("DOMContentLoaded", function() { $("#loader_div").fadeOut(1500); }); </script>
+    	<script> 
+            document.addEventListener("DOMContentLoaded", function() { 
+                $("#loader_div").fadeOut(1500); 
+                scaleLanding();
+                scaleToWindow();
+            }); 
+        </script>
 
     	<div id="landing_page_div">
     		<div id="landing_content_div">
