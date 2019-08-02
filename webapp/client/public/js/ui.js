@@ -52,7 +52,7 @@ function SunShade( handle1, handle2 ) {
 
 ///scales landing to window
 function scaleLanding() {
-  $("#landing_content_div").css({ height: "80%", width: "80%" });
+  $("#landing_content_div").css({ height: "95%", width: "95%" });
   $("#landing_svg_bg").css({ height: "100%", width: "100%" });
   if ( $("#landing_content_div").height() > $("#landing_content_div").width()*landingSvgRatio ) {
     $("#landing_svg_bg").height( $("#landing_content_div").width()*landingSvgRatio );
@@ -61,6 +61,9 @@ function scaleLanding() {
     $("#landing_svg_bg").width( $("#landing_content_div").height()/landingSvgRatio );
     $("#landing_content_div").width( $("#landing_svg_bg").width() );
   }
+  $(".button_landing").css({ width: "30.4%", top: "70.5%" });
+  $("#button_game_mode").css({ left: "11%" });
+  $("#button_ambient_mode").css({ left: "60.1%" });
 }
 
 ///attaches header and footer to canvas (after canvas has been resized to window dimensions in verlet.js)
