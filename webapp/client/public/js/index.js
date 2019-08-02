@@ -1164,7 +1164,6 @@ function display() {
 
 createSunRays();
 if ( useSunShades ) { placeSunShades(3,3); }
-// scaleToWindow();
 display();
 
 

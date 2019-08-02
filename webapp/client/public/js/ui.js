@@ -681,8 +681,6 @@ document.addEventListener("touchup", function() {  dropHandle(); stopEliminating
 
 /////---UPDATE---/////
 
-// scaleLanding();
-
 ///updates UI (runs every iteration)
 function updateUI() {
   attachHeaderAndFooter();
