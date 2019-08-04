@@ -55,6 +55,7 @@ function saveGame() {
 	localSavedGameData.currentYear = currentYear;
 	localSavedGameData.yearTime = yearTime;
 	localSavedGameData.currentSeason = currentSeason;
+	localSavedGameData.spL = spL;
 	localSavedGameData.suL = suL;
 	localSavedGameData.photosynthesisRatio = photosynthesisRatio;
 	localSavedGameData.livEnExp = livEnExp;
@@ -311,6 +312,7 @@ function resumeSavedGame( retrievedGameData ) {
 	currentYear = parsedData.currentYear;
 	yearTime = parsedData.yearTime;
 	currentSeason = parsedData.currentSeason;
+	spL = parsedData.spL;  // spring length (varies depending on whether first year)
 	suL = parsedData.suL;  // summer length (varies depending on average plant segment count)
 	photosynthesisRatio = parsedData.photosynthesisRatio;
 	livEnExp = parsedData.livEnExp;
