@@ -91,7 +91,7 @@ class MyHighScores extends Component {
             <div className="years"> {expertBest.years.replace(/0/g,"O")} </div>
             years
             <div className="date">
-              on {moment(expertBest.date, 'YYYY-MM-DD').format('M/D/YY')}
+              on {moment(expertBest.date, 'YYYY-MM-DD').format('M/D/YY').replace(/0/g,"O")}
             </div>
           </>}
 
