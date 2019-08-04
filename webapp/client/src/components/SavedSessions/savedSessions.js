@@ -69,7 +69,7 @@ class SavedSessions extends Component {
                       onClick={()=>this.resume(index)}
                     >
                       <div className="title" title={game.title}>
-                        {game.title}
+                        {game.title.replace(/0/g,"O")}
                       </div>
 
                       <div className="date">
@@ -78,11 +78,11 @@ class SavedSessions extends Component {
 
                       <div className="mode">
                         {game.ambientMode ? "Ambient Mode" : "Game Mode" }
-                        &nbsp;({window._cap(game.gameDifficulty)}, {Math.floor(game.highestRedFlowerPct)}%)
+                        &nbsp;({window._cap(game.gameDifficulty)}, {Math.floor(game.highestRedFlowerPct).toString().replace(/0/g,"O")}% )
                       </div>
 
                       <div className="year">
-                        Year {game.currentYear}, {game.currentSeason}
+                        Year {game.currentYear.toString().replace(/0/g,"O")}, {game.currentSeason}
                       </div>
 
                     </th>
