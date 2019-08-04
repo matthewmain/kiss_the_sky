@@ -77,8 +77,7 @@ class SavedSessions extends Component {
                       </div>
 
                       <div className="mode">
-                        {game.ambientMode ? "Ambient Mode" : "Game Mode" }
-                        &nbsp;({window._cap(game.gameDifficulty)}, {Math.floor(game.highestRedFlowerPct).toString().replace(/0/g,"O")}% )
+                        { game.ambientMode ? "Ambient Mode" : "Game Mode (" + window._cap(game.gameDifficulty) + ", " + Math.floor(game.highestRedFlowerPct).toString().replace(/0/g,"O") + "%)" }
                       </div>
 
                       <div className="year">
