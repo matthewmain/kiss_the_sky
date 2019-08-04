@@ -10,8 +10,8 @@ var yearTime = 0;
 var currentSeason;
 
 ///season lengths
-var spL;  // spring length (updated in trackSeasons() )
-var suL;  // summer length (updated in trackSeasons() )
+var spL = 1000;  // spring length (default; updated in trackSeasons() )
+var suL = 1000;  // summer length (default; updated in trackSeasons() )
 var faL = 500;  // fall length
 var wiL = 500;  // winter length
 
@@ -57,35 +57,43 @@ var ccs4 = psbg.cs4;  // current color stop 4
 ///tracks seasons
 function trackSeasons() {
   yearTime++;
+  // sets first year spring & summer lengths to ensure time for demo animation
+  if ( currentYear === 1 && !ambientMode ) {  
+    spL = 4500;
+    suL = 3500;
+  } else {
+    spL = 1000;
+  }
   //spring
   if ( yearTime === 1 ) {
-    currentSeason = "Spring"; photosynthesisRatio = 1; livEnExp = 0.75;
-    if ( currentYear === 1 && !ambientMode ) {  // sets first year spring length to ensure time for demo animation
-      spL = 4500;
-    } else {
-      spL = 1000;
-    }
+    currentSeason = "Spring"; 
+    photosynthesisRatio = 1; 
+    livEnExp = 0.75;
     renderYearAnnouncement(); renderSeasonAnnouncement();
   //summer
   } else if ( yearTime === spL+1 ) {
-    currentSeason = "Summer"; photosynthesisRatio = 1; livEnExp = 1;
-    if ( currentYear === 1 && !ambientMode ) {  // sets first year summer length to ensure time for demo animation
-      suL = 3500;
-    } else { // adjusts summer length based on tallest plant's height
+    currentSeason = "Summer"; 
+    photosynthesisRatio = 1; 
+    livEnExp = 1;
+    if ( currentYear > 1 || ambientMode ) { // adjusts summer length based on tallest plant's height
       suL = 85*currentGreatestMaxSegment() > 500 ? 85*currentGreatestMaxSegment() : 500;
     }
     scaleEliminationCursor();  // scales elimination cursor based on avg plant base width;
     renderSeasonAnnouncement();
   //fall
   } else if ( yearTime === spL+suL+1 ) {
-    currentSeason = "Fall"; photosynthesisRatio = 0; livEnExp = 10;
+    currentSeason = "Fall"; 
+    photosynthesisRatio = 0; 
+    livEnExp = 10;
     renderSeasonAnnouncement();
   //winter
   } else if ( yearTime === spL+suL+faL+1 ) {
-    currentSeason = "Winter"; photosynthesisRatio = 0; livEnExp = 20;
+    currentSeason = "Winter"; 
+    photosynthesisRatio = 0; 
+    livEnExp = 20;
     renderSeasonAnnouncement();
   }
-  if ( yearTime === spL+suL+faL+wiL ) {
+  if ( yearTime >= spL+suL+faL+wiL ) {
     currentYear++;
     yearTime = 0;
   }
