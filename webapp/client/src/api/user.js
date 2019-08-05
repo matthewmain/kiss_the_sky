@@ -61,8 +61,7 @@ export default {
       console.log('✌️ log Out: user: ', app.username)
       API.logOut()
         .then( resp => {
-          resp.data.avatar = app.avatar
-          this.updateUser(app, resp.data)
+          window.location.href = "/"
         })
         .catch( err => console.log(err) )
         .finally( ()=>{ app.set({forceClose: true}) } )

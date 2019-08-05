@@ -45,8 +45,8 @@ class Home extends Component {
       const title = prompt("Save Session as... (You can change this name later)", "untitled")
       if (title) Saved.save( this.props.appState, title )
     } else {
-      const title = alert("Please log in to save.")
-    }    
+      alert("Please log in to save.")
+    }
   }
 
   toggleIcon = ()=>{
