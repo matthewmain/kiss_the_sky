@@ -37,7 +37,7 @@ class MyHighScores extends Component {
     return (
       <div className="myHighScores">
 
-        <div className="best">Best</div>
+        <div className="best">Best Scores</div>
 
         <div className="score-card beginner">
 
@@ -58,7 +58,11 @@ class MyHighScores extends Component {
             <div className="keep-trying"> Keep trying! </div>
           </>}
 
+          <a href="/leaderboard/beginner" class="leaderboard-links"> Beginner Leaderboard > </a>
+
         </div>
+
+
 
         <div className="score-card intermediate">
 
@@ -78,6 +82,8 @@ class MyHighScores extends Component {
             <div className="none-yet" > None yet. </div>
             <div className="keep-trying"> Keep trying! </div>
           </>}
+
+          <a href="/leaderboard/intermediate" class="leaderboard-links"> Intermediate Leaderboard > </a>
 
         </div>
 
@@ -100,11 +106,13 @@ class MyHighScores extends Component {
             <div className="keep-trying"> Keep trying! </div>
           </>}
 
+          <a href="/leaderboard/expert" class="leaderboard-links"> Expert Leaderboard > </a>
+
         </div>
 
         {this.props.appState.myHighScores.length > 0 && <>
 
-          <div className="all">All</div>
+          <div className="all">All Scores</div>
 
           <div className="scores-container">
             {allTimePage.map((score,index)=>
