@@ -22,6 +22,7 @@ class SavedSessions extends Component {
       this.props.appState.savedGames[index].saved_id,
       this.props.history
     )
+    window.updateUI();
   }
 
   update = (index)=>{
