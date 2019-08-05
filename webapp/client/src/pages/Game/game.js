@@ -40,8 +40,13 @@ class Home extends Component {
   }
 
   gameSave = ()=>{
-    const title = prompt("Save Session as... (You can change this name later)", "untitled")
-    if (title) Saved.save( this.props.appState, title )
+    console.log(this.props.appState)
+    if (this.props.appState.username) {
+      const title = prompt("Save Session as... (You can change this name later)", "untitled")
+      if (title) Saved.save( this.props.appState, title )
+    } else {
+      const title = alert("Please log in to save.")
+    }    
   }
 
   toggleIcon = ()=>{
