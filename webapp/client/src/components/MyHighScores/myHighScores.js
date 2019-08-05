@@ -37,14 +37,14 @@ class MyHighScores extends Component {
     return (
       <div className="myHighScores">
 
-        <div className="best">Best</div>
+        <div className="best">Best Scores</div>
 
         <div className="score-card beginner">
 
             <div className="title"> Beginner </div>
             <div className="sub-title"> Red Flower Garden </div>
           {beginnerBest && <>
-            <div className="rank"> #{beginnerBest.rank.toString().replace(/0/g,"O")}. </div>
+            <div className="rank"> #{beginnerBest.rank.toString().replace(/0/g,"O")} </div>
             You kissed the sky in
             <div className="years"> {beginnerBest.years.replace(/0/g,"O")} </div>
             years
@@ -58,14 +58,18 @@ class MyHighScores extends Component {
             <div className="keep-trying"> Keep trying! </div>
           </>}
 
+          <a href="/leaderboard/beginner" class="leaderboard-links"> Beginner Leaderboard > </a>
+
         </div>
+
+
 
         <div className="score-card intermediate">
 
             <div className="title"> Intermediate </div>
             <div className="sub-title"> Colorful Flower Garden </div>
           {intermediateBest && <>
-            <div className="rank"> #{intermediateBest.rank.toString().replace(/0/g,"O")}. </div>
+            <div className="rank"> #{intermediateBest.rank.toString().replace(/0/g,"O")} </div>
             You kissed the sky in
             <div className="years"> {intermediateBest.years.replace(/0/g,"O")} </div>
             years
@@ -79,6 +83,8 @@ class MyHighScores extends Component {
             <div className="keep-trying"> Keep trying! </div>
           </>}
 
+          <a href="/leaderboard/intermediate" class="leaderboard-links"> Intermediate Leaderboard > </a>
+
         </div>
 
         <div className="score-card expert">
@@ -86,7 +92,7 @@ class MyHighScores extends Component {
             <div className="title"> Expert </div>
             <div className="sub-title"> Tiny White Flower </div>
           {expertBest && <>
-            <div className="rank"> #{expertBest.rank.toString().replace(/0/g,"O")}. </div>
+            <div className="rank"> #{expertBest.rank.toString().replace(/0/g,"O")} </div>
             You kissed the sky in
             <div className="years"> {expertBest.years.replace(/0/g,"O")} </div>
             years
@@ -100,19 +106,21 @@ class MyHighScores extends Component {
             <div className="keep-trying"> Keep trying! </div>
           </>}
 
+          <a href="/leaderboard/expert" class="leaderboard-links"> Expert Leaderboard > </a>
+
         </div>
 
         {this.props.appState.myHighScores.length > 0 && <>
 
-          <div className="all">All</div>
+          <div className="all">All Scores</div>
 
           <div className="scores-container">
             {allTimePage.map((score,index)=>
               <div className="score-container" key={index}>
 
                   <div className="rank">
-                    #{score.rank.toString().replace(/0/g,"O")}.
-                    &nbsp;
+                    #{score.rank.toString().replace(/0/g,"O")}
+                    &nbsp; &nbsp;
                     {score.difficulty}
                   </div>
 
