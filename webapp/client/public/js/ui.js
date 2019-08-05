@@ -260,6 +260,7 @@ function pause() {
   document.getElementById("icon_pause").style.visibility = "hidden";
   document.getElementById("icon_play").style.visibility = "visible";
   $("#modal_play").css("visibility", "visible");
+  updateUI();
   gamePaused = true;
 }
 
