@@ -1,4 +1,5 @@
 import API from "./API"
+import Flower_Options from "./../styles/flower_options.json"
 
 export default {
 
@@ -46,7 +47,10 @@ export default {
 
     signUp: function(app, {username,password,email}){
       console.log('👆 Sign UP > newUser: ', username)
-      API.signUp({username,password,email})
+      const avatar = {
+        colors: Flower_Options[window._rand(0,Flower_Options.length - 1)]
+      }
+      API.signUp({username,password,email,avatar})
         .then( resp => {
           if (resp.data._id) {
             this.logIn(app, {username,password})
