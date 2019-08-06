@@ -3,21 +3,9 @@ import "./settings.sass"
 import User from "./../../api/user.js"
 
 import Flower from "./../../components/Flower/flower.js"
+import Flower_Options from "./../../styles/flower_options.json"
 
 const Settings = (props) => {
-
-  const colors = [
-    { pistil: "#E0993E", petal: "#C90606" },
-    { pistil: "#E0993E", petal: "#E8B741" },
-    { pistil: "#E0993E", petal: "#E76335" },
-    { pistil: "#E0993E", petal: "#889ACD" },
-    { pistil: "#E0993E", petal: "#30C1B3" },
-    { pistil: "#E0993E", petal: "#A330C1" },
-    { pistil: "#E0993E", petal: "#F5E8A8" },
-    { pistil: "#E0993E", petal: "#EEEEEE" },
-    { pistil: "#E0993E", petal: "#FF0DCB" },
-    { pistil: "#E0993E", petal: "#0E7FD9" }
-  ]
 
   function selectNew(colors) {
     User.changeAvatar(colors, props.appState)
@@ -28,7 +16,7 @@ const Settings = (props) => {
 
       Select alternate flower avatar. <br/><br/>
 
-      {colors.map((colors,index)=>
+      {Flower_Options.map((colors,index)=>
         <div className="flower-options" key={index}
           onClick={()=>{selectNew(colors)}}>
 
