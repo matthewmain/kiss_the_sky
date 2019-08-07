@@ -48,10 +48,12 @@ class Landing extends Component {
   addClickToCloseEvent = ()=>{
     if (!document.body.hasOnClick) {
       document.body.hasOnClick = true
-      document.body.addEventListener("click", (event)=>{
+      document.body.addEventListener("click", (event) => {
+        const path = event.composedPath()
         if (
-          event.path.filter(e=>e.classList && e.classList.contains("noListen")).length === 0
-          && this.state.open
+          path.filter(e=>e.classList && e.classList.contains("noListen")).length === 0
+          &&
+          this.state.open
         ) {
           this.toggleMenu()
         }

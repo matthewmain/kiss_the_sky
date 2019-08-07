@@ -11,7 +11,9 @@ const Flower = (props) => {
         maxWidth: `${!props.hide ? props.size+"px" : "0px"}`,
         paddingRight: `${!props.hide ? "0px" : "12px"}`,
       }}
-      width={props.size+'px'} height={props.size+'px'} viewBox="0 0 43 49" version="1.1" xmlns="http://www.w3.org/2000/svg"
+      width={!props.hide ? props.size+"px" : "0px"}
+      height={!props.hide ? props.size+"px" : "0px"}
+      viewBox="0 0 43 49" version="1.1" xmlns="http://www.w3.org/2000/svg"
     >
       <g id="Symbols" stroke="none" strokeWidth="1" fill="none" fillRule="evenodd">
         <g id="page-header-right" transform="translate(-41.000000, -1.000000)" fillRule="nonzero">
