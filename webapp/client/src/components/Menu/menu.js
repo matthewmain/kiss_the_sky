@@ -143,36 +143,14 @@ class Landing extends Component {
             className="noListen"
             onClick={this.toggleMenu}>
 
-            <div className="toggle_menu_container">
-              <img
-                id="menu_icon_closed"
-                className="menu_icons"
-                src={Icon_menu_close}
-                alt="icon menu"
-                style={{
-                  opacity: `${this.state.open ? 1 : 0}`,
-                  right: `${!this.props.appState.username ? "2px" : "57px"}`,
-                }}/>
-              <img
-                id="menu_icon"
-                className="menu_icons"
-                src={Icon_menu}
-                alt="icon menu"
-                style={{
-                  opacity: `${this.state.open ? 0 : 1}`,
-                  right: `${!this.props.appState.username ? "2px" : "57px"}`,
-                }}/>
-            </div>
-
-
-
-            <svg id="menu-icon-svg" viewBox="0 0 100 100">
+            <svg 
+              id="menu-icon-svg" 
+              viewBox="0 0 100 100"
+              style={{ right: `${!this.props.appState.username ? "2px" : "57px"}` }}>
               <polyline id="top-line" points="7 20 50 20 93 20 "></polyline>
               <path id="middle-line"  d="M7,50 L93,50 Z"></path>
               <path id="bottom-line"  d="M7,80 L93,80 Z"></path>
             </svg>
-
-
 
             <div className="flower-avatar-container">
               <Flower
