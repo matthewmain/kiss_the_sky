@@ -153,7 +153,6 @@ class Landing extends Component {
                   opacity: `${this.state.open ? 1 : 0}`,
                   right: `${!this.props.appState.username ? "2px" : "57px"}`,
                 }}/>
-
               <img
                 id="menu_icon"
                 className="menu_icons"
@@ -164,6 +163,16 @@ class Landing extends Component {
                   right: `${!this.props.appState.username ? "2px" : "57px"}`,
                 }}/>
             </div>
+
+
+
+            <svg id="menu-icon-svg" viewBox="0 0 100 100">
+              <polyline id="top-line" points="7 20 50 20 93 20 "></polyline>
+              <path id="middle-line"  d="M7,50 L93,50 Z"></path>
+              <path id="bottom-line"  d="M7,80 L93,80 Z"></path>
+            </svg>
+
+
 
             <div className="flower-avatar-container">
               <Flower
@@ -283,3 +292,183 @@ class Landing extends Component {
 }
 
 export default Landing
+
+
+
+
+
+/////---ANIMATIONS---/////
+
+window.onload = function() {
+
+  //Initiation
+  var svgIcon = document.getElementById("menu-icon-svg");
+  var topLine = document.getElementById("top-line");
+  var middleLine = document.getElementById("middle-line");
+  var bottomLine = document.getElementById("bottom-line");
+  var state = "menu";  // can be "menu" or "arrow"
+  var topLineY;
+  var middleLineY;
+  var bottomLineY;
+  var arrowLegY;
+  var arrowPointY;
+  var hideawayLinesOpacity;
+  var collapseDurationInFrames = 60;
+  var arrowAppearDurationInFrames = 20;
+  var menuReturnDurationInFrames = 60;
+  var fadeInDurationInFrames = 30;
+  var collapseComplete = false;
+  var arrowAppearComplete = false;
+  var menuReturnComplete = true;
+  var currentFrame = 1;
+
+  function easeInOutBack ( beginningValue, endValue, durationInFrames, framesElapsed, delayInFrames=0 ) {
+    var t = framesElapsed - delayInFrames < 0 ? 0 : framesElapsed;  // time since start (as frames elapsed)
+    var b = beginningValue;  // beginning value
+    var c = endValue - beginningValue;  //  change in value overall
+    var d = durationInFrames;  // duration (in frames) overall  
+    var s = 1.70158; 
+    if ((t/=d/2) < 1) return c/2*(t*t*(((s*=(1.525))+1)*t - s)) + b;
+    return c/2*((t-=2)*t*(((s*=(1.525))+1)*t + s) + 2) + b;
+  }
+
+  function easeOutBack ( beginningValue, endValue, durationInFrames, framesElapsed, delayInFrames=0 ) {
+    var t = framesElapsed - delayInFrames < 0 ? 0 : framesElapsed;  // time since start (as frames elapsed)
+    var b = beginningValue;  // beginning value
+    var c = endValue - beginningValue;  //  change in value overall
+    var d = durationInFrames;  // duration (in frames) overall  
+    var s = 1.70158;
+    return c*((t=t/d-1)*t*((s+1)*t + s) + 1) + b;
+  }
+
+  function easeOutBounce ( beginningValue, endValue, durationInFrames, framesElapsed, delayInFrames=0 ) {
+    var t = framesElapsed - delayInFrames < 0 ? 0 : framesElapsed;  // time since start (as frames elapsed)
+    var b = beginningValue;  // beginning value
+    var c = endValue - beginningValue;  //  change in value overall
+    var d = durationInFrames;  // duration (in frames) overall  
+    var p = t/d;  // progress ratio
+    if (p < (1/2.75)) {
+      return c*(7.5625*p*p) + b;
+    } else if (p < (2/2.75)) {
+      return c*(7.5625*(p-=(1.5/2.75))*p + .75) + b;
+    } else if (p < (2.5/2.75)) {
+      return c*(7.5625*(p-=(2.25/2.75))*p + .9375) + b;
+    } else {
+      return c*(7.5625*(p-=(2.625/2.75))*p + .984375) + b;
+    }
+  }
+
+  function linear ( beginningValue, endValue, durationInFrames, framesElapsed, delayInFrames=0 ) {
+    var t = framesElapsed - delayInFrames < 0 ? 0 : framesElapsed;  // time since start (as frames elapsed)
+    var b = beginningValue;  // beginning value
+    var c = endValue - beginningValue;  //  change in value overall
+    var d = durationInFrames;  // duration (in frames) overall
+    return t*(c/d) + b;
+  }
+
+  //Collapse
+  function collapseAnimation( durationInFrames, currentFrame ) {
+    currentFrame++;
+    if ( currentFrame <= collapseDurationInFrames ) {
+      window.requestAnimationFrame( ()=> { 
+        //top line
+        topLineY = easeInOutBack( 20, 80, collapseDurationInFrames, currentFrame );
+        topLine.setAttribute( "points", "7 "+topLineY+" 50 "+topLineY+" 93 "+topLineY );
+        //middle line
+        middleLineY = easeInOutBack( 50, 80, collapseDurationInFrames, currentFrame );
+        middleLine.setAttribute( "d", "M7,"+middleLineY+" L93,"+middleLineY );
+        if ( middleLineY >= 80) middleLine.style.opacity = "0";
+        //bottom line
+        if ( middleLineY >= 80) bottomLine.style.opacity = "0";
+        //recursion
+        collapseAnimation( collapseDurationInFrames, currentFrame );
+      });
+    } else {
+      bottomLine.style.opacity = "0";
+      currentFrame = 1;
+      collapseComplete = true;
+      openMenuAnimation();
+    }
+  }
+
+  //Arrow Appear
+  function arrowAppearAnimation( durationInFrames, currentFrame ) {
+    currentFrame++;
+    if ( currentFrame <= arrowAppearDurationInFrames ) {
+      window.requestAnimationFrame( ()=> { 
+        //arrow
+        arrowLegY = easeOutBack( 80, 70, durationInFrames, currentFrame );
+        arrowPointY = easeOutBack( 80, 30, durationInFrames, currentFrame );
+        topLine.setAttribute("points", "7 "+arrowLegY+" 50 "+arrowPointY+" 93 "+arrowLegY);
+        //recursion
+        arrowAppearAnimation( arrowAppearDurationInFrames, currentFrame );
+      });
+    } else {
+      currentFrame = 1;
+      arrowAppearComplete = true;
+      menuReturnComplete = false;
+      openMenuAnimation();
+    }
+  }
+
+  //Combined Open Menu Animation
+  function openMenuAnimation() {
+    if ( !collapseComplete ) { 
+      collapseAnimation( collapseDurationInFrames, currentFrame );
+    } else if ( !arrowAppearComplete) {
+      arrowAppearAnimation( arrowAppearDurationInFrames, currentFrame );
+    }
+  }
+
+  //Menu Return
+  function menuReturnAnimation( durationInFrames, currentFrame ) {
+    currentFrame++;
+    if ( currentFrame <= menuReturnDurationInFrames ) {
+      window.requestAnimationFrame( ()=> { 
+        //arrow to top line
+        arrowLegY = easeOutBounce( 70, 20, durationInFrames, currentFrame );
+        arrowPointY = easeOutBounce( 30, 20, durationInFrames, currentFrame );
+        topLine.setAttribute("points", "7 "+arrowLegY+" 50 "+arrowPointY+" 93 "+arrowLegY);
+        //middle line
+        middleLineY = easeOutBounce( 80, 50, menuReturnDurationInFrames, currentFrame );
+        middleLine.setAttribute( "d", "M7,"+middleLineY+" L93,"+middleLineY );
+        //bottom line
+        bottomLineY = easeOutBounce( 94, 80, menuReturnDurationInFrames, currentFrame );
+        bottomLine.setAttribute( "d", "M7,"+bottomLineY+" L93,"+bottomLineY );
+        //middle and bottom lines opacity
+        hideawayLinesOpacity = linear( 0, 1, fadeInDurationInFrames, currentFrame );
+        middleLine.style.opacity = hideawayLinesOpacity;
+        bottomLine.style.opacity = hideawayLinesOpacity;
+        //recursion
+        menuReturnAnimation( menuReturnDurationInFrames, currentFrame );
+      });
+    } else {
+      currentFrame = 1;
+      collapseComplete = false;
+      arrowAppearComplete = false;
+      menuReturnComplete = true;
+    }
+  }
+
+  // Close Menu Animation
+  function closeMenuAnimation() {
+    if ( !menuReturnComplete ) {
+      menuReturnAnimation( menuReturnDurationInFrames, currentFrame );
+    }
+  }
+
+  //Events
+  svgIcon.addEventListener( "click", ()=> {
+    if ( state === "menu" ) {
+      openMenuAnimation();
+      state = "arrow"
+    } else if ( state === "arrow" ) {
+      closeMenuAnimation();
+      state = "menu"
+    }
+  });
+
+
+};
+
+
