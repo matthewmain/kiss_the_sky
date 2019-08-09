@@ -280,6 +280,7 @@ export default Landing
 window.onload = function() {
 
   //Initiation
+  var menuIconContainer = document.getElementById("menu_icon_container");
   var svgIcon = document.getElementById("menu-icon-svg");
   var topLine = document.getElementById("top-line");
   var middleLine = document.getElementById("middle-line");
@@ -291,7 +292,7 @@ window.onload = function() {
   var arrowLegY;
   var arrowPointY;
   var hideawayLinesOpacity;
-  var collapseDurationInFrames = 60;
+  var collapseDurationInFrames = 40;
   var arrowAppearDurationInFrames = 20;
   var menuReturnDurationInFrames = 60;
   var fadeInDurationInFrames = 30;
@@ -436,7 +437,7 @@ window.onload = function() {
   }
 
   //Events
-  svgIcon.addEventListener( "click", ()=> {
+  menuIconContainer.addEventListener( "click", ()=> {
     if ( state === "menu" ) {
       openMenuAnimation();
       state = "arrow"
