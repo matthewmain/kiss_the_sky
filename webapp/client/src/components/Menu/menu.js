@@ -43,6 +43,7 @@ class Landing extends Component {
     this.setState({
       open: !this.state.open
     })
+    //window.toggleMenuIconAnimations()
   }
 
   addClickToCloseEvent = ()=>{
@@ -267,7 +268,12 @@ class Landing extends Component {
       </>
     )
   }
+
 }
+
+
+
+
 
 export default Landing
 

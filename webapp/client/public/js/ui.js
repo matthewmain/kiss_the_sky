@@ -789,15 +789,15 @@ window.onload = function() {  // (running on load because needs to wait for menu
     }
   }
 
-  // Close Menu Animation
+  //Close Menu Animation
   function closeMenuAnimation() {
     if ( !menuReturnComplete ) {
       menuReturnAnimation( menuReturnDurationInFrames, currentFrame );
     }
   }
 
-  // Events
-  menuIconContainer.addEventListener( "click", ()=> {
+  //Toggle Animations
+  function toggleMenuIconAnimations() {
     if ( state === "menu" ) {
       openMenuAnimation();
       state = "arrow"
@@ -805,6 +805,11 @@ window.onload = function() {  // (running on load because needs to wait for menu
       closeMenuAnimation();
       state = "menu"
     }
+  }
+
+  // Events
+  menuIconContainer.addEventListener( "click", ()=> {
+    toggleMenuIconAnimations();
   });
 
 }
