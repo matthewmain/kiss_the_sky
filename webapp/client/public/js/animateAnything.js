@@ -1,13 +1,4 @@
 
-
-
-///////////////////////////////// ANIMATE.JS /////////////////////////////////
-
-// adapted from: http://gsgd.co.uk/sandbox/jquery/easing/
-// for visual examples, see: https://easings.net/en
-
-
-
 var AJS = {
 
 	linear: function ( beginningValue, endValue, durationInFrames, framesElapsed, delayInFrames=0 ) {

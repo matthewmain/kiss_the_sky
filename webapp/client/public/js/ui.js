@@ -679,27 +679,29 @@ document.addEventListener("touchup", function() {  dropHandle(); stopEliminating
 
 
   
-/////---ANIMATION---/////
+/////---MENU ICON ANIMATION---/////
 
 window.onload = function() {  // (running on load because needs to wait for menu.js to place elements)
 
   //Initiation Animation
   var menuIconContainer = document.getElementById("menu_icon_container");
+  var menuDropdown = document.getElementById("menu_dropdown_container");
+  var menuTogglers = document.getElementsByClassName("menu-toggler");
   var svgIcon = document.getElementById("menu-icon-svg");
   var topLine = document.getElementById("top-line");
   var middleLine = document.getElementById("middle-line");
   var bottomLine = document.getElementById("bottom-line");
-  var state = "menu";  // can be "menu" or "arrow"
+  var menuIconState = "menu";  // can be "menu" or "arrow"
   var topLineY;
   var middleLineY;
   var bottomLineY;
   var arrowLegY;
   var arrowPointY;
   var hideawayLinesOpacity;
-  var collapseDurationInFrames = 40;
-  var arrowAppearDurationInFrames = 20;
-  var menuReturnDurationInFrames = 60;
-  var fadeInDurationInFrames = 30;
+  var collapseDurationInFrames = 15;
+  var arrowAppearDurationInFrames = 10;
+  var menuReturnDurationInFrames = 25;
+  var fadeInDurationInFrames = 15;
   var collapseComplete = false;
   var arrowAppearComplete = false;
   var menuReturnComplete = true;
@@ -709,7 +711,7 @@ window.onload = function() {  // (running on load because needs to wait for menu
   function collapseAnimation( durationInFrames, currentFrame ) {
     currentFrame++;
     if ( currentFrame <= collapseDurationInFrames ) {
-      window.requestAnimationFrame( ()=> { 
+      setTimeout( ()=> { 
         //top line
         topLineY = AJS.easeInOutBack( 20, 80, collapseDurationInFrames, currentFrame );
         topLine.setAttribute( "points", "7 "+topLineY+" 50 "+topLineY+" 93 "+topLineY );
@@ -721,7 +723,7 @@ window.onload = function() {  // (running on load because needs to wait for menu
         if ( middleLineY >= 80) bottomLine.style.opacity = "0";
         //recursion
         collapseAnimation( collapseDurationInFrames, currentFrame );
-      });
+      }, 20);
     } else {
       bottomLine.style.opacity = "0";
       currentFrame = 1;
@@ -734,14 +736,14 @@ window.onload = function() {  // (running on load because needs to wait for menu
   function arrowAppearAnimation( durationInFrames, currentFrame ) {
     currentFrame++;
     if ( currentFrame <= arrowAppearDurationInFrames ) {
-      window.requestAnimationFrame( ()=> { 
+      setTimeout( ()=> { 
         //arrow
         arrowLegY = AJS.easeOutBack( 80, 70, durationInFrames, currentFrame );
         arrowPointY = AJS.easeOutBack( 80, 30, durationInFrames, currentFrame );
         topLine.setAttribute("points", "7 "+arrowLegY+" 50 "+arrowPointY+" 93 "+arrowLegY);
         //recursion
         arrowAppearAnimation( arrowAppearDurationInFrames, currentFrame );
-      });
+      }, 20);
     } else {
       currentFrame = 1;
       arrowAppearComplete = true;
@@ -763,7 +765,7 @@ window.onload = function() {  // (running on load because needs to wait for menu
   function menuReturnAnimation( durationInFrames, currentFrame ) {
     currentFrame++;
     if ( currentFrame <= menuReturnDurationInFrames ) {
-      window.requestAnimationFrame( ()=> { 
+      setTimeout( ()=> { 
         //arrow to top line
         arrowLegY = AJS.easeOutBounce( 70, 20, durationInFrames, currentFrame );
         arrowPointY = AJS.easeOutBounce( 30, 20, durationInFrames, currentFrame );
@@ -780,7 +782,7 @@ window.onload = function() {  // (running on load because needs to wait for menu
         bottomLine.style.opacity = hideawayLinesOpacity;
         //recursion
         menuReturnAnimation( menuReturnDurationInFrames, currentFrame );
-      });
+      }, 20);
     } else {
       currentFrame = 1;
       collapseComplete = false;
@@ -798,19 +800,31 @@ window.onload = function() {  // (running on load because needs to wait for menu
 
   //Toggle Animations
   function toggleMenuIconAnimations() {
-    if ( state === "menu" ) {
+    if ( menuIconState === "menu" ) {
       openMenuAnimation();
-      state = "arrow"
-    } else if ( state === "arrow" ) {
+      menuIconState = "arrow";
+    } else if ( menuIconState === "arrow" ) {
       closeMenuAnimation();
-      state = "menu"
+      menuIconState = "menu"
     }
   }
 
-  // Events
+  //associate icon toggling with menu toggling
+  function assignMenuTogglers() {
+    for ( var i=0; i<menuTogglers.length; i++) {
+      menuTogglers[i].addEventListener( "click", ()=> {
+        toggleMenuIconAnimations();
+      });
+    }
+  }
+
+  assignMenuTogglers()
+
+  //ensures menu toggle events are associated with logged-in-only buttons after log in
   menuIconContainer.addEventListener( "click", ()=> {
-    toggleMenuIconAnimations();
+    assignMenuTogglers();
   });
+
 
 }
 
@@ -828,6 +842,22 @@ function updateUI() {
   $("#season_right").text( currentSeason );
   updateSeasonPieChart();
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
