@@ -23,14 +23,15 @@ class Landing extends Component {
     history: this.props.history,
   }
 
-  componentDidMount(){
-    this.addClickToCloseEvent()
-  }
+  // componentDidMount(){
+  //   this.addClickToCloseEvent()
+  // }
 
   componentWillReceiveProps(props){
     if (props.appState.openMenu && !this.state.open) {
       this.toggleMenu()
       this.setState({open: true})
+      window.menuOpen = true
     }
     if (props.appState.forceClose) {
       this.toggleMenu()
@@ -45,21 +46,21 @@ class Landing extends Component {
     })
   }
 
-  addClickToCloseEvent = ()=>{
-    if (!document.body.hasOnClick) {
-      document.body.hasOnClick = true
-      document.body.addEventListener("click", (event) => {
-        const path = event.composedPath()
-        if (
-          path.filter(e=>e.classList && e.classList.contains("noListen")).length === 0
-          &&
-          this.state.open
-        ) {
-          this.toggleMenu()
-        }
-      })
-    }
-  }
+  // addClickToCloseEvent = ()=>{
+  //   if (!document.body.hasOnClick) {
+  //     document.body.hasOnClick = true
+  //     document.body.addEventListener("click", (event) => {
+  //       const path = event.composedPath()
+  //       if (
+  //         path.filter(e=>e.classList && e.classList.contains("noListen")).length === 0
+  //         &&
+  //         this.state.open
+  //       ) {
+  //         this.toggleMenu()
+  //       }
+  //     })
+  //   }
+  // }
 
   toggleSignUpLogIn = (page, hold)=>{
     this.props.appState.set({signUpLogIn: page})
@@ -140,30 +141,17 @@ class Landing extends Component {
 
           {/* ⚠️ Warning: Changing 👇 this className name will effect event listener to toggle menu view/unview */}
           <div id="menu_icon_container"
-            className="noListen"
+            className="noListen menu-toggler"
             onClick={this.toggleMenu}>
 
-            <div className="toggle_menu_container">
-              <img
-                id="menu_icon_closed"
-                className="menu_icons"
-                src={Icon_menu_close}
-                alt="icon menu"
-                style={{
-                  opacity: `${this.state.open ? 1 : 0}`,
-                  right: `${!this.props.appState.username ? "2px" : "57px"}`,
-                }}/>
-
-              <img
-                id="menu_icon"
-                className="menu_icons"
-                src={Icon_menu}
-                alt="icon menu"
-                style={{
-                  opacity: `${this.state.open ? 0 : 1}`,
-                  right: `${!this.props.appState.username ? "2px" : "57px"}`,
-                }}/>
-            </div>
+            <svg 
+              id="menu-icon-svg" 
+              viewBox="0 0 100 100"
+              style={{ right: `${!this.props.appState.username ? "2px" : "57px"}` }}>
+              <polyline id="top-line" points="7 20 50 20 93 20 "></polyline>
+              <path id="middle-line"  d="M7,50 L93,50 Z"></path>
+              <path id="bottom-line"  d="M7,80 L93,80 Z"></path>
+            </svg>
 
             <div className="flower-avatar-container">
               <Flower
@@ -189,21 +177,21 @@ class Landing extends Component {
               <div className="username">
                 {this.props.appState.username}
               </div>
-              <Link to="/dashboard/savedsessions" className="link" onClick={this.toggleMenu}>
+              <Link to="/dashboard/savedsessions" className="link menu-toggler" onClick={this.toggleMenu}>
                 <div className={"btn "+(route === "savedsessions" ? "active" : "")}>
 
                   saved sessions
 
                 </div>
               </Link>
-              <Link to="/dashboard/myhighscores" className="link" onClick={this.toggleMenu}>
+              <Link to="/dashboard/myhighscores" className="link menu-toggler" onClick={this.toggleMenu}>
                 <div className={"btn "+(route === "myhighscores" ? "active" : "")}>
 
                   my high scores
 
                 </div>
               </Link>
-              <Link to="/dashboard/settings" className="link" onClick={this.toggleMenu}>
+              <Link to="/dashboard/settings" className="link menu-toggler" onClick={this.toggleMenu}>
                 <div className={"btn "+(route === "settings" ? "active" : "")}>
 
                   settings
@@ -213,7 +201,7 @@ class Landing extends Component {
             </>}
 
             <Link to="/leaderboard"
-              className="link"
+              className="link menu-toggler"
               onClick={this.toggleMenu}>
               <div className={"btn leaderboard-btn "+(route === "leaderboard" ? "active" : "")}>
 
@@ -224,22 +212,10 @@ class Landing extends Component {
 
             <div className="divider"></div>
 
-            {/* {!this.props.appState.showGame &&
-              <Link to="/game"
-                className="link"
-                onClick={this.toggleMenu}>
-                <div className="btn gamemode-btn">
-
-                    game mode
-
-                </div>
-              </Link>
-            } */}
-
             {!this.props.appState.username && <>
 
               <div
-                className="link btn"
+                className="link btn menu-toggler"
                 onClick={()=>{this.toggleSignUpLogIn("signup")}}>
 
                   sign up
@@ -247,10 +223,10 @@ class Landing extends Component {
               </div>
 
               <div
-                className="link btn"
+                className="link btn menu-toggler"
                 onClick={()=>{this.toggleSignUpLogIn("login")}}>
 
-                log in
+                  log in
 
               </div>
 
@@ -280,6 +256,13 @@ class Landing extends Component {
       </>
     )
   }
+
 }
 
+
+
+
+
 export default Landing
+
+
