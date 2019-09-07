@@ -27,6 +27,13 @@ switch (seed) {
       })
     })
     break
+  case "restore":
+    db.User.deleteMany({})
+      .then(() => db.Winner.deleteMany({}) )
+      .then(() => db.Saved.deleteMany({}) )
+      .then(() => Manifest.seedManifest(logSeed, false) )
+    // Manifest.seedManifest(logSeed, false)
+    break
   default: {
     console.log('\n🤔please enter a seed argument... i.e. `npm run seed manifest`\n')
     process.exit(0)
