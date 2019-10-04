@@ -61,9 +61,9 @@ function scaleLanding() {
     $("#landing_svg_bg").width( $("#landing_content_div").height()/landingSvgRatio );
     $("#landing_content_div").width( $("#landing_svg_bg").width() );
   }
-  $(".button_landing").css({ width: "30.4%", top: "70.5%" });
-  $("#button_game_mode").css({ left: "11%" });
-  $("#button_ambient_mode").css({ left: "60.1%" });
+  $(".button_landing").css({ width: "16.7%", top: "76%" });
+  $("#button_game_mode, #button_game_mode_hover").css({ left: "25.7%" });
+  $("#button_ambient_mode, #button_ambient_mode_hover").css({ left: "56.9%" });
 }
 
 ///attaches header and footer to canvas (after canvas has been resized to window dimensions in verlet.js)
