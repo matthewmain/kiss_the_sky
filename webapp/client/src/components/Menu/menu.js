@@ -4,8 +4,8 @@ import { Link } from "react-router-dom"
 import Flower from "./../../components/Flower/flower.js"
 import Icon_menu from './../../images/icon_menu.svg'
 import Icon_menu_close from './../../images/icon_menu_close.svg'
-import Logo_dark from './../../images/title_header_dark.svg'
-import Logo_light from './../../images/title_header_light.svg'
+import Logo_dark from './../../images/title_header_dark.png'
+import Logo_light from './../../images/title_header_light.png'
 import Resume_button from './../../images/resume_button.svg'
 import Start_button from './../../images/start_button.svg'
 

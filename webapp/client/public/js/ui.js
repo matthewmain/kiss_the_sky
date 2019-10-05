@@ -309,7 +309,7 @@ function displayAmbientModeUI() {
 function toggleDarkLightMode() {
   if ( darkMode ) {
     $("body").css("background","#FFFFFF");
-    $("#logo").attr("src","assets/title_header_light.svg");
+    $("#logo").attr("src","assets/title_header_light.png");
     $("#icon_dark_light_toggle").css("transform","rotate(180deg)");
     $(".footer_text").css("color","#4A4A4A");
     $(".pie_circle").css("stroke","#4A4A4A");
@@ -317,7 +317,7 @@ function toggleDarkLightMode() {
     darkMode = false;
   } else {
     $("body").css("background","#202020");
-    $("#logo").attr("src","assets/title_header_dark.svg");
+    $("#logo").attr("src","assets/title_header_dark.png");
     $("#icon_dark_light_toggle").css("transform","rotate(0deg)");
     $(".footer_text, .pie_circle").css("color","#D5D8C5");
     $(".pie_circle").css("stroke","#D5D8C5");
