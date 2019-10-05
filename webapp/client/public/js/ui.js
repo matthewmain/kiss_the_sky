@@ -62,7 +62,7 @@ function scaleLanding() {
     $("#landing_content_div").width( $("#landing_svg_bg").width() );
   }
   $(".button_landing").css({ width: "16.7%", top: "76%" });
-  $("#button_game_mode, #button_game_mode_hover").css({ left: "25.7%" });
+  $("#button_game_mode, #button_game_mode_hover").css({ left: "24.6%" });
   $("#button_ambient_mode, #button_ambient_mode_hover").css({ left: "56.9%" });
 }
 
