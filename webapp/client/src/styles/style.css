@@ -72,7 +72,7 @@
 
 #landing_content_div {
   position: absolute;
-  top: 48%;
+  top: 50%;
   left: 50%;
   transform: translate(-50%,-50%);
   /*(height and width handled by scaleLanding() in ui.js)*/
@@ -89,10 +89,11 @@
 .button_landing {
   position: absolute;
   cursor: pointer;
+  opacity: 1;
   /*(width and top handled by scaleLanding() in ui.js)*/
 }
 .button_landing:hover {
-  background: #333333;
+  opacity: 0;
 }
 #button_game_mode {
   /*(left handled by scaleLanding() in ui.js)*/
