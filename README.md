@@ -12,19 +12,19 @@ Your goal is to breed a bright red flower that reaches all the way to the sky. T
 <br>
 <br>
 
-- [X] [Prototype 1](https://github.com/matthewmain/plant_evolution_app/tree/master/prototypes/prototype_1) - _Environment Physics & Basic Competitive Growth_  
-- [X] [Prototype 2](https://github.com/matthewmain/plant_evolution_app/tree/master/prototypes/prototype_2) - _Flowers, Seeds, & Reproduction with Randomized Traits_  
-- [X] [Prototype 3](https://github.com/matthewmain/plant_evolution_app/tree/master/prototypes/prototype_3) - _Seasons_
+- [X] [Prototype 1](https://github.com/matthewmain/kiss_the_sky/tree/master/prototypes/prototype_1) - _Environment Physics & Basic Competitive Growth_  
+- [X] [Prototype 2](https://github.com/matthewmain/kiss_the_sky/tree/master/prototypes/prototype_2) - _Flowers, Seeds, & Reproduction with Randomized Traits_  
+- [X] [Prototype 3](https://github.com/matthewmain/kiss_the_sky/tree/master/prototypes/prototype_3) - _Seasons_
 
 <br>
 
-- [X] [Version 1.0](https://github.com/matthewmain/plant_evolution_app/tree/master/builds/v1.0) - _Genes, Alleles, Mutations, & Randomized Sexual Reproduction with Mendelian Genetics_
-- [X] [Version 1.1](https://github.com/matthewmain/plant_evolution_app/tree/master/builds/v1.1) - _Basic Artificial Selection & Gamification_
-- [X] [Version 2.0](https://github.com/matthewmain/plant_evolution_app/tree/master/builds/v2.0) - _EvolveJS_
+- [X] [Version 1.0](https://github.com/matthewmain/kiss_the_sky/tree/master/builds/v1.0) - _Genes, Alleles, Mutations, & Randomized Sexual Reproduction with Mendelian Genetics_
+- [X] [Version 1.1](https://github.com/matthewmain/kiss_the_sky/tree/master/builds/v1.1) - _Basic Artificial Selection & Gamification_
+- [X] [Version 2.0](https://github.com/matthewmain/kiss_the_sky/tree/master/builds/v2.0) - _EvolveJS_
 
 <br>
 
-- [ ] [Web App](https://github.com/matthewmain/plant_evolution_app/tree/master/webapp) - _Authentication, Basic Server Side Functionality, High Score Tracking, & Independent Hosting_
+- [ ] [Web App](https://github.com/matthewmain/kiss_the_sky/tree/master/webapp) - _Authentication, Basic Server Side Functionality, High Score Tracking, & Independent Hosting_
 
 <br>
 
