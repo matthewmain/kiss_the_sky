@@ -1160,14 +1160,11 @@ function display() {
   if ( !gamePaused ) { window.requestAnimationFrame( display ); }
 }
 
-createSunRays();
-if ( useSunShades ) { placeSunShades(3,3); }
-display();
-
-
-
-
-
-
-
-
+$( ()=> { 
+  scaleLanding();
+  scaleToWindow();
+  createSunRays();
+  if ( useSunShades ) { placeSunShades(3,3); }
+  display();
+  $("#loader_div").fadeOut(1500); 
+});
