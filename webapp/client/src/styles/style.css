@@ -76,7 +76,7 @@
   left: 50%;
   transform: translate(-50%,-50%);
   width: 95vh;
-  height: 95vw;
+  height: 95vh;
   /*(height and width handled by scaleLanding() in ui.js)*/
 }
 
