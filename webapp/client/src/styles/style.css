@@ -75,6 +75,8 @@
   top: 50%;
   left: 50%;
   transform: translate(-50%,-50%);
+  width: 95vh;
+  height: 95vw;
   /*(height and width handled by scaleLanding() in ui.js)*/
 }
 
@@ -83,6 +85,8 @@
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
+  width: 100%;
+  height: 100%;
   /*(height and width handled by scaleLanding() in ui.js)*/
 }
 
