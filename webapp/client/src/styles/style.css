@@ -3,6 +3,11 @@
 @import url('https://fonts.googleapis.com/css?family=Dosis:200,300,400,500,600&display=swap');
 
 
+html, body {
+  position: fixed;
+  overflow: hidden;
+}
+
 #game_screen_page_body {
 	background: #202020;
 	font-family: "Dosis", Avenir, sans-serif;
