@@ -52,17 +52,15 @@ function SunShade( handle1, handle2 ) {
 
 ///scales landing to window
 function scaleLanding() {
-  // let windowWidth = $( window ).width();
-  // let windowHeight = $( window ).height();
-  // $("#landing_content_div").css({ height: "95%", width: "95%" });
-  // $("#landing_svg_bg").css({ height: "100%", width: "100%" });
-  // if ( $("#landing_content_div").height() > $("#landing_content_div").width()*landingSvgRatio ) {
-  //   $("#landing_svg_bg").height( $("#landing_content_div").width()*landingSvgRatio );
-  //   $("#landing_content_div").height( $("#landing_svg_bg").height() );
-  // } else {
-  //   $("#landing_svg_bg").width( $("#landing_content_div").height()/landingSvgRatio );
-  //   $("#landing_content_div").width( $("#landing_svg_bg").width() );
-  // }
+  let windowWidth = $( window ).width();
+  let windowHeight = $( window ).height();
+  if ( windowHeight > windowWidth ) {
+    $("#landing_content_div").width( windowWidth*.95 );
+    $("#landing_content_div").height( windowWidth*.95 );
+  } else {
+    $("#landing_content_div").width( windowHeight*.95 );
+    $("#landing_content_div").height( windowHeight*.95 );
+  }
   $(".button_landing").css({ width: "16.7%", top: "76%" });
   $("#button_game_mode, #button_game_mode_hover").css({ left: "24.6%" });
   $("#button_ambient_mode, #button_ambient_mode_hover").css({ left: "56.9%" });
