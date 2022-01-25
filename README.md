@@ -1,4 +1,4 @@
-### [KISS THE SKY](https://kissthesky.app)
+### [KISS THE SKY](https://www.kissthesky.app)
 
 <br>
 
