@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="641px" height="566px" viewBox="0 0 641 566" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 53 (72520) - https://sketchapp.com -->
+    <title>modal_card_options</title>
+    <desc>Created with Sketch.</desc>
+    <defs>
+        <path d="M3,20 L298.5,20 L312.3481,-5.68434189e-14 L326.5,20 L622,20 C623.656854,20 625,21.3431458 625,23 L625,548 C625,549.656854 623.656854,551 622,551 L3,551 C1.34314575,551 5.66022358e-14,549.656854 5.63993297e-14,548 L5.90638649e-14,23 C5.88609588e-14,21.3431458 1.34314575,20 3,20 Z" id="path-1"></path>
+        <filter x="-1.9%" y="-2.2%" width="103.8%" height="104.4%" filterUnits="objectBoundingBox" id="filter-2">
+            <feOffset dx="0" dy="0" in="SourceAlpha" result="shadowOffsetOuter1"></feOffset>
+            <feGaussianBlur stdDeviation="4" in="shadowOffsetOuter1" result="shadowBlurOuter1"></feGaussianBlur>
+            <feColorMatrix values="0 0 0 0 0   0 0 0 0 0   0 0 0 0 0  0 0 0 0.3 0" type="matrix" in="shadowBlurOuter1"></feColorMatrix>
+        </filter>
+    </defs>
+    <g id="[Screens]" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="game-mode-settings" transform="translate(-406.000000, -281.000000)" fill-rule="nonzero">
+            <g id="modal_card_options" transform="translate(414.000000, 288.000000)">
+                <g id="card">
+                    <use fill="black" fill-opacity="1" filter="url(#filter-2)" xlink:href="#path-1"></use>
+                    <use fill="#FFFFFF" xlink:href="#path-1"></use>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>

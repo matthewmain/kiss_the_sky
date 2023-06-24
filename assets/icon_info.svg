@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="100px" height="100px" viewBox="0 0 100 100" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 52.6 (67491) - http://www.bohemiancoding.com/sketch -->
+    <title>icon_info</title>
+    <desc>Created with Sketch.</desc>
+    <g id="icon_info" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <ellipse id="Oval" stroke="#74756F" stroke-width="6" fill-rule="nonzero" cx="50" cy="49.8439598" rx="47" ry="46.8439598"></ellipse>
+        <path d="M43,42 L43,80 L57,80 L57,42 L43,42 Z M50,32 C53.8659932,32 57,28.8659932 57,25 C57,21.1340068 53.8659932,18 50,18 C46.1340068,18 43,21.1340068 43,25 C43,28.8659932 46.1340068,32 50,32 Z" id="i" stroke="#74756F" stroke-width="6" fill-rule="nonzero"></path>
+    </g>
+</svg>

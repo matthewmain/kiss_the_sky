@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="157px" height="157px" viewBox="0 0 157 157" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 53 (72520) - https://sketchapp.com -->
+    <title>modal_play</title>
+    <desc>Created with Sketch.</desc>
+    <g id="[Screens]" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="gameplay" transform="translate(-642.000000, -434.000000)" fill-rule="nonzero">
+            <g id="modal_play" transform="translate(642.000000, 434.000000)">
+                <circle id="Oval" fill-opacity="0.5" fill="#FFFFFF" cx="78.5" cy="78.5" r="78.5"></circle>
+                <polygon id="Rectangle" fill-opacity="0.85423951" fill="#111111" points="45.7197802 35.3681319 131.983516 78.6350275 45.7197802 121.631868"></polygon>
+            </g>
+        </g>
+    </g>
+</svg>

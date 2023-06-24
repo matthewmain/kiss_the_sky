@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="48px" height="48px" viewBox="0 0 48 48" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 53 (72520) - https://sketchapp.com -->
+    <title>icon_exit_modal</title>
+    <desc>Created with Sketch.</desc>
+    <g id="[Screens]" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="game-mode-settings" transform="translate(-944.000000, -338.000000)" fill-rule="nonzero">
+            <g id="icon_exit_modal" transform="translate(944.000000, 338.000000)">
+                <circle id="Oval" cx="24" cy="24" r="24"></circle>
+                <path d="M24.6793914,23.5 L31.75574,30.5763486 C32.08142,30.9020286 32.08142,31.4300601 31.75574,31.75574 C31.4300601,32.08142 30.9020286,32.08142 30.5763486,31.75574 L23.5,24.6793914 L16.4236514,31.75574 C16.0979714,32.08142 15.5699399,32.08142 15.24426,31.75574 C14.91858,31.4300601 14.91858,30.9020286 15.24426,30.5763486 L22.3206086,23.5 L15.24426,16.4236514 C14.91858,16.0979714 14.91858,15.5699399 15.24426,15.24426 C15.5699399,14.91858 16.0979714,14.91858 16.4236514,15.24426 L23.5,22.3206086 L30.5763486,15.24426 C30.9020286,14.91858 31.4300601,14.91858 31.75574,15.24426 C32.08142,15.5699399 32.08142,16.0979714 31.75574,16.4236514 L24.6793914,23.5 Z"
+                  id="icon" fill-opacity="1" fill="#202020"></path>
+            </g>
+        </g>
+    </g>
+</svg>
