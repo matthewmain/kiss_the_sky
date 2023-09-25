@@ -1,4 +1,4 @@
-### [KISS THE SKY](https://www.kissthesky.app)
+### [KISS THE SKY](https://matthewmain.github.io/kiss_the_sky/)
 
 <br>
 
