@@ -14,7 +14,7 @@
 importScripts("https://storage.googleapis.com/workbox-cdn/releases/4.3.1/workbox-sw.js");
 
 importScripts(
-  "/kiss_the_sky/precache-manifest.dbbb02f839537d34bee0fd915d402ba3.js"
+  "/kiss_the_sky/precache-manifest.47a0ea9db827ac329b9f9ead654ae508.js"
 );
 
 self.addEventListener('message', (event) => {
