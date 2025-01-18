@@ -1,23 +1,23 @@
 self.__precacheManifest = (self.__precacheManifest || []).concat([
   {
-    "revision": "1aee44d556c4b9d0deaf9819cd7988d4",
+    "revision": "dacf1c150a5368897c1ae7a9fa255a31",
     "url": "/kiss_the_sky/index.html"
   },
   {
-    "revision": "7dd43ade029300454b8a",
+    "revision": "052edd8caa5f4f424230",
     "url": "/kiss_the_sky/static/css/main.ede4422f.chunk.css"
   },
   {
-    "revision": "cb2061ccdfe50e11ba45",
-    "url": "/kiss_the_sky/static/js/2.e97b50f6.chunk.js"
+    "revision": "44a159ed69a403b86cb7",
+    "url": "/kiss_the_sky/static/js/2.a61df636.chunk.js"
   },
   {
     "revision": "084b1a9a6969b9283af7d745ffd9330d",
-    "url": "/kiss_the_sky/static/js/2.e97b50f6.chunk.js.LICENSE.txt"
+    "url": "/kiss_the_sky/static/js/2.a61df636.chunk.js.LICENSE.txt"
   },
   {
-    "revision": "7dd43ade029300454b8a",
-    "url": "/kiss_the_sky/static/js/main.86bd5021.chunk.js"
+    "revision": "052edd8caa5f4f424230",
+    "url": "/kiss_the_sky/static/js/main.e8431713.chunk.js"
   },
   {
     "revision": "36070c4b8db2b14ac837",
@@ -50,6 +50,10 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
   {
     "revision": "be660857e32d56e2aa2458dce8e3f944",
     "url": "/kiss_the_sky/static/media/icon_menu.be660857.svg"
+  },
+  {
+    "revision": "6431d77adde1307c5d7ba935a912f6bd",
+    "url": "/kiss_the_sky/static/media/icon_menu_close.6431d77a.svg"
   },
   {
     "revision": "3553549d4e09e28c5d52e4d8dfd27d22",
