@@ -1,6 +1,6 @@
 self.__precacheManifest = (self.__precacheManifest || []).concat([
   {
-    "revision": "32b7816db949f49a444b920cb3f20c62",
+    "revision": "78698a22fcd38e245bcf196069ad1e36",
     "url": "/kiss_the_sky/index.html"
   },
   {
