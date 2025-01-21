@@ -1,21 +1,24 @@
 {
   "name": "Kiss_The_Sky",
   "version": "0.1.0",
+  "homepage": "https://matthewmain.github.io/kiss_the_sky/",
   "private": true,
   "proxy": "http://127.0.0.1:3004/",
   "dependencies": {
     "axios": "^0.18.1",
     "bootstrap": "^4.3.1",
     "moment": "^2.24.0",
-    "node-sass": "^4.12.0",
     "react": "^16.8.6",
     "react-bootstrap": "^1.0.0-beta.9",
     "react-dom": "^16.8.6",
     "react-router-dom": "^5.0.0",
-    "react-scripts": "^3.0.1"
+    "react-scripts": "5.0.1"
   },
   "scripts": {
+    "predeploy": "npm run build",
+    "deploy": "gh-pages -d build",
     "start": "PORT=3003 react-scripts start",
+    "static": "PORT=3005 REACT_APP_STATIC_BUILD=TRUE PUBLIC_URL=/ react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
@@ -28,5 +31,9 @@
     "not dead",
     "not ie <= 11",
     "not op_mini all"
-  ]
+  ],
+  "devDependencies": {
+    "gh-pages": "^5.0.0",
+    "sass": "^1.83.4"
+  }
 }
